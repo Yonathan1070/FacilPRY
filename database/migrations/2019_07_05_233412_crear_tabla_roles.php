@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CrearTablaCalificaciones extends Migration
+class CrearTablaRoles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class CrearTablaCalificaciones extends Migration
      */
     public function up()
     {
-        Schema::create('calificaciones', function (Blueprint $table) {
+        Schema::create('TBL_Roles', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('RLS_Nombre', 30)->unique();
+            $table->text('RLS_Descripcion');
             $table->timestamps();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_spanish_ci';
         });
     }
 
@@ -26,6 +30,6 @@ class CrearTablaCalificaciones extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('calificaciones');
+        Schema::dropIfExists('TBL_Roles');
     }
 }
