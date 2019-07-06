@@ -34,8 +34,8 @@ Crud Roles | Director de Proyectos
                         <tbody>
                             @foreach ($datas as $data)
                             <tr>
-                                <td>{{$data->nombre}}</td>
-                                <td>{{$data->descripcion}}</td>
+                                <td>{{$data->RLS_Nombre}}</td>
+                                <td>{{$data->RLS_Descripcion}}</td>
                                 <td>
                                     <a href="{{route('editar_rol', ['id'=>$data->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>

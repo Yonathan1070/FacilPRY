@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Director\Roles;
+use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionRol;
 
 class RolesController extends Controller

@@ -25,9 +25,9 @@ $(document).ready(function(){
             success: function(respuesta){
                 if (respuesta.mensaje == "ok") {
                     form.parents('tr').remove();
-                    Facilpry.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
+                    Biblioteca.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
                 } else{
-                    Facilpry.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
+                    Biblioteca.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
                 }
 
             },
