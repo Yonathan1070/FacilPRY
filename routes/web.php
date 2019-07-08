@@ -26,10 +26,22 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador'], func
 //Enrutamiento Director de Proyectos
 Route::group(['prefix' => 'director', 'namespace' => 'Director'], function () {
     Route::get('', 'InicioController@index')->name('inicio_director');
-    Route::get('roles', 'RolesController@index')->name('roles');
-    Route::get('roles-crear', 'RolesController@crear')->name('crear_rol');
-    Route::post('roles-crear', 'RolesController@guardar')->name('guardar_rol');
-    Route::get('rol-{id}/editar', 'RolesController@editar')->name('editar_rol');
-    Route::put('rol-{id}', 'RolesController@actualizar')->name('actualizar_rol');
-    Route::delete('rol-{id}', 'RolesController@eliminar')->name('eliminar_rol');
+    //Enrutamiento CRUD Roles
+    Route::Group(['prefix' => 'roles'], function () {
+        Route::get('', 'RolesController@index')->name('roles');
+        Route::get('crear', 'RolesController@crear')->name('crear_rol');
+        Route::post('crear', 'RolesController@guardar')->name('guardar_rol');
+        Route::get('{id}/editar', 'RolesController@editar')->name('editar_rol');
+        Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol');
+        Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol');
+    });
+    //Enrutamiento CRUD Proyectos
+    Route::Group(['prefix' => 'proyectos'], function () {
+        Route::get('', 'ProyectosController@index')->name('proyectos');
+        Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto');
+        Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto');
+        Route::get('{id}/editar', 'ProyectosController@editar')->name('editar_proyecto');
+        Route::put('{id}', 'ProyectosController@actualizar')->name('actualizar_proyecto');
+        Route::delete('{id}', 'ProyectosController@eliminar')->name('eliminar_proyecto');
+    });
 });

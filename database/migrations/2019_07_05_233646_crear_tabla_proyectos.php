@@ -17,8 +17,6 @@ class CrearTablaProyectos extends Migration
             $table->bigIncrements('id');
             $table->string('PRY_Nombre_Proyecto', 100);
             $table->text('PRY_Descripcion_Proyecto');
-            $table->unsignedBigInteger('PRY_Usuario_Id');
-            $table->foreign('PRY_Usuario_Id', 'FK_Proyectos_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->boolean('PRY_Estado_Proyecto');
             $table->double('PRY_Valor_Proyecto');
             $table->dateTime('PRY_Duracion_Proyecto');

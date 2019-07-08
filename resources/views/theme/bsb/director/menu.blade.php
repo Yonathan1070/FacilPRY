@@ -32,8 +32,14 @@
             </li>
             <li>
                 <a href="{{route("roles")}}">
-                    <i class="material-icons">text_fields</i>
+                    <i class="material-icons">accessibility</i>
                     <span>Roles del Sistema</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route("proyectos")}}">
+                    <i class="material-icons">note_add</i>
+                    <span>Proyectos</span>
                 </a>
             </li>
         </ul>

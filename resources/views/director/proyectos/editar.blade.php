@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.administrador.layout')
 @section('titulo')
 Crud Roles | Director de Proyectos
 @endsection
@@ -20,7 +20,7 @@ Crud Roles | Director de Proyectos
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_rol', ['id' => $rol->id])}}" method="POST">
+                    <form id="form_validation" action="{{route('actualizar_rol', ['id' => $data->id])}}" method="POST">
                         @csrf @method("put")
                         @include('director.roles.form')
                         <a class="btn btn-danger waves-effect" href="{{route('roles')}}">CANCELAR</a>

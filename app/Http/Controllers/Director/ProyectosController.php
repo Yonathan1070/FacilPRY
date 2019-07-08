@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Tablas\Roles;
-use App\Http\Requests\ValidacionRol;
+use App\Models\Tablas\Proyectos;
 
-class RolesController extends Controller
+class ProyectosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,8 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Roles::orderBy('id')->get();
-        return view('director.roles.listar', compact('roles'));
+        $proyectos = Proyectos::orderBy('id')->get();
+        return view('director.proyectos.listar', compact('proyectos'));
     }
 
     /**
@@ -27,7 +26,7 @@ class RolesController extends Controller
      */
     public function crear()
     {
-        return view('director.roles.crear');
+        return view('director.proyectos.crear');
     }
 
     /**
@@ -36,10 +35,9 @@ class RolesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(ValidacionRol $request)
+    public function guardar(Request $request)
     {
-        Roles::create($request->all());
-        return redirect('director/roles')->with('mensaje', 'Rol creado con exito');
+        //
     }
 
     /**
@@ -61,8 +59,7 @@ class RolesController extends Controller
      */
     public function editar($id)
     {
-        $rol = Roles::findOrFail($id);
-        return view('director.roles.editar', compact('rol'));
+        //
     }
 
     /**
@@ -72,10 +69,9 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(ValidacionRol $request, $id)
+    public function actualizar(Request $request, $id)
     {
-        Roles::findOrFail($id)->update($request->all());
-        return redirect('director/roles')->with('mensaje', 'Rol actualizado con exito');
+        //
     }
 
     /**
@@ -84,16 +80,8 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar(Request $request, $id)
+    public function eliminar($id)
     {
-        if ($request->ajax()) {
-            if (Roles::destroy($id)) {
-                return response()->json(['mensaje' => 'ok']);
-            } else {
-                return response()->json(['mensaje' => 'ng']);
-            }
-        } else {
-            abort(404);
-        }
+        //
     }
 }

@@ -1,6 +1,6 @@
 @extends('theme.bsb.director.layout')
 @section('titulo')
-Crud Roles | Director de Proyectos
+Crud Proyectos | Director de Proyectos
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -13,12 +13,12 @@ Crud Roles | Director de Proyectos
             <div class="card">
                 <div class="header">
                     <h2>
-                        ROLES
+                        PROYECTOS
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_rol')}}"><i
-                                    class="material-icons" style="color:white;">add</i> Nuevo rol</a>
+                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
+                                    class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
                         </li>
                     </ul>
                 </div>
@@ -28,19 +28,25 @@ Crud Roles | Director de Proyectos
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Duración</th>
+                                <th>Empresa</th>
                                 <th class="width70"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($roles as $rol)
+                            @foreach ($proyectos as $proyecto)
                             <tr>
-                                <td>{{$rol->RLS_Nombre}}</td>
-                                <td>{{$rol->RLS_Descripcion}}</td>
+                                <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
+                                <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
+                                <td>{{$proyecto->PRY_Estado_Proyecto}}</td>
+                                <td>{{$proyecto->PRY_Duracion_Proyecto}}</td>
+                                <td>{{$proyecto->PRY_Empresa_Proyecto}}</td>
                                 <td>
-                                    <a href="{{route('editar_rol', ['id'=>$rol->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                    <a href="{{route('editar_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                     </a>
-                                    <form action="{{route('eliminar_rol', ['id'=>$rol->id])}}" class="d-inline form-eliminar" method="POST">
+                                    <form action="{{route('eliminar_proyecto', ['id'=>$proyecto->id])}}" class="d-inline form-eliminar" method="POST">
                                         @csrf @method("delete")
                                         <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
                                             <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
