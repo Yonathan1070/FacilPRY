@@ -16,6 +16,7 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('', 'InicioController@index')->name('inicio');
     Route::get('iniciar-sesion', 'LoginController@index')->name('login');
     Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
+    Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');
 });
 
 //Enrutamiento Administrador

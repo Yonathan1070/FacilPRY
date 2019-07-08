@@ -21,16 +21,19 @@ class LoginController extends Controller
         return 'USR_Nombre_Usuario';
     }
 
-    public function password(){
-        return 'USR_Clave_Usuario';
-    }
-
     public function index()
     {
         return view('general.login');
     }
 
-    public function datos(Request $request){
-        dd($request->all());
+    public function authenticated(Request $request, $user){
+        $roles = $user->roles()->where('USR_RLS_Estado', 1)->get();
+        if($roles->isNotEmpty()){
+            $user->setSession($roles->toArray());
+        }else{
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            return redirect('iniciar-sesion')->withErrors(['error'=>'El Usuario no tiene un rol activo.']);
+        }
     }
 }

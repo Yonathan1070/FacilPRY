@@ -24,7 +24,7 @@ class CrearTablaUsuarios extends Migration
             $table->string('USR_Telefono', 20);
             $table->string('USR_Correo', 100);
             $table->string('USR_Nombre_Usuario', 15);
-            $table->string('USR_Clave_Usuario', 15);
+            $table->text('password');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

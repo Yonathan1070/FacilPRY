@@ -27,7 +27,7 @@
                                     <i class="material-icons">lock</i>
                                 </span>
                                 <div class="form-line">
-                                    <input type="password" class="form-control" id="USR_Clave_Usuario" name="USR_Clave_Usuario" placeholder="Contraseña" required>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
                                 </div>
                             </div>
                             <div class="row">

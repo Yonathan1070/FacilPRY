@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'TBL_Calificaciones',
             'TBL_Decisiones'
         ]);
+        $this->call(UsuarioAdministradorSeeder::class);
     }
 
     protected function truncateTablas(array $tablas){

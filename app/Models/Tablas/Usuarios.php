@@ -17,6 +17,6 @@ class Usuarios extends Authenticatable
         'USR_Telefono',
         'USR_Correo',
         'USR_Nombre_Usuario',
-        'USR_Clave_Usuario'];
+        'password'];
     protected $guarded = ['id'];
 }

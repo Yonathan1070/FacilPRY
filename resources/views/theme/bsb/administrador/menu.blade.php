@@ -14,7 +14,7 @@
                 <ul class="dropdown-menu pull-right">
                     <li><a href="javascript:void(0);"><i class="material-icons">person</i>Perfil</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="javascript:void(0);"><i class="material-icons">input</i>Cerrar Sesión</a></li>
+                    <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
