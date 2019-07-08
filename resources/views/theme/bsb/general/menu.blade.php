@@ -11,7 +11,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("iniciar_sesion")}}">
+                <a href="{{route("login")}}">
                     <i class="material-icons">input</i>
                     <span>Iniciar Sesión</span>
                 </a>

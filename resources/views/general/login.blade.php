@@ -10,14 +10,16 @@
                 </div>
                 <div class="card">
                     <div class="body">
-                        <form id="sign_in" method="POST">
+                        @include('includes.form-error')
+                        <form action="{{route('login_post')}}" method="POST">
+                            @csrf
                             <div class="msg">Inicio de Sesión</div>
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="material-icons">person</i>
                                 </span>
                                 <div class="form-line">
-                                    <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario" required autofocus>
+                                    <input type="text" class="form-control" id="USR_Nombre_Usuario" name="USR_Nombre_Usuario" value="{{old('USR_Nombre_Usuario')}}" placeholder="Nombre de Usuario" required autofocus>
                                 </div>
                             </div>
                             <div class="input-group">
@@ -25,7 +27,7 @@
                                     <i class="material-icons">lock</i>
                                 </span>
                                 <div class="form-line">
-                                    <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+                                    <input type="password" class="form-control" id="USR_Clave_Usuario" name="USR_Clave_Usuario" placeholder="Contraseña" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -53,9 +55,9 @@
 
 @section('scripts')
     <!-- Plugin Js para Validaciones -->
-    <script src="{{asset("assets/plugins/jquery-validation/jquery.validate.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
     <!-- Mensajes en español -->
-    <script src="{{asset("assets/plugins/jquery-validation/localization/messages_es.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
 
-    <script src="{{asset("assets/js/pages/examples/sign-in.js")}}"></script>
+    <script src="{{asset("assets/bsb/js/pages/examples/sign-in.js")}}"></script>
 @endsection

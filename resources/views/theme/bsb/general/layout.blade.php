@@ -13,19 +13,19 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
     <!-- Bootstrap Core Css -->
-    <link href="{{asset("assets/plugins/bootstrap/css/bootstrap.css")}}" rel="stylesheet">
+    <link href="{{asset("assets/bsb/plugins/bootstrap/css/bootstrap.css")}}" rel="stylesheet">
 
     <!-- Waves Effect Css -->
-    <link href="{{asset("assets/plugins/node-waves/waves.css")}}" rel="stylesheet" />
+    <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
 
     <!-- Animation Css -->
-    <link href="{{asset("assets/plugins/animate-css/animate.css")}}" rel="stylesheet" />
+    <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
 
     <!-- Custom Css -->
-    <link href="{{asset("assets/css/style.css")}}" rel="stylesheet">
+    <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
-    <link href="{{asset("assets/css/themes/all-themes.css")}}" rel="stylesheet" />
+    <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
 
     @yield('styles')
 </head>
@@ -54,16 +54,16 @@
     </section>
 
     <!-- Jquery Core Js -->
-    <script src="{{asset("assets/plugins/jquery/jquery.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery/jquery.min.js")}}"></script>
 
     <!-- Bootstrap Core Js -->
-    <script src="{{asset("assets/plugins/bootstrap/js/bootstrap.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/bootstrap/js/bootstrap.js")}}"></script>
 
     <!-- Waves Effect Plugin Js -->
-    <script src="{{asset("assets/plugins/node-waves/waves.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
     <!-- Custom Js -->
-    <script src="{{asset("assets/js/admin.js")}}"></script>
+    <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
 
     @yield('scripts')
 </body>

@@ -14,11 +14,12 @@
 //Enrutamiento Usuario General
 Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('', 'InicioController@index')->name('inicio');
-    Route::get('iniciar-sesion', 'LoginController@index')->name('iniciar_sesion');
+    Route::get('iniciar-sesion', 'LoginController@index')->name('login');
+    Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
 });
 
 //Enrutamiento Administrador
-Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador'], function () {
+Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'middleware' => 'auth'], function () {
     Route::get('', 'InicioController@index')->name('inicio_administrador');
     Route::get('director-proyectos', 'DirectorProyectosController@index')->name('director_administrador');
 });

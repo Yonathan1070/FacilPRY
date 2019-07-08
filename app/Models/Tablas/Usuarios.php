@@ -2,11 +2,12 @@
 
 namespace App\Models\Tablas;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuarios extends Model
+class Usuarios extends Authenticatable
 {
-    protected $table = "TBL_Usuarios";
+    protected $remember_token = false;
+    protected $table = 'TBL_Usuarios';
     protected $fillable = ['USR_Tipo_Documento',
         'USR_Documento',
         'USR_Nombre',
