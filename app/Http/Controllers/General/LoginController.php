@@ -4,13 +4,15 @@ namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/';
+    
 
     public function __construct()
     {
@@ -34,6 +36,15 @@ class LoginController extends Controller
             $this->guard()->logout();
             $request->session()->invalidate();
             return redirect('iniciar-sesion')->withErrors(['error'=>'El Usuario no tiene un rol activo.']);
+        }
+    }
+
+    public function redirectTo()
+    {
+        if(Auth::user()->role->RLS_Nombre == 'Administrador'){
+            return '/administrador';
+        }else{
+            return '/director';
         }
     }
 }
