@@ -1,6 +1,6 @@
 @extends('theme.bsb.director.layout')
 @section('titulo')
-Crud Proyectos | Director de Proyectos
+Crud Proyectos
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>

@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.tester.layout')
 @section('titulo')
     Inicio
 @endsection

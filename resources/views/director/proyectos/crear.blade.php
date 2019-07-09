@@ -1,6 +1,6 @@
 @extends('theme.bsb.director.layout')
 @section('titulo')
-Crud Proyectos | Director de Proyectos
+Crud Proyectos
 @endsection
 @section('contenido')
 <div class="container-fluid">

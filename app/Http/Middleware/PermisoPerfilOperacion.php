@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Redirect;
 
-class PermisoAdministrador
+class PermisoPerfilOperacion
 {
     /**
      * Handle an incoming request.
@@ -24,6 +23,6 @@ class PermisoAdministrador
     }
 
     private function permiso(){
-        return session()->get('Rol_Nombre') == 'Administrador';
+        return session()->get('Rol_Nombre') == 'Perfil de Operación';
     }
 }

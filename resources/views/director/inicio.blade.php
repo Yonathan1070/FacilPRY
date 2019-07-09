@@ -1,6 +1,6 @@
 @extends('theme.bsb.director.layout')
 @section('titulo')
-    Inicio | Director de Proyectos
+    Inicio
 @endsection
 @section('contenido')
     Inicio

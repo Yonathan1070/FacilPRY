@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>@yield('titulo', 'FacilPRY') | FacilPRY</title>
+    <title>@yield('titulo', 'FacilPRY') | {{session()->get('Rol_Nombre')}} | FacilPRY</title>
     <!-- Favicon-->
     <link rel="icon" href="{{asset("assets/bsb/images/favicon.ico")}}" type="image/x-icon">
 
@@ -84,7 +84,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @include("theme.bsb.administrador.menu")
+        @include("theme.bsb.perfiloperacion.menu")
     </section>
 
     <section class="content">
