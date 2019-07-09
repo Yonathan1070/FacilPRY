@@ -34,5 +34,29 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_RLS_Usuario_Id' => 1,
             'USR_RLS_Estado' => 1
         ]);
+
+        DB::table('TBL_Usuarios')->insert([
+            'USR_Tipo_Documento' => 'Cedula',
+            'USR_Documento' => '1070954014',
+            'USR_Nombre' => 'Edison',
+            'USR_Apellido'  => 'Mendez',
+            'USR_Fecha_Nacimiento' => '1989/06/03',
+            'USR_Direccion_Residencia' => 'Calle 5 # 13-18',
+            'USR_Telefono' => '3108666902',
+            'USR_Correo' => 'edialimenni@hotmail.com',
+            'USR_Nombre_Usuario' => 'edison',
+            'password' => bcrypt('2668')
+        ]);
+
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre' => 'Director de Proyectos',
+            'RLS_Descripcion' => 'Encargado del perfil de operación'
+        ]);
+
+        DB::table('TBL_Usuarios_Roles')->insert([
+            'USR_RLS_Rol_Id' => 2,
+            'USR_RLS_Usuario_Id' => 2,
+            'USR_RLS_Estado' => 1
+        ]);
     }
 }

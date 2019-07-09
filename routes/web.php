@@ -20,7 +20,7 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
 });
 
 //Enrutamiento Administrador
-Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'middleware' => ['auth', 'administrador']], function () {
     Route::get('', 'InicioController@index')->name('inicio_administrador');
     Route::get('director-proyectos', 'DirectorProyectosController@index')->name('director_administrador');
 });
