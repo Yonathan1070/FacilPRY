@@ -6,7 +6,8 @@
             <img src="{{asset("assets/bsb/images/user.png")}}" width="48" height="48" alt="User" />
         </div>
         <div class="info-container">
-        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session()->get('Usuario_Nombre_Completo')}}</div>
+            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{session()->get('Usuario_Nombre_Completo')}}</div>
             <div class="email">{{session()->get('Usuario_Correo')}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
@@ -31,9 +32,21 @@
                 </a>
             </li>
             <li>
+                <a href="{{route("decisiones_administrador")}}">
+                    <i class="material-icons">group_work</i>
+                    <span>Decisiones</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{route("director_administrador")}}">
-                    <i class="material-icons">text_fields</i>
+                    <i class="material-icons">assessment</i>
                     <span>Director de Proyectos</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route("roles_administrador")}}">
+                    <i class="material-icons">accessibility</i>
+                    <span>Roles</span>
                 </a>
             </li>
         </ul>

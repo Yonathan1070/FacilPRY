@@ -14,7 +14,7 @@ class RequerimientosController extends Controller
      */
     public function index()
     {
-        //
+        return view('director.requerimientos.listar');
     }
 
     /**

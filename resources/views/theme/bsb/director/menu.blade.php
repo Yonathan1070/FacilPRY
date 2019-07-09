@@ -14,7 +14,7 @@
                 <ul class="dropdown-menu pull-right">
                     <li><a href="javascript:void(0);"><i class="material-icons">person</i>Perfil</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="javascript:void(0);"><i class="material-icons">input</i>Cerrar Sesión</a></li>
+                    <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -31,15 +31,39 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("roles")}}">
-                    <i class="material-icons">accessibility</i>
-                    <span>Roles del Sistema</span>
+                    <a href="{{route("roles_director")}}">
+                        <i class="material-icons">accessibility</i>
+                        <span>Roles del Sistema</span>
+                    </a>
+                </li>
+            <li>
+                    <a href="{{route("perfil_director")}}">
+                        <i class="material-icons">account_circle</i>
+                        <span>Perfil de Operación</span>
+                    </a>
+                </li>
+                <li>
+                        <a href="{{route("proyectos_director")}}">
+                            <i class="material-icons">note_add</i>
+                            <span>Proyectos</span>
+                        </a>
+                    </li>
+            <li>
+                <a href="{{route("actividades_director")}}">
+                    <i class="material-icons">note_add</i>
+                    <span>Actividades del Proyecto</span>
                 </a>
             </li>
             <li>
-                <a href="{{route("proyectos")}}">
-                    <i class="material-icons">note_add</i>
-                    <span>Proyectos</span>
+                    <a href="{{route("requerimientos_director")}}">
+                        <i class="material-icons">note_add</i>
+                        <span>Requerimientos del Proyecto</span>
+                    </a>
+                </li>
+            <li>
+                <a href="{{route("decisiones_director")}}">
+                    <i class="material-icons">record_voice_over</i>
+                    <span>Decisiones</span>
                 </a>
             </li>
         </ul>

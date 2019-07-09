@@ -25,15 +25,9 @@
         <ul class="list">
             <li class="header">MENÚ DE NAVEGACIÓN</li>
             <li>
-                <a href="{{route("inicio_administrador")}}">
+                <a href="{{route("inicio_perfil_operacion")}}">
                     <i class="material-icons">home</i>
                     <span>Inicio</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("director_administrador")}}">
-                    <i class="material-icons">text_fields</i>
-                    <span>Director de Proyectos</span>
                 </a>
             </li>
         </ul>
