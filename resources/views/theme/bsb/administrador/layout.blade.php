@@ -84,11 +84,6 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @if (session()->get('Rol_Nombre') == 'Administrador')
-            {{route('inicio_administrador')}}
-        @else
-            {{route('inicio_director')}}
-        @endif
         @include("theme.bsb.administrador.menu")
     </section>
 

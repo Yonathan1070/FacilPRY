@@ -41,9 +41,10 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        if(Auth::user()->role->RLS_Nombre == 'Administrador'){
+        $rol = Auth::user()->roles()->get();
+        if($rol[0]['id']=='1'){
             return '/administrador';
-        }else{
+        }else if($rol[0]['id']=='2'){
             return '/director';
         }
     }
