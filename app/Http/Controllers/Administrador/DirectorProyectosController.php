@@ -14,7 +14,7 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
-        return view('administrador.director');
+        return view('administrador.director.listar');
     }
 
     /**

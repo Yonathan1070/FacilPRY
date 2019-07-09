@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,18 +12,18 @@
 |
 */
 
-//Enrutamiento Usuario General
-Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
-    Route::get('', 'InicioController@index')->name('inicio');
-    Route::get('iniciar-sesion', 'LoginController@index')->name('login');
-    Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
-    Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');
-});
-
 //Enrutamiento Administrador
 Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'middleware' => ['auth', 'administrador']], function () {
     Route::get('', 'InicioController@index')->name('inicio_administrador');
-    Route::get('director-proyectos', 'DirectorProyectosController@index')->name('director_administrador');
+    Route::group(['prefix' => 'decisiones'], function () {
+        Route::get('', 'DecisionesController@index')->name('decisiones_administrador'); 
+    });
+    Route::group(['prefix' => 'director-proyectos'], function () {
+        Route::get('', 'DirectorProyectosController@index')->name('director_administrador'); 
+    });
+    Route::group(['prefix' => 'roles'], function () {
+        Route::get('', 'RolesController@index')->name('roles_administrador'); 
+    });
 });
 
 //Enrutamiento Cliente
@@ -33,6 +34,18 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
 //Enrutamiento Director de Proyectos
 Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
     Route::get('', 'InicioController@index')->name('inicio_director');
+    Route::group(['prefix' => 'actividades'], function () {
+        Route::get('', 'ActividadesController@index')->name('actividades');
+    });
+    Route::group(['prefix' => 'decisiones'], function () {
+        Route::get('', 'DecisionesController@index')->name('roles');
+    });
+    Route::group(['prefix' => 'perfil-operacion'], function () {
+        Route::get('', 'PerfilOperacionController@index')->name('roles');
+    });
+    Route::group(['prefix' => 'requerimientos'], function () {
+        Route::get('', 'RequerimientosController@index')->name('roles');
+    });
     //Enrutamiento CRUD Roles
     Route::Group(['prefix' => 'roles'], function () {
         Route::get('', 'RolesController@index')->name('roles');
@@ -56,6 +69,14 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
 // Enrutamiento Area de Finanzas
 Route::group(['prefix' => 'finanzas', 'namespace' => 'Finanzas', 'middleware' => ['auth', 'finanzas']], function () {
     Route::get('', 'InicioController@index')->name('inicio_finanzas');
+});
+
+//Enrutamiento Usuario General
+Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
+    Route::get('', 'InicioController@index')->name('inicio');
+    Route::get('iniciar-sesion', 'LoginController@index')->name('login');
+    Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
+    Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');
 });
 
 //Enrutamiento Perfil de Operacion
