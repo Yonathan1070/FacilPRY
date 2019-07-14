@@ -24,8 +24,11 @@
     <!-- Custom Css -->
     <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
 
+    <link href="{{asset("assets/css/custom.css")}}" rel="stylesheet">
+
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     @yield('styles')
 </head>
@@ -99,6 +102,12 @@
 
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
+
+    <script src="{{asset("assets/js/funciones.js")}}"></script>
+    <script src="{{asset("assets/js/scripts.js")}}"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     @yield('scripts')
 </body>

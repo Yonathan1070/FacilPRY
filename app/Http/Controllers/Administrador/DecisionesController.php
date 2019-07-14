@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Administrador;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Decisiones;
+use App\Http\Requests\ValidacionDecision;
 
 class DecisionesController extends Controller
 {
@@ -14,7 +16,8 @@ class DecisionesController extends Controller
      */
     public function index()
     {
-        return view('administrador.decisiones.listar');
+        $decisiones = Decisiones::orderBy('id')->get();
+        return view('administrador.decisiones.listar', compact('decisiones'));
     }
 
     /**
@@ -22,9 +25,9 @@ class DecisionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function crear()
     {
-        //
+        return view('administrador.decisiones.crear');
     }
 
     /**
@@ -33,20 +36,10 @@ class DecisionesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function guardar(ValidacionDecision $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        Decisiones::create($request->all());
+        return redirect('administrador/decisiones')->with('mensaje', 'Decisión creada con exito');
     }
 
     /**
@@ -55,9 +48,10 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editar($id)
     {
-        //
+        $decision = Decisiones::findOrFail($id);
+        return view('administrador.decisiones.editar', compact('decision'));
     }
 
     /**
@@ -67,9 +61,10 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actualizar(ValidacionDecision $request, $id)
     {
-        //
+        Decisiones::findOrFail($id)->update($request->all());
+        return redirect('administrador/decisiones')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -78,8 +73,13 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar(Request $request, $id)
     {
-        //
+        try{
+            Decisiones::destroy($id);
+            return redirect('administrador/decisiones')->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect('administrador/decisiones')->withErrors(['La Decision está siendo usada por otro recurso.']);
+        }
     }
 }

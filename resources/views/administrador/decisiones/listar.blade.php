@@ -3,7 +3,7 @@
 Crud Desiciones
 @endsection
 @section("scripts")
-    <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
+<script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -15,9 +15,54 @@ Crud Desiciones
                     <h2>
                         DECISIONES
                     </h2>
+                    <ul class="header-dropdown" style="top:10px;">
+                        <li class="dropdown">
+                            <a class="btn btn-success waves-effect" href="{{route('crear_decision_administrador')}}"><i
+                                    class="material-icons" style="color:white;">add</i> Nueva Desición</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="body">
-                    Decisiones
+                <div class="body table-responsive">
+                    @if (count($decisiones)<=0) <div class="alert alert-warning">
+                        <strong>Advertencia!</strong> El sistema no cuenta con Decisiones agregadas
+                        <a href="{{route('crear_decision_administrador')}}" class="alert-link">Clic aquí para
+                            agregar!</a>.
+                        </div>
+                    @else
+                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Rango de Calificación</th>
+                                    <th class="width70"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($decisiones as $decision)
+                                <tr>
+                                    <td>{{$decision->DCS_Nombre_Decision}}</td>
+                                    <td>{{$decision->DCS_Descripcion_Decision}}</td>
+                                    <td>{{$decision->DCS_Rango_Inicio_Decision.' - '.$decision->DCS_Rango_Fin_Decision}}</td>
+                                    <td>
+                                        <a href="{{route('editar_decision_administrador', ['id'=>$decision->id])}}"
+                                            class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                        </a>
+                                        <form action="{{route('eliminar_decision_administrador', ['id'=>$decision->id])}}"
+                                            class="d-inline" method="POST">
+                                            @csrf @method("delete")
+                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
+                                                title="Eliminar este registro">
+                                                <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

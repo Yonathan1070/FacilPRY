@@ -15,6 +15,7 @@ class CrearTablaRoles extends Migration
     {
         Schema::create('TBL_Roles', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('RLS_Rol_Id')->default(0);
             $table->string('RLS_Nombre', 30)->unique();
             $table->text('RLS_Descripcion');
             $table->timestamps();

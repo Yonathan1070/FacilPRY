@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrador;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Roles;
 
 class RolesController extends Controller
 {
@@ -14,7 +15,8 @@ class RolesController extends Controller
      */
     public function index()
     {
-        return view('administrador.roles.listar');
+        $roles = Roles::orderBy('id')->get();
+        return view('administrador.roles.listar', compact('roles'));
     }
 
     /**
@@ -22,9 +24,9 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function crear()
     {
-        //
+        return view('administrador.roles.crear');
     }
 
     /**
@@ -33,9 +35,14 @@ class RolesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function guardar(Request $request)
     {
-        //
+        Roles::create([
+            'RLS_Rol_Id' => 6,
+            'RLS_Nombre' => $request->RLS_Nombre,
+            'RLS_Descripcion' => $request->RLS_Descripcion
+        ]);
+        return redirect('administrador/roles')->with('mensaje', 'Rol creado con exito');
     }
 
     /**
@@ -55,9 +62,12 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editar($id)
     {
-        //
+        $rol = Roles::findOrFail($id);
+        if($rol->RLS_Rol_Id == 0)
+            return redirect('administrador/roles')->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
+        return view('administrador.roles.editar', compact('rol'));
     }
 
     /**
@@ -67,9 +77,10 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actualizar(Request $request, $id)
     {
-        //
+        Roles::findOrFail($id)->update($request->all());
+        return redirect('administrador/roles')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
@@ -78,8 +89,16 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar($id)
     {
-        //
+        $rol = Roles::findOrFail($id);
+        if($rol->RLS_Rol_Id == 0)
+            return redirect('administrador/roles')->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
+        try{
+            Roles::destroy($id);
+            return redirect('administrador/roles')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect('administrador/roles')->withErrors(['El Rol está siendo usada por otro recurso.']);
+        }
     }
 }

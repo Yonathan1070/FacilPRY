@@ -16,7 +16,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Roles::orderBy('id')->get();
+        $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
         return view('director.roles.listar', compact('roles'));
     }
 
@@ -38,7 +38,11 @@ class RolesController extends Controller
      */
     public function guardar(ValidacionRol $request)
     {
-        Roles::create($request->all());
+        Roles::create([
+            'RLS_Rol_Id' => 6,
+            'RLS_Nombre' => $request->RLS_Nombre,
+            'RLS_Descripcion' => $request->RLS_Descripcion
+        ]);
         return redirect('director/roles')->with('mensaje', 'Rol creado con exito');
     }
 
@@ -86,14 +90,11 @@ class RolesController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
-        if ($request->ajax()) {
-            if (Roles::destroy($id)) {
-                return response()->json(['mensaje' => 'ok']);
-            } else {
-                return response()->json(['mensaje' => 'ng']);
-            }
-        } else {
-            abort(404);
+        try{
+            Roles::destroy($id);
+            return redirect('director/roles')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect('director/roles')->withErrors(['El Rol está siendo usada por otro recurso.']);
         }
     }
 }

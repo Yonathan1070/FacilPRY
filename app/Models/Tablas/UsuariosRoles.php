@@ -10,5 +10,4 @@ class UsuariosRoles extends Model
     protected $fillable = ['USR_RLS_Rol_Id',
         'USR_RLS_Usuario_Id',
         'USR_RLS_Estado'];
-    protected $timestamps = false;
 }

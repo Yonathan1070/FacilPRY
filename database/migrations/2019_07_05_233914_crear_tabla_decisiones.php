@@ -17,8 +17,8 @@ class CrearTablaDecisiones extends Migration
             $table->bigIncrements('id');
             $table->string('DCS_Nombre_Decision', 60);
             $table->text('DCS_Descripcion_Decision');
-            $table->unsignedBigInteger('DCS_Calificacion_Id');
-            $table->foreign('DCS_Calificacion_Id', 'FK_Decisiones_Calificaciones')->references('id')->on('TBL_Calificaciones')->onDelete('restrict')->onUpdate('restrict');
+            $table->integer('DCS_Rango_Inicio_Decision');
+            $table->integer('DCS_Rango_Fin_Decision');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

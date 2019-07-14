@@ -38,7 +38,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("director_administrador")}}">
+                <a href="{{route("directores_administrador")}}">
                     <i class="material-icons">assessment</i>
                     <span>Director de Proyectos</span>
                 </a>

@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Administrador;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Usuarios;
+use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\UsuariosRoles;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class DirectorProyectosController extends Controller
 {
@@ -14,7 +19,16 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
-        return view('administrador.director.listar');
+        $directores = DB::table('TBL_Usuarios')
+            ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
+            ->select('TBL_Usuarios.*', 'TBL_Usuarios_Roles.*', 'TBL_Roles.*')
+            ->where('TBL_Roles.Id', '=', '2')
+            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
+            ->orderBy('TBL_Usuarios.id', 'ASC')
+            ->get();
+        //dd($directores);
+        return view('administrador.director.listar', compact('directores'));
     }
 
     /**
@@ -22,9 +36,9 @@ class DirectorProyectosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function crear()
     {
-        //
+        return view('administrador.director.crear');
     }
 
     /**
@@ -33,20 +47,27 @@ class DirectorProyectosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function guardar(ValidacionUsuario $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        Usuarios::create([
+            'USR_Tipo_Documento' => $request['USR_Tipo_Documento'],
+            'USR_Documento' => $request['USR_Documento'],
+            'USR_Nombre' => $request['USR_Nombre'],
+            'USR_Apellido' => $request['USR_Apellido'],
+            'USR_Fecha_Nacimiento' => $request['USR_Fecha_Nacimiento'],
+            'USR_Direccion_Residencia' => $request['USR_Direccion_Residencia'],
+            'USR_Telefono' => $request['USR_Telefono'],
+            'USR_Correo' => $request['USR_Correo'],
+            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
+            'password' => bcrypt($request['password']),
+        ]);
+        $director = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
+        UsuariosRoles::create([
+            'USR_RLS_Rol_Id' => 2,
+            'USR_RLS_Usuario_Id' => $director->id,
+            'USR_RLS_Estado' => 1
+        ]);
+        return redirect('administrador/director-proyectos')->with('mensaje', 'Director de Proyectos agregado con exito');
     }
 
     /**
@@ -55,9 +76,10 @@ class DirectorProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editar($id)
     {
-        //
+        $director = Usuarios::findOrFail($id);
+        return view('administrador.director.editar', compact('director'));
     }
 
     /**
@@ -67,9 +89,19 @@ class DirectorProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actualizar(ValidacionUsuario $request, $id)
     {
-        //
+        $director = Usuarios::findOrFail($id)->update([
+            'USR_Documento' => $request['USR_Documento'],
+            'USR_Nombre' => $request['USR_Nombre'],
+            'USR_Apellido' => $request['USR_Apellido'],
+            'USR_Fecha_Nacimiento' => $request['USR_Fecha_Nacimiento'],
+            'USR_Direccion_Residencia' => $request['USR_Direccion_Residencia'],
+            'USR_Telefono' => $request['USR_Telefono'],
+            'USR_Correo' => $request['USR_Correo'],
+            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
+        ]);
+        return redirect('administrador/director-proyectos')->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 
     /**
@@ -78,8 +110,13 @@ class DirectorProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar(Request $request, $id)
     {
-        //
+        try{
+            Usuarios::destroy($id);
+            return redirect('administrador/director-proyectos')->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect('administrador/director-proyectos')->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
+        }
     }
 }

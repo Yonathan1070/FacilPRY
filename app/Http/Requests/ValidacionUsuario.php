@@ -24,16 +24,14 @@ class ValidacionUsuario extends FormRequest
     public function rules()
     {
         return [
-            'USR_Tipo_Documento' => 'required|max:30',
-            'USR_Documento' => 'required|max:50|unique:TBL_Roles,RLS_Nombre,' . $this->route('USR_Documento'),
+            'USR_Documento' => 'required|max:50|unique:TBL_Usuarios,USR_Documento,' . $this->route('id'),
             'USR_Nombre' => 'required|max:50',
             'USR_Apellido' => 'required|max:50',
-            'USR_Fecha_Nacimiento' => 'required',
+            'USR_Fecha_Nacimiento' => 'required|date|before:tomorrow',
             'USR_Direccion_Residencia' => 'required|max:100',
             'USR_Telefono' => 'required|max:20',
-            'USR_Correo' => 'required|max:100',
-            'USR_Nombre_Usuario' => 'required|max:15',
-            'USR_Clave_Usuario' => 'required|max:15',
+            'USR_Correo' => 'required|max:100|unique:TBL_Usuarios,USR_Correo,' . $this->route('id'),
+            'USR_Nombre_Usuario' => 'required|max:15|unique:TBL_Usuarios,USR_Nombre_Usuario,' . $this->route('id'),
         ];
     }
 }
