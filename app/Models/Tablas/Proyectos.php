@@ -9,10 +9,7 @@ class Proyectos extends Model
     protected $table = "TBL_Proyectos";
     protected $fillable = ['PRY_Nombre_Proyecto',
         'PRY_Descripcion_Proyecto',
-        'PRY_Usuario_Id',
-        'PRY_Estado_Proyecto',
         'PRY_Valor_Proyecto',
-        'PRY_Duracion_Proyecto',
         'PRY_Empresa_Id'];
     protected $guarded = ['id'];
 }

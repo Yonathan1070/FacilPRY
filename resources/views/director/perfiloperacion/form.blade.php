@@ -164,7 +164,19 @@
         </div>
     </div>
     <div class="row clearfix">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <select name="USR_RLS_Rol_Id" id="USR_RLS_Rol_Id" class="form-control" required>
+                        <option value="">--Seleccione un Rol--</option>
+                        @foreach ($roles as $rol)
+                            <option value="{{$rol->id}}"> {{$rol->RLS_Nombre}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="USR_Nombre_Usuario" id="USR_Nombre_Usuario"
@@ -173,7 +185,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="password" class="form-control" name="password" id="password" maxlength="15" required>

@@ -17,7 +17,7 @@ Crud Proyectos
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
+                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto_director')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
                         </li>
                     </ul>
@@ -28,8 +28,7 @@ Crud Proyectos
                             <tr>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>Estado</th>
-                                <th>Duración</th>
+                                <th>Valor</th>
                                 <th>Empresa</th>
                                 <th class="width70"></th>
                             </tr>
@@ -39,8 +38,7 @@ Crud Proyectos
                             <tr>
                                 <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
                                 <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
-                                <td>{{$proyecto->PRY_Estado_Proyecto}}</td>
-                                <td>{{$proyecto->PRY_Duracion_Proyecto}}</td>
+                                <td>{{$proyecto->PRY_Valor_Proyecto}}</td>
                                 <td>{{$proyecto->PRY_Empresa_Proyecto}}</td>
                                 <td>
                                     <a href="{{route('editar_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">

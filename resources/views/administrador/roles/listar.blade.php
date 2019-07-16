@@ -16,7 +16,7 @@ Crud Roles
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-success waves-effect" href="{{route('crear_rol_administrador')}}"><i
-                                    class="material-icons" style="color:white;">add</i> Nuevo Director de Proyectos</a>
+                                    class="material-icons" style="color:white;">add</i> Nuevo Rol</a>
                         </li>
                     </ul>
                 </div>

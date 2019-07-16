@@ -6,7 +6,8 @@
             <img src="{{asset("assets/bsb/images/user.png")}}" width="48" height="48" alt="User" />
         </div>
         <div class="info-container">
-            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session()->get('Usuario_Nombre_Completo')}}</div>
+            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{session()->get('Usuario_Nombre_Completo')}}</div>
             <div class="email">{{session()->get('Usuario_Correo')}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
@@ -31,23 +32,23 @@
                 </a>
             </li>
             <li>
-                    <a href="{{route("roles_director")}}">
-                        <i class="material-icons">accessibility</i>
-                        <span>Roles del Sistema</span>
-                    </a>
-                </li>
+                <a href="{{route("roles_director")}}">
+                    <i class="material-icons">accessibility</i>
+                    <span>Roles del Sistema</span>
+                </a>
+            </li>
             <li>
-                    <a href="{{route("perfil_director")}}">
-                        <i class="material-icons">account_circle</i>
-                        <span>Perfil de Operación</span>
-                    </a>
-                </li>
-                <li>
-                        <a href="{{route("proyectos_director")}}">
-                            <i class="material-icons">note_add</i>
-                            <span>Proyectos</span>
-                        </a>
-                    </li>
+                <a href="{{route("perfil_director")}}">
+                    <i class="material-icons">account_circle</i>
+                    <span>Perfil de Operación</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route("proyectos_director")}}">
+                    <i class="material-icons">note_add</i>
+                    <span>Proyectos</span>
+                </a>
+            </li>
             <li>
                 <a href="{{route("actividades_director")}}">
                     <i class="material-icons">note_add</i>
@@ -55,11 +56,11 @@
                 </a>
             </li>
             <li>
-                    <a href="{{route("requerimientos_director")}}">
-                        <i class="material-icons">note_add</i>
-                        <span>Requerimientos del Proyecto</span>
-                    </a>
-                </li>
+                <a href="{{route("requerimientos_director")}}">
+                    <i class="material-icons">note_add</i>
+                    <span>Requerimientos del Proyecto</span>
+                </a>
+            </li>
             <li>
                 <a href="{{route("decisiones_director")}}">
                     <i class="material-icons">record_voice_over</i>

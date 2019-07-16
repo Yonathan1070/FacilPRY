@@ -14,16 +14,8 @@
 </div>
 <div class="form-group form-float">
     <div class="form-line">
-        <label style="font-weight: normal">Estado del Proyecto</label>
-        <select name="PRY_Estado_Proyecto" id="PRY_Estado_Proyecto" class="form-control" required>
-            <option value="">--Seleccione una Opcion--</option>
-        </select>
-    </div>
-</div>
-<div class="form-group form-float">
-    <div class="form-line">
         <input type="number" class="form-control" name="PRY_Valor_Proyecto" id="PRY_Valor_Proyecto"
-            value="{{old('PRY_Valor_Proyecto', $proyecto->PRY_Valor_Proyecto ?? '')}}" maxlength="30" required>
+            value="{{old('PRY_Valor_Proyecto', $proyecto->PRY_Valor_Proyecto ?? '')}}" maxlength="30" min="0" required>
         <label class="form-label">Costo del Proyecto</label>
     </div>
 </div>

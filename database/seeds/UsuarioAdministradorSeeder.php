@@ -131,28 +131,9 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_RLS_Estado' => 1
         ]);
 
-        DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento' => 'Cedula',
-            'USR_Documento' => '123456',
-            'USR_Nombre' => 'Qwerty',
-            'USR_Apellido'  => 'Qwerty',
-            'USR_Fecha_Nacimiento' => '1989/06/03',
-            'USR_Direccion_Residencia' => 'Calle 5 # 13-18',
-            'USR_Telefono' => '9876543210',
-            'USR_Correo' => 'qerty@hotmail.com',
-            'USR_Nombre_Usuario' => 'qwerty',
-            'password' => bcrypt('qwerty')
-        ]);
-
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Perfil de Operación',
-            'RLS_Descripcion' => 'El distinto personal que labora en la compañía'
-        ]);
-
-        DB::table('TBL_Usuarios_Roles')->insert([
-            'USR_RLS_Rol_Id' => 6,
-            'USR_RLS_Usuario_Id' => 6,
-            'USR_RLS_Estado' => 1
+            'RLS_Descripcion' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.'
         ]);
     }
 }

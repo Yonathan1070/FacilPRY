@@ -92,11 +92,11 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
     //Enrutamiento CRUD Proyectos
     Route::Group(['prefix' => 'proyectos'], function () {
         Route::get('', 'ProyectosController@index')->name('proyectos_director');
-        Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto');
-        Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto');
-        Route::get('{id}/editar', 'ProyectosController@editar')->name('editar_proyecto');
-        Route::put('{id}', 'ProyectosController@actualizar')->name('actualizar_proyecto');
-        Route::delete('{id}', 'ProyectosController@eliminar')->name('eliminar_proyecto');
+        Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
+        Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
+        Route::get('{id}/editar', 'ProyectosController@editar')->name('editar_proyecto_director');
+        Route::put('{id}', 'ProyectosController@actualizar')->name('actualizar_proyecto_director');
+        Route::delete('{id}', 'ProyectosController@eliminar')->name('eliminar_proyecto_director');
     });
 });
 

@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
+use App\Models\Tablas\Roles;
 
 class PerfilOperacionController extends Controller
 {
@@ -21,10 +22,10 @@ class PerfilOperacionController extends Controller
         $perfilesOperacion = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
-            ->select('TBL_Usuarios.*')
-            ->where('TBL_Roles.Id', '=', '6')
+            ->select('TBL_Usuarios.*', 'TBL_Roles.RLS_Nombre')
+            ->where('TBL_Roles.RLS_Rol_Id', '=', '6')
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
-            ->orderBy('TBL_Usuarios.id', 'ASC')
+            ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
             ->get();
         return view('director.perfiloperacion.listar', compact('perfilesOperacion'));
     }
@@ -36,7 +37,8 @@ class PerfilOperacionController extends Controller
      */
     public function crear()
     {
-        return view('director.perfiloperacion.crear');
+        $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
+        return view('director.perfiloperacion.crear', compact('roles'));
     }
 
     /**
@@ -59,10 +61,10 @@ class PerfilOperacionController extends Controller
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['password']),
         ]);
-        $director = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
+        $perfil = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
         UsuariosRoles::create([
-            'USR_RLS_Rol_Id' => 6,
-            'USR_RLS_Usuario_Id' => $director->id,
+            'USR_RLS_Rol_Id' => $request['USR_RLS_Rol_Id'],
+            'USR_RLS_Usuario_Id' => $perfil->id,
             'USR_RLS_Estado' => 1
         ]);
         return redirect('director/perfil-operacion')->with('mensaje', 'Perfil de Operación agregado con exito');

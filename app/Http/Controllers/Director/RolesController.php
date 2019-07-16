@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionRol;
+use Illuminate\Database\QueryException;
 
 class RolesController extends Controller
 {

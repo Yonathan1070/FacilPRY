@@ -35,6 +35,7 @@
                                         <th>Telefono</th>
                                         <th>Correo Electrónico</th>
                                         <th>Nombre de Usuario</th>
+                                        <th>Tipo de Usuario</th>
                                         <th class="width70"></th>
                                     </tr>
                                 </thead>
@@ -46,6 +47,7 @@
                                             <td>{{$perfilOperacion->USR_Telefono}}</td>
                                             <td>{{$perfilOperacion->USR_Correo}}</td>
                                             <td>{{$perfilOperacion->USR_Nombre_Usuario}}</td>
+                                            <td>{{$perfilOperacion->RLS_Nombre}}</td>
                                             <td>
                                                 <a href="{{route('editar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                     <i class="material-icons text-info" style="font-size: 17px;">edit</i>
