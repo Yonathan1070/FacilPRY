@@ -88,6 +88,16 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
     Route::group(['prefix' => 'requerimientos'], function () {
         Route::get('', 'RequerimientosController@index')->name('requerimientos_director');
     });
+
+    //Erutamiento CRUD Clientes
+    Route::group(['prefix' => 'clientes'], function () {
+        Route::get('', 'ClientesController@index')->name('clientes_director');
+        Route::get('crear', 'ClientesController@crear')->name('crear_cliente_director');
+        Route::post('crear', 'ClientesController@guardar')->name('guardar_cliente_director');
+        Route::get('{id}/editar', 'ClientesController@editar')->name('editar_cliente_director');
+        Route::put('{id}', 'ClientesController@actualizar')->name('actualizar_cliente_director');
+        Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente_director');
+    });
     
     //Enrutamiento CRUD Proyectos
     Route::Group(['prefix' => 'proyectos'], function () {

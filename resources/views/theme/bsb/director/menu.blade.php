@@ -44,6 +44,12 @@
                 </a>
             </li>
             <li>
+                <a href="{{route("clientes_director")}}">
+                    <i class="material-icons">account_circle</i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{route("proyectos_director")}}">
                     <i class="material-icons">note_add</i>
                     <span>Proyectos</span>
