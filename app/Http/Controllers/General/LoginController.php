@@ -35,7 +35,7 @@ class LoginController extends Controller
         }else{
             $this->guard()->logout();
             $request->session()->invalidate();
-            return redirect('iniciar-sesion')->withErrors(['error'=>'El Usuario no tiene un rol activo.']);
+            return redirect()->route('login')->withErrors(['error'=>'El Usuario no tiene un rol activo.']);
         }
     }
 
@@ -63,9 +63,12 @@ class LoginController extends Controller
                 return '/cliente';
                 break;
 
-            case '6':
-                return '/perfil-operacion';
-                break;
+            default:
+                switch ($rol[0]['RLS_Rol_Id']) {
+                    case '6':
+                        return '/perfil-operacion';
+                        break;
+                }
         }
     }
 }

@@ -1,0 +1,23 @@
+String token = t.muestraContenido();
+                if(token.equals("-")){
+                    
+                }else{
+                    String desencriptado=t.desencriptar(token);
+                    String[] des = desencriptado.split(",");
+                    DateFormat sdfHora = new SimpleDateFormat("HH:mm:ss");
+                    DateFormat sdfMinutos = new SimpleDateFormat("m");
+                    
+                    Date hora = new Date(), diferencia=new Date(), actual = new Date();
+                    try{
+                        diferencia = getDiferencia(sdfHora.parse(des[1]), sdfHora.parse(sdfHora.format(actual)));
+                    }catch(ParseException pe){
+                        
+                    }
+                    if(!desencriptado.isEmpty()
+                            && Integer.parseInt(sdfMinutos.format(diferencia))<=3){
+                        filtro.add(lista);
+                    }else{
+                        t.generarToken(usuario);
+                        getLogin(usuario, clave);
+                    }
+                }

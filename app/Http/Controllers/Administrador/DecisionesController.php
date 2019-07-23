@@ -39,7 +39,7 @@ class DecisionesController extends Controller
     public function guardar(ValidacionDecision $request)
     {
         Decisiones::create($request->all());
-        return redirect('administrador/decisiones')->with('mensaje', 'Decisión creada con exito');
+        return redirect()->route('crear_decision_administrador')->with('mensaje', 'Decisión creada con exito');
     }
 
     /**
@@ -64,7 +64,7 @@ class DecisionesController extends Controller
     public function actualizar(ValidacionDecision $request, $id)
     {
         Decisiones::findOrFail($id)->update($request->all());
-        return redirect('administrador/decisiones')->with('mensaje', 'Decisión actualizada con exito');
+        return redirect()->route('decisiones_administrador')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -77,9 +77,9 @@ class DecisionesController extends Controller
     {
         try{
             Decisiones::destroy($id);
-            return redirect('administrador/decisiones')->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
+            return redirect()->route('decisiones_administrador')->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect('administrador/decisiones')->withErrors(['La Decision está siendo usada por otro recurso.']);
+            return redirect()->route('decisiones_administrador')->withErrors(['La Decision está siendo usada por otro recurso.']);
         }
     }
 }

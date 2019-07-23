@@ -56,18 +56,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("actividades_director")}}">
-                    <i class="material-icons">note_add</i>
-                    <span>Actividades del Proyecto</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("requerimientos_director")}}">
-                    <i class="material-icons">note_add</i>
-                    <span>Requerimientos del Proyecto</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{route("decisiones_director")}}">
                     <i class="material-icons">record_voice_over</i>
                     <span>Decisiones</span>

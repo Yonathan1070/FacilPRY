@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.director.layout')
 @section('titulo')
 Crud Decisiones
 @endsection
@@ -7,24 +7,25 @@ Crud Decisiones
     <!-- Basic Validation -->
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                @include('includes.form-error')
+            @include('includes.form-exito')
+            @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    <h2>EDITAR DECISIÓN</h2>
+                    <h2>CREAR DECISIÓN</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('decisiones_administrador')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('decisiones_director')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_decision_administrador', ['id' => $decision->id])}}" method="POST">
-                        @csrf @method("put")
-                        @include('administrador.decisiones.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('decisiones_administrador')}}">CANCELAR</a>
-                        <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
+                    <form id="form_validation" action="{{route('guardar_decision_director')}}" method="POST">
+                        @csrf
+                        @include('director.decisiones.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('decisiones_director')}}">CANCELAR</a>
+                        <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>
             </div>

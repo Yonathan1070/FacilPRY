@@ -10,6 +10,7 @@ Crud Proyectos
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             @include('includes.form-exito')
+            @include('includes.form-error')
             <div class="card">
                 <div class="header">
                     <h2>
@@ -23,38 +24,41 @@ Crud Proyectos
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    <table class="table table-striped table-bordered table-hover" id="tabla-data">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Valor</th>
-                                <th>Empresa</th>
-                                <th class="width70"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($proyectos as $proyecto)
-                            <tr>
-                                <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
-                                <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
-                                <td>{{$proyecto->PRY_Valor_Proyecto}}</td>
-                                <td>{{$proyecto->PRY_Empresa_Proyecto}}</td>
-                                <td>
-                                    <a href="{{route('editar_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                        <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                    </a>
-                                    <form action="{{route('eliminar_proyecto', ['id'=>$proyecto->id])}}" class="d-inline form-eliminar" method="POST">
-                                        @csrf @method("delete")
-                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
-                                            <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    @if (count($proyectos)<=0)
+                    <div class="alert alert-warning">
+                        <strong>Advertencia!</strong> El sistema no cuenta con Proyectos registrados
+                        <a href="{{route('crear_proyecto_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                    @else
+                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Valor</th>
+                                    <th>Cliente</th>
+                                    <th class="width70"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($proyectos as $proyecto)
+                                    <tr>
+                                        <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
+                                        <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
+                                        <td>{{$proyecto->PRY_Valor_Proyecto}}</td>
+                                        <td>{{$proyecto->USR_Nombre.' '.$proyecto->USR_Apellido}}</td>
+                                        <td>
+                                            <a href="{{route('requerimientos_director', ['idp'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
+                                                <i class="material-icons text-info" style="font-size: 17px;">description</i>
+                                            </a>
+                                            <a href="{{route('actividades_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">
+                                                <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

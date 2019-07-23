@@ -66,12 +66,22 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
 
     //Enrutamiento CRUD Actividades
     Route::group(['prefix' => 'actividades'], function () {
-        Route::get('', 'ActividadesController@index')->name('actividades_director');
+        Route::get('{idP}', 'ActividadesController@index')->name('actividades_director');
+        Route::get('{idP}/crear', 'ActividadesController@crear')->name('crear_actividad_director');
+        Route::post('crear', 'ActividadesController@guardar')->name('guardar_actividad_director');
+        Route::get('{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad_director');
+        Route::put('{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad_director');
+        Route::delete('{idP}-{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad_director');
     });
 
     //Erutamiento CRUD Decisiones
     Route::group(['prefix' => 'decisiones'], function () {
         Route::get('', 'DecisionesController@index')->name('decisiones_director');
+        Route::get('crear-desicion', 'DecisionesController@crear')->name('crear_decision_director');
+        Route::post('crear-decision', 'DecisionesController@guardar')->name('guardar_decision_director');
+        Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_director');
+        Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_director');
+        Route::delete('{id}', 'DecisionesController@eliminar')->name('eliminar_decision_director');
     });
 
     //Erutamiento CRUD Perfil de Operación
@@ -86,7 +96,12 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
 
     //Erutamiento CRUD Requerimientos
     Route::group(['prefix' => 'requerimientos'], function () {
-        Route::get('', 'RequerimientosController@index')->name('requerimientos_director');
+        Route::get('{idP}', 'RequerimientosController@index')->name('requerimientos_director');
+        Route::get('{idP}/crear', 'RequerimientosController@crear')->name('crear_requerimiento_director');
+        Route::post('crear', 'RequerimientosController@guardar')->name('guardar_requerimiento_director');
+        Route::get('{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento_director');
+        Route::put('{idP}-{idR}', 'RequerimientosController@actualizar')->name('actualizar_requerimiento_director');
+        Route::delete('{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento_director');
     });
 
     //Erutamiento CRUD Clientes
@@ -104,9 +119,6 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('', 'ProyectosController@index')->name('proyectos_director');
         Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
         Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
-        Route::get('{id}/editar', 'ProyectosController@editar')->name('editar_proyecto_director');
-        Route::put('{id}', 'ProyectosController@actualizar')->name('actualizar_proyecto_director');
-        Route::delete('{id}', 'ProyectosController@eliminar')->name('eliminar_proyecto_director');
     });
 });
 

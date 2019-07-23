@@ -44,7 +44,7 @@ class RolesController extends Controller
             'RLS_Nombre' => $request->RLS_Nombre,
             'RLS_Descripcion' => $request->RLS_Descripcion
         ]);
-        return redirect('director/roles')->with('mensaje', 'Rol creado con exito');
+        return redirect()->route('crear_rol_director')->with('mensaje', 'Rol creado con exito');
     }
 
     /**
@@ -80,7 +80,7 @@ class RolesController extends Controller
     public function actualizar(ValidacionRol $request, $id)
     {
         Roles::findOrFail($id)->update($request->all());
-        return redirect('director/roles')->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->route('roles_director')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
@@ -93,9 +93,9 @@ class RolesController extends Controller
     {
         try{
             Roles::destroy($id);
-            return redirect('director/roles')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
+            return redirect()->route('roles_director')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect('director/roles')->withErrors(['El Rol está siendo usada por otro recurso.']);
+            return redirect()->route('roles_director')->withErrors(['El Rol está siendo usada por otro recurso.']);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Director;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Proyectos;
+use Illuminate\Support\Facades\DB;
 
 class ProyectosController extends Controller
 {
@@ -15,7 +16,11 @@ class ProyectosController extends Controller
      */
     public function index()
     {
-        $proyectos = Proyectos::orderBy('id')->get();
+        $proyectos = DB::table('TBL_Usuarios')
+            ->join('TBL_Proyectos', 'TBL_Usuarios.id', '=', 'TBL_Proyectos.PRY_Cliente_Id')
+            ->select('TBL_Proyectos.*', 'TBL_Usuarios.USR_Nombre', 'TBL_Usuarios.USR_Apellido')
+            ->orderBy('TBL_Proyectos.Id', 'ASC')
+            ->get();
         return view('director.proyectos.listar', compact('proyectos'));
     }
 
@@ -26,7 +31,15 @@ class ProyectosController extends Controller
      */
     public function crear()
     {
-        return view('director.proyectos.crear');
+        $clientes = DB::table('TBL_Usuarios')
+            ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
+            ->select('TBL_Usuarios.*', 'TBL_Roles.RLS_Nombre')
+            ->where('TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', '5')
+            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
+            ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
+            ->get();
+        return view('director.proyectos.crear', compact('clientes'));
     }
 
     /**
@@ -37,7 +50,8 @@ class ProyectosController extends Controller
      */
     public function guardar(Request $request)
     {
-        //
+        Proyectos::create($request->all());
+        return redirect()->route('crear_proyecto_director')->with('mensaje', 'Proyecto agregado con exito');
     }
 
     /**

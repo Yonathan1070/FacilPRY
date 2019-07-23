@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Decisiones;
+use App\Http\Requests\ValidacionDecision;
 
 class DecisionesController extends Controller
 {
@@ -14,7 +16,8 @@ class DecisionesController extends Controller
      */
     public function index()
     {
-        return view('director.decisiones.listar');
+        $decisiones = Decisiones::orderBy('id')->get();
+        return view('director.decisiones.listar', compact('decisiones'));
     }
 
     /**
@@ -22,9 +25,9 @@ class DecisionesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function crear()
     {
-        //
+        return view('director.decisiones.crear');
     }
 
     /**
@@ -33,20 +36,13 @@ class DecisionesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function guardar(ValidacionDecision $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        if ($request['DCS_Rango_Inicio_Decision'] >= $request['DCS_Rango_Fin_Decision']) {
+            return redirect()->route('crear_decision_director')->withErrors('Digite un rango válido')->withInput();
+        }
+        Decisiones::create($request->all());
+        return redirect()->route('crear_decision_director')->with('mensaje', 'Decisión creada con exito');
     }
 
     /**
@@ -55,9 +51,10 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editar($id)
     {
-        //
+        $decision = Decisiones::findOrFail($id);
+        return view('director.decisiones.editar', compact('decision'));
     }
 
     /**
@@ -67,9 +64,13 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actualizar(ValidacionDecision $request, $id)
     {
-        //
+        if ($request['DCS_Rango_Inicio_Decision'] >= $request['DCS_Rango_Fin_Decision']) {
+            return redirect()->route('editar_decision_director')->withErrors('Digite un rango válido')->withInput();
+        }
+        Decisiones::findOrFail($id)->update($request->all());
+        return redirect()->route('decisiones_director')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -78,8 +79,13 @@ class DecisionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar(Request $request, $id)
     {
-        //
+        try{
+            Decisiones::destroy($id);
+            return redirect()->route('decisiones_director')->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect()->route('decisiones_director')->withErrors(['La Decision está siendo usada por otro recurso.']);
+        }
     }
 }

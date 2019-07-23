@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use App\Models\Tablas\Proyectos;
+use App\Models\Tablas\Requerimientos;
 
 class RequerimientosController extends Controller
 {
@@ -12,9 +15,15 @@ class RequerimientosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($idP)
     {
-        return view('director.requerimientos.listar');
+        $requerimientos = DB::table('TBL_Requerimientos')
+            ->join('TBL_Proyectos', 'TBL_Proyectos.Id', '=', 'TBL_Requerimientos.REQ_Proyecto_Id')
+            ->where('TBL_Requerimientos.REQ_Proyecto_Id', '=', $idP)
+            ->orderBy('TBL_Requerimientos.Id', 'ASC')
+            ->get();
+        $proyecto = Proyectos::findOrFail($idP)->first();
+        return view('director.requerimientos.listar', compact('requerimientos', 'proyecto'));
     }
 
     /**
@@ -22,9 +31,10 @@ class RequerimientosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function crear($idP)
     {
-        //
+        $proyecto = Proyectos::findOrFail($idP)->first();
+        return view('director.requerimientos.crear', compact('proyecto'));
     }
 
     /**
@@ -33,9 +43,10 @@ class RequerimientosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function guardar(Request $request)
     {
-        //
+        Requerimientos::create($request->all());
+        return redirect()->route('crear_requerimiento_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
     }
 
     /**
@@ -44,7 +55,7 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function mostrar($id)
     {
         //
     }
@@ -55,9 +66,11 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editar($idP, $idR)
     {
-        //
+        $proyecto = Proyectos::findOrFail($idP)->first();
+        $requerimiento = Requerimientos::findOrFail($idR)->first();
+        return view('director.requerimientos.editar', compact('proyecto', 'requerimiento'));
     }
 
     /**
@@ -67,9 +80,10 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actualizar(Request $request, $idR)
     {
-        //
+        Requerimientos::findOrFail($idR)->update($request->all());
+        return redirect()->route('requerimientos_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
     }
 
     /**
@@ -78,8 +92,13 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar($idP, $idR)
     {
-        //
+        try{
+            Requerimientos::destroy($idR);
+            return redirect()->route('requerimientos_director', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
+        }catch(QueryException $e){
+            return redirect()->route('requerimientos_director', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
+        }
     }
 }

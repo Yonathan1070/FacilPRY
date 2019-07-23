@@ -67,7 +67,7 @@ class DirectorProyectosController extends Controller
             'USR_RLS_Usuario_Id' => $director->id,
             'USR_RLS_Estado' => 1
         ]);
-        return redirect('administrador/director-proyectos')->with('mensaje', 'Director de Proyectos agregado con exito');
+        return redirect()->route('crear_director_administrador')->with('mensaje', 'Director de Proyectos agregado con exito');
     }
 
     /**
@@ -101,7 +101,7 @@ class DirectorProyectosController extends Controller
             'USR_Correo' => $request['USR_Correo'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
         ]);
-        return redirect('administrador/director-proyectos')->with('mensaje', 'Director de Proyectos actualizado con exito');
+        return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 
     /**
@@ -114,9 +114,9 @@ class DirectorProyectosController extends Controller
     {
         try{
             Usuarios::destroy($id);
-            return redirect('administrador/director-proyectos')->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
+            return redirect()->route('directores_administrador')->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect('administrador/director-proyectos')->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
+            return redirect()->route('directores_administrador')->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
         }
     }
 }

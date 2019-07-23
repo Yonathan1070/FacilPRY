@@ -10,6 +10,6 @@ class Proyectos extends Model
     protected $fillable = ['PRY_Nombre_Proyecto',
         'PRY_Descripcion_Proyecto',
         'PRY_Valor_Proyecto',
-        'PRY_Empresa_Id'];
+        'PRY_Cliente_Id'];
     protected $guarded = ['id'];
 }

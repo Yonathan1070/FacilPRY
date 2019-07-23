@@ -42,7 +42,7 @@ class RolesController extends Controller
             'RLS_Nombre' => $request->RLS_Nombre,
             'RLS_Descripcion' => $request->RLS_Descripcion
         ]);
-        return redirect('administrador/roles')->with('mensaje', 'Rol creado con exito');
+        return redirect()->route('crear_rol_administrador')->with('mensaje', 'Rol creado con exito');
     }
 
     /**
@@ -80,7 +80,7 @@ class RolesController extends Controller
     public function actualizar(Request $request, $id)
     {
         Roles::findOrFail($id)->update($request->all());
-        return redirect('administrador/roles')->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->route('roles_administrador')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
@@ -93,12 +93,12 @@ class RolesController extends Controller
     {
         $rol = Roles::findOrFail($id);
         if($rol->RLS_Rol_Id == 0)
-            return redirect('administrador/roles')->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
+            return redirect()->route('roles_administrador')->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
         try{
             Roles::destroy($id);
-            return redirect('administrador/roles')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
+            return redirect()->route('roles_administrador')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect('administrador/roles')->withErrors(['El Rol está siendo usada por otro recurso.']);
+            return redirect()->route('roles_administrador')->withErrors(['El Rol está siendo usada por otro recurso.']);
         }
     }
 }
