@@ -69,7 +69,7 @@ class ActividadesController extends Controller
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Documento_Soporte_Actividad' => $ruta,
-            'ACT_Estado_Actividad' => 'En Proceso',
+            'ACT_Estado_Actividad' => 'Estancado',
             'ACT_Proyecto_Id' => $request['ACT_Proyecto_Id'],
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
             'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'],

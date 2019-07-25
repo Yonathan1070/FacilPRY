@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             'TBL_Requerimientos',
             'TBL_Actividades',
             'TBL_Calificaciones',
-            'TBL_Decisiones'
+            'TBL_Decisiones',
+            'TBL_Horas_Actividad'
         ]);
         $this->call(UsuarioAdministradorSeeder::class);
     }

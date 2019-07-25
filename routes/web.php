@@ -138,6 +138,12 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
 //Enrutamiento Perfil de Operacion
 Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 'middleware' => ['auth', 'perfiloperacion']], function () {
     Route::get('', 'InicioController@index')->name('inicio_perfil_operacion');
+    //Enrutamiento CRUD Actividades
+    Route::group(['prefix' => 'actividades'], function () {
+        Route::get('', 'ActividadesController@index')->name('actividades_perfil_operacion');
+        Route::get('{id}/asignacion-horas', 'ActividadesController@asignarHoras')->name('actividades_asignar_horas_perfil_operacion');
+        Route::post('asignacion-horas', 'ActividadesController@guardarHoras')->name('actividades_guardar_horas_perfil_operacion');
+    });
 });
 
 //Enrutamiento Tester

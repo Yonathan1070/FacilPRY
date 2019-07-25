@@ -30,6 +30,12 @@
                     <span>Inicio</span>
                 </a>
             </li>
+            <li>
+                <a href="{{route("actividades_perfil_operacion")}}">
+                    <i class="material-icons">toc</i>
+                    <span>Actividades</span>
+                </a>
+            </li>
         </ul>
     </div>
     <!-- Fin Menú -->
