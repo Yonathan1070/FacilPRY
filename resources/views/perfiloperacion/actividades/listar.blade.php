@@ -14,6 +14,13 @@ Actividades
                     <h2>
                         MIS ACTIVIDADES
                     </h2>
+                    <ul class="header-dropdown" style="top:10px;">
+                        <li class="dropdown">
+                            <a class="btn btn-success waves-effect" href="{{route('generar_pdf_perfil_operacion')}}">
+                                <i class="material-icons" style="color:white;">file_download</i> Descargar PDF
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <div class="row clearfix">
