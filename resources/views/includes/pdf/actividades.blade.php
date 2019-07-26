@@ -5,7 +5,7 @@ PDF Actividades
 @section('contenido')
 <!-- Multiple Items To Be Open -->
 <?php
-    $path = base_path().'\public\imagenes\LOGO INK.png';
+    $path = base_path().'\public\imagenes\logo\LOGO INK.png';
     $type = pathinfo($path, PATHINFO_EXTENSION);
     $data = file_get_contents($path);
     $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);

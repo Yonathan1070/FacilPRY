@@ -10,6 +10,7 @@ use App\Models\Tablas\Actividades;
 use Illuminate\Support\Carbon;
 use App\Models\Tablas\HorasActividad;
 use PDF;
+use Illuminate\Http\Response;
 
 class ActividadesController extends Controller
 {
@@ -72,11 +73,8 @@ class ActividadesController extends Controller
 
     public function guardarHoras(Request $request)
     {
-        $hoy = new DateTime();
-        $hoy->format('Y-m-d H:i:s');
-
-        if ($request->HRS_ACT_Horas > $request->Horas_Restantes) {
-            return redirect()->route('actividades_asignar_horas_perfil_operacion', [$request['Id_Actividad']])->withErrors('La cantidad de horas no puede ser superior a las horas que faltan para la entrega de la Actividad');
+        if ($request->HRS_ACT_Cantidad_Horas > $request->Horas_Restantes) {
+            return redirect()->route('actividades_asignar_horas_perfil_operacion', [$request['HRS_ACT_Actividad_Id']])->withErrors('La cantidad de horas no puede ser superior a las horas que faltan para la entrega de la Actividad');
         }
         HorasActividad::create($request->all());
         Actividades::findOrFail($request->HRS_ACT_Actividad_Id)->update(['ACT_Estado_Actividad' => 'En Proceso']);
@@ -118,5 +116,15 @@ class ActividadesController extends Controller
 
         $fileName = 'Actividades'.session()->get('Usuario_Nombre');
         return $pdf->download($fileName);
+    }
+
+    public function descargarDocumentoSoporte($id)
+    {
+        
+        $actividad = DB::table('TBL_Actividades')
+        ->select('TBL_Actividades.ACT_Documento_Soporte_Actividad')
+        ->where('TBL_Actividades.id', '=', $id)
+        ->first();
+        return response()->download($actividad->ACT_Documento_Soporte_Actividad);
     }
 }

@@ -65,8 +65,16 @@ Actividades
                                                             class="btn-accion-tabla tooltipsC"
                                                             title="Asignar horas de Trabajo">
                                                             <i class="material-icons text-info"
-                                                                style="font-size: 20px;">alarm_add</i>
+                                                                style="font-size: 17px;">alarm_add</i>
                                                         </a>
+                                                        @if ($actividad->ACT_Documento_Soporte_Actividad != null)
+                                                            <a href="{{route('actividades_descargar_archivo_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
+                                                                class="btn-accion-tabla tooltipsC"
+                                                                title="Descargar Documento Soporte">
+                                                                <i class="material-icons text-info"
+                                                                    style="font-size: 17px;">file_download</i>
+                                                            </a>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 @endforeach

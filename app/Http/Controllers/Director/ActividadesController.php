@@ -62,7 +62,7 @@ class ActividadesController extends Controller
             if ($request->file('ACT_Documento_Soporte_Actividad')->isValid()) {
                 $archivo = time().'.'.$request->file('ACT_Documento_Soporte_Actividad')->getClientOriginalName();
                 $mover = $request->ACT_Documento_Soporte_Actividad->move(public_path('imagenes'), $archivo);
-                $ruta = $mover->getPath();
+                $ruta = $mover->getRealPath();
             }
         }
         Actividades::create([
@@ -72,7 +72,7 @@ class ActividadesController extends Controller
             'ACT_Estado_Actividad' => 'Estancado',
             'ACT_Proyecto_Id' => $request['ACT_Proyecto_Id'],
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
-            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'],
+            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' 23:59:00',
             'ACT_Costo_Actividad' => $request['ACT_Costo_Actividad'],
             'ACT_Usuario_Id' => $request['ACT_Usuario_Id'],
             'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
