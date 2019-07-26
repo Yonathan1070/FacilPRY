@@ -57,6 +57,9 @@ class ActividadesController extends Controller
      */
     public function guardar(Request $request)
     {
+        if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
+            return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
+        }
         $ruta = null;
         if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
             if ($request->file('ACT_Documento_Soporte_Actividad')->isValid()) {

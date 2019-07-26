@@ -43,6 +43,16 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol_administrador');
         Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol_administrador');
     });
+    //Enroutamiento para Sistema de Permisos
+    Route::group(['prefix' => 'permisos'], function () {
+        Route::get('', 'PermisosController@index')->name('permisos_administrador');
+        Route::get('crear-menu', 'PermisosController@crear')->name('crear_menu_administrador');
+        Route::post('crear-menu', 'PermisosController@guardar')->name('guardar_menu_administrador');
+        Route::post('asignar-permiso', 'PermisosController@asignarPermiso')->name('asignar_permiso_administrador');
+        Route::get('{id}/editar', 'PermisosController@editar')->name('editar_permiso_administrador');
+        Route::put('{id}', 'PermisosController@actualizar')->name('actualizar_permiso_administrador');
+        Route::delete('{id}', 'PermisosController@eliminar')->name('eliminar_permiso_administrador');
+    });
 });
 
 //Enrutamiento Cliente

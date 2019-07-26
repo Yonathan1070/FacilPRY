@@ -49,6 +49,12 @@
                     <span>Roles</span>
                 </a>
             </li>
+            <li>
+                <a href="{{route("permisos_administrador")}}">
+                    <i class="material-icons">assignment_ind</i>
+                    <span>Permisos</span>
+                </a>
+            </li>
         </ul>
     </div>
     <!-- Fin Menú -->
