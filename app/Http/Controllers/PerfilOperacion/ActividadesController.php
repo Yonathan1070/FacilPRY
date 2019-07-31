@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Tablas\HorasActividad;
 use PDF;
 use Illuminate\Http\Response;
+use App\Models\Tablas\ActividadesFinalizadas;
 
 class ActividadesController extends Controller
 {
@@ -49,7 +50,16 @@ class ActividadesController extends Controller
             ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '<', $hoy)
             ->orderBy('TBL_Actividades.id', 'ASC')
             ->get();
-        return view('perfiloperacion.actividades.listar', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas'));
+
+        $actividadesFinalizadas = DB::table('TBL_Actividades')
+            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas', 'TBL_Actividades_Finalizadas.ACT_FIN_Actividad_Id', '=', 'TBL_Actividades.Id')
+            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Actividades_Finalizadas.*')
+            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Finalizado')
+            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
+            ->orderBy('TBL_Actividades.id', 'ASC')
+            ->get();
+        return view('perfiloperacion.actividades.listar', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas'));
     }
 
     /**
@@ -111,8 +121,16 @@ class ActividadesController extends Controller
             ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '<', $hoy)
             ->orderBy('TBL_Actividades.id', 'ASC')
             ->get();
+        $actividadesFinalizadas = DB::table('TBL_Actividades')
+            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas', 'TBL_Actividades_Finalizadas.ACT_FIN_Actividad_Id', '=', 'TBL_Actividades.Id')
+            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Actividades_Finalizadas.*')
+            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Finalizado')
+            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
+            ->orderBy('TBL_Actividades.id', 'ASC')
+            ->get();
 
-        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas'));
+        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas'));
 
         $fileName = 'Actividades'.session()->get('Usuario_Nombre');
         return $pdf->download($fileName);
@@ -120,11 +138,45 @@ class ActividadesController extends Controller
 
     public function descargarDocumentoSoporte($id)
     {
-        
         $actividad = DB::table('TBL_Actividades')
         ->select('TBL_Actividades.ACT_Documento_Soporte_Actividad')
         ->where('TBL_Actividades.id', '=', $id)
         ->first();
         return response()->download($actividad->ACT_Documento_Soporte_Actividad);
+    }
+
+    public function finalizar($id)
+    {
+        $hoy = Carbon::now();
+        $hoy->format('Y-m-d H:i:s');
+
+        $actividades = Actividades::select('TBL_Actividades.*')
+            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
+            ->where('TBL_Actividades.id', '=', $id)
+            ->first();
+
+        return view('perfiloperacion.actividades.finalizar', compact('id'));
+    }
+
+    public function guardarFinalizar(Request $request){
+        if ($request->hasFile('ACT_FIN_Documento_Soporte')) {
+            if ($request->file('ACT_FIN_Documento_Soporte')->isValid()) {
+                $archivo = time().'.'.$request->file('ACT_FIN_Documento_Soporte')->getClientOriginalName();
+                $mover = $request->ACT_FIN_Documento_Soporte->move(public_path('documentos_soporte'), $archivo);
+                $ruta = $mover->getRealPath();
+            }
+        }else{
+            return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
+        }
+        ActividadesFinalizadas::create([
+            'ACT_FIN_Descripcion' => $request['RLS_Descripcion'],
+            'ACT_FIN_Documento_Soporte' => $ruta,
+            'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
+            'ACT_FIN_Estado' => 'Esperando Aprobación',
+            'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
+        ]);
+        Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Actividad' => 'Finalizado']);
+        
+        return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }
 }

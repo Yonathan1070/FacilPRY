@@ -64,7 +64,7 @@ class ActividadesController extends Controller
         if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
             if ($request->file('ACT_Documento_Soporte_Actividad')->isValid()) {
                 $archivo = time().'.'.$request->file('ACT_Documento_Soporte_Actividad')->getClientOriginalName();
-                $mover = $request->ACT_Documento_Soporte_Actividad->move(public_path('imagenes'), $archivo);
+                $mover = $request->ACT_Documento_Soporte_Actividad->move(public_path('documentos_soporte'), $archivo);
                 $ruta = $mover->getRealPath();
             }
         }
