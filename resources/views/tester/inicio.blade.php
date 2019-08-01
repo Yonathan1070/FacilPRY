@@ -1,29 +1,54 @@
 @extends('theme.bsb.tester.layout')
 @section('titulo')
-    Inicio
+Inicio
 @endsection
 @section('contenido')
-    Inicio
-@endsection
-
-@section('scripts')
-    <!-- Plugin Js para Validaciones -->
-    <script src="{{asset("assets/plugins/jquery-validation/jquery.validate.js")}}"></script>
-    <!-- Mensajes en español -->
-    <script src="{{asset("assets/plugins/jquery-validation/localization/messages_es.js")}}"></script>
-
-    <script src="{{asset("assets/js/pages/examples/sign-in.js")}}"></script>
-
-    <!-- JQuery Steps Plugin Js -->
-    <script src="{{asset("assets/plugins/jquery-steps/jquery.steps.js")}}"></script>
-
-    <!-- Sweet Alert Plugin Js -->
-    <script src="{{asset("assets/plugins/sweetalert/sweetalert.min.js")}}"></script>
-
-    <!-- Waves Effect Plugin Js -->
-    <script src="{{asset("assets/plugins/node-waves/waves.js")}}"></script>
-
-    <!-- Custom Js -->
-    <script src="{{asset("assets/js/admin.js")}}"></script>
-    <script src="{{asset("assets/js/pages/forms/form-validation.js")}}"></script>
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                @include('includes.form-exito')
+                <div class="card">
+                    <div class="header">
+                        <h2>
+                            PENDIENTE POR APROBAR
+                        </h2>
+                    </div>
+                    <div class="body table-responsive">
+                        @if (count($actividadesPendientes)<=0)
+                            <div class="alert alert-warning">
+                                No cuenta con Actividades pendientes de aprobación.
+                            </div>
+                        @else
+                            <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                                <thead>
+                                    <tr>
+                                        <th>Proyecto</th>
+                                        <th>Actividad</th>
+                                        <th>Requerimiento</th>
+                                        <th>Estado</th>
+                                        <th class="width70"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($actividadesPendientes as $actividad)
+                                        <tr>
+                                            <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
+                                            <td>{{$actividad->ACT_Nombre_Actividad}}</td>
+                                            <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
+                                            <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                            <td>
+                                                <a href="{{route('aprobar_actividad_tester', ['id'=>$actividad->Id_Act_Fin])}}" class="btn-accion-tabla tooltipsC" title="Ver información detallada">
+                                                    <i class="material-icons text-info" style="font-size: 17px;">forward</i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

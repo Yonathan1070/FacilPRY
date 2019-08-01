@@ -45,35 +45,7 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">                                            
                     <!-- Notifications -->
-                    <li class="dropdown">
-                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                            <i class="material-icons">notifications</i>
-                            <span class="label-count">1</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">NOTIFICACIONES</li>
-                            <li class="body">
-                                <ul class="menu">
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-light-green">
-                                                <i class="material-icons">person_add</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4>12 new members joined</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 14 mins ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer">
-                                <a href="javascript:void(0);">Todas las Notificaciones</a>
-                            </li>
-                        </ul>
-                    </li>
+                    @include('includes.notificaciones')
                     <!-- #END# Notifications -->
                 </ul>
             </div>
@@ -97,8 +69,14 @@
     <!-- Waves Effect Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
+    <!-- Slimscroll Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
+
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
+
+    <!-- Demo Js -->
+    <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 
     @yield('scripts')
 </body>

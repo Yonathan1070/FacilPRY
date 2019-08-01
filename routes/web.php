@@ -130,6 +130,11 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
         Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
     });
+
+    //Enrutamiento Cobros
+    Route::Group(['prefix' => 'cobros'], function () {
+        Route::get('', 'CobrosController@index')->name('cobros_director');
+    });
 });
 
 // Enrutamiento Area de Finanzas
@@ -163,4 +168,8 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
 //Enrutamiento Tester
 Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['auth', 'tester']], function () {
     Route::get('', 'InicioController@index')->name('inicio_tester');
+    Route::get('{id}/aprobacion', 'InicioController@aprobacionActividad')->name('aprobar_actividad_tester');
+    Route::get('{ruta}/descargar', 'InicioController@descargarArchivo')->name('descargar_documento_actividad_tester');
+    Route::get('{id}/respuestaR', 'InicioController@respuestaRechazado')->name('respuestaR_tester');
+    Route::get('{id}/respuestaA', 'InicioController@respuestaAprobado')->name('respuestaA_tester');
 });

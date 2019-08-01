@@ -7,7 +7,8 @@
         </div>
         <div class="info-container">
             <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{session()->get('Usuario_Nombre_Completo')}}</div>
+                {{session()->get('Usuario_Nombre_Completo')}}
+            </div>
             <div class="email">{{session()->get('Usuario_Correo')}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
@@ -59,6 +60,12 @@
                 <a href="{{route("decisiones_director")}}">
                     <i class="material-icons">record_voice_over</i>
                     <span>Decisiones</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route("cobros_director")}}">
+                    <i class="material-icons">attach_money</i>
+                    <span>Cobros</span>
                 </a>
             </li>
         </ul>

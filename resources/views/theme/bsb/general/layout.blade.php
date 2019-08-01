@@ -62,8 +62,14 @@
     <!-- Waves Effect Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
+    <!-- Slimscroll Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
+
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
+
+    <!-- Demo Js -->
+    <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 
     @yield('scripts')
 </body>
