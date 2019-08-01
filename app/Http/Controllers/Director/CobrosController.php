@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Actividades;
+use Illuminate\Support\Facades\DB;
+use App\Models\Tablas\FacturasCobro;
+use App\Models\Tablas\Usuarios;
+use Illuminate\Support\Carbon;
+use PDF;
 
 class CobrosController extends Controller
 {
@@ -14,7 +20,28 @@ class CobrosController extends Controller
      */
     public function index()
     {
-        
+        $cobros = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
+            ->where('a.ACT_Estado_Actividad', '=', 'En Cobro')
+            ->orderBy('p.id')
+            ->get();
+        $proyectos = DB::table('TBL_Facturas_Cobro as fc')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
+            ->groupBy('a.id')
+            ->get();
+        /*$proyectos = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Actividades as a', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('p.*', 'a.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
+            ->where('a.ACT_Estado_Actividad', '=', 'Facturado')
+            ->groupBy('a.id')
+            ->get();*/
+        return view('director.cobros.listar', compact('cobros', 'proyectos'));
     }
 
     /**
@@ -22,9 +49,16 @@ class CobrosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function agregarFactura($idA, $idC)
     {
-        //
+        $cliente = Usuarios::findOrFail($idC)->first();
+        Actividades::findOrFail($idA)->update(['ACT_Estado_Actividad' => 'Facturado']);
+        FacturasCobro::create([
+            'FACT_Actividad_Id' => $idA,
+            'FACT_Cliente_Id' => $idC,
+            'FACT_Fecha_Cobro' => Carbon::now()
+        ]);
+        return back()->with('mensaje', 'Actividad agregada a la factura del cliente '.$cliente->USR_Nombre.' '.$cliente->USR_Apellido);
     }
 
     /**
@@ -33,9 +67,42 @@ class CobrosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function generarFactura($id)
     {
-        //
+        $proyecto = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('p.id', '=', $id)
+            ->first();
+        $informacion = DB::table('TBL_Facturas_Cobro as fc')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('p.*', 'a.*', 'u.*', 'fc.*')
+            ->where('p.id', '=', $id)
+            ->get();
+        $total = DB::table('TBL_Facturas_Cobro as fc')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('a.*')
+            ->groupBy('a.id')
+            ->where('p.id', '=', $id)
+            ->sum('a.ACT_Costo_Actividad');
+        foreach ($informacion as $info) {
+            $factura = $info->id;
+        }
+
+        $datos = ['proyecto'=>$proyecto, 
+            'informacion'=>$informacion, 
+            'factura'=>$factura, 
+            'fecha'=>Carbon::now()->toFormattedDateString(),
+            'total'=>$total];
+
+        //return view('includes.pdf.factura.factura', compact('datos'));
+        $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
+
+        $fileName = 'FacturaINK-'.$factura;
+        return $pdf->download($fileName);
     }
 
     /**

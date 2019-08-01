@@ -134,6 +134,8 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
     //Enrutamiento Cobros
     Route::Group(['prefix' => 'cobros'], function () {
         Route::get('', 'CobrosController@index')->name('cobros_director');
+        Route::get('{idA}-{idC}/agregarFactura', 'CobrosController@agregarFactura')->name('agregar_factura_director');
+        Route::get('{id}/factura', 'CobrosController@generarFactura')->name('generar_factura_director');
     });
 });
 
