@@ -18,6 +18,9 @@
     <!-- Waves Effect Css -->
     <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
 
+
+    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
+
     <!-- Animation Css -->
     <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
 

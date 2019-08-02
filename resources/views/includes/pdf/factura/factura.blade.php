@@ -289,13 +289,13 @@ Factura
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        @foreach ($datos['informacion'] as $informacion)
-                                        <td><span>{{$informacion->ACT_Nombre_Actividad}}</span></td>
-                                        <td><span>{{$informacion->ACT_Descripcion_Actividad}}</span></td>
-                                        <td><span data-prefix>$</span><span>{{$informacion->ACT_Costo_Actividad}}</span></td>
-                                        @endforeach
-                                    </tr>
+                                    @foreach ($datos['informacion'] as $informacion)
+                                        <tr>
+                                            <td><span>{{$informacion->ACT_Nombre_Actividad}}</span></td>
+                                            <td><span>{{$informacion->ACT_Descripcion_Actividad}}</span></td>
+                                            <td><span data-prefix>$</span><span>{{$informacion->ACT_Costo_Actividad}}</span></td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                             <table class="balance">

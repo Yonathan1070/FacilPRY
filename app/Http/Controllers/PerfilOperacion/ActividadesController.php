@@ -86,8 +86,11 @@ class ActividadesController extends Controller
         if ($request->HRS_ACT_Cantidad_Horas > $request->Horas_Restantes) {
             return redirect()->route('actividades_asignar_horas_perfil_operacion', [$request['HRS_ACT_Actividad_Id']])->withErrors('La cantidad de horas no puede ser superior a las horas que faltan para la entrega de la Actividad');
         }
-        HorasActividad::create($request->all());
-        Actividades::findOrFail($request->HRS_ACT_Actividad_Id)->update(['ACT_Estado_Actividad' => 'En Proceso']);
+        HorasActividad::create([
+            'HRS_ACT_Actividad_Id' =>$request->Actividad_Id,
+            'HRS_ACT_Cantidad_Horas' => $request->HRS_ACT_Cantidad_Horas
+        ]);
+        Actividades::findOrFail($request->Actividad_Id)->update(['ACT_Estado_Actividad' => 'En Proceso']);
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Horas Asignadas con exito');
     }
 
