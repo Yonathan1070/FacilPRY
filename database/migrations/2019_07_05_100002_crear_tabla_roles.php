@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CrearTablaIndicadores extends Migration
+class CrearTablaRoles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CrearTablaIndicadores extends Migration
      */
     public function up()
     {
-        Schema::create('TBL_Indicadores', function (Blueprint $table) {
+        Schema::create('TBL_Roles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('INDC_Nombre_Indicacor', 60);
-            $table->text('INDC_Descripcion_Indicador');
+            $table->unsignedInteger('RLS_Rol_Id')->default(0);
+            $table->string('RLS_Nombre', 30)->unique();
+            $table->text('RLS_Descripcion');
+            $table->unsignedBigInteger('RLS_Empresa_Id');
+            $table->foreign('RLS_Empresa_Id', 'FK_Roles_Empresa')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
@@ -30,6 +33,6 @@ class CrearTablaIndicadores extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_Indicadores');
+        Schema::dropIfExists('TBL_Roles');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CrearTablaProyectos extends Migration
+class CrearTablaIndicadores extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CrearTablaProyectos extends Migration
      */
     public function up()
     {
-        Schema::create('TBL_Proyectos', function (Blueprint $table) {
+        Schema::create('TBL_Indicadores', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('PRY_Nombre_Proyecto', 100);
-            $table->text('PRY_Descripcion_Proyecto');
-            $table->double('PRY_Valor_Proyecto');
-            $table->unsignedBigInteger('PRY_Cliente_Id');
-            $table->foreign('PRY_Cliente_Id', 'FK_Proyectos_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
+            $table->string('INDC_Nombre_Indicacor', 60);
+            $table->text('INDC_Descripcion_Indicador');
+            $table->unsignedBigInteger('INDC_Empresa_Id');
+            $table->foreign('INDC_Empresa_Id', 'FK_Indicadores_Empresa')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
@@ -33,6 +32,6 @@ class CrearTablaProyectos extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_Proyectos');
+        Schema::dropIfExists('TBL_Indicadores');
     }
 }

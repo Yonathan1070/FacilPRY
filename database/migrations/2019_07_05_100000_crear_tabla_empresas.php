@@ -20,8 +20,7 @@ class CrearTablaEmpresas extends Migration
             $table->string('EMP_Telefono_Empresa', 30);
             $table->string('EMP_Direccion_Empresa', 100);
             $table->string('EMP_Correo_Empresa', 100);
-            $table->unsignedBigInteger('EMP_Usuario_Id');
-            $table->foreign('EMP_Usuario_Id', 'FK_Empresas_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
+            $table->text('EMP_Logo_Empresa');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
