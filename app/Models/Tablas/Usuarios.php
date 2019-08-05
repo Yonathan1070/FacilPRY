@@ -18,7 +18,8 @@ class Usuarios extends Authenticatable
         'USR_Telefono',
         'USR_Correo',
         'USR_Nombre_Usuario',
-        'password'];
+        'password',
+        'USR_Foto_Perfil'];
     protected $guarded = ['id'];
     
     public function roles(){
@@ -30,10 +31,16 @@ class Usuarios extends Authenticatable
             Session::put([
                 'Rol_Id' => $roles[0]['id'],
                 'Rol_Nombre' => $roles[0]['RLS_Nombre'],
+                'Usuario_Documento' => $this->USR_Documento,
                 'Usuario_Nombre' => $this->USR_Nombre_Usuario,
                 'Usuario_Id' => $this->id,
+                'Usuario_Nom' => $this->USR_Nombre,
+                'Usuario_Apellido' => $this->USR_Apellido,
                 'Usuario_Nombre_Completo' => $this->USR_Nombre.' '.$this->USR_Apellido,
-                'Usuario_Correo' => $this->USR_Correo
+                'Usuario_Direccion_Residencia' => $this->USR_Direccion_Residencia,
+                'Usuario_Telefono' => $this->USR_Telefono,
+                'Usuario_Correo' => $this->USR_Correo,
+                'Foto_Perfil' => $this->USR_Foto_Perfil,
             ]);
         }
     }

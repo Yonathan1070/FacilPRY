@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administrador;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Roles;
+use App\Models\Tablas\Usuarios;
 
 class RolesController extends Controller
 {
@@ -15,8 +16,9 @@ class RolesController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
         $roles = Roles::orderBy('id')->get();
-        return view('administrador.roles.listar', compact('roles'));
+        return view('administrador.roles.listar', compact('roles', 'datos'));
     }
 
     /**

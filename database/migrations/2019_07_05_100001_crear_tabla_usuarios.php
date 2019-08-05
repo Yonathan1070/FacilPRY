@@ -25,6 +25,7 @@ class CrearTablaUsuarios extends Migration
             $table->string('USR_Correo', 100);
             $table->string('USR_Nombre_Usuario', 15);
             $table->text('password');
+            $table->text('USR_Foto_Perfil');
             $table->unsignedBigInteger('USR_Empresa_Id');
             $table->foreign('USR_Empresa_Id', 'FK_Usuarios_Empresa')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();

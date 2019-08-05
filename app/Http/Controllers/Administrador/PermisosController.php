@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tablas\Iconos;
 use App\Models\Tablas\Menu;
 use App\Models\Tablas\Roles;
+use App\Models\Tablas\Usuarios;
 
 class PermisosController extends Controller
 {
@@ -17,10 +18,11 @@ class PermisosController extends Controller
      */
     public function index()
     {  
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
         $rols = Roles::orderBy('id')->pluck('RLS_Nombre', 'id')->toArray();
         $menus = Menu::getMenu();
         $menusRols = Menu::with('roles')->get()->pluck('roles', 'id')->toArray();
-        return view('administrador.permisos.listar', compact('rols', 'menus', 'menusRols'));
+        return view('administrador.permisos.listar', compact('rols', 'menus', 'menusRols', 'datos'));
         
         /*$menus = Menu::getMenu();
         return view('administrador.permisos.listar', compact('menus'));*/

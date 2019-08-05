@@ -43,6 +43,13 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol_administrador');
         Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol_administrador');
     });
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_administrador');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_administrador');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_administrador');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_administrador');
+    });
     //Enroutamiento para Sistema de Permisos
     Route::group(['prefix' => 'permisos'], function () {
         Route::get('', 'PermisosController@index')->name('permisos_administrador');

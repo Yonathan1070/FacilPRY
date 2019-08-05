@@ -56,7 +56,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @include("theme.bsb.administrador.menu")
+        @extends("theme.bsb.administrador.menu")
     </section>
 
     <section class="content">

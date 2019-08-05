@@ -21,12 +21,14 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Telefono' => '3102144993',
             'USR_Correo' => 'yonathancam@hotmail.com',
             'USR_Nombre_Usuario' => 'yonny',
-            'password' => bcrypt('1070')
+            'password' => bcrypt('1070'),
+            'USR_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Administrador',
-            'RLS_Descripcion' => 'Super Admin del sistema'
+            'RLS_Descripcion' => 'Super Admin del sistema',
+            'RLS_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Usuarios_Roles')->insert([
@@ -45,12 +47,14 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Telefono' => '3108666902',
             'USR_Correo' => 'edialimenni@hotmail.com',
             'USR_Nombre_Usuario' => 'edison',
-            'password' => bcrypt('2668')
+            'password' => bcrypt('2668'),
+            'USR_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Director de Proyectos',
-            'RLS_Descripcion' => 'Encargado del perfil de operación'
+            'RLS_Descripcion' => 'Encargado del perfil de operación',
+            'RLS_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Usuarios_Roles')->insert([
@@ -69,12 +73,14 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Telefono' => '3104867316',
             'USR_Correo' => 'rosamendez74@hotmail.com',
             'USR_Nombre_Usuario' => 'rosa',
-            'password' => bcrypt('1903')
+            'password' => bcrypt('1903'),
+            'USR_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Finanzas',
-            'RLS_Descripcion' => 'Pertence al area financiera de la compañía'
+            'RLS_Descripcion' => 'Pertence al area financiera de la compañía',
+            'RLS_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Usuarios_Roles')->insert([
@@ -93,12 +99,14 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Telefono' => '3108799688',
             'USR_Correo' => 'alirimendez@hotmail.com',
             'USR_Nombre_Usuario' => 'alirio',
-            'password' => bcrypt('6826')
+            'password' => bcrypt('6826'),
+            'USR_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Tester',
-            'RLS_Descripcion' => 'Encargado de realizar las pruebas a los Proyectos'
+            'RLS_Descripcion' => 'Encargado de realizar las pruebas a los Proyectos',
+            'RLS_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Usuarios_Roles')->insert([
@@ -117,12 +125,14 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Telefono' => '3183684338',
             'USR_Correo' => 'camyonathan@hotmail.com',
             'USR_Nombre_Usuario' => 'potrillo',
-            'password' => bcrypt('1997')
+            'password' => bcrypt('1997'),
+            'USR_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Cliente',
-            'RLS_Descripcion' => 'Cliente que adquiere servicios de la compañía'
+            'RLS_Descripcion' => 'Cliente que adquiere servicios de la compañía',
+            'RLS_Empresa_Id' => 1
         ]);
 
         DB::table('TBL_Usuarios_Roles')->insert([
@@ -133,7 +143,8 @@ class UsuarioAdministradorSeeder extends Seeder
 
         DB::table('TBL_Roles')->insert([
             'RLS_Nombre' => 'Perfil de Operación',
-            'RLS_Descripcion' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.'
+            'RLS_Descripcion' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.',
+            'RLS_Empresa_Id' => 1
         ]);
     }
 }

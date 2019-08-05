@@ -19,6 +19,7 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
         $directores = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
@@ -28,7 +29,7 @@ class DirectorProyectosController extends Controller
             ->orderBy('TBL_Usuarios.id', 'ASC')
             ->get();
         //dd($directores);
-        return view('administrador.director.listar', compact('directores'));
+        return view('administrador.director.listar', compact('directores', 'datos'));
     }
 
     /**
