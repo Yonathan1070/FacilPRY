@@ -19,7 +19,7 @@
                     aria-expanded="true">keyboard_arrow_down</i>
                 <ul class="dropdown-menu pull-right">
                     <li><a href="{{route('perfil_administrador')}}"><i class="material-icons">person</i>Perfil</a></li>
-                    <li><a href="javascript:void(0);"><i class="material-icons">business</i>Empresa</a></li>
+                    <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>

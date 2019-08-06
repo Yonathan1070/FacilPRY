@@ -78,6 +78,13 @@
     <!-- Bootstrap Notify Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap-notify/bootstrap-notify.js")}}"></script>
 
+    <!-- Plugin Js para Validaciones -->
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
+    <!-- Mensajes en español -->
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
+
+    <script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
+
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
 

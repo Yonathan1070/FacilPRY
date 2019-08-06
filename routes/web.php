@@ -50,6 +50,12 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_administrador');
         Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_administrador');
     });
+    //Enroutamiento para Editar Datos Empresa
+    Route::group(['prefix' => 'empresa'], function () {
+        Route::get('', 'EmpresaController@index')->name('empresa_administrador');
+        Route::put('editar', 'EmpresaController@actualizarDatos')->name('actualizar_empresa_administrador');
+        Route::post('foto', 'EmpresaController@actualizarLogo')->name('actualizar_logo_empresa_administrador');
+    });
     //Enroutamiento para Sistema de Permisos
     Route::group(['prefix' => 'permisos'], function () {
         Route::get('', 'PermisosController@index')->name('permisos_administrador');
@@ -65,6 +71,14 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
 //Enrutamiento Cliente
 Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => ['auth', 'cliente']], function () {
     Route::get('', 'InicioController@index')->name('inicio_cliente');
+    
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_cliente');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_cliente');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_cliente');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_cliente');
+    });
 });
 
 //Enrutamiento Director de Proyectos
@@ -144,11 +158,27 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('{idA}-{idC}/agregarFactura', 'CobrosController@agregarFactura')->name('agregar_factura_director');
         Route::get('{id}/factura', 'CobrosController@generarFactura')->name('generar_factura_director');
     });
+
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_director');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_director');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_director');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_director');
+    });
 });
 
 // Enrutamiento Area de Finanzas
 Route::group(['prefix' => 'finanzas', 'namespace' => 'Finanzas', 'middleware' => ['auth', 'finanzas']], function () {
     Route::get('', 'InicioController@index')->name('inicio_finanzas');
+
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_finaanzas');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_finaanzas');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_finaanzas');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_finaanzas');
+    });
 });
 
 //Enrutamiento Usuario General
@@ -172,6 +202,14 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
         Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_perfil_operacion');
         Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_perfil_operacion');
     });
+
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_perfil_operacion');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_perfil_operacion');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_perfil_operacion');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_perfil_operacion');
+    });
 });
 
 //Enrutamiento Tester
@@ -181,4 +219,12 @@ Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['a
     Route::get('{ruta}/descargar', 'InicioController@descargarArchivo')->name('descargar_documento_actividad_tester');
     Route::get('{id}/respuestaR', 'InicioController@respuestaRechazado')->name('respuestaR_tester');
     Route::get('{id}/respuestaA', 'InicioController@respuestaAprobado')->name('respuestaA_tester');
+
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_tester');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_tester');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_tester');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_tester');
+    });
 });
