@@ -71,7 +71,8 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
 //Enrutamiento Cliente
 Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => ['auth', 'cliente']], function () {
     Route::get('', 'InicioController@index')->name('inicio_cliente');
-    
+    Route::get('{id}/generar-pdf', 'InicioController@generarPdf')->name('generar_pdf_proyecto_cliente');
+
     //Enroutamiento para Editar Perfil
     Route::group(['prefix' => 'perfil'], function () {
         Route::get('', 'PerfilUsuarioController@index')->name('perfil_cliente');
@@ -150,6 +151,7 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('', 'ProyectosController@index')->name('proyectos_director');
         Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
         Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
+        Route::get('{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto_director');
     });
 
     //Enrutamiento Cobros

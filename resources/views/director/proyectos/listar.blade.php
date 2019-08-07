@@ -51,6 +51,9 @@ Crud Proyectos
                                             <a href="{{route('actividades_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">
                                                 <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                             </a>
+                                            <a href="{{route('generar_pdf_proyecto_director', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
+                                                <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

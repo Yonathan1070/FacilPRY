@@ -8,6 +8,7 @@ use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionProyecto;
+use PDF;
 
 class ProyectosController extends Controller
 {
@@ -64,9 +65,22 @@ class ProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function mostrar($id)
+    public function generarPdf($id)
     {
-        //
+        $proyecto = Proyectos::findOrFail($id);
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
+            ->where('p.id', '=', $id)
+            ->select('a.*', 'us.USR_Nombre as NombreT', 'us.USR_Apellido as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
+            ->get();
+        
+        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades'));
+
+        $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
+        return $pdf->download($fileName);
     }
 
     /**
