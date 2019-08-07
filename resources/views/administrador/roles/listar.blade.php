@@ -28,7 +28,7 @@ Crud Roles
                                     agregar!</a>.
                             </div>
                         @else
-                            <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                            <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>

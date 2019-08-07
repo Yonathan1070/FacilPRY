@@ -29,7 +29,8 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
-        return view('administrador.decisiones.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('administrador.decisiones.crear', compact('datos'));
     }
 
     /**
@@ -52,8 +53,9 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
-        return view('administrador.decisiones.editar', compact('decision'));
+        return view('administrador.decisiones.editar', compact('decision', 'datos'));
     }
 
     /**

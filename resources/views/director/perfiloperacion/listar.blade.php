@@ -27,7 +27,7 @@
                                 <a href="{{route('crear_perfil_director')}}" class="alert-link">Clic aquí para agregar!</a>.
                             </div>
                         @else
-                            <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                            <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                 <thead>
                                     <tr>
                                         <th>Documento</th>

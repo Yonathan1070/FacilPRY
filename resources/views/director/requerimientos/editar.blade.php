@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.director.layout')
 @section('titulo')
 Crud Requerimientos
 @endsection

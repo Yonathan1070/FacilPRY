@@ -39,7 +39,8 @@ class DirectorProyectosController extends Controller
      */
     public function crear()
     {
-        return view('administrador.director.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('administrador.director.crear', compact('datos'));
     }
 
     /**
@@ -79,8 +80,9 @@ class DirectorProyectosController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
-        return view('administrador.director.editar', compact('director'));
+        return view('administrador.director.editar', compact('director', 'datos'));
     }
 
     /**

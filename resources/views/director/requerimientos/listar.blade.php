@@ -32,7 +32,7 @@ Crud Requerimientos
                             <strong>{{$proyecto->PRY_Nombre_Proyecto}}</strong> no tiene requerimientos asignados
                             <a href="{{route('crear_requerimiento_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                     @else
-                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>

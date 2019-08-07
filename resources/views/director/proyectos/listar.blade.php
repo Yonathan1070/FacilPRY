@@ -29,7 +29,7 @@ Crud Proyectos
                         <strong>Advertencia!</strong> El sistema no cuenta con Proyectos registrados
                         <a href="{{route('crear_proyecto_director')}}" class="alert-link">Clic aquí para agregar!</a>.
                     @else
-                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>

@@ -18,8 +18,13 @@
     <!-- Waves Effect Css -->
     <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
 
+    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
+    
     <!-- Animation Css -->
     <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
+
+    <!-- JQuery DataTable Css -->
+    <link href="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css")}}" rel="stylesheet">
 
     <!-- Custom Css -->
     <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
@@ -69,6 +74,9 @@
     <!-- Bootstrap Core Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap/js/bootstrap.js")}}"></script>
 
+    <!-- Select Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/bootstrap-select/js/bootstrap-select.js")}}"></script>
+
     <!-- Waves Effect Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
@@ -85,9 +93,23 @@
 
     <script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
 
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/jquery.dataTables.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/buttons.flash.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/jszip.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/pdfmake.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/vfs_fonts.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/buttons.html5.min.js")}}"></script>
+    <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/buttons.print.min.js")}}"></script>
+
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
-
+    <script src="{{asset("assets/bsb/js/pages/tables/jquery-datatable.js")}}"></script>
+    <script>
+        
+    </script>
     <!-- Demo Js -->
     <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 

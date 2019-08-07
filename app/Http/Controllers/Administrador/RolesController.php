@@ -28,7 +28,8 @@ class RolesController extends Controller
      */
     public function crear()
     {
-        return view('administrador.roles.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('administrador.roles.crear', compact('datos'));
     }
 
     /**
@@ -66,10 +67,11 @@ class RolesController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
         if($rol->RLS_Rol_Id == 0)
             return redirect('administrador/roles')->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
-        return view('administrador.roles.editar', compact('rol'));
+        return view('administrador.roles.editar', compact('rol', 'datos'));
     }
 
     /**

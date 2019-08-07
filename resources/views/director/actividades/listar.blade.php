@@ -34,7 +34,7 @@ Crud Actividades
                             <a href="{{route('crear_actividad_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                         </div>
                     @else
-                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover  dataTable js-exportable" id="tabla-data">
                             <thead>
                                 <tr>
                                     <th>Actividad</th>
