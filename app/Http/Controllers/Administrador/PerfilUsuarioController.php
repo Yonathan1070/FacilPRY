@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use App\Http\Requests\ValidacionUsuario;
 
 class PerfilUsuarioController extends Controller
 {
@@ -96,7 +97,7 @@ class PerfilUsuarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizarDatos(Request $request)
+    public function actualizarDatos(ValidacionUsuario $request)
     {
         Usuarios::findOrFail(session()->get('Usuario_Id'))->update($request->all());
         return redirect()->back()->with('mensaje', 'Datos actualizados con exito');
