@@ -19,7 +19,7 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $directores = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')

@@ -3,16 +3,22 @@
     <!-- Información de Usuario -->
     <div class="user-info">
         <div class="image">
-            <img src="{{asset("assets/bsb/images/user.png")}}" width="48" height="48" alt="User" />
+            @if ($datos->USR_Foto_Perfil==null)
+                <img src="{{asset("assets/bsb/images/user-lg.ico")}}" width="48" height="48" alt="User" />
+            @else
+                <img src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil)}}" width="48" height="48" alt="User" />
+            @endif
         </div>
         <div class="info-container">
-        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session()->get('Usuario_Nombre_Completo')}}</div>
-            <div class="email">{{session()->get('Usuario_Correo')}}</div>
+            <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{$datos->USR_Nombre.' '.$datos->USR_Apellido}}
+            </div>
+            <div class="email">{{$datos->USR_Correo}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="true">keyboard_arrow_down</i>
                 <ul class="dropdown-menu pull-right">
-                    <li><a href="javascript:void(0);"><i class="material-icons">person</i>Perfil</a></li>
+                    <li><a href="{{route('perfil_tester')}}"><i class="material-icons">person</i>Perfil</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>

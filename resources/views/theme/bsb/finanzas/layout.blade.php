@@ -53,7 +53,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @include("theme.bsb.finanzas.menu")
+        @extends("theme.bsb.finanzas.menu")
     </section>
 
     <section class="content">

@@ -41,7 +41,6 @@ Crud Actividades
                                     <th>Descripción</th>
                                     <th>Persona</th>
                                     <th>Estado</th>
-                                    <th class="width70"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,7 +50,6 @@ Crud Actividades
                                         <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                         <td>{{$actividad->USR_Nombre.' '.$actividad->USR_Apellido}}</td>
                                         <td>{{$actividad->ACT_Estado_Actividad}}</td>
-                                            
                                     </tr>
                                 @endforeach
                             </tbody>

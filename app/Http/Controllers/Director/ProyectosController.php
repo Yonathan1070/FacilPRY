@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tablas\Usuarios;
+use App\Http\Requests\ValidacionProyecto;
 
 class ProyectosController extends Controller
 {
@@ -16,12 +18,13 @@ class ProyectosController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyectos = DB::table('TBL_Usuarios')
             ->join('TBL_Proyectos', 'TBL_Usuarios.id', '=', 'TBL_Proyectos.PRY_Cliente_Id')
             ->select('TBL_Proyectos.*', 'TBL_Usuarios.USR_Nombre', 'TBL_Usuarios.USR_Apellido')
             ->orderBy('TBL_Proyectos.Id', 'ASC')
             ->get();
-        return view('director.proyectos.listar', compact('proyectos'));
+        return view('director.proyectos.listar', compact('proyectos', 'datos'));
     }
 
     /**
@@ -31,6 +34,7 @@ class ProyectosController extends Controller
      */
     public function crear()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $clientes = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
@@ -39,7 +43,7 @@ class ProyectosController extends Controller
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
             ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
             ->get();
-        return view('director.proyectos.crear', compact('clientes'));
+        return view('director.proyectos.crear', compact('clientes', 'datos'));
     }
 
     /**
@@ -48,7 +52,7 @@ class ProyectosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionProyecto $request)
     {
         Proyectos::create($request->all());
         return redirect()->route('crear_proyecto_director')->with('mensaje', 'Proyecto agregado con exito');

@@ -5,16 +5,9 @@ Inicio
 @section('contenido')
     <div class="container-fluid">
         <div class="row clearfix">
-            <div class="col-lg-6">
-                <a href="{{route('respuestaA_tester', ['id' => $actividadesPendientes->Id_Act_Fin])}}" class="btn bg-green btn-block btn-xs waves-effect">APROBAR</a>
-            </div>
-            <div class="col-lg-6">
-                <a href="{{route('respuestaR_tester', ['id' => $actividadesPendientes->Id_Act_Fin])}}" class="btn bg-red btn-block btn-xs waves-effect">RECHAZAR</a>
-            </div>
-        </div>
-        <div class="row"><br></div>
-        <div class="row clearfix">
             <div class="col-xs-12 col-sm-3">
+                @include('includes.form-exito')
+                @include('includes.form-error')
                 <div class="card profile-card">
                     <div class="header">
                         <h2>PROYECTO</h2>
@@ -99,9 +92,45 @@ Inicio
                                     </a>
                                 </span>
                             </li>
+                            <li>
+                                <span>
+                                    <a href="{{route('respuestaA_tester', ['id' => $actividadesPendientes->Id_Act_Fin])}}" class="btn bg-green btn-xs waves-effect">APROBAR</a>
+                                </span>
+                                <span>
+                                    <a data-toggle="modal" data-target="#smallModal" class="btn bg-red btn-xs waves-effect">RECHAZAR</a>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="smallModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="smallModalLabel">Respuesta de Rechazado</h4>
+                </div>
+                <form action="{{route('respuestaR_tester')}}" id="form_validation" method="POST">
+                    @csrf
+                    <input type="hidden" name="id" id="id" value="{{$actividadesPendientes->Id_Act_Fin}}">
+                    <div class="modal-body">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <textarea name="ACT_FIN_Respuesta" id="ACT_FIN_Respuesta" cols="30" rows="5"
+                                    class="form-control no-resize" maxlength="1000"
+                                    required>{{old('ACT_FIN_Respuesta', $rol->RLS_Descripcion ?? '')}}</textarea>
+                                <label class="form-label">Observaciones</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-link waves-effect">ENVIAR RESPUESTA</button>
+                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -8,12 +8,13 @@
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 @include('includes.form-error')
+                @include('includes.form-exito')
             <div class="card">
                 <div class="header">
                     <h2>CREAR DIRECTOR DE PROYECTOS</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('perfil_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('perfil_operacion_director')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>

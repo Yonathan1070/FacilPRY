@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PerfilOperacion;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Usuarios;
 
 class InicioController extends Controller
 {
@@ -14,7 +15,8 @@ class InicioController extends Controller
      */
     public function index()
     {
-        return view('perfiloperacion.inicio');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('perfiloperacion.inicio', compact('datos'));
     }
 
     /**

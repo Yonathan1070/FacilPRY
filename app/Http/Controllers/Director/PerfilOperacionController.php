@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
 use App\Models\Tablas\Roles;
+use App\Http\Requests\ValidacionUsuario;
+use Illuminate\Support\Facades\Crypt;
 
 class PerfilOperacionController extends Controller
 {
@@ -19,6 +21,7 @@ class PerfilOperacionController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfilesOperacion = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
@@ -27,7 +30,7 @@ class PerfilOperacionController extends Controller
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
             ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
             ->get();
-        return view('director.perfiloperacion.listar', compact('perfilesOperacion'));
+        return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos'));
     }
 
     /**
@@ -37,8 +40,9 @@ class PerfilOperacionController extends Controller
      */
     public function crear()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
-        return view('director.perfiloperacion.crear', compact('roles'));
+        return view('director.perfiloperacion.crear', compact('roles', 'datos'));
     }
 
     /**
@@ -47,7 +51,7 @@ class PerfilOperacionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionUsuario $request)
     {
         Usuarios::create([
             'USR_Tipo_Documento' => $request['USR_Tipo_Documento'],
@@ -60,6 +64,7 @@ class PerfilOperacionController extends Controller
             'USR_Correo' => $request['USR_Correo'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['password']),
+            'USR_Empresa_Id' => $request->id
         ]);
         $perfil = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
         UsuariosRoles::create([
@@ -89,8 +94,9 @@ class PerfilOperacionController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfil = Usuarios::findOrFail($id);
-        return view('director.perfiloperacion.editar', compact('perfil'));
+        return view('director.perfiloperacion.editar', compact('perfil', 'datos'));
     }
 
     /**
@@ -100,10 +106,10 @@ class PerfilOperacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(Request $request, $id)
+    public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->route('perfil_director')->with('mensaje', '¨Perfi de operación  actualizado con exito');
+        return redirect()->route('perfil_operacion_director')->with('mensaje', '¨Perfi de operación  actualizado con exito');
     }
 
     /**
@@ -116,9 +122,9 @@ class PerfilOperacionController extends Controller
     {
         try{
             Usuarios::destroy($id);
-            return redirect()->route('perfil_director')->with('mensaje', 'El Perfil de operación fue eliminado satisfactoriamente.');
+            return redirect()->route('perfil_operacion_director')->with('mensaje', 'El Perfil de operación fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('perfil_director')->withErrors(['El Perfil de operación está siendo usada por otro recurso.']);
+            return redirect()->route('perfil_operacion_director')->withErrors(['El Perfil de operación está siendo usado por otro recurso.']);
         }
     }
 }

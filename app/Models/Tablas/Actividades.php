@@ -15,7 +15,7 @@ class Actividades extends Model
         'ACT_Fecha_Inicio_Actividad',
         'ACT_Fecha_Fin_Actividad',
         'ACT_Costo_Actividad',
-        'ACT_Usuario_Id',
+        'ACT_Trabajador_Id',
         'ACT_Requerimiento_Id'];
     protected $guarded = ['id'];
 }

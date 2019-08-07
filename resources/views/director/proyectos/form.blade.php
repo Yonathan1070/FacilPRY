@@ -15,13 +15,6 @@
 </div>
 <div class="form-group form-float">
     <div class="form-line">
-        <input type="number" class="form-control" name="PRY_Valor_Proyecto" id="PRY_Valor_Proyecto"
-            value="{{old('PRY_Valor_Proyecto', $proyecto->PRY_Valor_Proyecto ?? '')}}" maxlength="30" min="0" required>
-        <label class="form-label">Costo del Proyecto</label>
-    </div>
-</div>
-<div class="form-group form-float">
-    <div class="form-line">
         <select name="PRY_Cliente_Id" id="PRY_Cliente_Id" class="form-control" required>
             <option value="">--Seleccione un Cliente--</option>
             @foreach ($clientes as $cliente)

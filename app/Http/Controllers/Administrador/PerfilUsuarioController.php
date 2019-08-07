@@ -19,7 +19,7 @@ class PerfilUsuarioController extends Controller
      */
     public function index()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         return view('administrador.perfil.editar', compact('datos'));
     }
 

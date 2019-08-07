@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionRol;
 use Illuminate\Database\QueryException;
+use App\Models\Tablas\Usuarios;
 
 class RolesController extends Controller
 {
@@ -17,8 +18,9 @@ class RolesController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
-        return view('director.roles.listar', compact('roles'));
+        return view('director.roles.listar', compact('roles', 'datos'));
     }
 
     /**
@@ -28,7 +30,8 @@ class RolesController extends Controller
      */
     public function crear()
     {
-        return view('director.roles.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('director.roles.crear', compact('datos'));
     }
 
     /**
@@ -42,7 +45,8 @@ class RolesController extends Controller
         Roles::create([
             'RLS_Rol_Id' => 6,
             'RLS_Nombre' => $request->RLS_Nombre,
-            'RLS_Descripcion' => $request->RLS_Descripcion
+            'RLS_Descripcion' => $request->RLS_Descripcion,
+            'RLS_Empresa_Id' => $request->id
         ]);
         return redirect()->route('crear_rol_director')->with('mensaje', 'Rol creado con exito');
     }
@@ -66,8 +70,9 @@ class RolesController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
-        return view('director.roles.editar', compact('rol'));
+        return view('director.roles.editar', compact('rol', 'datos'));
     }
 
     /**

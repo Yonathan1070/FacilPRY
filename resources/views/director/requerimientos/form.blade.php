@@ -2,7 +2,7 @@
 <div class="form-group form-float">
     <div class="form-line">
         <input type="text" class="form-control" name="REQ_Nombre_Requerimiento" id="REQ_Nombre_Requerimiento"
-            value="{{old('REQ_Nombre_Requerimiento', $requerimiento->REQ_Nombre_Requerimiento ?? '')}}" maxlength="30" required>
+            value="{{old('REQ_Nombre_Requerimiento', $requerimiento->REQ_Nombre_Requerimiento ?? '')}}" maxlength="60" required>
         <label class="form-label">Nombre del Requerimiento</label>
     </div>
 </div>

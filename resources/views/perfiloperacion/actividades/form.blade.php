@@ -3,9 +3,9 @@
 @if (Request::route()->getName() == 'actividades_finalizar_perfil_operacion')
     <div class="form-group form-float">
         <div class="form-line">
-            <textarea name="RLS_Descripcion" id="RLS_Descripcion" cols="30" rows="5"
+            <textarea name="ACT_FIN_Descripcion" id="ACT_FIN_Descripcion" cols="30" rows="5"
                 class="form-control no-resize" maxlength="1000"
-                required>{{old('RLS_Descripcion', $rol->RLS_Descripcion ?? '')}}</textarea>
+                required>{{old('ACT_FIN_Descripcion', $rol->RLS_Descripcion ?? '')}}</textarea>
             <label class="form-label">Descripción para la entrega de la Actividad</label>
         </div>
     </div>

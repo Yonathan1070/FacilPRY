@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
+use App\Http\Requests\ValidacionUsuario;
 
 class ClientesController extends Controller
 {
@@ -18,6 +19,7 @@ class ClientesController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $clientes = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
@@ -26,7 +28,7 @@ class ClientesController extends Controller
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
             ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
             ->get();
-        return view('director.clientes.listar', compact('clientes'));
+        return view('director.clientes.listar', compact('clientes', 'datos'));
     }
 
     /**
@@ -36,7 +38,8 @@ class ClientesController extends Controller
      */
     public function crear()
     {
-        return view('director.clientes.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('director.clientes.crear', compact('datos'));
     }
 
     /**
@@ -45,7 +48,7 @@ class ClientesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionUsuario $request)
     {
         Usuarios::create([
             'USR_Tipo_Documento' => $request['USR_Tipo_Documento'],
@@ -58,6 +61,7 @@ class ClientesController extends Controller
             'USR_Correo' => $request['USR_Correo'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['password']),
+            'USR_Empresa_Id' => $request->id
         ]);
         $cliente = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
         UsuariosRoles::create([
@@ -87,8 +91,9 @@ class ClientesController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cliente = Usuarios::findOrFail($id);
-        return view('director.clientes.editar', compact('cliente'));
+        return view('director.clientes.editar', compact('cliente', 'datos'));
     }
 
     /**
@@ -98,7 +103,7 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(Request $request, $id)
+    public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update($request->all());
         return redirect()->route('clientes_director')->with('mensaje', 'Cliente actualizado con exito');

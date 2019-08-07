@@ -12,6 +12,8 @@ use App\Models\Tablas\HorasActividad;
 use PDF;
 use Illuminate\Http\Response;
 use App\Models\Tablas\ActividadesFinalizadas;
+use App\Models\Tablas\Usuarios;
+use App\Models\Tablas\Empresas;
 
 class ActividadesController extends Controller
 {
@@ -25,41 +27,48 @@ class ActividadesController extends Controller
         $hoy = new DateTime();
         $hoy->format('Y-m-d H:i:s');
 
-        $actividadesEstancadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Estancado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '>', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $actividadesEstancadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*')
+            ->where('a.ACT_Estado_Actividad', '=', 'Estancado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
+            ->orderBy('a.id', 'ASC')
             ->get();
-        $actividadesProceso = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->join('TBL_Horas_Actividad', 'TBL_Horas_Actividad.HRS_ACT_Actividad_Id', '=', 'TBL_Actividades.id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Horas_Actividad.HRS_ACT_Cantidad_Horas')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'En Proceso')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '>', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $actividadesProceso = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.HRS_ACT_Cantidad_Horas', 'af.*')
+            ->where('a.ACT_Estado_Actividad', '=', 'En Proceso')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
+            ->orderBy('a.id', 'ASC')
+            ->groupBy('a.id')
             ->get();
-        $actividadesAtrasadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '<>', 'Finalizado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '<', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $actividadesAtrasadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->select('a.id AS ID_Actividad','a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
+            ->where('a.ACT_Estado_Actividad', '<>', 'Finalizado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '<', $hoy)
+            ->orderBy('a.id', 'ASC')
+            ->groupBy('af.ACT_FIN_Actividad_Id')
             ->get();
 
-        $actividadesFinalizadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->join('TBL_Actividades_Finalizadas', 'TBL_Actividades_Finalizadas.ACT_FIN_Actividad_Id', '=', 'TBL_Actividades.Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Actividades_Finalizadas.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Finalizado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*')
+            ->where('a.ACT_Estado_Actividad', '<>', 'En Proceso')
+            ->where('a.ACT_Estado_Actividad', '<>', 'Estancado')
+            ->where('af.ACT_FIN_Estado', '<>', 'Rechazado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->orderBy('a.id', 'ASC')
             ->get();
-        return view('perfiloperacion.actividades.listar', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas'));
+        return view('perfiloperacion.actividades.listar', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos'));
     }
 
     /**
@@ -72,13 +81,14 @@ class ActividadesController extends Controller
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = Actividades::select('TBL_Actividades.*')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
+            ->where('TBL_Actividades.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('TBL_Actividades.id', '=', $id)
             ->first();
         $horasRestantes = $hoy->diffInHours($actividades->ACT_Fecha_Fin_Actividad);
 
-        return view('perfiloperacion/actividades/asignacion', compact('horasRestantes', 'id'));
+        return view('perfiloperacion/actividades/asignacion', compact('horasRestantes', 'id', 'datos'));
     }
 
     public function guardarHoras(Request $request)
@@ -99,41 +109,50 @@ class ActividadesController extends Controller
         $hoy = new DateTime();
         $hoy->format('Y-m-d H:i:s');
 
-        $actividadesEstancadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Estancado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '>', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $empresa = Empresas::findOrFail($datos->USR_Empresa_Id);
+        $actividadesEstancadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*')
+            ->where('a.ACT_Estado_Actividad', '=', 'Estancado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
+            ->orderBy('a.id', 'ASC')
             ->get();
-        $actividadesProceso = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->join('TBL_Horas_Actividad', 'TBL_Horas_Actividad.HRS_ACT_Actividad_Id', '=', 'TBL_Actividades.id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Horas_Actividad.HRS_ACT_Cantidad_Horas')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'En Proceso')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '>', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $actividadesProceso = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.HRS_ACT_Cantidad_Horas', 'af.*')
+            ->where('a.ACT_Estado_Actividad', '=', 'En Proceso')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
+            ->orderBy('a.id', 'ASC')
+            ->groupBy('a.id')
             ->get();
-        $actividadesAtrasadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '<>', 'Finalizado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.ACT_Fecha_Fin_Actividad', '<', $hoy)
-            ->orderBy('TBL_Actividades.id', 'ASC')
-            ->get();
-        $actividadesFinalizadas = DB::table('TBL_Actividades')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.id', '=', 'TBL_Actividades.ACT_Proyecto_Id')
-            ->join('TBL_Actividades_Finalizadas', 'TBL_Actividades_Finalizadas.ACT_FIN_Actividad_Id', '=', 'TBL_Actividades.Id')
-            ->select('TBL_Actividades.id AS ID_Actividad','TBL_Actividades.*', 'TBL_Proyectos.*', 'TBL_Actividades_Finalizadas.*')
-            ->where('TBL_Actividades.ACT_Estado_Actividad', '=', 'Finalizado')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
-            ->orderBy('TBL_Actividades.id', 'ASC')
+        $actividadesAtrasadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->select('a.id AS ID_Actividad','a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
+            ->where('a.ACT_Estado_Actividad', '<>', 'Finalizado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.ACT_Fecha_Fin_Actividad', '<', $hoy)
+            ->orderBy('a.id', 'ASC')
+            ->groupBy('af.ACT_FIN_Actividad_Id')
             ->get();
 
-        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas'));
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*')
+            ->where('a.ACT_Estado_Actividad', '<>', 'En Proceso')
+            ->where('a.ACT_Estado_Actividad', '<>', 'Estancado')
+            ->where('af.ACT_FIN_Estado', '<>', 'Rechazado')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->orderBy('a.id', 'ASC')
+            ->get();
+
+        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'empresa'));
 
         $fileName = 'Actividades'.session()->get('Usuario_Nombre');
         return $pdf->download($fileName);
@@ -141,11 +160,11 @@ class ActividadesController extends Controller
 
     public function descargarDocumentoSoporte($id)
     {
-        $actividad = DB::table('TBL_Actividades')
-        ->select('TBL_Actividades.ACT_Documento_Soporte_Actividad')
-        ->where('TBL_Actividades.id', '=', $id)
+        $actividad = DB::table('TBL_Actividades as a')
+        ->select('a.ACT_Documento_Soporte_Actividad')
+        ->where('a.id', '=', $id)
         ->first();
-        return response()->download($actividad->ACT_Documento_Soporte_Actividad);
+        return response()->download(public_path().'/documentos_soporte/'.$actividad->ACT_Documento_Soporte_Actividad);
     }
 
     public function finalizar($id)
@@ -153,27 +172,27 @@ class ActividadesController extends Controller
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = Actividades::select('TBL_Actividades.*')
-            ->where('TBL_Actividades.ACT_Usuario_Id', '=', session()->get('Usuario_Id'))
+            ->where('TBL_Actividades.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('TBL_Actividades.id', '=', $id)
             ->first();
 
-        return view('perfiloperacion.actividades.finalizar', compact('id'));
+        return view('perfiloperacion.actividades.finalizar', compact('id', 'datos'));
     }
 
     public function guardarFinalizar(Request $request){
         if ($request->hasFile('ACT_FIN_Documento_Soporte')) {
             if ($request->file('ACT_FIN_Documento_Soporte')->isValid()) {
                 $archivo = time().'.'.$request->file('ACT_FIN_Documento_Soporte')->getClientOriginalName();
-                $mover = $request->ACT_FIN_Documento_Soporte->move(public_path('documentos_soporte'), $archivo);
-                $ruta = $mover->getRealPath();
+                $request->ACT_FIN_Documento_Soporte->move(public_path('documentos_soporte'), $archivo);
             }
         }else{
             return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
         }
         ActividadesFinalizadas::create([
-            'ACT_FIN_Descripcion' => $request['RLS_Descripcion'],
-            'ACT_FIN_Documento_Soporte' => $ruta,
+            'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
+            'ACT_FIN_Documento_Soporte' => $archivo,
             'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
             'ACT_FIN_Estado' => 'Esperando Aprobación',
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now()

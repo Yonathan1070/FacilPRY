@@ -20,7 +20,7 @@ Crud Perfil de Operación
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_perfil_director', ['id' => $perfil->id])}}" method="POST">
+                    <form id="form_validation" action="{{route('actualizar_perfil_operacion_director', ['id' => $perfil->id])}}" method="POST">
                         @csrf @method("put")
                         @include('director.perfiloperacion.form')
                         <a class="btn btn-danger waves-effect" href="{{route('perfil_director')}}">CANCELAR</a>

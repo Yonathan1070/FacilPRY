@@ -18,7 +18,7 @@ class PermisosController extends Controller
      */
     public function index()
     {  
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rols = Roles::orderBy('id')->pluck('RLS_Nombre', 'id')->toArray();
         $menus = Menu::getMenu();
         $menusRols = Menu::with('roles')->get()->pluck('roles', 'id')->toArray();

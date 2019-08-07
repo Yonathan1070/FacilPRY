@@ -16,7 +16,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::orderBy('id')->get();
         return view('administrador.roles.listar', compact('roles', 'datos'));
     }

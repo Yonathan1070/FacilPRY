@@ -34,7 +34,6 @@ Crud Proyectos
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Valor</th>
                                     <th>Cliente</th>
                                     <th class="width70"></th>
                                 </tr>
@@ -44,10 +43,9 @@ Crud Proyectos
                                     <tr>
                                         <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
                                         <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
-                                        <td>{{$proyecto->PRY_Valor_Proyecto}}</td>
                                         <td>{{$proyecto->USR_Nombre.' '.$proyecto->USR_Apellido}}</td>
                                         <td>
-                                            <a href="{{route('requerimientos_director', ['idp'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
+                                            <a href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
                                                 <i class="material-icons text-info" style="font-size: 17px;">description</i>
                                             </a>
                                             <a href="{{route('actividades_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">

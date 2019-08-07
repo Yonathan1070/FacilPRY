@@ -19,9 +19,9 @@ Crud Proyectos
                 </div>
                 <div class="body table-responsive">
                     @if (count($cobros)<=0)
-                    <div class="alert alert-success">
-                        No hay cobros pendientes
-                </div>
+                        <div class="alert alert-success">
+                            No hay cobros pendientes
+                        </div>
                     @else
                         <table class="table table-striped table-bordered table-hover" id="tabla-data">
                             <thead>

@@ -28,4 +28,13 @@ class ValidacionRol extends FormRequest
             'RLS_Descripcion' => 'required',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'RLS_Nombre.required' => 'El Nombre del Rol es requerido.',
+            'RLS_Nombre.unique' => 'El Nombre del Rol ya está en el sistema.',
+            'RLS_Descripcion.required'  => 'La Descripción del Rol es requerida.',
+        ];
+    }
 }

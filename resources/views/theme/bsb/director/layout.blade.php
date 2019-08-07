@@ -59,7 +59,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @include("theme.bsb.director.menu")
+        @extends("theme.bsb.director.menu")
     </section>
 
     <section class="content">

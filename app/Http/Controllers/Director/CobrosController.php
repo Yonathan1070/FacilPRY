@@ -10,6 +10,7 @@ use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Carbon;
 use PDF;
+use App\Models\Tablas\Empresas;
 
 class CobrosController extends Controller
 {
@@ -20,6 +21,7 @@ class CobrosController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cobros = DB::table('TBL_Actividades as a')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
@@ -32,7 +34,7 @@ class CobrosController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->groupBy('a.id')
+            ->groupBy('fc.FACT_Cliente_Id')
             ->get();
         /*$proyectos = DB::table('TBL_Proyectos as p')
             ->join('TBL_Actividades as a', 'p.id', '=', 'a.ACT_Proyecto_Id')
@@ -41,7 +43,7 @@ class CobrosController extends Controller
             ->where('a.ACT_Estado_Actividad', '=', 'Facturado')
             ->groupBy('a.id')
             ->get();*/
-        return view('director.cobros.listar', compact('cobros', 'proyectos'));
+        return view('director.cobros.listar', compact('cobros', 'proyectos', 'datos'));
     }
 
     /**
@@ -51,7 +53,7 @@ class CobrosController extends Controller
      */
     public function agregarFactura($idA, $idC)
     {
-        $cliente = Usuarios::findOrFail($idC)->first();
+        $cliente = Usuarios::findOrFail($idC);
         Actividades::findOrFail($idA)->update(['ACT_Estado_Actividad' => 'Facturado']);
         FacturasCobro::create([
             'FACT_Actividad_Id' => $idA,
@@ -80,14 +82,15 @@ class CobrosController extends Controller
             ->select('p.*', 'a.*', 'u.*', 'fc.*')
             ->where('p.id', '=', $id)
             ->get();
+        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
         $total = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('a.*')
-            ->groupBy('a.id')
+            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
+            ->groupBy('a.ACT_Proyecto_Id')
             ->where('p.id', '=', $id)
-            ->sum('a.ACT_Costo_Actividad');
+            ->first();
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
@@ -96,7 +99,8 @@ class CobrosController extends Controller
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
-            'total'=>$total];
+            'total'=>$total,
+            'empresa'=>$empresa];
 
         //return view('includes.pdf.factura.factura', compact('datos'));
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));

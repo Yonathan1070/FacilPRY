@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Requerimientos;
+use App\Models\Tablas\Usuarios;
+use App\Http\Requests\ValidacionRequerimiento;
 
 class RequerimientosController extends Controller
 {
@@ -17,13 +19,14 @@ class RequerimientosController extends Controller
      */
     public function index($idP)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $requerimientos = DB::table('TBL_Requerimientos')
             ->join('TBL_Proyectos', 'TBL_Proyectos.Id', '=', 'TBL_Requerimientos.REQ_Proyecto_Id')
             ->where('TBL_Requerimientos.REQ_Proyecto_Id', '=', $idP)
             ->orderBy('TBL_Requerimientos.Id', 'ASC')
             ->get();
-        $proyecto = Proyectos::findOrFail($idP)->first();
-        return view('director.requerimientos.listar', compact('requerimientos', 'proyecto'));
+        $proyecto = Proyectos::findOrFail($idP);
+        return view('director.requerimientos.listar', compact('requerimientos', 'proyecto', 'datos'));
     }
 
     /**
@@ -33,8 +36,9 @@ class RequerimientosController extends Controller
      */
     public function crear($idP)
     {
-        $proyecto = Proyectos::findOrFail($idP)->first();
-        return view('director.requerimientos.crear', compact('proyecto'));
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $proyecto = Proyectos::findOrFail($idP);
+        return view('director.requerimientos.crear', compact('proyecto', 'datos'));
     }
 
     /**
@@ -43,7 +47,7 @@ class RequerimientosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionRequerimiento $request)
     {
         Requerimientos::create($request->all());
         return redirect()->route('crear_requerimiento_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
@@ -68,9 +72,10 @@ class RequerimientosController extends Controller
      */
     public function editar($idP, $idR)
     {
-        $proyecto = Proyectos::findOrFail($idP)->first();
-        $requerimiento = Requerimientos::findOrFail($idR)->first();
-        return view('director.requerimientos.editar', compact('proyecto', 'requerimiento'));
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $proyecto = Proyectos::findOrFail($idP);
+        $requerimiento = Requerimientos::findOrFail($idR);
+        return view('director.requerimientos.editar', compact('proyecto', 'requerimiento', 'datos'));
     }
 
     /**
@@ -80,7 +85,7 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(Request $request, $idR)
+    public function actualizar(ValidacionRequerimiento $request, $idR)
     {
         Requerimientos::findOrFail($idR)->update($request->all());
         return redirect()->route('requerimientos_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');

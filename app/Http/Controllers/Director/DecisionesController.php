@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Decisiones;
 use App\Http\Requests\ValidacionDecision;
+use App\Models\Tablas\Usuarios;
 
 class DecisionesController extends Controller
 {
@@ -16,8 +17,9 @@ class DecisionesController extends Controller
      */
     public function index()
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = Decisiones::orderBy('id')->get();
-        return view('director.decisiones.listar', compact('decisiones'));
+        return view('director.decisiones.listar', compact('decisiones', 'datos'));
     }
 
     /**
@@ -27,7 +29,8 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
-        return view('director.decisiones.crear');
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('director.decisiones.crear', compact('datos'));
     }
 
     /**
@@ -53,8 +56,9 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
-        return view('director.decisiones.editar', compact('decision'));
+        return view('director.decisiones.editar', compact('decision', 'datos'));
     }
 
     /**

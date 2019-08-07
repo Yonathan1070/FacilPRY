@@ -5,10 +5,13 @@ PDF Actividades
 @section('contenido')
 <!-- Multiple Items To Be Open -->
 <?php
-    $path = base_path().'\public\imagenes\logo\LOGO INK.png';
-    $type = pathinfo($path, PATHINFO_EXTENSION);
-    $data = file_get_contents($path);
-    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    $base64=null;
+    if($empresa->EMP_Logo_Empresa != null){
+        $path = base_path().'\public\assets\bsb\images\Logos/'.$empresa->EMP_Logo_Empresa;
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+    }
 ?>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -88,6 +91,13 @@ PDF Actividades
                                                         <th>Actividad</th>
                                                         <th>Descripción</th>
                                                         <th>Fecha Limite de Entrega</th>
+                                                        @foreach ($actividadesAtrasadas as $actividad)
+                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                <th>Observación</th>
+                                                                <th>Estado</th>
+                                                                @break
+                                                            @endif
+                                                        @endforeach
                                                         <th>Horas Asignadas</th>
                                                     </tr>
                                                 </thead>
@@ -98,6 +108,10 @@ PDF Actividades
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
+                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                <td>{{$actividad->ACT_FIN_Respuesta}}</td>
+                                                                <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                            @endif
                                                             <td>{{$actividad->HRS_ACT_Cantidad_Horas}}</td>
                                                         </tr>
                                                     @endforeach
@@ -127,6 +141,13 @@ PDF Actividades
                                                         <th>Actividad</th>
                                                         <th>Descripción</th>
                                                         <th>Fecha Limite de Entrega</th>
+                                                        @foreach ($actividadesAtrasadas as $actividad)
+                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                <th>Observación</th>
+                                                                <th>Estado</th>
+                                                                @break
+                                                            @endif
+                                                        @endforeach
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -136,6 +157,10 @@ PDF Actividades
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
+                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                <td>{{$actividad->ACT_FIN_Respuesta}}</td>
+                                                                <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                            @endif
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

@@ -17,7 +17,7 @@ class DecisionesController extends Controller
      */
     public function index()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'))->first();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = Decisiones::orderBy('id')->get();
         return view('administrador.decisiones.listar', compact('decisiones', 'datos'));
     }

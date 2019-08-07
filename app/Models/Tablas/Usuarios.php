@@ -19,7 +19,8 @@ class Usuarios extends Authenticatable
         'USR_Correo',
         'USR_Nombre_Usuario',
         'password',
-        'USR_Foto_Perfil'];
+        'USR_Foto_Perfil',
+        'USR_Empresa_Id'];
     protected $guarded = ['id'];
     
     public function roles(){

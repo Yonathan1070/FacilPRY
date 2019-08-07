@@ -1,3 +1,4 @@
+<input type="hidden" name="id" id="id" value="{{$datos->USR_Empresa_Id}}">
 @if (Request::route()->getName() == 'editar_cliente_director')
     <div class="row clearfix">
         <div class="col-lg-6">

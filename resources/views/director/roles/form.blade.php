@@ -1,3 +1,4 @@
+<input type="hidden" name="id" id="id" value="{{$datos->USR_Empresa_Id}}">
 <div class="form-group form-float">
         <div class="form-line">
             <input type="text" class="form-control" name="RLS_Nombre" id="RLS_Nombre" value="{{old('RLS_Nombre', $rol->RLS_Nombre ?? '')}}" maxlength="30"

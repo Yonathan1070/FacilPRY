@@ -35,8 +35,8 @@ Actividades
                                     <div id="collapseOne_19" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesEstancadas)<=0) 
-                                                <div class="alert alert-warning">
-                                                    <strong>Advertencia!</strong> No tiene actividades asignadas
+                                                <div class="alert alert-info">
+                                                    No hay datos que mostrar.
                                                 </div>
                                             @else
                                                 <table class="table table-striped table-bordered table-hover" id="tabla-data">
@@ -92,8 +92,8 @@ Actividades
                                     <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesProceso)<=0) 
-                                                <div class="alert alert-warning">
-                                                    <strong>Advertencia!</strong> No tiene actividades en proceso
+                                                <div class="alert alert-info">
+                                                    No hay datos que mostrar.
                                                 </div>
                                             @else
                                                 <table class="table table-striped table-bordered table-hover" id="tabla-data">
@@ -102,7 +102,14 @@ Actividades
                                                             <th>Proyecto</th>
                                                             <th>Actividad</th>
                                                             <th>Descripción</th>
-                                                            <th>Fecha Limite de Entrega</th>
+                                                            <th>Fecha de Entrega</th>
+                                                            @foreach ($actividadesProceso as $actividad)
+                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                    <th>Observación</th>
+                                                                    <th>Estado</th>
+                                                                    @break
+                                                                @endif
+                                                            @endforeach
                                                             <th>Horas Asignadas</th>
                                                             <th class="width70"></th>
                                                         </tr>
@@ -114,6 +121,10 @@ Actividades
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
+                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                    <td>{{$actividad->ACT_FIN_Respuesta}}</td>
+                                                                    <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                @endif
                                                                 <td>{{$actividad->HRS_ACT_Cantidad_Horas}}</td>
                                                                 <td>
                                                                     <a href="#" class="btn-accion-tabla tooltipsC"
@@ -147,8 +158,8 @@ Actividades
                                     <div id="collapseThree_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesAtrasadas)<=0)
-                                                <div class="alert alert-success">
-                                                    <strong>Felicitaciones!</strong> No tiene actividades atrasadas
+                                                <div class="alert alert-info">
+                                                    No hay datos que mostrar.
                                                 </div>
                                             @else
                                                 <table class="table table-striped table-bordered table-hover" id="tabla-data">
@@ -158,6 +169,13 @@ Actividades
                                                             <th>Actividad</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha Limite de Entrega</th>
+                                                            @foreach ($actividadesAtrasadas as $actividad)
+                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                    <th>Observación</th>
+                                                                    <th>Estado</th>
+                                                                    @break
+                                                                @endif
+                                                            @endforeach
                                                             <th class="width70"></th>
                                                         </tr>
                                                     </thead>
@@ -168,6 +186,10 @@ Actividades
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
+                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                    <td>{{$actividad->ACT_FIN_Respuesta}}</td>
+                                                                    <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                @endif
                                                                 <td>
                                                                     <a href="#" class="btn-accion-tabla tooltipsC"
                                                                         title="Solicitar más Tiempo">
@@ -194,8 +216,8 @@ Actividades
                                     <div id="collapseFour_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesFinalizadas)<=0)
-                                                <div class="alert alert-success">
-                                                    Aún no tiene tareas finalizadas.
+                                                <div class="alert alert-info">
+                                                    No hay datos que mostrar.
                                                 </div>
                                             @else
                                                 <table class="table table-striped table-bordered table-hover" id="tabla-data">

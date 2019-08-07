@@ -1,3 +1,4 @@
+<input type="hidden" name="DSC_Empresa_Id" id="DSC_Empresa_Id" value="{{$datos->USR_Empresa_Id}}">
 <div class="form-group form-float">
     <div class="form-line">
         <input type="text" class="form-control" name="DCS_Nombre_Decision" id="DCS_Nombre_Decision"

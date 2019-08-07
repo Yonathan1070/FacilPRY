@@ -245,20 +245,24 @@ Factura
             <div class="body">
                 <div class="row clearfix">
                     <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
-                            <?php
-                            $path = base_path().'\public\imagenes\logo\LOGO INK.png';
-                            $type = pathinfo($path, PATHINFO_EXTENSION);
-                            $data = file_get_contents($path);
-                            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                        <?php
+                            $base64=null;
+                            if($datos['empresa']->EMP_Logo_Empresa != null){
+                                $path = base_path().'\public\assets\bsb\images\Logos/'.$datos['empresa']->EMP_Logo_Empresa;
+                                $type = pathinfo($path, PATHINFO_EXTENSION);
+                                $data = file_get_contents($path);
+                                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                            }
                         ?>
                         <header>
                             <h1>FACTURA DE COBRO</h1>
                             <address>
-                                <p>Jonathan Neal</p>
-                                <p>101 E. Chapman Ave<br>Orange, CA 92866</p>
-                                <p>(800) 555-1234</p>
+                                <p>{{$datos['empresa']->EMP_Nombre_Empresa}}</p>
+                                <p>Dirección: {{$datos['empresa']->EMP_Direccion_Empresa}}<br>Correo Electrónico: {{$datos['empresa']->EMP_Correo_Empresa}}</p>
+                                <p>Telefono: {{$datos['empresa']->EMP_Telefono_Empresa}}</p>
+                                <p>NIT: {{$datos['empresa']->EMP_NIT_Empresa}}</p>
                             </address>
-                            <img alt="" height="150px" src="{{$base64}}">
+                            <img height="200" src="{{$base64}}">
                             
                         </header>
                         <article>
@@ -277,7 +281,7 @@ Factura
                                 </tr>
                                 <tr>
                                     <th><span>Monto</span></th>
-                                    <td><span id="prefix">$</span><span>{{$datos['total']}}</span></td>
+                                    <td><span id="prefix">$</span><span>{{$datos['total']->Costo}}</span></td>
                                 </tr>
                             </table>
                             <table class="inventory">
@@ -301,7 +305,7 @@ Factura
                             <table class="balance">
                                 <tr>
                                     <th><span>Total</span></th>
-                                    <td><span data-prefix>$</span><span>{{$datos['total']}}</span></td>
+                                    <td><span data-prefix>$</span><span>{{$datos['total']->Costo}}</span></td>
                                 </tr>
                             </table>
                         </article>

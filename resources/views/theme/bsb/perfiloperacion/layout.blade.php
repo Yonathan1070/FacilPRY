@@ -57,7 +57,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @include("theme.bsb.perfiloperacion.menu")
+        @extends("theme.bsb.perfiloperacion.menu")
     </section>
 
     <section class="content">
