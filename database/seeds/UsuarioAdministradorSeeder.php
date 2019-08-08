@@ -120,7 +120,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Documento' => '97021021982',
             'USR_Nombre' => 'Camilo',
             'USR_Apellido'  => 'Rincon',
-            'USR_Fecha_Nacimiento' => '1989/06/03',
+            'USR_Fecha_Nacimiento' => '1989/06/06',
             'USR_Direccion_Residencia' => 'Calle 5 # 13-18',
             'USR_Telefono' => '3183684338',
             'USR_Correo' => 'camyonathan@hotmail.com',
