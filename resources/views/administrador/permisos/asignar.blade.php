@@ -18,26 +18,28 @@ Sistema de Permisos
                     </h2>
                 </div>
                 <div class="body table-responsive">
-                    @if (count($usuarios)<=0) 
+                    @if (count($roles)<=0) 
                         <div class="alert alert-warning">
                             No hay datos que mostrar
                         </div>
                     @else
-                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
                             <thead>
                                 <tr>
-                                    <th>Nombre y Apellido</th>
+                                    <th>Rol</th>
                                     <th class="width70"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($usuarios as $usuario)
+                                @foreach ($roles as $rol)
                                 <tr>
-                                    <td>{{$usuario->USR_Nombre.' '.$usuario->USR_Apellido}}</td>
+                                    <td>{{$rol->RLS_Nombre}}</td>
                                     <td>
-                                        <a href="{{route('asignar_rol_usuario_administrador', ['id'=>$usuario->id])}}"
-                                            class="btn-accion-tabla tooltipsC" title="Asignar Roles">
-                                            <i class="material-icons text-info" style="font-size: 17px;">merge_type</i>
+                                        <a href="{{route('agregar_rol_administrador', ['idU' => $id, 'idR' => $rol->id])}}" class="btn-accion-tabla tooltipsC" title="Asignar">
+                                            <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
+                                        </a>
+                                        <a href="{{route('quitar_rol_administrador', ['idU' => $id, 'idR' => $rol->id])}}" class="btn-accion-tabla tooltipsC" title="Quitar">
+                                            <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
                                         </a>
                                     </td>
                                 </tr>

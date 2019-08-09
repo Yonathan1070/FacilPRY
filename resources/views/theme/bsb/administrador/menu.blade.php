@@ -55,7 +55,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("permisos_administrador")}}">
+                <a href="{{route("asignar_rol_administrador")}}">
                     <i class="material-icons">assignment_ind</i>
                     <span>Permisos</span>
                 </a>

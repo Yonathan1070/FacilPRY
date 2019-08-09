@@ -56,15 +56,15 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::put('editar', 'EmpresaController@actualizarDatos')->name('actualizar_empresa_administrador');
         Route::post('foto', 'EmpresaController@actualizarLogo')->name('actualizar_logo_empresa_administrador');
     });
-    //Enroutamiento para Sistema de Permisos
-    Route::group(['prefix' => 'permisos'], function () {
-        Route::get('', 'PermisosController@index')->name('permisos_administrador');
-        Route::get('crear-menu', 'PermisosController@crear')->name('crear_menu_administrador');
-        Route::post('crear-menu', 'PermisosController@guardar')->name('guardar_menu_administrador');
-        Route::post('asignar-permiso', 'PermisosController@asignarPermiso')->name('asignar_permiso_administrador');
-        Route::get('{id}/editar', 'PermisosController@editar')->name('editar_permiso_administrador');
-        Route::put('{id}', 'PermisosController@actualizar')->name('actualizar_permiso_administrador');
-        Route::delete('{id}', 'PermisosController@eliminar')->name('eliminar_permiso_administrador');
+    //Enroutamiento para Sistema de Asignación de Roles
+    Route::group(['prefix' => 'asignar-rol'], function () {
+        Route::get('', 'PermisosController@index')->name('asignar_rol_administrador');
+        //Route::post('crear-menu', 'PermisosController@guardar')->name('guardar_menu_administrador');
+        Route::get('{id}', 'PermisosController@asignarRol')->name('asignar_rol_usuario_administrador');
+        Route::get('{idU}-{idR}/agregar', 'PermisosController@agregar')->name('agregar_rol_administrador');
+        Route::get('{idU}-{idR}/quitar', 'PermisosController@quitar')->name('quitar_rol_administrador');
+        //Route::put('{id}', 'PermisosController@actualizar')->name('actualizar_permiso_administrador');
+        //Route::delete('{id}', 'PermisosController@eliminar')->name('eliminar_permiso_administrador');
     });
 });
 
