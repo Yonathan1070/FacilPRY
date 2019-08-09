@@ -7898,7 +7898,8 @@ fieldset[disabled] .form-control {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     -ms-border-radius: 50%;
-    border-radius: 50%; }
+    border-radius: 50%; 
+    }
 
 .profile-card .profile-body .content-area {
   text-align: center;
@@ -8211,3 +8212,31 @@ html.ie11 .dropdown-menu ul.menu li a {
 
 html.ie11 .bs-searchbox .form-control {
   width: 90%; }
+
+  .content_img .text{
+    background: black;
+    color: white;
+    margin-bottom: 5px;
+    font-family: sans-serif;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: visibility 0s, opacity 0.5s linear; 
+    transition: visibility 0s, opacity 0.5s linear;
+    position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+   }
+
+   .content_img:hover{
+    cursor: pointer;
+   }
+   
+   .content_img:hover .text{
+       width: 30%;
+       height: 8%;
+    visibility: visible;
+    opacity: 0.7;
+       margin: 2px;
+       border-radius: 50%; 
+   }

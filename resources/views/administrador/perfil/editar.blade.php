@@ -9,15 +9,16 @@ Editar Perfil
                     <div class="card profile-card">
                         <div class="profile-header">&nbsp;</div>
                         <div class="profile-body">
-                            <div class="image-area">
+                            <div class="image-area content_img">
                                 <form action="" method="post" style="display: none" id="fotoForm" name="fotoForm" enctype="multipart/form-data">
                                     <input type="file" id="USR_Foto_Perfil"/>
                                 </form>
-                                @if ($datos->USR_Foto_Perfil==null)
+                                    @if ($datos->USR_Foto_Perfil==null)
                                         <img id="fotoPerfil" src="{{asset("assets/bsb/images/user-lg.ico")}}" alt="AdminBSB - Profile Image" />
-                                @else
+                                    @else
                                         <img id="fotoPerfil" src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil)}}" width="128" height="128" alt="AdminBSB - Profile Image" />
-                                @endif
+                                    @endif
+                                    <div class="text">Cambiar Foto</div>
                             </div>
                             <div class="content-area">
                                 <h3>{{$datos->USR_Nombre.' '.$datos->USR_Apellido}}</h3>

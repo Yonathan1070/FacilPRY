@@ -11,6 +11,7 @@
                 <div class="card">
                     <div class="body">
                         @include('includes.form-error')
+                        @include('includes.form-exito')
                         <form action="{{route('login_post')}}" method="POST">
                             @csrf
                             <div class="msg">Inicio de Sesión</div>
@@ -41,7 +42,7 @@
                                     <a href="sign-up.html">Registrate Ahora!</a>
                                 </div>
                                 <div class="col-xs-7 align-right">
-                                    <a href="forgot-password.html">¿Olvidaste tu contraseña?</a>
+                                    <a href="{{route('recuperar_clave')}}">¿Olvidaste tu contraseña?</a>
                                 </div>
                             </div>
                         </form>

@@ -189,6 +189,10 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('iniciar-sesion', 'LoginController@index')->name('login');
     Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
     Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');
+    Route::get('recuperar-clave', 'RecuperarClaveController@showLinkRequestForm')->name('recuperar_clave');
+    Route::post('enviar-correo', 'RecuperarClaveController@sendResetLinkEmail')->name('enviar_correo');
+    Route::get('actualizar-clave/{token}', 'RecuperarClaveController@cambiarClave')->name('cambiar_clave');
+    Route::post('actualizar-clave', 'RecuperarClaveController@actualizarClave')->name('actualizar_clave');
 });
 
 //Enrutamiento Perfil de Operacion
