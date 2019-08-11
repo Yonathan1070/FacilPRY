@@ -78,7 +78,7 @@ class ActividadesController extends Controller
             'ACT_Proyecto_Id' => $request['ACT_Proyecto_Id'],
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
             'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' 23:59:00',
-            'ACT_Costo_Actividad' => $request['ACT_Costo_Actividad'],
+            'ACT_Costo_Actividad' => 0,
             'ACT_Trabajador_Id' => $request['ACT_Usuario_Id'],
             'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
         ]);

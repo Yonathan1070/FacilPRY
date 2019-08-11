@@ -29,7 +29,6 @@ Crud Proyectos
                                     <th>Nombre</th>
                                     <th>Descripción</th>
                                     <th>Cliente</th>
-                                    <th>Valor</th>
                                     <th class="width70"></th>
                                 </tr>
                             </thead>
@@ -39,7 +38,6 @@ Crud Proyectos
                                         <td>{{$cobro->ACT_Nombre_Actividad}}</td>
                                         <td>{{$cobro->ACT_Descripcion_Actividad}}</td>
                                         <td>{{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}</td>
-                                        <td>{{$cobro->ACT_Costo_Actividad}}</td>
                                         <td>
                                             <a href="{{route('agregar_factura_director', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}">
                                                 <i class="material-icons text-info" style="font-size: 17px;">note_add</i>
@@ -83,9 +81,11 @@ Crud Proyectos
                                         <td>{{$proyecto->USR_Nombre.' '.$proyecto->USR_Apellido}}</td>
                                         <td>{{$proyecto->No_Actividades}}</td>
                                         <td>
-                                            <a href="{{route('generar_factura_director', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
-                                                <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
-                                            </a>
+                                            @if ($proyecto->ACT_Costo_Actividad != 0)
+                                                <a href="{{route('generar_factura_director', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                    <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

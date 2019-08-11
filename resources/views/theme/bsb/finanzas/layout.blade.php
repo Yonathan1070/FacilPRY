@@ -93,6 +93,9 @@
     <!-- Demo Js -->
     <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 
+    <script src="{{asset("assets/js/funciones.js")}}"></script>
+    <script src="{{asset("assets/js/scripts.js")}}"></script>
+    
     @yield('scripts')
 </body>
 

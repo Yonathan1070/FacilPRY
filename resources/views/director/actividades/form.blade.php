@@ -44,13 +44,6 @@
         </div>
     </div>
 </div>
-<div class="form-group form-float">
-    <div class="form-line">
-        <input type="number" class="form-control" name="ACT_Costo_Actividad" id="ACT_Costo_Actividad"
-            value="{{old('ACT_Costo_Actividad', $actividad->ACT_Costo_Actividad ?? '')}}" min="0" required>
-        <label class="form-label">Costo</label>
-    </div>
-</div>
 <div class="row clearfix">
     <div class="col-lg-6">
         <div class="form-group form-float">

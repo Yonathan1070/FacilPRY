@@ -29,7 +29,7 @@ class ValidacionActividad extends FormRequest
             'ACT_Documento_Soporte_Actividad' => 'max:500',
             'ACT_Fecha_Inicio_Actividad' => 'required|date|after:today|before:ACT_Fecha_Fin_Actividad',
             'ACT_Fecha_Fin_Actividad' => 'required|date|after:ACT_Fecha_Inicio_Actividad',
-            'ACT_Costo_Actividad' => 'required|numeric'
+            'ACT_Costo_Actividad' => 'numeric'
         ];
     }
 

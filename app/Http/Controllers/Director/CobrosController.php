@@ -34,6 +34,7 @@ class CobrosController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
+            ->where('a.ACT_Costo_Actividad', '<>', 0)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
         /*$proyectos = DB::table('TBL_Proyectos as p')
@@ -80,6 +81,7 @@ class CobrosController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'a.*', 'u.*', 'fc.*')
+            ->where('a.ACT_Costo_Actividad', '<>', 0)
             ->where('p.id', '=', $id)
             ->get();
         $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);

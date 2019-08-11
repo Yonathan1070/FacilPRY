@@ -24,6 +24,7 @@ class CrearTablaActividades extends Migration
             $table->dateTime('ACT_Fecha_Inicio_Actividad');
             $table->dateTime('ACT_Fecha_Fin_Actividad');
             $table->double('ACT_Costo_Actividad');
+            $table->date('ACT_Fecha_Pago');
             $table->unsignedBigInteger('ACT_Trabajador_Id');
             $table->foreign('ACT_Trabajador_Id', 'FK_Actividades_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('ACT_Requerimiento_Id');

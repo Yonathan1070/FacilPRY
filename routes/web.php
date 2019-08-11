@@ -72,6 +72,11 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
 Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => ['auth', 'cliente']], function () {
     Route::get('', 'InicioController@index')->name('inicio_cliente');
     Route::get('{id}/generar-pdf', 'InicioController@generarPdf')->name('generar_pdf_proyecto_cliente');
+    Route::get('{id}/factura', 'InicioController@generarFactura')->name('generar_factura_cliente');
+    Route::get('{id}/pagar', 'InicioController@pagar')->name('pagar_factura_cliente');
+    Route::get('{id}/info-pago', 'InicioController@informacionPago')->name('informacion_pago_cliente');
+    Route::get('respuesta-pago', 'InicioController@respuestaPago')->name('respuesta_pago_cliente');
+    Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
 
     //Enroutamiento para Editar Perfil
     Route::group(['prefix' => 'perfil'], function () {
@@ -173,6 +178,9 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
 // Enrutamiento Area de Finanzas
 Route::group(['prefix' => 'finanzas', 'namespace' => 'Finanzas', 'middleware' => ['auth', 'finanzas']], function () {
     Route::get('', 'InicioController@index')->name('inicio_finanzas');
+    Route::get('{id}', 'InicioController@agregarCosto')->name('agregar_costo_actividad_finanzas');
+    Route::put('cobro', 'InicioController@actualizarCosto')->name('actualizar_costo_actividad_finanzas');
+    Route::get('{id}/factura', 'InicioController@generarFactura')->name('generar_factura_finanzas');
 
     //Enroutamiento para Editar Perfil
     Route::group(['prefix' => 'perfil'], function () {

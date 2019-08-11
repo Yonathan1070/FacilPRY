@@ -20,8 +20,8 @@ class RequerimientosController extends Controller
     public function index($idP)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $requerimientos = DB::table('TBL_Requerimientos')
-            ->join('TBL_Proyectos', 'TBL_Proyectos.Id', '=', 'TBL_Requerimientos.REQ_Proyecto_Id')
+        $requerimientos = DB::table('TBL_Proyectos')
+            ->join('TBL_Requerimientos', 'TBL_Proyectos.Id', '=', 'TBL_Requerimientos.REQ_Proyecto_Id')
             ->where('TBL_Requerimientos.REQ_Proyecto_Id', '=', $idP)
             ->orderBy('TBL_Requerimientos.Id', 'ASC')
             ->get();

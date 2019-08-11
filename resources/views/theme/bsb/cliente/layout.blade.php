@@ -35,7 +35,7 @@
 
 <body class="theme-cyan">
     <!-- Cargador de Página -->
-    @include('includes/loader')
+    
     <!-- Fin Cargador de Página -->
     <!-- Top Bar -->
     <nav class="navbar">
