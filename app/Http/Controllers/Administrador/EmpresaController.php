@@ -66,10 +66,8 @@ class EmpresaController extends Controller
         $validator = Validator::make($request->all(), [
             'EMP_Logo_Empresa' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-
+        
         if ($validator->passes()) {
-
             $usuario = DB::table('TBL_Usuarios as u')
                 ->join('TBL_Empresas as e', 'u.USR_Empresa_Id', '=', 'e.id')
                 ->where('u.id', '=', session()->get('Usuario_Id'))->first();
@@ -81,14 +79,9 @@ class EmpresaController extends Controller
             $input = $request->all();
             $nombreArchivo = $input['EMP_Logo_Empresa'] = time() . '.' . $request->EMP_Logo_Empresa->getClientOriginalExtension();
             $request->EMP_Logo_Empresa->move(public_path('assets/bsb/images/Logos'), $input['EMP_Logo_Empresa']);
-
             Empresas::findOrFail($usuario->USR_Empresa_Id)->update(['EMP_Logo_Empresa' => $nombreArchivo]);
-
-
             return response()->json(['success' => 'Logo Actualizado']);
         }
-
-
         return response()->json(['error' => $validator->errors()->all()]);
     }
 

@@ -84,11 +84,7 @@ class InicioController extends Controller
             'ACT_FIN_Fecha_Respuesta' => Carbon::now()
         ]);
 
-        $actividad = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->select('a.id')
-            ->where('af.id', '=', $request->id)
-            ->first();
+        $actividad = $this->actividad($request->id);
         Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Actividad'=>'En Proceso']);
         return redirect()->route('inicio_tester')->with('mensaje', 'Respuesta envíada');
     }
@@ -102,11 +98,7 @@ class InicioController extends Controller
     public function respuestaAprobado($id)
     {
         ActividadesFinalizadas::findOrFail($id)->update(['ACT_FIN_Estado'=>'Aprobado']);
-        $actividad = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->select('a.id')
-            ->where('af.id', '=', $id)
-            ->first();
+        $actividad = $this->actividad($id);
         Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Actividad'=>'En Cobro']);
         return redirect()->route('inicio_tester')->with('mensaje', 'Respuesta envíada');
     }
@@ -118,9 +110,15 @@ class InicioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function actividad($id)
     {
-        //
+        $actividad = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->select('a.id')
+            ->where('af.id', '=', $id)
+            ->first();
+
+        return $actividad;
     }
 
     /**

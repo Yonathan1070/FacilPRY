@@ -36,6 +36,7 @@ class InicioController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
             ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
 
@@ -98,7 +99,7 @@ class InicioController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'a.*', 'u.*', 'fc.*')
             ->where('a.ACT_Costo_Actividad', '<>', 0)
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
             ->where('p.id', '=', $id)
             ->get();
         $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
@@ -109,6 +110,7 @@ class InicioController extends Controller
             ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
             ->groupBy('a.ACT_Proyecto_Id')
             ->where('p.id', '=', $id)
+            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
             ->first();
         foreach ($informacion as $info) {
             $factura = $info->id;

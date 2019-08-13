@@ -28,7 +28,6 @@ class DirectorProyectosController extends Controller
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
             ->orderBy('TBL_Usuarios.id', 'ASC')
             ->get();
-        //dd($directores);
         return view('administrador.director.listar', compact('directores', 'datos'));
     }
 
@@ -69,7 +68,7 @@ class DirectorProyectosController extends Controller
             'USR_RLS_Usuario_Id' => $director->id,
             'USR_RLS_Estado' => 1
         ]);
-        return redirect()->route('crear_director_administrador')->with('mensaje', 'Director de Proyectos agregado con exito');
+        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito');
     }
 
     /**
@@ -94,7 +93,7 @@ class DirectorProyectosController extends Controller
      */
     public function actualizar(ValidacionUsuario $request, $id)
     {
-        $director = Usuarios::findOrFail($id)->update([
+        Usuarios::findOrFail($id)->update([
             'USR_Documento' => $request['USR_Documento'],
             'USR_Nombre' => $request['USR_Nombre'],
             'USR_Apellido' => $request['USR_Apellido'],
@@ -104,7 +103,7 @@ class DirectorProyectosController extends Controller
             'USR_Correo' => $request['USR_Correo'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
         ]);
-        return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');
+        return redirect()->back()->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 
     /**
@@ -117,9 +116,9 @@ class DirectorProyectosController extends Controller
     {
         try{
             Usuarios::destroy($id);
-            return redirect()->route('directores_administrador')->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
+            return redirect()->back()->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('directores_administrador')->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
+            return redirect()->back()->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
         }
     }
 }

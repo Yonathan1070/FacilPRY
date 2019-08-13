@@ -21,20 +21,13 @@ class PermisosController extends Controller
     public function index()
     {  
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        
         $usuarios = Usuarios::orderBy('id')->get();
-        
         return view('administrador.permisos.listar', compact('usuarios', 'datos'));
-        
-        /*$menus = Menu::getMenu();
-        return view('administrador.permisos.listar', compact('menus'));*/
     }
     
     public function asignarRol($id){
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-
         $roles = Roles::where('RLS_Nombre', '<>', 'Perfil de Operación')->orderBy('id')->get();
-        
         return view('administrador.permisos.asignar', compact('roles', 'datos', 'id'));
     }
 
@@ -60,7 +53,6 @@ class PermisosController extends Controller
             ]);
             return redirect()->back()->with('mensaje', 'Rol Asignado.');
         }
-
     }
 
     public function quitar($idU, $idR)
@@ -68,7 +60,6 @@ class PermisosController extends Controller
         $asignado = UsuariosRoles::where('USR_RLS_Rol_Id', '=', $idR)
             ->where('USR_RLS_Usuario_Id', '=', $idU)
             ->first();
-        
         if($asignado && $asignado->USR_RLS_Estado == true){
             $asignado->update([
                 'USR_RLS_Estado' => 0
@@ -102,7 +93,7 @@ class PermisosController extends Controller
     public function guardar(Request $request)
     {
         Menu::create($request->all());
-        return redirect()->route('crear_menu_administrador')->with('mensaje', 'Menú creado con exito');
+        return redirect()->back()->with('mensaje', 'Menú creado con exito');
     }
 
     /**

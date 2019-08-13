@@ -45,7 +45,7 @@ class RolesController extends Controller
             'RLS_Nombre' => $request->RLS_Nombre,
             'RLS_Descripcion' => $request->RLS_Descripcion
         ]);
-        return redirect()->route('crear_rol_administrador')->with('mensaje', 'Rol creado con exito');
+        return redirect()->back()->with('mensaje', 'Rol creado con exito');
     }
 
     /**
@@ -70,7 +70,7 @@ class RolesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
         if($rol->RLS_Rol_Id == 0)
-            return redirect('administrador/roles')->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
+            return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         return view('administrador.roles.editar', compact('rol', 'datos'));
     }
 
@@ -84,7 +84,7 @@ class RolesController extends Controller
     public function actualizar(Request $request, $id)
     {
         Roles::findOrFail($id)->update($request->all());
-        return redirect()->route('roles_administrador')->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->back()->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
@@ -97,12 +97,12 @@ class RolesController extends Controller
     {
         $rol = Roles::findOrFail($id);
         if($rol->RLS_Rol_Id == 0)
-            return redirect()->route('roles_administrador')->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
+            return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
         try{
             Roles::destroy($id);
-            return redirect()->route('roles_administrador')->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
+            return redirect()->back()->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('roles_administrador')->withErrors(['El Rol está siendo usada por otro recurso.']);
+            return redirect()->back()->withErrors(['El Rol está siendo usada por otro recurso.']);
         }
     }
 }

@@ -56,7 +56,7 @@ class ProyectosController extends Controller
     public function guardar(ValidacionProyecto $request)
     {
         Proyectos::create($request->all());
-        return redirect()->route('crear_proyecto_director')->with('mensaje', 'Proyecto agregado con exito');
+        return redirect()->back()->with('mensaje', 'Proyecto agregado con exito');
     }
 
     /**
@@ -76,9 +76,7 @@ class ProyectosController extends Controller
             ->where('p.id', '=', $id)
             ->select('a.*', 'us.USR_Nombre as NombreT', 'us.USR_Apellido as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
             ->get();
-        
         $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades'));
-
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
         return $pdf->download($fileName);
     }

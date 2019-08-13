@@ -30,7 +30,6 @@ class RecuperarClaveController extends Controller
         $this->validateEmail($request);
 
         if($user = Usuarios::where('USR_Correo', $request->input('USR_Correo'))->first()){
-            
             $token=Crypt::encryptString(Carbon::now());
 
             DB::table(config('auth.passwords.users.table'))->where('USR_Correo', '=', $user->USR_Correo)->delete();
@@ -44,23 +43,11 @@ class RecuperarClaveController extends Controller
                 $message->to($user->USR_Correo, 'Envío nombre de usuario')
                     ->subject('Reestablecer Clave');
             });
-
             if (Mail::failures()) {
                 return redirect()->back()->withErrors('Error al envíar el correo.');
             } else {
                 return redirect()->back()->with('mensaje', 'Revise la bandeja de entrada de su correo.');
             }
-            
-            /*Mail::send([
-                'to' => $user->USR_Correo,
-                'subject' => 'Link para reestablecer contraseña.',
-                'view' => config('auth.passwords.users.email'),
-                'view_data' => [
-                    'token' => $token,
-                    'user' => $user
-                ]
-            ]);*/
-
             return redirect()->back()->with('status', trans(Password::RESET_LINK_SENT));
         }
         return redirect()->back()->withErrors('El correo no está registrado en el sistema.');
@@ -80,8 +67,8 @@ class RecuperarClaveController extends Controller
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
         return back()
-                ->withInput($request->only('USR_Correo'))
-                ->withErrors(['USR_Correo' => trans($response)]);
+            ->withInput($request->only('USR_Correo'))
+            ->withErrors(['USR_Correo' => trans($response)]);
     }
 
     protected function cambiarClave($token){
@@ -92,11 +79,9 @@ class RecuperarClaveController extends Controller
         }
         $fechaToken = Crypt::decryptString($token);
         $diferencia=Carbon::now()->diffInMinutes($fechaToken);
-        
         if($diferencia>60){
             return redirect()->route('recuperar_clave')->withErrors('El token está vencido, Genere uno nuevamente.');
         }
-        
         return view('general.cambiar', compact('consulta'));
     }
 
@@ -104,7 +89,6 @@ class RecuperarClaveController extends Controller
         if($request->password != $request->confirmar){
             return redirect()->back()->withErrors('Las contraseñas no coinciden.');
         }
-        
         DB::table(config('auth.passwords.users.table'))->where('USR_Correo', '=', $request->USR_Correo)->delete();
         DB::table('TBL_Usuarios')->where('USR_Correo', '=', $request->USR_Correo)->update([
             'password' => bcrypt($request->password)

@@ -42,10 +42,10 @@ class DecisionesController extends Controller
     public function guardar(ValidacionDecision $request)
     {
         if ($request['DCS_Rango_Inicio_Decision'] >= $request['DCS_Rango_Fin_Decision']) {
-            return redirect()->route('crear_decision_director')->withErrors('Digite un rango válido')->withInput();
+            return redirect()->back()->withErrors('Digite un rango válido')->withInput();
         }
         Decisiones::create($request->all());
-        return redirect()->route('crear_decision_director')->with('mensaje', 'Decisión creada con exito');
+        return redirect()->back()->with('mensaje', 'Decisión creada con exito');
     }
 
     /**
@@ -71,10 +71,10 @@ class DecisionesController extends Controller
     public function actualizar(ValidacionDecision $request, $id)
     {
         if ($request['DCS_Rango_Inicio_Decision'] >= $request['DCS_Rango_Fin_Decision']) {
-            return redirect()->route('editar_decision_director')->withErrors('Digite un rango válido')->withInput();
+            return redirect()->back()->withErrors('Digite un rango válido')->withInput();
         }
         Decisiones::findOrFail($id)->update($request->all());
-        return redirect()->route('decisiones_director')->with('mensaje', 'Decisión actualizada con exito');
+        return redirect()->back()->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -87,9 +87,9 @@ class DecisionesController extends Controller
     {
         try{
             Decisiones::destroy($id);
-            return redirect()->route('decisiones_director')->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
+            return redirect()->back()->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('decisiones_director')->withErrors(['La Decision está siendo usada por otro recurso.']);
+            return redirect()->back()->withErrors(['La Decision está siendo usada por otro recurso.']);
         }
     }
 }

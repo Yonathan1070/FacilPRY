@@ -3,7 +3,7 @@
 Pagar
 @endsection
 @section('styles')
-<link href="{{asset("assets/css/custom.css")}}" rel="stylesheet">
+<link href="{{asset("assets/css/factura.css")}}" rel="stylesheet">
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>

@@ -69,7 +69,7 @@ class ClientesController extends Controller
             'USR_RLS_Usuario_Id' => $cliente->id,
             'USR_RLS_Estado' => 1
         ]);
-        return redirect()->route('crear_cliente_director')->with('mensaje', 'Cliente agregado con exito');
+        return redirect()->back()->with('mensaje', 'Cliente agregado con exito');
     }
 
     /**
@@ -106,7 +106,7 @@ class ClientesController extends Controller
     public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->route('clientes_director')->with('mensaje', 'Cliente actualizado con exito');
+        return redirect()->back()->with('mensaje', 'Cliente actualizado con exito');
     }
 
     /**
@@ -119,9 +119,9 @@ class ClientesController extends Controller
     {
         try{
             Usuarios::destroy($id);
-            return redirect()->route('clientes_director')->with('mensaje', 'El Cliente fue eliminado satisfactoriamente.');
+            return redirect()->back()->with('mensaje', 'El Cliente fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('clientes_director')->withErrors(['El Cliente está siendo usado por otro recurso.']);
+            return redirect()->back()->withErrors(['El Cliente está siendo usado por otro recurso.']);
         }
     }
 }

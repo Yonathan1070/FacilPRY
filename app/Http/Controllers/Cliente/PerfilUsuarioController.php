@@ -35,7 +35,6 @@ class PerfilUsuarioController extends Controller
 
 
         if ($validator->passes()) {
-
             $usuario = Usuarios::findOrFail(session()->get('Usuario_Id'));
             $ruta = public_path("assets/bsb/images/".$usuario->USR_Foto_Perfil);
             if ($usuario->USR_Foto_Perfil != null) {
@@ -44,14 +43,9 @@ class PerfilUsuarioController extends Controller
             $input = $request->all();
             $nombreArchivo = $input['USR_Foto_Perfil'] = time() . '.' . $request->USR_Foto_Perfil->getClientOriginalExtension();
             $request->USR_Foto_Perfil->move(public_path('assets/bsb/images'), $input['USR_Foto_Perfil']);
-
             Usuarios::findOrFail(session()->get('Usuario_Id'))->update(['USR_Foto_Perfil' => $nombreArchivo]);
-
-
             return response()->json(['success' => 'Foto Actualizada']);
         }
-
-
         return response()->json(['error' => $validator->errors()->all()]);
     }
 

@@ -72,7 +72,7 @@ class PerfilOperacionController extends Controller
             'USR_RLS_Usuario_Id' => $perfil->id,
             'USR_RLS_Estado' => 1
         ]);
-        return redirect()->route('crear_perfil_director')->with('mensaje', 'Perfil de Operación agregado con exito');
+        return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
     }
 
     /**
@@ -109,7 +109,7 @@ class PerfilOperacionController extends Controller
     public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->route('perfil_operacion_director')->with('mensaje', '¨Perfi de operación  actualizado con exito');
+        return redirect()->back()->with('mensaje', '¨Perfi de operación  actualizado con exito');
     }
 
     /**
@@ -122,9 +122,9 @@ class PerfilOperacionController extends Controller
     {
         try{
             Usuarios::destroy($id);
-            return redirect()->route('perfil_operacion_director')->with('mensaje', 'El Perfil de operación fue eliminado satisfactoriamente.');
+            return redirect()->back()->with('mensaje', 'El Perfil de operación fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('perfil_operacion_director')->withErrors(['El Perfil de operación está siendo usado por otro recurso.']);
+            return redirect()->back()->withErrors(['El Perfil de operación está siendo usado por otro recurso.']);
         }
     }
 }
