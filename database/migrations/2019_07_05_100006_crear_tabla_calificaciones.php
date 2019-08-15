@@ -22,7 +22,7 @@ class CrearTablaCalificaciones extends Migration
             $table->foreign('CALIF_Trabajador_Id', 'FK_Calificaciones_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('CALIF_Decision_Id');
             $table->foreign('CALIF_Decision_Id', 'FK_Calificaiones_Decisiones')->references('id')->on('TBL_Decisiones')->onDelete('restrict')->onUpdate('restrict');
-            $table->date('CALIF_Fecha');
+            $table->date('CALIF_Fecha_Calificacion');
             /*$table->unsignedBigInteger('CALIF_Proyecto_Id');
             $table->foreign('CALIF_Proyecto_Id', 'FK_Calificaiones_Proyectos')->references('id')->on('TBL_Proyectos')->onDelete('restrict')->onUpdate('restrict');*/
             $table->timestamps();

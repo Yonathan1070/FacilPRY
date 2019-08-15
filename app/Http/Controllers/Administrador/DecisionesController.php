@@ -29,6 +29,7 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
+        dd(session()->all());
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         return view('administrador.decisiones.crear', compact('datos'));
     }
@@ -68,7 +69,7 @@ class DecisionesController extends Controller
     public function actualizar(ValidacionDecision $request, $id)
     {
         Decisiones::findOrFail($id)->update($request->all());
-        return redirect()->back()->with('mensaje', 'Decisión actualizada con exito');
+        return redirect()->route('decisiones_administrador')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**

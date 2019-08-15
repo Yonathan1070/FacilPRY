@@ -19,6 +19,8 @@ class CrearTablaProyectos extends Migration
             $table->text('PRY_Descripcion_Proyecto');
             $table->unsignedBigInteger('PRY_Cliente_Id');
             $table->foreign('PRY_Cliente_Id', 'FK_Proyectos_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
+            $table->unsignedBigInteger('PRY_Empresa_Id');
+            $table->foreign('PRY_Empresa_Id', 'FK_Proyectos_Empresas')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

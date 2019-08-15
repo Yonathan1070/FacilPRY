@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CrearTablaHorasActividades extends Migration
+class CrearTablaEstados extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CrearTablaHorasActividades extends Migration
      */
     public function up()
     {
-        Schema::create('TBL_Horas_Actividad', function (Blueprint $table) {
+        Schema::create('TBL_Estados', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('HRS_ACT_Actividad_Id');
-            $table->foreign('HRS_ACT_Actividad_Id', 'FK_Horas_Actividad_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
-            $table->unsignedBigInteger('HRS_ACT_Cantidad_Horas');
+            $table->string('ACT_Nombre_Estado', 60);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
@@ -31,6 +29,6 @@ class CrearTablaHorasActividades extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_Horas_Actividades');
+        Schema::dropIfExists('TBL_Estados');
     }
 }

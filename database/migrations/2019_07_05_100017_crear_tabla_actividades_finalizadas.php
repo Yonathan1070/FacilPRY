@@ -19,7 +19,8 @@ class CrearTablaActividadesFinalizadas extends Migration
             $table->text('ACT_FIN_Documento_Soporte');
             $table->unsignedBigInteger('ACT_FIN_Actividad_Id');
             $table->foreign('ACT_FIN_Actividad_Id', 'FK_Actividades_Finalizadas_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
-            $table->string('ACT_FIN_Estado', 30);
+            $table->unsignedBigInteger('ACT_FIN_Estado_Id');
+            $table->foreign('ACT_FIN_Estado_Id', 'FK_Actividades_Finalizadas_Estados')->references('id')->on('TBL_Estados')->onDelete('restrict')->onUpdate('restrict');
             $table->dateTime('ACT_FIN_Fecha_Finalizacion');
             $table->text('ACT_FIN_Respuesta');
             $table->dateTime('ACT_FIN_Fecha_Respuesta');

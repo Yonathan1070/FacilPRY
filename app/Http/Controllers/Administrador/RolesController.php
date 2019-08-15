@@ -84,7 +84,7 @@ class RolesController extends Controller
     public function actualizar(Request $request, $id)
     {
         Roles::findOrFail($id)->update($request->all());
-        return redirect()->back()->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->route('roles_administrador')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
