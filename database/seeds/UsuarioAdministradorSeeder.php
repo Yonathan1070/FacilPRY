@@ -11,6 +11,57 @@ class UsuarioAdministradorSeeder extends Seeder
      */
     public function run()
     {
+        //Agregar Indicadores
+        DB::table('TBL_Indicadores')->insert([
+            'INDC_Nombre_Indicador' => 'Eficiencia',
+            'INDC_Descripcion_Indicador' => 'Capacidad para realizar o cumplir adecuadamente una función.',
+        ]);
+        DB::table('TBL_Indicadores')->insert([
+            'INDC_Nombre_Indicador' => 'Eficacia',
+            'INDC_Descripcion_Indicador' => 'Capacidad para conseguir el resultado que se busca.',
+        ]);
+        DB::table('TBL_Indicadores')->insert([
+            'INDC_Nombre_Indicador' => 'Efectividad',
+            'INDC_Descripcion_Indicador' => 'Capacidad para conseguir el resultado que se busca de forma adecuada. (Ser eficiente de una forma eficaz)',
+        ]);
+        DB::table('TBL_Indicadores')->insert([
+            'INDC_Nombre_Indicador' => 'Productividad',
+            'INDC_Descripcion_Indicador' => 'Algo',
+        ]);
+        //Agregar Estados
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'En Proceso'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Atrasado'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Finalizado'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Esperando Aprobación'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Aprobado'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Rechazado'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'En Facturación'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Facturado'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Esperando Pago'
+        ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Pagado'
+        ]);
+
+
+        //Agregar Empresa
         DB::table('TBL_Empresas')->insert([
             'EMP_Nombre_Empresa' => 'INK Agencia Digital',
             'EMP_NIT_Empresa' => '900681523-6',
@@ -19,7 +70,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'EMP_Correo_Empresa' => 'inkdigital@gmail.com',
             'EMP_Logo_Empresa' => '1565140718.png',
         ]);
-        
+        //Agregar Usuarios
         DB::table('TBL_Usuarios')->insert([
             'USR_Tipo_Documento_Usuario' => 'Cedula',
             'USR_Documento_Usuario' => '1070979976',

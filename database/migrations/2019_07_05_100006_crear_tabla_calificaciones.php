@@ -16,8 +16,6 @@ class CrearTablaCalificaciones extends Migration
         Schema::create('TBL_Calificaciones', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->double('CALIF_calificacion');
-            $table->unsignedBigInteger('CALIF_Indicador_Id');
-            $table->foreign('CALIF_Indicador_Id', 'FK_Calificaciones_Indicadores')->references('id')->on('TBL_Indicadores')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('CALIF_Trabajador_Id');
             $table->foreign('CALIF_Trabajador_Id', 'FK_Calificaciones_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('CALIF_Decision_Id');

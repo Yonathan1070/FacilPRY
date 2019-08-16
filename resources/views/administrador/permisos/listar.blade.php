@@ -33,7 +33,7 @@ Sistema de Permisos
                             <tbody>
                                 @foreach ($usuarios as $usuario)
                                 <tr>
-                                    <td>{{$usuario->USR_Nombre.' '.$usuario->USR_Apellido}}</td>
+                                    <td>{{$usuario->USR_Nombres_Usuario.' '.$usuario->USR_Apellidos_Usuario}}</td>
                                     <td>
                                         <a href="{{route('asignar_rol_usuario_administrador', ['id'=>$usuario->id])}}"
                                             class="btn-accion-tabla tooltipsC" title="Asignar Roles">

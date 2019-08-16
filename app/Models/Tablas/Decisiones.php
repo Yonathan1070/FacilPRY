@@ -11,6 +11,7 @@ class Decisiones extends Model
         'DCS_Descripcion_Decision',
         'DCS_Rango_Inicio_Decision',
         'DCS_Rango_Fin_Decision',
+        'DSC_Indicador_Id',
         'DSC_Empresa_Id'];
     protected $guarded = ['id'];
 }

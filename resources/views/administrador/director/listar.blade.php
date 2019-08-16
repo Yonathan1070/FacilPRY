@@ -44,10 +44,10 @@ Crud Director de Proyectos
                     <tbody>
                         @foreach ($directores as $director)
                         <tr>
-                            <td>{{$director->USR_Documento}}</td>
-                            <td>{{$director->USR_Nombre.' '.$director->USR_Apellido}}</td>
-                            <td>{{$director->USR_Correo}}</td>
-                            <td>{{$director->USR_Telefono}}</td>
+                            <td>{{$director->USR_Documento_Usuario}}</td>
+                            <td>{{$director->USR_Nombres_Usuario.' '.$director->USR_Apellidos_Usuario}}</td>
+                            <td>{{$director->USR_Correo_Usuario}}</td>
+                            <td>{{$director->USR_Telefono_Usuario}}</td>
                             <td>{{$director->USR_Nombre_Usuario}}</td>
                             <td>
                                 <a href="{{route('editar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"

@@ -20,6 +20,7 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
     Route::group(['prefix' => 'decisiones'], function () {
         Route::get('', 'DecisionesController@index')->name('decisiones_administrador');
         Route::get('crear-desicion', 'DecisionesController@crear')->name('crear_decision_administrador');
+        Route::get('{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador_administrador');
         Route::post('crear-decision', 'DecisionesController@guardar')->name('guardar_decision_administrador');
         Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_administrador');
         Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_administrador');

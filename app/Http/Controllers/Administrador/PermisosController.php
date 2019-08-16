@@ -27,7 +27,7 @@ class PermisosController extends Controller
     
     public function asignarRol($id){
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('RLS_Nombre', '<>', 'Perfil de Operación')->orderBy('id')->get();
+        $roles = Roles::where('RLS_Nombre_Rol', '<>', 'Perfil de Operación')->orderBy('id')->get();
         return view('administrador.permisos.asignar', compact('roles', 'datos', 'id'));
     }
 

@@ -9,7 +9,7 @@ Editar Datos Empresa
                     <div class="card profile-card">
                         <div class="profile-header">&nbsp;</div>
                         <div class="profile-body">
-                            <div class="image-area">
+                            <div class="image-area content_img">
                                 <form action="" method="post" style="display: none" id="fotoForm" name="fotoForm" enctype="multipart/form-data">
                                     <input type="hidden" name="id" value="{{$datos->USR_Empresa_Id}}">
                                     <input type="file" id="EMP_Logo_Empresa"/>
@@ -19,6 +19,7 @@ Editar Datos Empresa
                                 @else
                                         <img id="logoEmpresa" src="{{asset('/assets/bsb/images/Logos/'.$datos->EMP_Logo_Empresa)}}" width="128" height="128" alt="FacilPRY - Logo Empresa" />
                                 @endif
+                                <div class="text">Cambiar Foto</div>
                             </div>
                             <div class="content-area">
                                 <h3>{{$datos->EMP_Nombre_Empresa}}</h3>

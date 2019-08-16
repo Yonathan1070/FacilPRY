@@ -9,17 +9,18 @@ class Usuarios extends Authenticatable
 {
     protected $remember_token = false;
     protected $table = 'TBL_Usuarios';
-    protected $fillable = ['USR_Tipo_Documento',
-        'USR_Documento',
-        'USR_Nombre',
-        'USR_Apellido',
-        'USR_Fecha_Nacimiento',
-        'USR_Direccion_Residencia',
-        'USR_Telefono',
-        'USR_Correo',
+    protected $fillable = ['USR_Tipo_Documento_Usuario',
+        'USR_Documento_Usuario',
+        'USR_Nombres_Usuario',
+        'USR_Apellidos_Usuario',
+        'USR_Fecha_Nacimiento_Usuario',
+        'USR_Direccion_Residencia_Usuario',
+        'USR_Telefono_Usuario',
+        'USR_Correo_Usuario',
         'USR_Nombre_Usuario',
         'password',
-        'USR_Foto_Perfil',
+        'USR_Foto_Perfil_Usuario',
+        'USR_Supervisor_Id',
         'USR_Empresa_Id'];
     protected $guarded = ['id'];
     
@@ -31,17 +32,9 @@ class Usuarios extends Authenticatable
         if (count($roles) == 1) {
             Session::put([
                 'Rol_Id' => $roles[0]['id'],
-                'Rol_Nombre' => $roles[0]['RLS_Nombre'],
-                'Usuario_Documento' => $this->USR_Documento,
-                'Usuario_Nombre' => $this->USR_Nombre_Usuario,
+                'Rol_Nombre' => $roles[0]['RLS_Nombre_Rol'],
                 'Usuario_Id' => $this->id,
-                'Usuario_Nom' => $this->USR_Nombre,
-                'Usuario_Apellido' => $this->USR_Apellido,
-                'Usuario_Nombre_Completo' => $this->USR_Nombre.' '.$this->USR_Apellido,
-                'Usuario_Direccion_Residencia' => $this->USR_Direccion_Residencia,
-                'Usuario_Telefono' => $this->USR_Telefono,
-                'Usuario_Correo' => $this->USR_Correo,
-                'Foto_Perfil' => $this->USR_Foto_Perfil,
+                'Empresa_Id' => $this->USR_Empresa_Id
             ]);
         }
     }

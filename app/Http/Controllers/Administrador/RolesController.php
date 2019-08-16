@@ -40,23 +40,17 @@ class RolesController extends Controller
      */
     public function guardar(Request $request)
     {
+        $roles = $this->traerRol($request->RLS_Nombre_Rol);
+        if($roles){
+            return redirect()->back()->withErrors('Ya se encuentra registrado el rol en el sistema')->withInput();
+        }
         Roles::create([
             'RLS_Rol_Id' => 6,
-            'RLS_Nombre' => $request->RLS_Nombre,
-            'RLS_Descripcion' => $request->RLS_Descripcion
+            'RLS_Nombre_Rol' => $request->RLS_Nombre_Rol,
+            'RLS_Descripcion_Rol' => $request->RLS_Descripcion_Rol,
+            'RLS_Empresa_Id' => session()->get('Empresa_Id')
         ]);
         return redirect()->back()->with('mensaje', 'Rol creado con exito');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -83,6 +77,10 @@ class RolesController extends Controller
      */
     public function actualizar(Request $request, $id)
     {
+        $roles = $this->traerRol($request->RLS_Nombre_Rol);
+        if($roles){
+            return redirect()->back()->withErrors('Ya se encuentra registrado el rol en el sistema')->withInput();
+        }
         Roles::findOrFail($id)->update($request->all());
         return redirect()->route('roles_administrador')->with('mensaje', 'Rol actualizado con exito');
     }
@@ -104,5 +102,12 @@ class RolesController extends Controller
         }catch(QueryException $e){
             return redirect()->back()->withErrors(['El Rol está siendo usada por otro recurso.']);
         }
+    }
+
+    public function traerRol($rol)
+    {
+        $roles = Roles::where('RLS_Nombre_Rol', '=', $rol)
+            ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))->first();
+        return $roles;
     }
 }

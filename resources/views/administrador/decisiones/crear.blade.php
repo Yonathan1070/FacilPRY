@@ -2,12 +2,16 @@
 @section('titulo')
 Crud Decisiones
 @endsection
+@section('scripts')
+    <script src="{{asset('assets/pages/scripts/Administrador/progressBar.js')}}"></script>
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <!-- Basic Validation -->
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 @include('includes.form-error')
+                @include('includes.form-exito')
             <div class="card">
                 <div class="header">
                     <h2>CREAR DECISIÓN</h2>

@@ -2,6 +2,9 @@
 @section('titulo')
 Crud Decisiones
 @endsection
+@section('scripts')
+    <script src="{{asset('assets/pages/scripts/Administrador/progressBar.js')}}"></script>
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <!-- Basic Validation -->

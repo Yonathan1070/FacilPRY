@@ -15,10 +15,8 @@ class CrearTablaIndicadores extends Migration
     {
         Schema::create('TBL_Indicadores', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('INDC_Nombre_Indicacor', 60);
+            $table->string('INDC_Nombre_Indicador', 60);
             $table->text('INDC_Descripcion_Indicador');
-            $table->unsignedBigInteger('INDC_Empresa_Id');
-            $table->foreign('INDC_Empresa_Id', 'FK_Indicadores_Empresa')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

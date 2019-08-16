@@ -13,16 +13,16 @@ Editar Perfil
                                 <form action="" method="post" style="display: none" id="fotoForm" name="fotoForm" enctype="multipart/form-data">
                                     <input type="file" id="USR_Foto_Perfil"/>
                                 </form>
-                                    @if ($datos->USR_Foto_Perfil==null)
+                                    @if ($datos->USR_Foto_Perfil_Usuario==null)
                                         <img id="fotoPerfil" src="{{asset("assets/bsb/images/user-lg.ico")}}" alt="AdminBSB - Profile Image" />
                                     @else
-                                        <img id="fotoPerfil" src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil)}}" width="128" height="128" alt="AdminBSB - Profile Image" />
+                                        <img id="fotoPerfil" src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil_Usuario)}}" width="128" height="128" alt="AdminBSB - Profile Image" />
                                     @endif
                                     <div class="text">Cambiar Foto</div>
                             </div>
                             <div class="content-area">
-                                <h3>{{$datos->USR_Nombre.' '.$datos->USR_Apellido}}</h3>
-                                <p>{{$datos->USR_Correo}}</p>
+                                <h3>{{$datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario}}</h3>
+                                <p>{{$datos->USR_Correo_Usuario}}</p>
                                 <p>{{session()->get('Rol_Nombre')}}</p>
                             </div>
                             @include('includes.form-exito')
@@ -44,50 +44,50 @@ Editar Perfil
                                         <form class="form-horizontal" id="form_validation" action="{{route('actualizar_perfil_administrador')}}" method="POST">
                                             @csrf @method("put")
                                             <div class="form-group">
-                                                <label for="USR_Documento" class="col-sm-3 control-label">Documento</label>
+                                                <label for="USR_Documento_Usuario" class="col-sm-3 control-label">Documento</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="text" class="form-control" id="USR_Documento" name="USR_Documento" placeholder="Documento" value="{{$datos->USR_Documento}}" required>
+                                                        <input type="text" class="form-control" id="USR_Documento_Usuario" name="USR_Documento_Usuario" placeholder="Documento" value="{{$datos->USR_Documento_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="USR_Nombre" class="col-sm-3 control-label">Nombre</label>
+                                                <label for="USR_Nombres_Usuario" class="col-sm-3 control-label">Nombre</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="text" class="form-control" id="USR_Nombre" name="USR_Nombre" placeholder="Nombres" value="{{$datos->USR_Nombre}}" required>
+                                                        <input type="text" class="form-control" id="USR_Nombres_Usuario" name="USR_Nombres_Usuario" placeholder="Nombres" value="{{$datos->USR_Nombres_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="USR_Apellido" class="col-sm-3 control-label">Apellido</label>
+                                                <label for="s_Usuario" class="col-sm-3 control-label">Apellido</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="text" class="form-control" id="USR_Apellido" name="USR_Apellido" placeholder="Apellidos" value="{{$datos->USR_Apellido}}" required>
+                                                        <input type="text" class="form-control" id="USR_Apellidos_Usuario" name="USR_Apellidos_Usuario" placeholder="Apellidos" value="{{$datos->USR_Apellidos_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="USR_USR_Direccion_Residencia" class="col-sm-3 control-label">Dirección</label>
+                                                <label for="USR_Direccion_Residencia_Usuario" class="col-sm-3 control-label">Dirección</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="text" class="form-control" id="USR_USR_Direccion_Residencia" name="USR_USR_Direccion_Residencia" placeholder="Dirección de Residencia" value="{{$datos->USR_Direccion_Residencia}}" required>
+                                                        <input type="text" class="form-control" id="USR_Direccion_Residencia_Usuario" name="USR_Direccion_Residencia_Usuario" placeholder="Dirección de Residencia" value="{{$datos->USR_Direccion_Residencia_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="USR_Telefono" class="col-sm-3 control-label">Telefono</label>
+                                                <label for="USR_Telefono_Usuario" class="col-sm-3 control-label">Telefono</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="text" class="form-control" id="USR_Telefono" name="USR_Telefono" placeholder="Telefono de Contacto" value="{{$datos->USR_Telefono}}" required>
+                                                        <input type="text" class="form-control" id="USR_Telefono_Usuario" name="USR_Telefono_Usuario" placeholder="Telefono de Contacto" value="{{$datos->USR_Telefono_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="USR_Correo" class="col-sm-3 control-label">Correo Electrónico</label>
+                                                <label for="USR_Correo_Usuario" class="col-sm-3 control-label">Correo Electrónico</label>
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
-                                                        <input type="email" class="form-control" id="USR_Correo" name="USR_Correo" placeholder="Correo Electrónico" value="{{$datos->USR_Correo}}" required>
+                                                        <input type="email" class="form-control" id="USR_Correo_Usuario" name="USR_Correo_Usuario" placeholder="Correo Electrónico" value="{{$datos->USR_Correo_Usuario}}" required>
                                                     </div>
                                                 </div>
                                             </div>

@@ -9,6 +9,7 @@ use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Mail;
 
 class DirectorProyectosController extends Controller
 {
@@ -51,24 +52,37 @@ class DirectorProyectosController extends Controller
     public function guardar(ValidacionUsuario $request)
     {
         Usuarios::create([
-            'USR_Tipo_Documento' => $request['USR_Tipo_Documento'],
-            'USR_Documento' => $request['USR_Documento'],
-            'USR_Nombre' => $request['USR_Nombre'],
-            'USR_Apellido' => $request['USR_Apellido'],
-            'USR_Fecha_Nacimiento' => $request['USR_Fecha_Nacimiento'],
-            'USR_Direccion_Residencia' => $request['USR_Direccion_Residencia'],
-            'USR_Telefono' => $request['USR_Telefono'],
-            'USR_Correo' => $request['USR_Correo'],
+            'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
+            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
+            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
+            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
+            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
+            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
-            'password' => bcrypt($request['password']),
+            'password' => bcrypt($request['USR_Nombre_Usuario']),
+            'USR_Supervisor_Id' => session()->get('Usuario_Id'),
+            'USR_Empresa_Id' => session()->get('Empresa_Id')
         ]);
-        $director = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
+        $director = Usuarios::where('USR_Documento_Usuario', '=', $request['USR_Documento_Usuario'])->first();
         UsuariosRoles::create([
             'USR_RLS_Rol_Id' => 2,
             'USR_RLS_Usuario_Id' => $director->id,
             'USR_RLS_Estado' => 1
         ]);
-        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito');
+
+        Mail::send('general.correo.bienvenida', [
+            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
+            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
+            $message->from('8076cdda3e-9b8334@inbox.mailtrap.io', 'FacilPRY');
+            $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
+                ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
+        });
+        if (Mail::failures()) {
+            return redirect()->back()->withErrors('Error al envíar el correo.');
+        }
+        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
     }
 
     /**
@@ -94,16 +108,16 @@ class DirectorProyectosController extends Controller
     public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update([
-            'USR_Documento' => $request['USR_Documento'],
-            'USR_Nombre' => $request['USR_Nombre'],
-            'USR_Apellido' => $request['USR_Apellido'],
-            'USR_Fecha_Nacimiento' => $request['USR_Fecha_Nacimiento'],
-            'USR_Direccion_Residencia' => $request['USR_Direccion_Residencia'],
-            'USR_Telefono' => $request['USR_Telefono'],
-            'USR_Correo' => $request['USR_Correo'],
+            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
+            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
+            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
+            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
+            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
         ]);
-        return redirect()->back()->with('mensaje', 'Director de Proyectos actualizado con exito');
+        return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 
     /**

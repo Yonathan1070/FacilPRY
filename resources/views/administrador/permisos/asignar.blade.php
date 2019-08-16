@@ -33,7 +33,7 @@ Sistema de Permisos
                             <tbody>
                                 @foreach ($roles as $rol)
                                 <tr>
-                                    <td>{{$rol->RLS_Nombre}}</td>
+                                    <td>{{$rol->RLS_Nombre_Rol}}</td>
                                     <td>
                                         <a href="{{route('agregar_rol_administrador', ['idU' => $id, 'idR' => $rol->id])}}" class="btn-accion-tabla tooltipsC" title="Asignar">
                                             <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>

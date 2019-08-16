@@ -36,6 +36,7 @@ Crud Desiciones
                                     <th>Nombre</th>
                                     <th>Descripción</th>
                                     <th>Rango de Calificación</th>
+                                    <th>Indicador</th>
                                     <th class="width70"></th>
                                 </tr>
                             </thead>
@@ -45,6 +46,7 @@ Crud Desiciones
                                     <td>{{$decision->DCS_Nombre_Decision}}</td>
                                     <td>{{$decision->DCS_Descripcion_Decision}}</td>
                                     <td>{{$decision->DCS_Rango_Inicio_Decision.' - '.$decision->DCS_Rango_Fin_Decision}}</td>
+                                    <td>{{$decision->INDC_Nombre_Indicador}}</td>
                                     <td>
                                         <a href="{{route('editar_decision_administrador', ['id'=>$decision->id])}}"
                                             class="btn-accion-tabla tooltipsC" title="Editar este registro">

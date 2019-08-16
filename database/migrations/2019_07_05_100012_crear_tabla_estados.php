@@ -15,7 +15,7 @@ class CrearTablaEstados extends Migration
     {
         Schema::create('TBL_Estados', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('ACT_Nombre_Estado', 60);
+            $table->string('EST_Nombre_Estado', 60);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

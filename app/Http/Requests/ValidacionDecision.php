@@ -24,7 +24,7 @@ class ValidacionDecision extends FormRequest
     public function rules()
     {
         return [
-            'DSC_Nombre_Decision' => ['required|max:60|unique:TBL_Decisiones,DSC_Nombre_Decision,' . $this->route('id')],
+            'DSC_Nombre_Decision' => ['required|max:60'],
             'DSC_Descripcion_Decision' => ['required|max:1000'],
             'DCS_Rango_Inicio_Decision' => ['required_with:DCS_Rango_Fin_Decision|numeric|min:1'],
             'DCS_Rango_Fin_Decision' => ['required_with:DCS_Rango_Inicio_Decision|numeric|max:100|greater_than_field:DCS_Rango_Inicio_Decision']

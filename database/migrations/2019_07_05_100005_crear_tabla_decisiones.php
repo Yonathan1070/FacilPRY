@@ -19,6 +19,8 @@ class CrearTablaDecisiones extends Migration
             $table->text('DCS_Descripcion_Decision');
             $table->integer('DCS_Rango_Inicio_Decision');
             $table->integer('DCS_Rango_Fin_Decision');
+            $table->unsignedBigInteger('DSC_Indicador_Id');
+            $table->foreign('DSC_Indicador_Id', 'FK_Decisiones_Indicadores')->references('id')->on('TBL_Indicadores')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('DSC_Empresa_Id');
             $table->foreign('DSC_Empresa_Id', 'FK_Decisiones_Empresas')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();

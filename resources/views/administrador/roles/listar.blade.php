@@ -39,8 +39,8 @@ Crud Roles
                                 <tbody>
                                     @foreach ($roles as $rol)
                                         <tr>
-                                            <td>{{$rol->RLS_Nombre}}</td>
-                                            <td>{{$rol->RLS_Descripcion}}</td>
+                                            <td>{{$rol->RLS_Nombre_Rol}}</td>
+                                            <td>{{$rol->RLS_Descripcion_Rol}}</td>
                                             <td>
                                                 <a href="{{route('editar_rol_administrador', ['id'=>$rol->id])}}"
                                                     class="btn-accion-tabla tooltipsC" title="Editar este registro">

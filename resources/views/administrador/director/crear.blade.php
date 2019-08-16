@@ -8,6 +8,7 @@ Crud Director de Proyectos
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 @include('includes.form-error')
+                @include('includes.form-exito')
             <div class="card">
                 <div class="header">
                     <h2>CREAR DIRECTOR DE PROYECTOS</h2>
