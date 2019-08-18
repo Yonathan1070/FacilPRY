@@ -21,9 +21,8 @@ Crud Roles
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    @if (count($roles)<=0) <div class="alert alert-warning">
-                        <strong>Advertencia!</strong>
-                        El sistema no cuenta con Roles registrados
+                    @if (count($roles)<=0) <div class="alert alert-info">
+                        No hay Datos que mostrar
                         <a href="{{route('crear_rol_director')}}" class="alert-link">Clic aquí para agregar!</a>.
                 </div>
                 @else
@@ -38,8 +37,8 @@ Crud Roles
                         <tbody>
                             @foreach ($roles as $rol)
                                 <tr>
-                                    <td>{{$rol->RLS_Nombre}}</td>
-                                    <td>{{$rol->RLS_Descripcion}}</td>
+                                    <td>{{$rol->RLS_Nombre_Rol}}</td>
+                                    <td>{{$rol->RLS_Descripcion_Rol}}</td>
                                     <td>
                                         <a href="{{route('editar_rol_director', ['id'=>$rol->id])}}" class="btn-accion-tabla tooltipsC"
                                             title="Editar este registro">

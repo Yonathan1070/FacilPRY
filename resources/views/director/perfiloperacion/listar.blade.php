@@ -42,12 +42,12 @@
                                 <tbody>
                                     @foreach ($perfilesOperacion as $perfilOperacion)
                                         <tr>
-                                            <td>{{$perfilOperacion->USR_Documento}}</td>
-                                            <td>{{$perfilOperacion->USR_Nombre.' '.$perfilOperacion->USR_Apellido}}</td>
-                                            <td>{{$perfilOperacion->USR_Telefono}}</td>
-                                            <td>{{$perfilOperacion->USR_Correo}}</td>
+                                            <td>{{$perfilOperacion->USR_Documento_Usuario}}</td>
+                                            <td>{{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}</td>
+                                            <td>{{$perfilOperacion->USR_Telefono_Usuario}}</td>
+                                            <td>{{$perfilOperacion->USR_Correo_Usuario}}</td>
                                             <td>{{$perfilOperacion->USR_Nombre_Usuario}}</td>
-                                            <td>{{$perfilOperacion->RLS_Nombre}}</td>
+                                            <td>{{$perfilOperacion->RLS_Nombre_Rol}}</td>
                                             <td>
                                                 <a href="{{route('editar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                     <i class="material-icons text-info" style="font-size: 17px;">edit</i>

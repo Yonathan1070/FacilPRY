@@ -24,17 +24,17 @@ class ValidacionRol extends FormRequest
     public function rules()
     {
         return [
-            'RLS_Nombre' => 'required|max:30|unique:TBL_Roles,RLS_Nombre,' . $this->route('id'),
-            'RLS_Descripcion' => 'required',
+            'RLS_Nombre_Rol' => 'required|max:30|unique:TBL_Roles,RLS_Nombre_Rol,' . $this->route('id'),
+            'RLS_Descripcion_Rol' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'RLS_Nombre.required' => 'El Nombre del Rol es requerido.',
-            'RLS_Nombre.unique' => 'El Nombre del Rol ya está en el sistema.',
-            'RLS_Descripcion.required'  => 'La Descripción del Rol es requerida.',
+            'RLS_Nombre_Rol.required' => 'El Nombre del Rol es requerido.',
+            'RLS_Nombre_Rol.unique' => 'El Nombre del Rol ya está en el sistema.',
+            'RLS_Descripcion_Rol.required'  => 'La Descripción del Rol es requerida.',
         ];
     }
 }

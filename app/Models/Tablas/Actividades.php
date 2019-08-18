@@ -9,7 +9,6 @@ class Actividades extends Model
     protected $table = "TBL_Actividades";
     protected $fillable = ['ACT_Nombre_Actividad', 
         'ACT_Descripcion_Actividad',
-        'ACT_Documento_Soporte_Actividad',
         'ACT_Estado_Id',
         'ACT_Fecha_Inicio_Actividad',
         'ACT_Fecha_Fin_Actividad',

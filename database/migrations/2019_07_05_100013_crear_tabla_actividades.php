@@ -17,7 +17,6 @@ class CrearTablaActividades extends Migration
             $table->bigIncrements('id');
             $table->string('ACT_Nombre_Actividad', 60);
             $table->text('ACT_Descripcion_Actividad');
-            $table->text('ACT_Documento_Soporte_Actividad')->nullable();
             $table->unsignedBigInteger('ACT_Estado_Id');
             $table->foreign('ACT_Estado_Id', 'FK_Actividades_Estados')->references('id')->on('TBL_Estados')->onDelete('restrict')->onUpdate('restrict');
             $table->dateTime('ACT_Fecha_Inicio_Actividad');

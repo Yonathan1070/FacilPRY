@@ -79,7 +79,7 @@ class DecisionesController extends Controller
         if(((int)$request->DCS_Rango_Fin_Decision-(int)$request->DCS_Rango_Inicio_Decision)+$total > 100){
             return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
         }
-        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision')->get();
+        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')->get();
         foreach ($decisiones as $decision) {
             if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
                 $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision){
@@ -88,6 +88,9 @@ class DecisionesController extends Controller
             if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
                 $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision){
                 return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
+            }
+            if($decision->DSC_Nombre_Decision == $request->DSC_Nombre_Decision){
+                return redirect()->back()->withErrors('La desición ya está registrada en el sistema')->withInput();
             }
         }
         Decisiones::create($request->all());

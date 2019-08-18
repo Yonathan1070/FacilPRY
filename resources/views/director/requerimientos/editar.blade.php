@@ -20,7 +20,7 @@ Crud Requerimientos
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_requerimiento_director', ['idP' => $proyecto->id, 'idR' => $requerimiento->id])}}" method="POST">
+                    <form id="form_validation" action="{{route('actualizar_requerimiento_director', ['idR' => $requerimiento->id])}}" method="POST">
                         @csrf @method("put")
                         @include('director.requerimientos.form')
                         <a class="btn btn-danger waves-effect" href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}">CANCELAR</a>

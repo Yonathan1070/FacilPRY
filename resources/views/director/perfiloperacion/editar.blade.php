@@ -13,7 +13,7 @@ Crud Perfil de Operación
                     <h2>EDITAR PERFIL DE OPERACIÓN</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('perfil_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('perfil_operacion_director')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
@@ -23,7 +23,7 @@ Crud Perfil de Operación
                     <form id="form_validation" action="{{route('actualizar_perfil_operacion_director', ['id' => $perfil->id])}}" method="POST">
                         @csrf @method("put")
                         @include('director.perfiloperacion.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('perfil_director')}}">CANCELAR</a>
+                        <a class="btn btn-danger waves-effect" href="{{route('perfil_operacion_director')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
                     </form>
                 </div>

@@ -59,6 +59,9 @@ class UsuarioAdministradorSeeder extends Seeder
         DB::table('TBL_Estados')->insert([
             'EST_Nombre_Estado' => 'Pagado'
         ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'En Cobro'
+        ]);
 
 
         //Agregar Empresa

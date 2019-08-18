@@ -11,7 +11,7 @@
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>CREAR DIRECTOR DE PROYECTOS</h2>
+                    <h2>CREAR PERFIL DE OPERACION</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('perfil_operacion_director')}}">
@@ -24,7 +24,7 @@
                     <form id="form_validation" action="{{route('guardar_perfil_director')}}" method="POST">
                         @csrf
                         @include('director.perfiloperacion.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('perfil_director')}}">CANCELAR</a>
+                        <a class="btn btn-danger waves-effect" href="{{route('perfil_operacion_director')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>

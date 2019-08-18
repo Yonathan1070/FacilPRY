@@ -20,10 +20,10 @@ class RequerimientosController extends Controller
     public function index($idP)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $requerimientos = DB::table('TBL_Proyectos')
-            ->join('TBL_Requerimientos', 'TBL_Proyectos.Id', '=', 'TBL_Requerimientos.REQ_Proyecto_Id')
-            ->where('TBL_Requerimientos.REQ_Proyecto_Id', '=', $idP)
-            ->orderBy('TBL_Requerimientos.Id', 'ASC')
+        $requerimientos = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Requerimientos as r', 'p.Id', '=', 'r.REQ_Proyecto_Id')
+            ->where('r.REQ_Proyecto_Id', '=', $idP)
+            ->orderBy('r.Id')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);
         return view('director.requerimientos.listar', compact('requerimientos', 'proyecto', 'datos'));
@@ -49,6 +49,12 @@ class RequerimientosController extends Controller
      */
     public function guardar(ValidacionRequerimiento $request)
     {
+        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $request['REQ_Proyecto_Id'])->get();
+        foreach ($requerimientos as $requerimiento) {
+            if($requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']){
+                return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
+            }
+        }
         Requerimientos::create($request->all());
         return redirect()->route('crear_requerimiento_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
     }
@@ -87,6 +93,13 @@ class RequerimientosController extends Controller
      */
     public function actualizar(ValidacionRequerimiento $request, $idR)
     {
+        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $request['REQ_Proyecto_Id'])
+            ->where('id', '<>', $idR)->get();
+        foreach ($requerimientos as $requerimiento) {
+            if($requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']){
+                return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
+            }
+        }
         Requerimientos::findOrFail($idR)->update($request->all());
         return redirect()->route('requerimientos_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
     }

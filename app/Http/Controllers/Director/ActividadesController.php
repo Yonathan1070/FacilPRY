@@ -10,6 +10,9 @@ use App\Models\Tablas\Requerimientos;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionActividad;
+use App\Models\Tablas\DocumentosSoporte;
+use App\Models\Tablas\HistorialEstados;
+use Illuminate\Support\Carbon;
 
 class ActividadesController extends Controller
 {
@@ -20,11 +23,17 @@ class ActividadesController extends Controller
      */
     public function index($idP)
     {
+        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();
+        if(count($requerimientos)<=0){
+            return redirect()->back()->withErrors('No se pueden asignar actividades si no hay requerimientos previamente registrados.');
+        }
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.Id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
-            ->where('a.ACT_Proyecto_Id', '=', $idP)
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('r.REQ_Proyecto_Id', '=', $idP)
             ->orderBy('a.Id', 'ASC')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);
@@ -47,7 +56,7 @@ class ActividadesController extends Controller
             ->select('u.*')
             ->where('r.RLS_Rol_Id', '=', '6')
             ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellido', 'ASC')
+            ->orderBy('u.USR_Apellidos_Usuario')
             ->get();
         return view('director.actividades.crear', compact('proyecto', 'perfilesOperacion', 'requerimientos', 'datos'));
     }
@@ -63,25 +72,44 @@ class ActividadesController extends Controller
         if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
             return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
         }
-        $archivo = null;
-        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
-            if ($request->file('ACT_Documento_Soporte_Actividad')->isValid()) {
-                $archivo = time().'.'.$request->file('ACT_Documento_Soporte_Actividad')->getClientOriginalName();
-                $request->ACT_Documento_Soporte_Actividad->move(public_path('documentos_soporte'), $archivo);
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->where('REQ_Proyecto_Id', '=', $request->ACT_Proyecto_Id)
+            ->get();
+        foreach ($actividades as $actividad) {
+            if($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad){
+                return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
         Actividades::create([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
-            'ACT_Documento_Soporte_Actividad' => $archivo,
-            'ACT_Estado_Actividad' => 'Estancado',
-            'ACT_Proyecto_Id' => $request['ACT_Proyecto_Id'],
+            'ACT_Estado_Id' => 1,
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
             'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' 23:59:00',
             'ACT_Costo_Actividad' => 0,
-            'ACT_Trabajador_Id' => $request['ACT_Usuario_Id'],
             'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
+            'ACT_Trabajador_Id' => $request['ACT_Usuario_Id'],
         ]);
+        $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
+        HistorialEstados::create([
+            'HST_EST_Fecha' => Carbon::now(),
+            'HST_EST_Estado' => 1,
+            'HST_EST_Actividad' => $actividad->id
+        ]);
+        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
+            foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
+                $archivo = null;
+                if ($documento->isValid()) {
+                    $archivo = time() . '.' . $documento->getClientOriginalName();
+                    $documento->move(public_path('documentos_soporte'), $archivo);
+                    DocumentosSoporte::create([
+                        'DOC_Actividad_Id' => $actividad->id,
+                        'ACT_Documento_Soporte_Actividad' => $archivo
+                    ]);
+                }
+            }
+        }
         return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
     }
 

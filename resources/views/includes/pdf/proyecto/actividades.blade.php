@@ -52,7 +52,7 @@
                             <tr>
                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                <td>{{$actividad->ACT_Estado_Actividad}}</td>
+                                <td>{{$actividad->EST_Nombre_Estado}}</td>
                                 <td>{{$actividad->ACT_Fecha_Inicio_Actividad.' - '.$actividad->ACT_Fecha_Fin_Actividad}}</td>
                                 <td>{{$actividad->NombreT.' '.$actividad->ApellidoT}}</td>
                             </tr>

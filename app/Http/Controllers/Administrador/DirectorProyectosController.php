@@ -75,7 +75,7 @@ class DirectorProyectosController extends Controller
         Mail::send('general.correo.bienvenida', [
             'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
             'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
-            $message->from('8076cdda3e-9b8334@inbox.mailtrap.io', 'FacilPRY');
+            $message->from('yonathancam1997@gmail.com', 'FacilPRY');
             $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
                 ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
         });

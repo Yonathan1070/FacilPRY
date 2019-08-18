@@ -120,6 +120,7 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_director');
         Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_director');
         Route::delete('{id}', 'DecisionesController@eliminar')->name('eliminar_decision_director');
+        Route::get('{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador_director');
     });
 
     //Erutamiento CRUD Perfil de Operación
@@ -138,7 +139,7 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('{idP}/crear', 'RequerimientosController@crear')->name('crear_requerimiento_director');
         Route::post('crear', 'RequerimientosController@guardar')->name('guardar_requerimiento_director');
         Route::get('{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento_director');
-        Route::put('{idP}-{idR}', 'RequerimientosController@actualizar')->name('actualizar_requerimiento_director');
+        Route::put('{idR}/editar', 'RequerimientosController@actualizar')->name('actualizar_requerimiento_director');
         Route::delete('{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento_director');
     });
 
@@ -158,6 +159,7 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
         Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
         Route::get('{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto_director');
+        Route::get('{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje_director');
     });
 
     //Enrutamiento Cobros

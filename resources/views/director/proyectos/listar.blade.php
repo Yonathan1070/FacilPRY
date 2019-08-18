@@ -4,6 +4,7 @@ Crud Proyectos
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
+    <script src="{{asset("assets/pages/scripts/Director/porcentaje.js")}}" type="text/javascript"></script>
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -25,9 +26,10 @@ Crud Proyectos
                 </div>
                 <div class="body table-responsive">
                     @if (count($proyectos)<=0)
-                    <div class="alert alert-warning">
-                        <strong>Advertencia!</strong> El sistema no cuenta con Proyectos registrados
+                    <div class="alert alert-info">
+                        No hay datos que mostrar
                         <a href="{{route('crear_proyecto_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                    </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                             <thead>
@@ -41,9 +43,16 @@ Crud Proyectos
                             <tbody>
                                 @foreach ($proyectos as $proyecto)
                                     <tr>
-                                        <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
+                                        <td>
+                                        <a class='danger' onclick="avance({{$proyecto->id}})" data-placement='above' title="Progreso Proyecto {{$proyecto->PRY_Nombre_Proyecto}}">
+                                                {{$proyecto->PRY_Nombre_Proyecto}}
+                                            </a>
+                                            <div id="popover_content_wrapper" style="display: none">
+                                                    <div id="progressBar"></div>
+                                            </div>
+                                            </td>
                                         <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
-                                        <td>{{$proyecto->USR_Nombre.' '.$proyecto->USR_Apellido}}</td>
+                                        <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>
                                             <a href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
                                                 <i class="material-icons text-info" style="font-size: 17px;">description</i>

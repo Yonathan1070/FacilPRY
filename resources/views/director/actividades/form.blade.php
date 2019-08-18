@@ -17,8 +17,8 @@
 </div>
 <div class="form-group form-float">
     <div class="form-line focused">
-        <input type="file" class="form-control " name="ACT_Documento_Soporte_Actividad"
-            id="ACT_Documento_Soporte_Actividad">
+        <input type="file" class="form-control " name="ACT_Documento_Soporte_Actividad[]"
+            id="ACT_Documento_Soporte_Actividad" multiple>
         <label class="form-label">Documento Soporte</label>
     </div>
 </div>
@@ -53,7 +53,7 @@
                     <option value="">-- Seleccione un Trabajador --</option>
                     @foreach ($perfilesOperacion as $perfilOperacion)
                     <option value="{{$perfilOperacion->id}}">
-                        {{$perfilOperacion->USR_Nombre.' '.$perfilOperacion->USR_Apellido}}</option>
+                        {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}</option>
                     @endforeach
                 </select>
             </div>

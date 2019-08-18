@@ -28,9 +28,8 @@ Crud Actividades
                 </div>
                 <div class="body table-responsive">
                     @if (count($actividades)<=0)
-                        <div class="alert alert-warning">
-                            <strong>Advertencia!</strong> El proyecto 
-                            <strong>{{$proyecto->PRY_Nombre_Proyecto}}</strong> no tiene actividades asignadas
+                        <div class="alert alert-info">
+                            No hay datos que mostrar. 
                             <a href="{{route('crear_actividad_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                         </div>
                     @else
@@ -48,8 +47,8 @@ Crud Actividades
                                     <tr>
                                         <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                         <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                        <td>{{$actividad->USR_Nombre.' '.$actividad->USR_Apellido}}</td>
-                                        <td>{{$actividad->ACT_Estado_Actividad}}</td>
+                                        <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
+                                        <td>{{$actividad->EST_Nombre_Estado}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -27,10 +27,10 @@ Crud Requerimientos
                 </div>
                 <div class="body table-responsive">
                     @if (count($requerimientos)<=0)
-                        <div class="alert alert-warning">
-                            <strong>Advertencia!</strong> El proyecto 
-                            <strong>{{$proyecto->PRY_Nombre_Proyecto}}</strong> no tiene requerimientos asignados
+                        <div class="alert alert-info">
+                            No hay datos que mostrar
                             <a href="{{route('crear_requerimiento_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                        </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                             <thead>

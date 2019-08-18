@@ -11,6 +11,7 @@ use Illuminate\Database\QueryException;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionUsuario;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class PerfilOperacionController extends Controller
 {
@@ -22,13 +23,13 @@ class PerfilOperacionController extends Controller
     public function index()
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $perfilesOperacion = DB::table('TBL_Usuarios')
-            ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
-            ->select('TBL_Usuarios.*', 'TBL_Roles.RLS_Nombre')
-            ->where('TBL_Roles.RLS_Rol_Id', '=', '6')
-            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
-            ->orderBy('TBL_Usuarios.USR_Apellido', 'ASC')
+        $perfilesOperacion = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
+            ->select('u.*', 'r.RLS_Nombre_Rol')
+            ->where('r.RLS_Rol_Id', '=', '6')
+            ->where('ur.USR_RLS_Estado', '=', '1')
+            ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
         return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos'));
     }
@@ -54,24 +55,35 @@ class PerfilOperacionController extends Controller
     public function guardar(ValidacionUsuario $request)
     {
         Usuarios::create([
-            'USR_Tipo_Documento' => $request['USR_Tipo_Documento'],
-            'USR_Documento' => $request['USR_Documento'],
-            'USR_Nombre' => $request['USR_Nombre'],
-            'USR_Apellido' => $request['USR_Apellido'],
-            'USR_Fecha_Nacimiento' => $request['USR_Fecha_Nacimiento'],
-            'USR_Direccion_Residencia' => $request['USR_Direccion_Residencia'],
-            'USR_Telefono' => $request['USR_Telefono'],
-            'USR_Correo' => $request['USR_Correo'],
+            'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
+            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
+            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
+            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
+            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
+            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
-            'password' => bcrypt($request['password']),
+            'password' => bcrypt($request['USR_Nombre_Usuario']),
+            'USR_Supervisor_Id' => session()->get('Usuario_Id'),
             'USR_Empresa_Id' => $request->id
         ]);
-        $perfil = Usuarios::where("USR_Documento","=",$request['USR_Documento'])->first();
+        $perfil = Usuarios::where("USR_Documento_Usuario","=",$request['USR_Documento_Usuario'])->first();
         UsuariosRoles::create([
             'USR_RLS_Rol_Id' => $request['USR_RLS_Rol_Id'],
             'USR_RLS_Usuario_Id' => $perfil->id,
             'USR_RLS_Estado' => 1
         ]);
+        Mail::send('general.correo.bienvenida', [
+            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
+            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
+            $message->from('yonathancam1997@gmail.com', 'FacilPRY');
+            $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
+                ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
+        });
+        if (Mail::failures()) {
+            return redirect()->back()->withErrors('Error al envíar el correo.');
+        }
         return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
     }
 
@@ -109,7 +121,7 @@ class PerfilOperacionController extends Controller
     public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->back()->with('mensaje', '¨Perfi de operación  actualizado con exito');
+        return redirect()->route('perfil_operacion_director')->with('mensaje', '¨Perfi de operación  actualizado con exito');
     }
 
     /**

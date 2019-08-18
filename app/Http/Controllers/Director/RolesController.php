@@ -42,10 +42,15 @@ class RolesController extends Controller
      */
     public function guardar(ValidacionRol $request)
     {
+        $roles = Roles::where('RLS_Nombre_Rol', '=', $request->RLS_Nombre_Rol)
+            ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))->first();
+        if($roles){
+            return redirect()->back()->withErrors('Ya se encuentra registrado el rol en el sistema')->withInput();
+        }
         Roles::create([
             'RLS_Rol_Id' => 6,
-            'RLS_Nombre' => $request->RLS_Nombre,
-            'RLS_Descripcion' => $request->RLS_Descripcion,
+            'RLS_Nombre_Rol' => $request->RLS_Nombre_Rol,
+            'RLS_Descripcion_Rol' => $request->RLS_Descripcion_Rol,
             'RLS_Empresa_Id' => $request->id
         ]);
         return redirect()->back()->with('mensaje', 'Rol creado con exito');
@@ -84,8 +89,15 @@ class RolesController extends Controller
      */
     public function actualizar(ValidacionRol $request, $id)
     {
+        $roles = Roles::where('RLS_Nombre_Rol', '<>', $request->RLS_Nombre_Rol)
+            ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))->get();
+        foreach ($roles as $rol) {
+            if($rol->RLS_Nombre_Rol==$request->RLS_Nombre_Rol){
+                return redirect()->back()->withErrors('Ya se encuentra registrado el rol en el sistema')->withInput();
+            }
+        }
         Roles::findOrFail($id)->update($request->all());
-        return redirect()->back()->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->route('roles_director')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**

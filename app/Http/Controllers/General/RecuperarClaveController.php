@@ -39,7 +39,7 @@ class RecuperarClaveController extends Controller
                 'created_at' => Carbon::now()
             ]);
             Mail::send('general.correo.correo', ['user' => $user, 'token' => $token], function($message) use ($user){
-                $message->from('8076cdda3e-9b8334@inbox.mailtrap.io', 'FacilPRY');
+                $message->from('yonathancam1997@gmail.com', 'FacilPRY');
                 $message->to($user->USR_Correo, 'Envío nombre de usuario')
                     ->subject('Reestablecer Clave');
             });

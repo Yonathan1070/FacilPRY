@@ -56,6 +56,16 @@ class PerfilUsuarioController extends Controller
      */
     public function actualizarDatos(ValidacionUsuario $request)
     {
+        $usuarios = Usuarios::where('USR_Empresa_Id', '=', session()->get('Empresa_Id'))
+            ->where('id', '<>', session()->get('Usuario_Id'))->get();
+        foreach ($usuarios as $usuario) {
+            if($usuario->USR_Documento_Usuario == $request->USR_Documento_Usuario){
+                return redirect()->back()->withErrors('El Documento ya se encuentra en uso.');
+            }
+            if($usuario->USR_Correo_Usuario == $request->USR_Correo_Usuario){
+                return redirect()->back()->withErrors('El correo electrónico ya se encuentra en uso.');
+            }
+        }
         Usuarios::findOrFail(session()->get('Usuario_Id'))->update($request->all());
         return redirect()->back()->with('mensaje', 'Datos actualizados con exito');
     }

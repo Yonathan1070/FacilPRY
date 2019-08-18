@@ -22,9 +22,8 @@
                     <div class="body table-responsive">
                         @if (count($clientes)<=0)
                             <div class="alert alert-warning">
-                                <strong>Advertencia!</strong>
-                                El sistema no cuenta con Clientes registrados
-                                <a href="{{route('crear_perfil_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                                No hay Datos que mostrar
+                                <a href="{{route('crear_cliente_director')}}" class="alert-link">Clic aquí para agregar!</a>.
                             </div>
                         @else
                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -41,10 +40,10 @@
                                 <tbody>
                                     @foreach ($clientes as $cliente)
                                         <tr>
-                                            <td>{{$cliente->USR_Documento}}</td>
-                                            <td>{{$cliente->USR_Nombre.' '.$cliente->USR_Apellido}}</td>
-                                            <td>{{$cliente->USR_Telefono}}</td>
-                                            <td>{{$cliente->USR_Correo}}</td>
+                                            <td>{{$cliente->USR_Documento_Usuario}}</td>
+                                            <td>{{$cliente->USR_Nombres_Usuario.' '.$cliente->USR_Apellidos_Usuario}}</td>
+                                            <td>{{$cliente->USR_Telefono_Usuario}}</td>
+                                            <td>{{$cliente->USR_Correo_Usuario}}</td>
                                             <td>{{$cliente->USR_Nombre_Usuario}}</td>
                                             <td>
                                                 <a href="{{route('editar_cliente_director', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">

@@ -16,7 +16,6 @@ class CrearTablaActividadesFinalizadas extends Migration
         Schema::create('TBL_Actividades_Finalizadas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('ACT_FIN_Descripcion');
-            $table->text('ACT_FIN_Documento_Soporte');
             $table->unsignedBigInteger('ACT_FIN_Actividad_Id');
             $table->foreign('ACT_FIN_Actividad_Id', 'FK_Actividades_Finalizadas_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('ACT_FIN_Estado_Id');
