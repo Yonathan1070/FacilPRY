@@ -44,12 +44,10 @@ Crud Proyectos
                                 @foreach ($proyectos as $proyecto)
                                     <tr>
                                         <td>
-                                        <a class='danger' onclick="avance({{$proyecto->id}})" data-placement='above' title="Progreso Proyecto {{$proyecto->PRY_Nombre_Proyecto}}">
+                                        <a onclick="avance({{$proyecto->id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
                                                 {{$proyecto->PRY_Nombre_Proyecto}}
                                             </a>
-                                            <div id="popover_content_wrapper" style="display: none">
-                                                    <div id="progressBar"></div>
-                                            </div>
+                                            <div id="progressBar{{$proyecto->id}}" style="display: none;"></div>
                                             </td>
                                         <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>

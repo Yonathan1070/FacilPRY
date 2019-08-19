@@ -28,7 +28,6 @@ class ActividadesController extends Controller
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesEstancadas = $this->actividadesEstancadas($hoy);
         $actividadesProceso = $this->actividadesProceso($hoy);
         $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
         $actividadesFinalizadas = $this->actividadesFinalizadas();
@@ -72,7 +71,6 @@ class ActividadesController extends Controller
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($datos->USR_Empresa_Id);
-        $actividadesEstancadas = $this->actividadesEstancadas($hoy);
         $actividadesProceso = $this->actividadesProceso($hoy);
         $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
         $actividadesFinalizadas = $this->actividadesFinalizadas();
@@ -124,21 +122,11 @@ class ActividadesController extends Controller
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }
 
-    public function actividadesEstancadas($hoy){
-        $actividadesEstancadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*')
-            ->where('a.ACT_Estado_Actividad', '=', 'Estancado')
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
-            ->orderBy('a.id', 'ASC')
-            ->get();
-        return $actividadesEstancadas;
-    }
 
     public function actividadesProceso($hoy){
         $actividadesProceso = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
             ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.HRS_ACT_Cantidad_Horas', 'af.*')

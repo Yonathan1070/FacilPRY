@@ -98,14 +98,21 @@ class ProyectosController extends Controller
         $actividadesTotales = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->where('p.id', '=', $id)
             ->get();
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('e.EST_Nombre_Estado', '=', 'Finalizado')
+            ->where('p.id', '=', $id)
             ->get();
-        $porcentaje = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales)*100;
+        
+        if((double)count($actividadesTotales) == 0){
+            $porcentaje = 0;
+        }else {
+            $porcentaje = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales)*100;
+        }
         $dato = new stdClass();
         $dato->porcentaje = $porcentaje;
         return json_encode($dato);
