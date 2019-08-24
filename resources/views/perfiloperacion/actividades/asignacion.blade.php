@@ -11,22 +11,40 @@ Asignación de Horas
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>ASIGNAR HORAS DE TRABAJO</h2>
-                    <ul class="header-dropdown" style="top:10px;">
-                        <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('actividades_perfil_operacion')}}">
-                                <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
-                            </a>
-                        </li>
-                    </ul>
+                    @foreach ($actividades as $actividad)
+                        <h2>ASIGNAR HORAS DE TRABAJO PARA ACTIVIDAD ({{$actividad->ACT_Nombre_Actividad}})</h2>
+                        @break
+                    @endforeach
                 </div>
-                <div class="body">
-                    <form id="form_validation" action="{{route('actividades_guardar_horas_perfil_operacion')}}" method="POST">
-                        @csrf
-                        @include('perfiloperacion.actividades.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('actividades_perfil_operacion')}}">CANCELAR</a>
-                        <button class="btn btn-primary waves-effect" type="submit">Guardar</button>
-                    </form>
+                <div class="body table-responsive">
+                    @foreach ($actividades as $actividad)
+                        <input type="hidden" id="idActividad" value="{{$actividad->id}}">
+                        @break
+                    @endforeach
+                    @if (count($actividades)<=0)
+                        <div class="alert alert-warning">
+                            No hay Datos que mostrar.
+                        </div>
+                    @else
+                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="mainTable">
+                            <thead>
+                                <tr>
+                                    <th style="display: none">Id</th>
+                                    <th>Fecha</th>
+                                    <th>Asignar Horas de Trabajo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($actividades as $actividad)
+                                    <tr>
+                                        <td class="identifier"  style="display: none">{{$actividad->Id_Horas}}</td>
+                                        <td>{{$actividad->HRS_ACT_Fecha_Actividad}}</td>
+                                        <td class="hola">{{$actividad->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>
@@ -42,4 +60,31 @@ Asignación de Horas
 <script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
 
 <script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
+
+<!-- Editable Table Plugin Js -->
+<script src="{{asset('assets/bsb/plugins/editable-table/mindmup-editabletable.js')}}"></script>
+<script src="{{asset('assets/bsb/js/pages/tables/editable-table.js')}}"></script>
+<script>
+    $('table td.hola').on('change', function(evt, newValue) {
+        var cell = $(this).parent();
+        var cell_index = $(this).parent().parent().children().index(cell);
+        var identifier = evt.target.parentElement.rowIndex;
+        var idHora = document.getElementById("mainTable").rows[identifier].cells[0].innerHTML;
+        var idActividad = document.getElementById("idActividad").value;
+        $.ajax({
+            dataType: "json",
+            method: "put",
+            url: "/perfil-operacion/actividades/" + idHora +"/asignacion-horas",
+            data: {"_token":"{{ csrf_token() }}", HRS_ACT_Cantidad_Horas_Asignadas:newValue},
+            success:function(data){
+                if(data.msg == "alerta")
+                    Biblioteca.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'FacilPRY', 'warning');
+                if(data.msg == "error")
+                    Biblioteca.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'FacilPRY', 'error');
+                if(data.msg == "exito")
+                    Biblioteca.notificaciones('Horas Asignadas', 'FacilPRY', 'success');
+            }
+        });
+    });
+</script>
 @endsection

@@ -2869,7 +2869,7 @@ section.content {
   .card .bg-blue-grey,
   .card .bg-black {
     border-bottom: none !important;
-    color: #000 !important; }
+    color: #fff !important; }
     .card .bg-red h2, .card .bg-red small, .card .bg-red .material-icons,
     .card .bg-pink h2,
     .card .bg-pink small,

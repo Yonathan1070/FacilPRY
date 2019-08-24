@@ -2,6 +2,12 @@
 @section('titulo')
 Crud Proyectos
 @endsection
+@section('styles')
+    <style>
+        .card .bg-cyan{
+            color: #000 !important; }
+    </style>
+@endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
     <script src="{{asset("assets/pages/scripts/Director/porcentaje.js")}}" type="text/javascript"></script>

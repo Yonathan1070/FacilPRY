@@ -17,6 +17,7 @@ class CrearTablaHorasActividades extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('HRS_ACT_Actividad_Id');
             $table->foreign('HRS_ACT_Actividad_Id', 'FK_Horas_Actividad_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
+            $table->date('HRS_ACT_Fecha_Actividad');
             $table->unsignedBigInteger('HRS_ACT_Cantidad_Horas_Asignadas');
             $table->unsignedBigInteger('HRS_ACT_Cantidad_Horas_Reales')->nullable();
             $table->timestamps();

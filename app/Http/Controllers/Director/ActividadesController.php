@@ -12,6 +12,7 @@ use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionActividad;
 use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
+use App\Models\Tablas\HorasActividad;
 use Illuminate\Support\Carbon;
 
 class ActividadesController extends Controller
@@ -92,6 +93,13 @@ class ActividadesController extends Controller
             'ACT_Trabajador_Id' => $request['ACT_Usuario_Id'],
         ]);
         $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
+        $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'],$request['ACT_Fecha_Fin_Actividad']);
+        foreach ($rangos as $fecha) {
+            HorasActividad::create([
+                'HRS_ACT_Actividad_Id' => $actividad->id,
+                'HRS_ACT_Fecha_Actividad' => $fecha
+            ]);
+        }
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),
             'HST_EST_Estado' => 1,
@@ -113,16 +121,17 @@ class ActividadesController extends Controller
         return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function mostrar($id)
-    {
-        //
-    }
+    private function obtenerFechasRango($fechaInicio, $fechaFin) { 
+        // cut hours, because not getting last day when hours of time to is less than hours of time_from 
+        // see while loop 
+        $inicio = Carbon::createFromFormat('Y-m-d', substr($fechaInicio, 0, 10)); 
+        $fin = Carbon::createFromFormat('Y-m-d', substr($fechaFin, 0, 10)); 
+        $fechas = []; 
+        while ($inicio->lte($fin)) { 
+            $fechas[] = $inicio->copy()->format('Y-m-d'); 
+            $inicio->addDay(); 
+        } return $fechas; 
+    } 
 
     /**
      * Show the form for editing the specified resource.

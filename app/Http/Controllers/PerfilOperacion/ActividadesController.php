@@ -24,14 +24,13 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $hoy = new DateTime();
-        $hoy->format('Y-m-d H:i:s');
+        $hoy = Carbon::now();
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesProceso = $this->actividadesProceso($hoy);
         $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
         $actividadesFinalizadas = $this->actividadesFinalizadas();
-        return view('perfiloperacion.actividades.listar', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos'));
+        return view('perfiloperacion.actividades.listar', compact('actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos'));
     }
 
     /**
@@ -41,27 +40,39 @@ class ActividadesController extends Controller
      */
     public function asignarHoras($id)
     {
-        $hoy = Carbon::now();
-        $hoy->format('Y-m-d H:i:s');
-
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = $this->obtenerActividades($id);
-        $horasRestantes = $hoy->diffInHours($actividades->ACT_Fecha_Fin_Actividad);
-
-        return view('perfiloperacion/actividades/asignacion', compact('horasRestantes', 'id', 'datos'));
+        $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
+            ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
+        if(count($actividades) == 0)
+            return redirect()->route('actividades_perfil_operacion')->withErrors('La actividad no existe.');
+        if ($horas != 0)
+            return redirect()->route('actividades_perfil_operacion')->withErrors('Ya se asignaron horas de trabajo a la Actividad.');
+        $hoy = Carbon::now();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('perfiloperacion/actividades/asignacion', compact('id', 'actividades', 'datos'));
     }
 
-    public function guardarHoras(Request $request)
+    public function guardarHoras(Request $request, $id)
     {
-        if ($request->HRS_ACT_Cantidad_Horas > $request->Horas_Restantes) {
-            return redirect()->route('actividades_asignar_horas_perfil_operacion', [$request['HRS_ACT_Actividad_Id']])->withErrors('La cantidad de horas no puede ser superior a las horas que faltan para la entrega de la Actividad');
+        $fecha = HorasActividad::findOrFail($id);
+        $horas = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->select()
+            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+        if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<14){
+            HorasActividad::findOrFail($id)->update([
+                'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
+            ]);
+            return response()->json(['msg' => 'alerta']);
         }
-        HorasActividad::create([
-            'HRS_ACT_Actividad_Id' =>$request->Actividad_Id,
-            'HRS_ACT_Cantidad_Horas' => $request->HRS_ACT_Cantidad_Horas
+        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>15)
+            return response()->json(['msg' => 'error']);
+        HorasActividad::findOrFail($id)->update([
+            'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
-        Actividades::findOrFail($request->Actividad_Id)->update(['ACT_Estado_Actividad' => 'En Proceso']);
-        return redirect()->back()->with('mensaje', 'Horas Asignadas con exito');
+        return response()->json(['msg' => 'exito'], 200);
     }
 
     public function generarPdf()
@@ -127,12 +138,13 @@ class ActividadesController extends Controller
         $actividadesProceso = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
+            ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
             ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.HRS_ACT_Cantidad_Horas', 'af.*')
-            ->where('a.ACT_Estado_Actividad', '=', 'En Proceso')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'ha.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'))
+            ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.ACT_Fecha_Fin_Actividad', '>', $hoy)
+            ->where('a.ACT_Fecha_Fin_Actividad', '>=', $hoy)
             ->orderBy('a.id', 'ASC')
             ->groupBy('a.id')
             ->get();
@@ -142,13 +154,15 @@ class ActividadesController extends Controller
 
     public function actividadesAtrasadas($hoy){
         $actividadesAtrasadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id AS ID_Actividad','a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
-            ->where('a.ACT_Estado_Actividad', '<>', 'Finalizado')
+            ->where('a.ACT_Estado_Id', '<>', 3)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('a.ACT_Fecha_Fin_Actividad', '<', $hoy)
-            ->orderBy('a.id', 'ASC')
+            ->orderBy('a.id')
             ->groupBy('af.ACT_FIN_Actividad_Id')
             ->get();
 
@@ -157,25 +171,27 @@ class ActividadesController extends Controller
 
     public function actividadesFinalizadas(){
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*')
-            ->where('a.ACT_Estado_Actividad', '<>', 'En Proceso')
-            ->where('a.ACT_Estado_Actividad', '<>', 'Estancado')
-            ->where('af.ACT_FIN_Estado', '<>', 'Rechazado')
+            ->where('a.ACT_Estado_Id', '<>', 1)
+            ->where('af.ACT_FIN_Estado_Id', '<>', 6)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->orderBy('a.id', 'ASC')
+            ->orderBy('a.id')
             ->get();
 
         return $actividadesFinalizadas;
     }
 
     public function obtenerActividades($id){
-        $actividades = Actividades::select('TBL_Actividades.*')
-            ->where('TBL_Actividades.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('TBL_Actividades.id', '=', $id)
-            ->first();
-
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
+            ->get();
         return $actividades;
     }
 }

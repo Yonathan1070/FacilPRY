@@ -81,6 +81,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-6">
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="number" class="form-control" name="USR_Costo_Hora" id="USR_Costo_Hora"
+                        value="{{old('USR_Costo_Hora', $perfil->USR_Costo_Hora ?? '')}}" min="0" max="999999" required>
+                    <label class="form-label">Valor de la Hora de Trabajo</label>
+                </div>
+            </div>
+        </div>
     </div>
 @else
     <div class="row clearfix">
@@ -165,7 +174,7 @@
         </div>
     </div>
     <div class="row clearfix">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="form-group form-float">
                 <div class="form-line">
                     <select name="USR_RLS_Rol_Id" id="USR_RLS_Rol_Id" class="form-control" required>
@@ -177,12 +186,21 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="USR_Nombre_Usuario" id="USR_Nombre_Usuario"
                         value="{{old('USR_Nombre_Usuario', $perfil->USR_Nombre_Usuario ?? '')}}" maxlength="15" required>
                     <label class="form-label">Nombre De Usuario</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="number" class="form-control" name="USR_Costo_Hora" id="USR_Costo_Hora"
+                        value="{{old('USR_Costo_Hora', $perfil->USR_Costo_Hora ?? '')}}" min="0" max="999999" required>
+                    <label class="form-label">Valor de la Hora de Trabajo</label>
                 </div>
             </div>
         </div>

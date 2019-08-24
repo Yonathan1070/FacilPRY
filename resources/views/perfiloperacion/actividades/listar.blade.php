@@ -24,63 +24,6 @@ Actividades
                     <div class="row clearfix">
                         <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
                             <div class="panel-group" id="accordion_19" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-col-orange">
-                                    <div class="panel-heading" role="tab" id="headingOne_19">
-                                        <h4 class="panel-title">
-                                            <a role="button" class="collapsed" data-toggle="collapse" href="#collapseOne_19" aria-expanded="true" aria-controls="collapseOne_19">
-                                                <i class="material-icons">sentiment_neutral</i> ESTANCADAS
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseOne_19" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_19">
-                                        <div class="panel-body table-responsive">
-                                            @if (count($actividadesEstancadas)<=0) 
-                                                <div class="alert alert-info">
-                                                    No hay datos que mostrar.
-                                                </div>
-                                            @else
-                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Proyecto</th>
-                                                            <th>Actividad</th>
-                                                            <th>Descripción</th>
-                                                            <th>Fechas</th>
-                                                            <th class="width70"></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($actividadesEstancadas as $actividad)
-                                                            <tr>
-                                                                <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
-                                                                <td>{{$actividad->ACT_Nombre_Actividad}}</td>
-                                                                <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                                <td>{{$actividad->ACT_Fecha_Inicio_Actividad.' - '.$actividad->ACT_Fecha_Fin_Actividad}}
-                                                                </td>
-                                                                <td>
-                                                                    <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
-                                                                        class="btn-accion-tabla tooltipsC"
-                                                                        title="Asignar horas de Trabajo">
-                                                                        <i class="material-icons text-info"
-                                                                            style="font-size: 17px;">alarm_add</i>
-                                                                    </a>
-                                                                    @if ($actividad->ACT_Documento_Soporte_Actividad != null)
-                                                                    <a href="{{route('actividades_descargar_archivo_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
-                                                                        class="btn-accion-tabla tooltipsC"
-                                                                        title="Descargar Documento Soporte">
-                                                                        <i class="material-icons text-info"
-                                                                            style="font-size: 17px;">file_download</i>
-                                                                    </a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="panel panel-col-cyan">
                                     <div class="panel-heading" role="tab" id="headingTwo_19">
                                         <h4 class="panel-title">
@@ -104,13 +47,15 @@ Actividades
                                                             <th>Descripción</th>
                                                             <th>Fecha de Entrega</th>
                                                             @foreach ($actividadesProceso as $actividad)
-                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <th>Observación</th>
                                                                     <th>Estado</th>
                                                                     @break
                                                                 @endif
+                                                                @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
+                                                                    <th>Horas Asignadas</th>
+                                                                @endif
                                                             @endforeach
-                                                            <th>Horas Asignadas</th>
                                                             <th class="width70"></th>
                                                         </tr>
                                                     </thead>
@@ -121,23 +66,35 @@ Actividades
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
-                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                    <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                    <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
-                                                                <td>{{$actividad->HRS_ACT_Cantidad_Horas}}</td>
-                                                                <td>
-                                                                    <a href="#" class="btn-accion-tabla tooltipsC"
-                                                                        title="Solicitar más tiempo">
-                                                                        <i class="material-icons text-info"
-                                                                            style="font-size: 17px;">alarm_add</i>
-                                                                    </a>
-                                                                    <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
-                                                                        class="btn-accion-tabla tooltipsC"
-                                                                        title="Finalizar Actividad">
-                                                                        <i class="material-icons text-info"
-                                                                            style="font-size: 17px;">done_all</i>
-                                                                    </a>
+                                                                @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
+                                                                    <td>{{$actividad->Horas}}</td>
+                                                                @else
+                                                                    <td></td>
+                                                                @endif
+                                                                <td class="width70">
+                                                                    @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
+                                                                        <a href="#" class="btn-accion-tabla tooltipsC"
+                                                                            title="Solicitar más tiempo">
+                                                                            <i class="material-icons text-info"
+                                                                                style="font-size: 17px;">alarm_add</i>
+                                                                        </a>
+                                                                        <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC"
+                                                                            title="Finalizar Actividad">
+                                                                            <i class="material-icons text-info"
+                                                                                style="font-size: 17px;">done_all</i>
+                                                                        </a>
+                                                                    @else
+                                                                        <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}" class="btn-accion-tabla tooltipsC"
+                                                                            title="Asignar Horas">
+                                                                            <i class="material-icons text-info"
+                                                                                style="font-size: 17px;">alarm</i>
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -170,7 +127,7 @@ Actividades
                                                             <th>Descripción</th>
                                                             <th>Fecha Limite de Entrega</th>
                                                             @foreach ($actividadesAtrasadas as $actividad)
-                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <th>Observación</th>
                                                                     <th>Estado</th>
                                                                     @break
@@ -188,7 +145,7 @@ Actividades
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
                                                                 @if ($actividad->ACT_FIN_Estado == 'Rechazado')
                                                                     <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                    <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                    <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
                                                                 <td>
                                                                     <a href="#" class="btn-accion-tabla tooltipsC"
@@ -237,7 +194,7 @@ Actividades
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_FIN_Fecha_Finalizacion}}</td>
-                                                                <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
