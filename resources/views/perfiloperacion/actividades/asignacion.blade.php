@@ -15,6 +15,13 @@ Asignación de Horas
                         <h2>ASIGNAR HORAS DE TRABAJO PARA ACTIVIDAD ({{$actividad->ACT_Nombre_Actividad}})</h2>
                         @break
                     @endforeach
+                    <ul class="header-dropdown" style="top:10px;">
+                        <li class="dropdown">
+                            <a class="btn btn-danger waves-effect" onclick="volver()">
+                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body table-responsive">
                     @foreach ($actividades as $actividad)
@@ -86,5 +93,48 @@ Asignación de Horas
             }
         });
     });
+
+    function volver(){
+        event.preventDefault();
+        const form = $(this);
+        swal({
+            title: '¿Está seguro que desea salir?',
+            text: 'Si ya asignaste horas la acción no se podrá deshacer!',
+            icon: 'warning',
+            buttons: {
+                cancel: "Cancelar",
+                confirm: "Aceptar"
+            },
+        }).then((value) => {
+            if(value){
+                swal({
+                    title: 'Completado',
+                    text: 'Horas de trabajo Asignadas',
+                    icon: 'success',
+                    buttons: {
+                        confirm: "Aceptar"
+                    },
+                }).then((value) => {
+                    if(value){
+                        var idActividad = document.getElementById("idActividad").value;
+                        $.ajax({
+                            dataType: "json",
+                            method: "get",
+                            url: "/perfil-operacion/actividades/" + idActividad +"/terminar-asignacion",
+                        });
+                    }
+                })
+            }else{
+                swal({
+                    title: 'Cancelado',
+                    text: 'Continúa asignando tus horas de trabajo!',
+                    icon: 'info',
+                    buttons: {
+                        confirm: "Aceptar"
+                    },
+                })
+            }
+        });
+    };
 </script>
 @endsection

@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.administrador.layout')
 @section('titulo')
 Crud Director de Proyectos
 @endsection

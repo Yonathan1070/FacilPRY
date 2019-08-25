@@ -53,7 +53,37 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Notifications -->
-                    @include('includes.notificaciones')
+                    <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <i class="material-icons">notifications</i>
+                                @if ($cantidad != 0)
+                                    <span class="label-count">{{$cantidad}}</span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">NOTIFICACIONES</li>
+                                <li class="body">
+                                    <ul class="menu">
+                                        @foreach ($notificaciones as $notificacion)
+                                            <li>
+                                                <a onclick="notificacion({{$notificacion->id}})">
+                                                    <div class="icon-circle bg-light-green">
+                                                        <i class="material-icons">{{$notificacion->NTF_Icono}}</i>
+                                                    </div>
+                                                    <div class="menu-info">
+                                                        <h4>{{$notificacion->NTF_Titulo}}</h4>
+                                                        <p>&nbsp;</p>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="javascript:void(0);">View All Notifications</a>
+                                </li>
+                            </ul>
+                        </li>
                     <!-- #END# Notifications -->
                 </ul>
             </div>
@@ -118,7 +148,17 @@
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+    <script>
+        function notificacion(id){
+            $.ajax({
+                dataType: "json",
+                method: "get",
+                url: "/administrador/" + id + "/cambio-estado"
+            }).done(function (notif) {
+                window.location.href = notif.ruta;
+            });
+        }
+    </script>
     @yield('scripts')
 </body>
 

@@ -10,6 +10,7 @@ use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -84,6 +85,22 @@ class PerfilOperacionController extends Controller
         if (Mail::failures()) {
             return redirect()->back()->withErrors('Error al envíar el correo.');
         }
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosU = Usuarios::orderByDesc('created_at')->first();
+        Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
+            session()->get('Usuario_Id'),
+            $datos->USR_Supervisor_Id,
+            '',
+            'person_add'
+        );
+        Notificaciones::crearNotificacion(
+            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY',
+            session()->get('Usuario_Id'),
+            $datosU->id,
+            '',
+            'account_circle'
+        );
         return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
     }
 
@@ -120,8 +137,23 @@ class PerfilOperacionController extends Controller
      */
     public function actualizar(ValidacionUsuario $request, $id)
     {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado los datos de '.$request->USR_Nombres_Usuario,
+            session()->get('Usuario_Id'),
+            $datos->USR_Supervisor_Id,
+            '',
+            'update'
+        );
+        Notificaciones::crearNotificacion(
+            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', susdatos fueron actualizados',
+            session()->get('Usuario_Id'),
+            $id,
+            'perfil-operacion/perfil',
+            'update'
+        );
         Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->route('perfil_operacion_director')->with('mensaje', '¨Perfi de operación  actualizado con exito');
+        return redirect()->route('perfil_operacion_director')->with('mensaje', 'Perfi de operación  actualizado con exito');
     }
 
     /**
@@ -133,6 +165,15 @@ class PerfilOperacionController extends Controller
     public function eliminar($id)
     {
         try{
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($id);
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado al usuario '.$datosU->USR_Nombres_Usuario,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                '',
+                'delete_forever'
+            );
             Usuarios::destroy($id);
             return redirect()->back()->with('mensaje', 'El Perfil de operación fue eliminado satisfactoriamente.');
         }catch(QueryException $e){

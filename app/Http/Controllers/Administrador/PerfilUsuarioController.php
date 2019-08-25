@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Notificaciones;
 
 class PerfilUsuarioController extends Controller
 {
@@ -20,8 +21,10 @@ class PerfilUsuarioController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('administrador.perfil.editar', compact('datos'));
+        return view('administrador.perfil.editar', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**

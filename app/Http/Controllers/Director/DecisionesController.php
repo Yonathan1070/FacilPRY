@@ -8,6 +8,7 @@ use App\Models\Tablas\Decisiones;
 use App\Http\Requests\ValidacionDecision;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Indicadores;
+use App\Models\Tablas\Notificaciones;
 use stdClass;
 use Illuminate\Support\Facades\DB;
 
@@ -77,6 +78,14 @@ class DecisionesController extends Controller
             }
         }
         Decisiones::create($request->all());
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado la desición '.$request->DCS_Nombre_Decision,
+            session()->get('Usuario_Id'),
+            $datos->USR_Supervisor_Id,
+            'administrador/decisiones',
+            'add_circle'
+        );
         return redirect()->back()->with('mensaje', 'Decisión creada con exito');
     }
 
@@ -136,6 +145,14 @@ class DecisionesController extends Controller
             }
         }
         Decisiones::findOrFail($id)->update($request->all());
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado la desición '.$request->DCS_Nombre_Decision,
+            session()->get('Usuario_Id'),
+            $datos->USR_Supervisor_Id,
+            'administrador/decisiones',
+            'update'
+        );
         return redirect()->back()->with('mensaje', 'Decisión actualizada con exito');
     }
 
@@ -148,6 +165,15 @@ class DecisionesController extends Controller
     public function eliminar(Request $request, $id)
     {
         try{
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $desicion = Decisiones::findOrFail($id);
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado la decision '.$desicion->DCS_Nombre_Decision,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                'administrador/decisiones',
+                'delete_forever'
+            );
             Decisiones::destroy($id);
             return redirect()->back()->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
         }catch(QueryException $e){

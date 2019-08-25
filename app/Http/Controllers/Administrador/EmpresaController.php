@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tablas\Empresas;
+use App\Models\Tablas\Notificaciones;
 
 class EmpresaController extends Controller
 {
@@ -17,10 +18,12 @@ class EmpresaController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = DB::table('TBL_Usuarios as u')
             ->join('TBL_Empresas as e', 'u.USR_Empresa_Id', '=', 'e.id')
             ->where('u.id', '=', session()->get('Usuario_Id'))->first();
-        return view('administrador.empresa.editar', compact('datos'));
+        return view('administrador.empresa.editar', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**

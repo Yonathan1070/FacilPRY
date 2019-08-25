@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
@@ -20,6 +21,8 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $directores = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
@@ -29,7 +32,7 @@ class DirectorProyectosController extends Controller
             ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
             ->orderBy('TBL_Usuarios.id', 'ASC')
             ->get();
-        return view('administrador.director.listar', compact('directores', 'datos'));
+        return view('administrador.director.listar', compact('directores', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -39,8 +42,10 @@ class DirectorProyectosController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('administrador.director.crear', compact('datos'));
+        return view('administrador.director.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -93,9 +98,11 @@ class DirectorProyectosController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
-        return view('administrador.director.editar', compact('director', 'datos'));
+        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**

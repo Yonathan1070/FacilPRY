@@ -13,6 +13,7 @@ use App\Http\Requests\ValidacionActividad;
 use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
+use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Carbon;
 
 class ActividadesController extends Controller
@@ -118,6 +119,13 @@ class ActividadesController extends Controller
                 }
             }
         }
+        Notificaciones::crearNotificacion(
+            'Nueva actividad asignada',
+            session()->get('Usuario_Id'),
+            $request->ACT_Usuario_Id,
+            'perfil-operacion/actividades',
+            'add_to_photos'
+        );
         return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
     }
 

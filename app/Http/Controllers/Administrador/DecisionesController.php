@@ -8,6 +8,7 @@ use App\Models\Tablas\Decisiones;
 use App\Http\Requests\ValidacionDecision;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Indicadores;
+use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -20,12 +21,14 @@ class DecisionesController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = DB::table('TBL_Indicadores as i')
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
         //$decisiones = Decisiones::orderBy('id')->get();
-        return view('administrador.decisiones.listar', compact('decisiones', 'datos'));
+        return view('administrador.decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -35,9 +38,11 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
-        return view('administrador.decisiones.crear', compact('datos', 'indicadores'));
+        return view('administrador.decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
     }
 
     public function totalIndicador($id){
@@ -105,10 +110,12 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $indicadores = Indicadores::orderBy('id')->get();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
-        return view('administrador.decisiones.editar', compact('decision', 'indicadores', 'datos'));
+        return view('administrador.decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**

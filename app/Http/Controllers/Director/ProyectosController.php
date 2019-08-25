@@ -8,6 +8,7 @@ use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionProyecto;
+use App\Models\Tablas\Notificaciones;
 use PDF;
 use stdClass;
 
@@ -57,6 +58,23 @@ class ProyectosController extends Controller
     public function guardar(ValidacionProyecto $request)
     {
         Proyectos::create($request->all());
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosP = Proyectos::orderByDesc('created_at')->first();
+        $datosU = Usuarios::findOrFail($datosP->PRY_Cliente_Id);
+        Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el proyecto '.$request->PRY_Nombre_Proyecto,
+            session()->get('Usuario_Id'),
+            $datos->USR_Supervisor_Id,
+            '',
+            'library_add'
+        );
+        Notificaciones::crearNotificacion(
+            'Hola! '.$datosU->USR_Nombres_Usuario.' '.$datosU->USR_Apellidos_Usuario.', su proyecto ha sido creado',
+            session()->get('Usuario_Id'),
+            $datosU->id,
+            '',
+            'library_add'
+        );
         return redirect()->back()->with('mensaje', 'Proyecto agregado con exito');
     }
 

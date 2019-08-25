@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Iconos;
 use App\Models\Tablas\Menu;
+use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
@@ -19,16 +20,20 @@ class PermisosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {  
+    {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $usuarios = Usuarios::orderBy('id')->get();
-        return view('administrador.permisos.listar', compact('usuarios', 'datos'));
+        return view('administrador.permisos.listar', compact('usuarios', 'datos', 'notificaciones', 'cantidad'));
     }
     
     public function asignarRol($id){
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('RLS_Nombre_Rol', '<>', 'Perfil de Operación')->orderBy('id')->get();
-        return view('administrador.permisos.asignar', compact('roles', 'datos', 'id'));
+        return view('administrador.permisos.asignar', compact('roles', 'datos', 'id', 'notificaciones', 'cantidad'));
     }
 
     public function agregar($idU, $idR)

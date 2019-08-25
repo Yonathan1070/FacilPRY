@@ -27,19 +27,24 @@ Actividades
                                 <div class="panel panel-col-cyan">
                                     <div class="panel-heading" role="tab" id="headingTwo_19">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseTwo_19" aria-expanded="false" aria-controls="collapseTwo_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse"
+                                                href="#collapseTwo_19" aria-expanded="false"
+                                                aria-controls="collapseTwo_19">
                                                 <i class="material-icons">mood</i> EN PROCESO
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_19">
+                                    <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel"
+                                        aria-labelledby="headingTwo_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesProceso)<=0) 
                                                 <div class="alert alert-info">
                                                     No hay datos que mostrar.
                                                 </div>
                                             @else
-                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                                <table
+                                                    class="table table-striped table-bordered table-hover dataTable js-exportable"
+                                                    id="tabla-data">
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
@@ -89,8 +94,8 @@ Actividades
                                                                                 style="font-size: 17px;">done_all</i>
                                                                         </a>
                                                                     @else
-                                                                        <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}" class="btn-accion-tabla tooltipsC"
-                                                                            title="Asignar Horas">
+                                                                        <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC" title="Asignar Horas">
                                                                             <i class="material-icons text-info"
                                                                                 style="font-size: 17px;">alarm</i>
                                                                         </a>
@@ -107,19 +112,24 @@ Actividades
                                 <div class="panel panel-col-red">
                                     <div class="panel-heading" role="tab" id="headingThree_19">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseThree_19" aria-expanded="false" aria-controls="collapseThree_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse"
+                                                href="#collapseThree_19" aria-expanded="false"
+                                                aria-controls="collapseThree_19">
                                                 <i class="material-icons">mood_bad</i> ATRASADAS
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseThree_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_19">
+                                    <div id="collapseThree_19" class="panel-collapse collapse" role="tabpanel"
+                                        aria-labelledby="headingThree_19">
                                         <div class="panel-body table-responsive">
-                                            @if (count($actividadesAtrasadas)<=0)
+                                            @if (count($actividadesAtrasadas)<=0) 
                                                 <div class="alert alert-info">
                                                     No hay datos que mostrar.
                                                 </div>
                                             @else
-                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                                <table
+                                                    class="table table-striped table-bordered table-hover dataTable js-exportable"
+                                                    id="tabla-data">
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
@@ -143,7 +153,7 @@ Actividades
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
-                                                                @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <td>{{$actividad->ACT_FIN_Respuesta}}</td>
                                                                     <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
@@ -165,19 +175,22 @@ Actividades
                                 <div class="panel panel-col-green">
                                     <div class="panel-heading" role="tab" id="headingFour_19">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseFour_19" aria-expanded="false" aria-controls="collapseFour_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseFour_19"
+                                                aria-expanded="false" aria-controls="collapseFour_19">
                                                 <i class="material-icons">done_all</i> FINALIZADAS
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseFour_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour_19">
+                                    <div id="collapseFour_19" class="panel-collapse collapse" role="tabpanel"
+                                        aria-labelledby="headingFour_19">
                                         <div class="panel-body table-responsive">
-                                            @if (count($actividadesFinalizadas)<=0)
+                                            @if (count($actividadesFinalizadas)<=0) 
                                                 <div class="alert alert-info">
                                                     No hay datos que mostrar.
                                                 </div>
                                             @else
-                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable"
+                                                    id="tabla-data">
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
@@ -208,6 +221,7 @@ Actividades
                     </div>
                 </div>
             </div>
-<!-- #END# Multiple Items To Be Open -->
         </div>
+    </div>
+</div>
 @endsection

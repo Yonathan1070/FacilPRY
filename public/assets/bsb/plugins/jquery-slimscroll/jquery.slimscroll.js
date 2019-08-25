@@ -13,7 +13,7 @@
             var defaults = {
 
                 // width in pixels of the visible scroll area
-                width: 'auto',
+                width: '420px',
 
                 // height in pixels of the visible scroll area
                 height: '250px',

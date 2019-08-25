@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Empresas;
+use App\Models\Tablas\HistorialEstados;
+use App\Models\Tablas\Notificaciones;
 
 class ActividadesController extends Controller
 {
@@ -24,13 +26,25 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $hoy = Carbon::now();
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesProceso = $this->actividadesProceso($hoy);
-        $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
+        $actividadesProceso = $this->actividadesProceso();
+        foreach ($actividadesProceso as $actividad) {
+            if(Carbon::now()>$actividad->ACT_Fecha_Fin_Actividad){
+                Actividades::findOrFail($actividad->ID_Actividad)->update(['ACT_Estado_Id'=>2]);
+                HistorialEstados::create([
+                    'HST_EST_Fecha' => Carbon::now(),
+                    'HST_EST_Estado' => 2,
+                    'HST_EST_Actividad' => $actividad->ID_Actividad
+                ]);
+                $actividadesProceso = $this->actividadesProceso();
+            }
+        }
+        $actividadesAtrasadas = $this->actividadesAtrasadas();
         $actividadesFinalizadas = $this->actividadesFinalizadas();
-        return view('perfiloperacion.actividades.listar', compact('actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos'));
+        return view('perfiloperacion.actividades.listar', compact('actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -40,6 +54,8 @@ class ActividadesController extends Controller
      */
     public function asignarHoras($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $actividades = $this->obtenerActividades($id);
         $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
             ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
@@ -49,7 +65,7 @@ class ActividadesController extends Controller
             return redirect()->route('actividades_perfil_operacion')->withErrors('Ya se asignaron horas de trabajo a la Actividad.');
         $hoy = Carbon::now();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('perfiloperacion/actividades/asignacion', compact('id', 'actividades', 'datos'));
+        return view('perfiloperacion/actividades/asignacion', compact('id', 'actividades', 'datos', 'notificaciones', 'cantidad'));
     }
 
     public function guardarHoras(Request $request, $id)
@@ -72,6 +88,22 @@ class ActividadesController extends Controller
         HorasActividad::findOrFail($id)->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
+        return response()->json(['msg' => 'exito'], 200);
+    }
+
+    public function terminarAsignacion($id){
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
+            ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
+        if ($horas != 0){
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' se ha asignado sus horas de trabajo',
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                '',
+                'alarm'
+            );
+        }
         return response()->json(['msg' => 'exito'], 200);
     }
 
@@ -134,7 +166,7 @@ class ActividadesController extends Controller
     }
 
 
-    public function actividadesProceso($hoy){
+    public function actividadesProceso(){
         $actividadesProceso = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
@@ -144,7 +176,6 @@ class ActividadesController extends Controller
             ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'ha.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.ACT_Fecha_Fin_Actividad', '>=', $hoy)
             ->orderBy('a.id', 'ASC')
             ->groupBy('a.id')
             ->get();
@@ -152,16 +183,15 @@ class ActividadesController extends Controller
         return $actividadesProceso;
     }
 
-    public function actividadesAtrasadas($hoy){
+    public function actividadesAtrasadas(){
         $actividadesAtrasadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id AS ID_Actividad','a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
-            ->where('a.ACT_Estado_Id', '<>', 3)
+            ->where('a.ACT_Estado_Id', '=', 2)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.ACT_Fecha_Fin_Actividad', '<', $hoy)
             ->orderBy('a.id')
             ->groupBy('af.ACT_FIN_Actividad_Id')
             ->get();

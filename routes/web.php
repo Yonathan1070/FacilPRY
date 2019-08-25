@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'middleware' => ['auth', 'administrador']], function () {
     //Página de inicio
     Route::get('', 'InicioController@index')->name('inicio_administrador');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_administrador');
     //Enroutamiento para CRUD Decisiones
     Route::group(['prefix' => 'decisiones'], function () {
         Route::get('', 'DecisionesController@index')->name('decisiones_administrador');
@@ -209,11 +210,12 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
 //Enrutamiento Perfil de Operacion
 Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 'middleware' => ['auth', 'perfiloperacion']], function () {
     Route::get('', 'InicioController@index')->name('inicio_perfil_operacion');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_perfil_operacion');
     //Enrutamiento CRUD Actividades
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_perfil_operacion');
         Route::get('{id}/asignacion-horas', 'ActividadesController@asignarHoras')->name('actividades_asignar_horas_perfil_operacion');
-        //Route::put('{idA}-{idH}/asignacion-horas', 'ActividadesController@asignarHoras')->name('actividades_asignar_horas_perfil_operacion');
+        Route::get('{id}/terminar-asignacion', 'ActividadesController@terminarAsignacion')->name('terminar_asignar_horas_perfil_operacion');
         Route::put('{id}/asignacion-horas', 'ActividadesController@guardarHoras')->name('actividades_guardar_horas_perfil_operacion');
         Route::get('{id}/documento', 'ActividadesController@descargarDocumentoSoporte')->name('actividades_descargar_archivo_perfil_operacion');
         Route::get('generar-pdf', 'ActividadesController@generarPdf')->name('generar_pdf_perfil_operacion');
