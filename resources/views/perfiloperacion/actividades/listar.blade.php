@@ -20,7 +20,7 @@ Actividades
                         </li>
                     </ul>
                 </div>
-                <div class="body">
+                <div class="body table-responsive">
                     <div class="row clearfix">
                         <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
                             <div class="panel-group" id="accordion_19" role="tablist" aria-multiselectable="true">
@@ -34,17 +34,14 @@ Actividades
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel"
-                                        aria-labelledby="headingTwo_19">
+                                    <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_19">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesProceso)<=0) 
                                                 <div class="alert alert-info">
                                                     No hay datos que mostrar.
                                                 </div>
                                             @else
-                                                <table
-                                                    class="table table-striped table-bordered table-hover dataTable js-exportable"
-                                                    id="tabla-data">
+                                                <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
@@ -57,7 +54,7 @@ Actividades
                                                                     <th>Estado</th>
                                                                     @break
                                                                 @endif
-                                                                @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
+                                                                @if ($actividad->Horas != 0)
                                                                     <th>Horas Asignadas</th>
                                                                 @endif
                                                             @endforeach
@@ -75,25 +72,28 @@ Actividades
                                                                     <td>{{$actividad->ACT_FIN_Respuesta}}</td>
                                                                     <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
-                                                                @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
+                                                                @if ($actividad->Horas != 0)
                                                                     <td>{{$actividad->Horas}}</td>
                                                                 @else
                                                                     <td></td>
                                                                 @endif
                                                                 <td class="width70">
-                                                                    @if ($actividad->HRS_ACT_Cantidad_Horas_Asignadas != null)
-                                                                        <a href="#" class="btn-accion-tabla tooltipsC"
-                                                                            title="Solicitar más tiempo">
-                                                                            <i class="material-icons text-info"
-                                                                                style="font-size: 17px;">alarm_add</i>
-                                                                        </a>
+                                                                    @if ($actividad->Horas != 0 && $actividad->HorasR!=null)
+                                                                        @if (\Carbon\Carbon::now()->diffInHours($actividad->ACT_Fecha_Fin_Actividad) <= 24)
+                                                                            <a href="#" class="btn-accion-tabla tooltipsC"
+                                                                                title="Solicitar más tiempo">
+                                                                                <i class="material-icons text-info"
+                                                                                    style="font-size: 17px;">alarm_add</i>
+                                                                            </a>
+                                                                        @endif
                                                                         <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
                                                                             class="btn-accion-tabla tooltipsC"
                                                                             title="Finalizar Actividad">
                                                                             <i class="material-icons text-info"
                                                                                 style="font-size: 17px;">done_all</i>
                                                                         </a>
-                                                                    @else
+                                                                    @endif
+                                                                    @if($actividad->Horas == 0)
                                                                         <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
                                                                             class="btn-accion-tabla tooltipsC" title="Asignar Horas">
                                                                             <i class="material-icons text-info"

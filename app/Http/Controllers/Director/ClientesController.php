@@ -21,6 +21,8 @@ class ClientesController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $clientes = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
@@ -30,7 +32,7 @@ class ClientesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('director.clientes.listar', compact('clientes', 'datos'));
+        return view('director.clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -40,8 +42,10 @@ class ClientesController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('director.clientes.crear', compact('datos'));
+        return view('director.clientes.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -88,14 +92,18 @@ class ClientesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            '',
+            null,
+            null,
+            null,
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY',
+            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, revise sus datos.',
             session()->get('Usuario_Id'),
             $datosU->id,
-            '',
+            'perfil_cliente',
+            null,
+            null,
             'account_circle'
         );
         return redirect()->back()->with('mensaje', 'Cliente agregado con exito');
@@ -120,9 +128,11 @@ class ClientesController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cliente = Usuarios::findOrFail($id);
-        return view('director.clientes.editar', compact('cliente', 'datos'));
+        return view('director.clientes.editar', compact('cliente', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -139,14 +149,18 @@ class ClientesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado los datos de '.$request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            '',
+            null,
+            null,
+            null,
             'update'
         );
         Notificaciones::crearNotificacion(
             $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', susdatos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
-            'perfil-operacion/perfil',
+            'perfil_cliente',
+            null,
+            null,
             'update'
         );
         Usuarios::findOrFail($id)->update($request->all());
@@ -168,7 +182,9 @@ class ClientesController extends Controller
                 $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado al usuario '.$datosU->USR_Nombres_Usuario,
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                '',
+                null,
+                null,
+                null,
                 'delete_forever'
             );
             Usuarios::destroy($id);

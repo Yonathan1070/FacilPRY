@@ -92,6 +92,7 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
 //Enrutamiento Director de Proyectos
 Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
     Route::get('', 'InicioController@index')->name('inicio_director');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
 
     //Enrutamiento CRUD Roles
     Route::Group(['prefix' => 'roles'], function () {
@@ -111,6 +112,9 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad_director');
         Route::put('{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad_director');
         Route::delete('{idP}-{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad_director');
+        Route::get('{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad_director');
+        Route::put('{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad_director');
+        Route::get('{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad_director');
     });
 
     //Erutamiento CRUD Decisiones

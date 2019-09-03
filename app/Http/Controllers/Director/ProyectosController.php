@@ -21,13 +21,15 @@ class ProyectosController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyectos = DB::table('TBL_Usuarios as u')
             ->join('TBL_Proyectos as p', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'u.USR_Nombres_Usuario', 'u.USR_Apellidos_Usuario')
             ->orderBy('p.Id')
             ->get();
-        return view('director.proyectos.listar', compact('proyectos', 'datos'));
+        return view('director.proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -37,6 +39,8 @@ class ProyectosController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $clientes = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
@@ -46,7 +50,7 @@ class ProyectosController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('director.proyectos.crear', compact('clientes', 'datos'));
+        return view('director.proyectos.crear', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -65,14 +69,18 @@ class ProyectosController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el proyecto '.$request->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            '',
+            null,
+            null,
+            null,
             'library_add'
         );
         Notificaciones::crearNotificacion(
             'Hola! '.$datosU->USR_Nombres_Usuario.' '.$datosU->USR_Apellidos_Usuario.', su proyecto ha sido creado',
             session()->get('Usuario_Id'),
             $datosU->id,
-            '',
+            'inicio_cliente',
+            null,
+            null,
             'library_add'
         );
         return redirect()->back()->with('mensaje', 'Proyecto agregado con exito');

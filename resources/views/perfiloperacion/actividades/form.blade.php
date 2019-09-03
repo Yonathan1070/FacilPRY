@@ -11,8 +11,8 @@
     </div>
     <div class="form-group form-float">
         <div class="form-line focused">
-            <input type="file" class="form-control " name="ACT_FIN_Documento_Soporte"
-                id="ACT_FIN_Documento_Soporte" required>
+            <input type="file" class="form-control " name="ACT_Documento_Evidencia_Actividad[]"
+                id="ACT_Documento_Evidencia_Actividad" multiple required>
             <label class="form-label">Documento Soporte de Actividad Terminada</label>
         </div>
     </div>

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Director;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Usuarios;
+use stdClass;
 
 class InicioController extends Controller
 {
@@ -15,8 +17,10 @@ class InicioController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('director.inicio', compact('datos'));
+        return view('director.inicio', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -24,9 +28,20 @@ class InicioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function cambiarEstadoNotificacion($id)
     {
-        //
+        $notificacion = Notificaciones::findOrFail($id);
+        $notificacion->update([
+            'NTF_Estado' => 1
+        ]);
+        $notif = new stdClass();
+        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null){
+            $notif->ruta = route($notificacion->NTF_Route, [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]);
+        }
+        else if($notificacion->NTF_Route != null){
+            $notif->ruta = route($notificacion->NTF_Route);
+        }
+        return json_encode($notif);
     }
 
     /**

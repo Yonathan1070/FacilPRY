@@ -87,7 +87,15 @@ class DirectorProyectosController extends Controller
         if (Mail::failures()) {
             return redirect()->back()->withErrors('Error al envíar el correo.');
         }
-        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
+        $datosU = Usuarios::orderByDesc('created_at')->first();
+        Notificaciones::crearNotificacion(
+            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, verifique sus datos.',
+            session()->get('Usuario_Id'),
+            $datosU->id,
+            'perfil_director',
+            'account_circle'
+        );
+        return redirect()->route('perfil_operacion_director')->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
     }
 
     /**
@@ -124,6 +132,13 @@ class DirectorProyectosController extends Controller
             'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
         ]);
+        Notificaciones::crearNotificacion(
+            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', sus datos fueron actualizados',
+            session()->get('Usuario_Id'),
+            $id,
+            'perfil_director',
+            'update'
+        );
         return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 

@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Notificaciones;
 
 class PerfilUsuarioController extends Controller
 {
@@ -18,8 +19,10 @@ class PerfilUsuarioController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('director.perfil.editar', compact('datos'));
+        return view('director.perfil.editar', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**

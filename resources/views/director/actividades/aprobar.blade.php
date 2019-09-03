@@ -1,18 +1,19 @@
-@extends('theme.bsb.perfiloperacion.layout')
+@extends('theme.bsb.director.layout')
 @section('titulo')
-Asignación de Horas
+Crud Actividades
 @endsection
 @section('contenido')
 <div class="container-fluid">
-    <!-- Basic Validation -->
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                @include('includes.form-error')
-                @include('includes.form-exito')
+            @include('includes.form-exito')
+            @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    @foreach ($actividades as $actividad)
-                        <h2>ASIGNAR HORAS DE TRABAJO PARA ACTIVIDAD ({{$actividad->ACT_Nombre_Actividad}})</h2>
+                    @foreach ($horasAprobar as $actividad)
+                        <h2>
+                            APROBAR HORAS ASIGNADAS PARA LA ACTIVIDAD {{$actividad->ACT_Nombre_Actividad}}.
+                        </h2>
                         @break
                     @endforeach
                     <ul class="header-dropdown" style="top:10px;">
@@ -24,29 +25,33 @@ Asignación de Horas
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    @foreach ($actividades as $actividad)
+                    @foreach ($horasAprobar as $actividad)
                         <input type="hidden" id="idActividad" value="{{$actividad->id}}">
                         @break
                     @endforeach
-                    @if (count($actividades)<=0)
-                        <div class="alert alert-warning">
-                            No hay Datos que mostrar.
+                    @if (count($horasAprobar)<=0)
+                        <div class="alert alert-info">
+                            No hay datos que mostrar. 
                         </div>
                     @else
-                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="mainTable">
+                        <table class="table table-striped table-bordered table-hover  dataTable js-exportable" id="mainTable">
                             <thead>
                                 <tr>
-                                    <th style="display: none">Id</th>
-                                    <th>Fecha</th>
-                                    <th>Asignar Horas de Trabajo</th>
+                                    <th style="display: none">Id Hora</th>
+                                    <th>Actividad</th>
+                                    <th>Descripción</th>
+                                    <th>Persona</th>
+                                    <th>Horas</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($actividades as $actividad)
+                                @foreach ($horasAprobar as $horas)
                                     <tr>
-                                        <td class="identifier"  style="display: none">{{$actividad->Id_Horas}}</td>
-                                        <td class="uneditable">{{$actividad->HRS_ACT_Fecha_Actividad}}</td>
-                                        <td class="hola">{{$actividad->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
+                                        <td style="display: none">{{$horas->Id_Horas}}</td>
+                                        <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
+                                        <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
+                                        <td class="uneditable">{{$horas->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
+                                        <td class="hora">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -56,26 +61,17 @@ Asignación de Horas
             </div>
         </div>
     </div>
-    <!-- #END# Basic Validation -->
 </div>
 @endsection
-
 @section('scripts')
-<!-- Plugin Js para Validaciones -->
-<script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
-<!-- Mensajes en español -->
-<script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
-
-<script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
-
-<!-- Editable Table Plugin Js -->
 <script src="{{asset('assets/bsb/plugins/editable-table/mindmup-editabletable.js')}}"></script>
 <script src="{{asset('assets/bsb/js/pages/tables/editable-table.js')}}"></script>
+
 <script>
     $('table td.uneditable').on('change', function(evt, newValue) {
         return false;
     });
-    $('table td.hola').on('change', function(evt, newValue) {
+    $('table td.hora').on('change', function(evt, newValue) {
         var cell = $(this).parent();
         var cell_index = $(this).parent().parent().children().index(cell);
         var identifier = evt.target.parentElement.rowIndex;
@@ -84,19 +80,18 @@ Asignación de Horas
         $.ajax({
             dataType: "json",
             method: "put",
-            url: "/perfil-operacion/actividades/" + idHora +"/asignacion-horas",
+            url: "/director/actividades/" + idHora +"/aprobar",
             data: {"_token":"{{ csrf_token() }}", HRS_ACT_Cantidad_Horas_Asignadas:newValue},
             success:function(data){
                 if(data.msg == "alerta")
                     Biblioteca.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'FacilPRY', 'warning');
                 if(data.msg == "error")
                     Biblioteca.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'FacilPRY', 'error');
-                if(data.msg == "errorF")
-                    Biblioteca.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'FacilPRY', 'error');
                 if(data.msg == "exito")
                     Biblioteca.notificaciones('Horas Asignadas', 'FacilPRY', 'success');
             }
         });
+        
     });
 
     function volver(){
@@ -104,7 +99,7 @@ Asignación de Horas
         const form = $(this);
         swal({
             title: '¿Está seguro que desea salir?',
-            text: 'Si ya asignaste horas la acción no se podrá deshacer!',
+            text: 'Si ya reasignaste las horas, la acción no se podrá deshacer!',
             icon: 'warning',
             buttons: {
                 cancel: "Cancelar",
@@ -114,7 +109,7 @@ Asignación de Horas
             if(value){
                 swal({
                     title: 'Completado',
-                    text: 'Horas de trabajo Asignadas',
+                    text: 'Horas de trabajo aprobadas',
                     icon: 'success',
                     buttons: {
                         confirm: "Aceptar"
@@ -125,10 +120,10 @@ Asignación de Horas
                         $.ajax({
                             dataType: "json",
                             method: "get",
-                            url: "/perfil-operacion/actividades/" + idActividad +"/terminar-asignacion",
+                            url: "/director/actividades/" + idActividad +"/terminar-aprobacion",
                             success:function(data){
                                 if(data.msg == "exito")
-                                    document.location.href="{!! route('actividades_perfil_operacion'); !!}";
+                                    document.location.href="{!! route('inicio_director'); !!}";
                             }
                         });
                     }

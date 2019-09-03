@@ -23,6 +23,8 @@ class PerfilOperacionController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
@@ -32,7 +34,7 @@ class PerfilOperacionController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos'));
+        return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -42,9 +44,11 @@ class PerfilOperacionController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
-        return view('director.perfiloperacion.crear', compact('roles', 'datos'));
+        return view('director.perfiloperacion.crear', compact('roles', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -91,14 +95,18 @@ class PerfilOperacionController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            '',
+            null,
+            null,
+            null,
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY',
+            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
             $datosU->id,
-            '',
+            'perfil_perfil_operacion',
+            null,
+            null,
             'account_circle'
         );
         return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
@@ -123,9 +131,11 @@ class PerfilOperacionController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfil = Usuarios::findOrFail($id);
-        return view('director.perfiloperacion.editar', compact('perfil', 'datos'));
+        return view('director.perfiloperacion.editar', compact('perfil', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -142,14 +152,18 @@ class PerfilOperacionController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado los datos de '.$request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            '',
+            null,
+            null,
+            null,
             'update'
         );
         Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', susdatos fueron actualizados',
+            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', sus datos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
-            'perfil-operacion/perfil',
+            'perfil_perfil_operacion',
+            null,
+            null,
             'update'
         );
         Usuarios::findOrFail($id)->update($request->all());
@@ -171,7 +185,9 @@ class PerfilOperacionController extends Controller
                 $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado al usuario '.$datosU->USR_Nombres_Usuario,
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                '',
+                null,
+                null,
+                null,
                 'delete_forever'
             );
             Usuarios::destroy($id);

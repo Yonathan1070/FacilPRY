@@ -11,6 +11,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Carbon;
 use PDF;
 use App\Models\Tablas\Empresas;
+use App\Models\Tablas\Notificaciones;
 
 class CobrosController extends Controller
 {
@@ -21,6 +22,8 @@ class CobrosController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cobros = DB::table('TBL_Actividades as a')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
@@ -42,7 +45,7 @@ class CobrosController extends Controller
             ->where('e.EST_Nombre_Estado', '=', 'Esperando Pago')
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
-        return view('director.cobros.listar', compact('cobros', 'proyectos', 'datos'));
+        return view('director.cobros.listar', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**

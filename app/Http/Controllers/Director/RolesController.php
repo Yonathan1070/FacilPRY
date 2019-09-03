@@ -20,9 +20,11 @@ class RolesController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
-        return view('director.roles.listar', compact('roles', 'datos'));
+        return view('director.roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -32,8 +34,10 @@ class RolesController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('director.roles.crear', compact('datos'));
+        return view('director.roles.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -60,7 +64,9 @@ class RolesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el rol '.$request->RLS_Nombre_Rol,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            'administrador/roles',
+            'roles_administrador',
+            null,
+            null,
             'library_add'
         );
         return redirect()->back()->with('mensaje', 'Rol creado con exito');
@@ -85,9 +91,11 @@ class RolesController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
-        return view('director.roles.editar', compact('rol', 'datos'));
+        return view('director.roles.editar', compact('rol', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -112,7 +120,9 @@ class RolesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado el rol '.$request->RLS_Nombre_Rol,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            'administrador/roles',
+            'roles_administrador',
+            null,
+            null,
             'update'
         );
         return redirect()->route('roles_director')->with('mensaje', 'Rol actualizado con exito');
@@ -133,7 +143,9 @@ class RolesController extends Controller
                 $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado el rol '.$rol->RLS_Nombre_Rol,
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                'administrador/roles',
+                'roles_administrador',
+                null,
+                null,
                 'delete_forever'
             );
             Roles::destroy($id);

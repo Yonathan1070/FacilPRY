@@ -71,7 +71,15 @@
                                                     </div>
                                                     <div class="menu-info">
                                                         <h4>{{$notificacion->NTF_Titulo}}</h4>
-                                                        <p>&nbsp;</p>
+                                                        @if (\Carbon\Carbon::now()->diffInSeconds($notificacion->NTF_Fecha) < 60)
+                                                            <p>{{\Carbon\Carbon::now()->diffInSeconds($notificacion->NTF_Fecha)}} Segundos</p>
+                                                        @elseif(\Carbon\Carbon::now()->diffInMinutes($notificacion->NTF_Fecha) < 60)
+                                                            <p>{{\Carbon\Carbon::now()->diffInMinutes($notificacion->NTF_Fecha)}} Minutos</p>
+                                                        @elseif(\Carbon\Carbon::now()->diffInHours($notificacion->NTF_Fecha) < 24)
+                                                            <p>{{\Carbon\Carbon::now()->diffInHours($notificacion->NTF_Fecha)}} Horas</p>
+                                                        @else
+                                                            <p>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $notificacion->NTF_Fecha)->format('d/m/Y')}}</p>
+                                                        @endif
                                                     </div>
                                                 </a>
                                             </li>
@@ -139,7 +147,8 @@
                 method: "get",
                 url: "/perfil-operacion/" + id + "/cambio-estado"
             }).done(function (notif) {
-                window.location.href = notif.ruta;
+                if(notif.ruta != null)
+                    document.location.replace(notif.ruta);
             });
         }
     </script>

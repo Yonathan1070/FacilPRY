@@ -21,11 +21,13 @@ class DecisionesController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = DB::table('TBL_Indicadores as i')
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
-        return view('director.decisiones.listar', compact('decisiones', 'datos'));
+        return view('director.decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -35,9 +37,11 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
-        return view('director.decisiones.crear', compact('datos', 'indicadores'));
+        return view('director.decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -83,7 +87,9 @@ class DecisionesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado la desición '.$request->DCS_Nombre_Decision,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            'administrador/decisiones',
+            'decisiones_administrador',
+            null,
+            null,
             'add_circle'
         );
         return redirect()->back()->with('mensaje', 'Decisión creada con exito');
@@ -97,10 +103,12 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
         $indicadores = Indicadores::orderBy('id')->get();
-        return view('director.decisiones.editar', compact('decision', 'datos', 'indicadores'));
+        return view('director.decisiones.editar', compact('decision', 'datos', 'indicadores', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -150,10 +158,12 @@ class DecisionesController extends Controller
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado la desición '.$request->DCS_Nombre_Decision,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            'administrador/decisiones',
+            'decisiones_administrador',
+            null,
+            null,
             'update'
         );
-        return redirect()->back()->with('mensaje', 'Decisión actualizada con exito');
+        return redirect()->route('decisiones_director')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -171,7 +181,9 @@ class DecisionesController extends Controller
                 $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado la decision '.$desicion->DCS_Nombre_Decision,
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                'administrador/decisiones',
+                'decisiones_administrador',
+                null,
+                null,
                 'delete_forever'
             );
             Decisiones::destroy($id);
