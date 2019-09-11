@@ -1,4 +1,4 @@
-@extends('theme.bsb.tester.layout')
+@extends('theme.bsb.cliente.layout')
 @section('titulo')
 Inicio
 @endsection
@@ -7,6 +7,7 @@ Inicio
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 @include('includes.form-exito')
+                @include('includes.form-error')
                 <div class="card">
                     <div class="header">
                         <h2>
@@ -25,7 +26,6 @@ Inicio
                                         <th>Proyecto</th>
                                         <th>Actividad</th>
                                         <th>Requerimiento</th>
-                                        <th>Estado</th>
                                         <th class="width70"></th>
                                     </tr>
                                 </thead>
@@ -35,9 +35,8 @@ Inicio
                                             <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                             <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
-                                            <td>{{$actividad->EST_Nombre_Estado}}</td>
                                             <td>
-                                                <a href="{{route('aprobar_actividad_tester', ['id'=>$actividad->Id_Act_Fin])}}" class="btn-accion-tabla tooltipsC" title="Ver información detallada">
+                                                <a href="{{route('aprobar_actividad_cliente', ['id'=>$actividad->Id_Act_Fin])}}" class="btn-accion-tabla tooltipsC" title="Ver información detallada">
                                                     <i class="material-icons text-info" style="font-size: 17px;">forward</i>
                                                 </a>
                                             </td>

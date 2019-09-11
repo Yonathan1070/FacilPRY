@@ -51,12 +51,11 @@ Actividades
                                                             @foreach ($actividadesProceso as $actividad)
                                                                 @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <th>Observación</th>
-                                                                    <th>Estado</th>
-                                                                    @break
                                                                 @endif
                                                                 @if ($actividad->Horas != 0)
                                                                     <th>Horas Asignadas</th>
                                                                 @endif
+                                                                @break
                                                             @endforeach
                                                             <th class="width70"></th>
                                                         </tr>
@@ -70,7 +69,6 @@ Actividades
                                                                 <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
                                                                 @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                     <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                    <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
                                                                 @if ($actividad->Horas != 0)
                                                                     <td>{{$actividad->Horas}}</td>

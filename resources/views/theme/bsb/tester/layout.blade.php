@@ -48,7 +48,45 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Notifications -->
-                    @include('includes.notificaciones')
+                    <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                <i class="material-icons">notifications</i>
+                                @if ($cantidad != 0)
+                                    <span class="label-count">{{$cantidad}}</span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">NOTIFICACIONES</li>
+                                <li class="body">
+                                    <ul class="menu">
+                                        @foreach ($notificaciones as $notificacion)
+                                            <li>
+                                                <a onclick="notificacion({{$notificacion->id}})">
+                                                    <div class="icon-circle bg-light-green">
+                                                        <i class="material-icons">{{$notificacion->NTF_Icono}}</i>
+                                                    </div>
+                                                    <div class="menu-info">
+                                                        <h4>{{$notificacion->NTF_Titulo}}</h4>
+                                                        @if (\Carbon\Carbon::now()->diffInSeconds($notificacion->NTF_Fecha) < 60)
+                                                            <p>{{\Carbon\Carbon::now()->diffInSeconds($notificacion->NTF_Fecha)}} Segundos</p>
+                                                        @elseif(\Carbon\Carbon::now()->diffInMinutes($notificacion->NTF_Fecha) < 60)
+                                                            <p>{{\Carbon\Carbon::now()->diffInMinutes($notificacion->NTF_Fecha)}} Minutos</p>
+                                                        @elseif(\Carbon\Carbon::now()->diffInHours($notificacion->NTF_Fecha) < 24)
+                                                            <p>{{\Carbon\Carbon::now()->diffInHours($notificacion->NTF_Fecha)}} Horas</p>
+                                                        @else
+                                                            <p>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $notificacion->NTF_Fecha)->format('d/m/Y')}}</p>
+                                                        @endif
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="javascript:void(0);">View All Notifications</a>
+                                </li>
+                            </ul>
+                        </li>
                     <!-- #END# Notifications -->
                 </ul>
             </div>
@@ -103,6 +141,19 @@
     <script src="{{asset("assets/js/funciones.js")}}"></script>
     <script src="{{asset("assets/js/scripts.js")}}"></script>
     
+    <script>
+        function notificacion(id){
+                    $.ajax({
+                        dataType: "json",
+                        method: "get",
+                        url: "/tester/" + id + "/cambio-estado"
+                    }).done(function (notif) {
+                        if(notif.ruta != null)
+                            document.location.replace(notif.ruta);
+                    });
+                }
+    </script>
+
     @yield('scripts')
 </body>
 

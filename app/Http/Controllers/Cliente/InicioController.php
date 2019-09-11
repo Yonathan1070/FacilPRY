@@ -12,6 +12,7 @@ use App\Models\Tablas\Empresas;
 use Illuminate\Support\Carbon;
 use stdClass;
 use App\Models\Tablas\Actividades;
+use App\Models\Tablas\Notificaciones;
 
 class InicioController extends Controller
 {
@@ -22,9 +23,11 @@ class InicioController extends Controller
      */
     public function index()
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderBy('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyectos = $this->proyectosConsulta();
-        return view('cliente.inicio', compact('proyectos', 'datosU'));
+        return view('cliente.inicio', compact('proyectos', 'datosU', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -166,15 +169,31 @@ class InicioController extends Controller
         }
     }
 
+    public function cambiarEstadoNotificacion($id)
+    {
+        $notificacion = Notificaciones::findOrFail($id);
+        $notificacion->update([
+            'NTF_Estado' => 1
+        ]);
+        $notif = new stdClass();
+        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null)
+            $notif->ruta = route($notificacion->NTF_Route, [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]);
+        else if($notificacion->NTF_Route != null)
+            $notif->ruta = route($notificacion->NTF_Route);
+        return json_encode($notif);
+    }
+
     public function proyectosConsulta()
     {
         $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
+            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
             ->select('a.*', 'p.*', 'a.id as Id_Actividad')
             ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
+            ->where('es.id', '=', 9)
             ->where('a.ACT_Costo_Actividad', '<>', 0)
             ->groupBy('p.id')
             ->get();

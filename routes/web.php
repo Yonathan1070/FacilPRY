@@ -79,6 +79,14 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     Route::get('{id}/info-pago', 'InicioController@informacionPago')->name('informacion_pago_cliente');
     Route::get('respuesta-pago', 'InicioController@respuestaPago')->name('respuesta_pago_cliente');
     Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_cliente');
+    Route::group(['prefix' => 'actividades'], function () {
+        Route::get('', 'ActividadesController@index')->name('actividades_cliente');
+        Route::get('{id}/aprobar', 'ActividadesController@aprobarActividad')->name('aprobar_actividad_cliente');
+        Route::get('{ruta}/descargar', 'ActividadesController@descargarArchivo')->name('descargar_documento_actividad_cliente');
+        Route::post('respuestaR', 'ActividadesController@respuestaRechazado')->name('respuestaR_cliente');
+        Route::post('respuestaA', 'ActividadesController@respuestaAprobado')->name('respuestaA_cliente');
+    });
 
     //Enroutamiento para Editar Perfil
     Route::group(['prefix' => 'perfil'], function () {
@@ -242,7 +250,8 @@ Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['a
     Route::get('{id}/aprobacion', 'InicioController@aprobacionActividad')->name('aprobar_actividad_tester');
     Route::get('{ruta}/descargar', 'InicioController@descargarArchivo')->name('descargar_documento_actividad_tester');
     Route::post('respuestaR', 'InicioController@respuestaRechazado')->name('respuestaR_tester');
-    Route::get('{id}/respuestaA', 'InicioController@respuestaAprobado')->name('respuestaA_tester');
+    Route::post('respuestaA', 'InicioController@respuestaAprobado')->name('respuestaA_tester');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_tester');
 
     //Enroutamiento para Editar Perfil
     Route::group(['prefix' => 'perfil'], function () {

@@ -3,17 +3,17 @@
     <!-- Información de Usuario -->
     <div class="user-info">
         <div class="image">
-            @if ($datos->USR_Foto_Perfil==null)
+            @if ($datos->USR_Foto_Perfil_Usuario==null)
                 <img src="{{asset("assets/bsb/images/user-lg.ico")}}" width="48" height="48" alt="User" />
             @else
-                <img src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil)}}" width="48" height="48" alt="User" />
+                <img src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil_Usuario)}}" width="48" height="48" alt="User" />
             @endif
         </div>
         <div class="info-container">
             <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{$datos->USR_Nombre.' '.$datos->USR_Apellido}}
+                {{$datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario}}
             </div>
-            <div class="email">{{$datos->USR_Correo}}</div>
+            <div class="email">{{$datos->USR_Correo_Usuario}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="true">keyboard_arrow_down</i>

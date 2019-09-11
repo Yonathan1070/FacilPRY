@@ -174,6 +174,7 @@ class ActividadesController extends Controller
             'ACT_FIN_Estado_Id' => 4,
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
         ]);
+        $actFinalizada = ActividadesFinalizadas::orderByDesc('created_at')->first();
         Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
         $tester = DB::table('TBL_Usuarios as u')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
@@ -189,12 +190,12 @@ class ActividadesController extends Controller
         ]);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres.' ha finalizado una Actividad.',
+            $datos->USR_Nombres_Usuario.' ha finalizado una Actividad.',
             session()->get('Usuario_Id'),
             $tester->id,
             'aprobar_actividad_tester',
             'id',
-            $request['Actividad_Id'],
+            $actFinalizada->id,
             'find_in_page'
         );
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
@@ -206,15 +207,14 @@ class ActividadesController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
-            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->rightjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'ha.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id', 'ASC')
             ->groupBy('a.id')
             ->get();
-
         return $actividadesProceso;
     }
 

@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Tester;
+namespace App\Http\Controllers\Cliente;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\Actividades;
+use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
-use Illuminate\Support\Carbon;
 use App\Models\Tablas\Usuarios;
-use stdClass;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
-class InicioController extends Controller
+class ActividadesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,7 +23,7 @@ class InicioController extends Controller
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -33,9 +32,9 @@ class InicioController extends Controller
             ->join('TBL_Estados as ef', 'ef.id', '=', 'af.ACT_FIN_Estado_Id')
             ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*', 'ef.*')
             ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('af.ACT_FIN_Estado_Id', '=', 4)
+            ->where('af.ACT_FIN_Estado_Id', '=', 11)
             ->get();
-        return view('tester.inicio', compact('actividadesPendientes', 'datos', 'notificaciones', 'cantidad'));
+        return view('cliente.actividades.inicio', compact('actividadesPendientes', 'datosU', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -43,11 +42,11 @@ class InicioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function aprobacionactividad($id)
+    public function aprobarActividad($id)
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
             ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
@@ -70,7 +69,7 @@ class InicioController extends Controller
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->first();
-        return view('tester.aprobacion', compact('actividadesPendientes', 'perfil', 'datos', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
+        return view('cliente.actividades.aprobacion', compact('actividadesPendientes', 'datosU', 'perfil', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -111,7 +110,7 @@ class InicioController extends Controller
             ->where('a.id', '=', $actividad->id)
             ->first();
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
+            'El Cliente '.$datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
             session()->get('Usuario_Id'),
             $trabajador->ACT_Trabajador_Id,
             'actividades_perfil_operacion',
@@ -119,7 +118,7 @@ class InicioController extends Controller
             null,
             'clear'
         );
-        return redirect()->route('inicio_tester')->with('mensaje', 'Respuesta envíada');
+        return redirect()->route('actividades_cliente')->with('mensaje', 'Respuesta envíada');
     }
 
     /**
@@ -135,7 +134,6 @@ class InicioController extends Controller
             'ACT_FIN_Respuesta' => $request->ACT_FIN_Respuesta,
             'ACT_FIN_Fecha_Respuesta' => Carbon::now()
         ]);
-        $idActFin = ActividadesFinalizadas::orderBy('created_at')->first()->id;
         $actividad = $this->actividad($request->id);
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),
@@ -151,7 +149,7 @@ class InicioController extends Controller
             ->where('a.id', '=', $actividad->id)
             ->first();
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' ha aprobado la entrega de la Actividad.',
+            'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la entrega de la Actividad.',
             session()->get('Usuario_Id'),
             $trabajador->ACT_Trabajador_Id,
             'actividades_perfil_operacion',
@@ -160,15 +158,15 @@ class InicioController extends Controller
             'done_all'
         );
         Notificaciones::crearNotificacion(
-            'Se ha finalizado una actividad del proyecto '.$trabajador->PRY_Nombre_Proyecto,
+            'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la entrega una Actividad',
             session()->get('Usuario_Id'),
-            $trabajador->PRY_Cliente_Id,
-            'aprobar_actividad_cliente',
-            'id',
-            $idActFin,
-            'info'
+            $datos->USR_Supervisor_Id,
+            'cobros_director',
+            null,
+            null,
+            'done_all'
         );
-        return redirect()->route('inicio_tester')->with('mensaje', 'Respuesta envíada');
+        return redirect()->route('actividades_cliente')->with('mensaje', 'Respuesta envíada');
     }
 
     /**
@@ -189,17 +187,14 @@ class InicioController extends Controller
         return $actividad;
     }
 
-    public function cambiarEstadoNotificacion($id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
-        $notificacion = Notificaciones::findOrFail($id);
-        $notificacion->update([
-            'NTF_Estado' => 1
-        ]);
-        $notif = new stdClass();
-        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null)
-            $notif->ruta = route($notificacion->NTF_Route, [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]);
-        else if($notificacion->NTF_Route != null)
-            $notif->ruta = route($notificacion->NTF_Route);
-        return json_encode($notif);
+        //
     }
 }

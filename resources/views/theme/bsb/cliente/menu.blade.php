@@ -3,17 +3,17 @@
     <!-- Información de Usuario -->
     <div class="user-info">
         <div class="image">
-            @if ($datosU->USR_Foto_Perfil==null)
+            @if ($datosU->USR_Foto_Perfil_Usuario==null)
                 <img src="{{asset("assets/bsb/images/user-lg.ico")}}" width="48" height="48" alt="User" />
             @else
-                <img src="{{asset('/assets/bsb/images/'.$datosU->USR_Foto_Perfil)}}" width="48" height="48" alt="User" />
+                <img src="{{asset('/assets/bsb/images/'.$datosU->USR_Foto_Perfil_Usuario)}}" width="48" height="48" alt="User" />
             @endif
         </div>
         <div class="info-container">
         <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{$datosU->USR_Nombre.' '.$datosU->USR_Apellido}}
+            {{$datosU->USR_Nombres_Usuario.' '.$datosU->USR_Apellidos_Usuario}}
         </div>
-            <div class="email">{{$datosU->USR_Correo}}</div>
+            <div class="email">{{$datosU->USR_Correo_Usuario}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="true">keyboard_arrow_down</i>
@@ -34,6 +34,12 @@
                 <a href="{{route("inicio_cliente")}}">
                     <i class="material-icons">home</i>
                     <span>Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route("actividades_cliente")}}">
+                    <i class="material-icons">toc</i>
+                    <span>Aprobar Actividades</span>
                 </a>
             </li>
         </ul>

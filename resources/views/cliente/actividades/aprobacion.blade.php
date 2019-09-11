@@ -1,4 +1,4 @@
-@extends('theme.bsb.tester.layout')
+@extends('theme.bsb.cliente.layout')
 @section('titulo')
 Inicio
 @endsection
@@ -115,7 +115,7 @@ Inicio
                 <div class="modal-header">
                     <h4 class="modal-title" id="smallModalLabel">Respuesta de Rechazado</h4>
                 </div>
-                <form action="{{route('respuestaR_tester')}}" id="form_validation" method="POST">
+                <form action="{{route('respuestaR_cliente')}}" id="form_validation" method="POST">
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{$actividadesPendientes->Id_Act_Fin}}">
                     <div class="modal-body">
@@ -143,7 +143,7 @@ Inicio
                 <div class="modal-header">
                     <h4 class="modal-title" id="smallModalLabel">Observación de Aprobado</h4>
                 </div>
-                <form action="{{route('respuestaA_tester')}}" id="form_validation" method="POST">
+                <form action="{{route('respuestaA_cliente')}}" id="form_validation" method="POST">
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{$actividadesPendientes->Id_Act_Fin}}">
                     <div class="modal-body">
