@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $table = "TBL_Menu";
-    protected $fillable = ['MN_Mombre_Menu', 'MN_Nombre_Ruta_Menu', 'MN_Icono_Menu'];
+    protected $fillable = ['MN_Nombre_Menu', 'MN_Nombre_Ruta_Menu', 'MN_Icono_Menu'];
     protected $guarded = ['id'];
 
-    public function roles(){
-        return $this->belongsToMany(Roles::class, 'TBL_Menu_Rol', 'MN_RL_Rol_Id', 'MN_RL_Menu_Id')->withPivot('MN_RL_Rol_Id', 'MN_RL_Menu_Id');
+    public function usuarios(){
+        return $this->belongsToMany(Usuarios::class, 'TBL_Menu_Usuario', 'MN_USR_Usuario_Id', 'MN_USR_Menu_Id');
     }
 
     public function getHijos($padres, $line){
@@ -25,8 +25,8 @@ class Menu extends Model
     }
     public function getPadres($front){
         if($front){
-            return $this->whereHas('roles', function($query){
-                $query->where('MN_RL_Rol_Id', session()->get('Rol_Id'))->orderby('MN_Menu_Id');
+            return $this->whereHas('usuarios', function($query){
+                $query->where('MN_USR_Usuario_Id', session()->get('Usuario_Id'))->orderby('MN_Menu_Id');
             })->orderby('MN_Menu_Id')
                 ->orderby('MN_Orden_Menu')
                 ->get()
@@ -56,37 +56,6 @@ class Menu extends Model
         $menus=json_decode($menu);
         foreach ($menus as $var => $value) {
             $this->where('id', $value->id)->update(['MN_Menu_Id' => 0, 'MN_Orden_Menu' => $var + 1]);
-            if(!empty($value->children)){
-                foreach ($value->children as $key => $vchild) {
-                    $update_id = $vchild->id;
-                    $parent_id = $value->id;
-                    $this->where('id', $update_id)->update(['MN_Menu_Id' => $parent_id, 'MN_Orden_Menu' => $key + 1]);
-
-                    if (!empty($vchild->children)) {
-                        foreach ($vchild->children as $key => $vchild1) {
-                            $update_id = $vchild1->id;
-                            $parent_id = $vchild->id;
-                            $this->where('id', $update_id)->update(['MN_Menu_Id' => $parent_id, 'MN_Orden_Menu' => $key + 1]);
-
-                            if (!empty($vchild1->children)) {
-                                foreach ($vchild1->children as $key => $vchild2) {
-                                    $update_id = $vchild2->id;
-                                    $parent_id = $vchild1->id;
-                                    $this->where('id', $update_id)->update(['MN_Menu_Id' => $parent_id, 'MN_Orden_Menu' => $key + 1]);
-
-                                    if (!empty($vchild2->children)) {
-                                        foreach ($vchild2->children as $key => $vchild3) {
-                                            $update_id = $vchild3->id;
-                                            $parent_id = $vchild2->id;
-                                            $this->where('id', $update_id)->update(['MN_Menu_Id' => $parent_id, 'MN_Orden_Menu' => $key + 1]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

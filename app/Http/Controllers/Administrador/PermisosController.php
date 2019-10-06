@@ -10,7 +10,7 @@ use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
-use App\Models\Tablas\UsuariosRoles;
+use App\Models\Tablas\MenuUsuario;
 
 class PermisosController extends Controller
 {
@@ -24,58 +24,51 @@ class PermisosController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $usuarios = Usuarios::orderBy('id')->get();
+        $usuarios = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->where('e.id', '=', session()->get('Empresa_Id'))
+            ->select('r.*', 'u.*')
+            ->get();
         return view('administrador.permisos.listar', compact('usuarios', 'datos', 'notificaciones', 'cantidad'));
     }
     
-    public function asignarRol($id){
+    public function asignarMenu($id){
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('RLS_Nombre_Rol', '<>', 'Perfil de Operación')->orderBy('id')->get();
-        return view('administrador.permisos.asignar', compact('roles', 'datos', 'id', 'notificaciones', 'cantidad'));
+        $menus = Menu::orderBy('MN_Orden_Menu')->get();
+        return view('administrador.permisos.asignar', compact('menus', 'datos', 'id', 'notificaciones', 'cantidad'));
     }
 
-    public function agregar($idU, $idR)
+    public function agregar($idU, $idM)
     {
-        $asignado = UsuariosRoles::where('USR_RLS_Rol_Id', '=', $idR)
-            ->where('USR_RLS_Usuario_Id', '=', $idU)
+        $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $idU)
+            ->where('MN_USR_Menu_Id', '=', $idM)
             ->first();
-        if($asignado && $asignado->USR_RLS_Estado == true){
-            return redirect()->back()->with('mensaje', 'El Rol ya está asignado');
-        }
         if (!$asignado) {
-            UsuariosRoles::create([
-                'USR_RLS_Rol_Id' => $idR,
-                'USR_RLS_Usuario_Id' => $idU,
-                'USR_RLS_Estado' => 1
+            MenuUsuario::create([
+                'MN_USR_Usuario_Id' => $idU,
+                'MN_USR_Menu_Id' => $idM
             ]);
-            return redirect()->back()->with('mensaje', 'Rol Asignado.');
-        }
-        if ($asignado->USR_RLS_Estado == false) {
-            $asignado->update([
-                'USR_RLS_Estado' => 1
-            ]);
-            return redirect()->back()->with('mensaje', 'Rol Asignado.');
+            return redirect()->back()->with('mensaje', 'Menú Asignado.');
+        }else{
+            return redirect()->back()->with('mensaje', 'El Menú se encuentra Asignado.');
         }
     }
 
-    public function quitar($idU, $idR)
+    public function quitar($idU, $idM)
     {
-        $asignado = UsuariosRoles::where('USR_RLS_Rol_Id', '=', $idR)
-            ->where('USR_RLS_Usuario_Id', '=', $idU)
+        $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $idU)
+            ->where('MN_USR_Menu_Id', '=', $idM)
             ->first();
-        if($asignado && $asignado->USR_RLS_Estado == true){
-            $asignado->update([
-                'USR_RLS_Estado' => 0
-            ]);
-            return redirect()->back()->with('mensaje', 'Rol DesAsignado.');
-        }
         if (!$asignado) {
-            return redirect()->back()->withErrors('El Rol no se encuentra asignado');
-        }
-        if ($asignado->USR_RLS_Estado == false) {
-            return redirect()->back()->withErrors('El Rol no se encuentra asignado');
+            return redirect()->back()->withErrors('El Menú no se encuentra asignado');
+        }else{
+            $asignado->delete();
+            return redirect()->back()->with('mensaje', 'Menú des-asignado');
         }
     }
     /**

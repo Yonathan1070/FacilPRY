@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Administrador;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ValidacionRol;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\Usuarios;
+use Illuminate\Database\QueryException;
 
 class RolesController extends Controller
 {
@@ -43,7 +45,7 @@ class RolesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionRol $request)
     {
         $roles = Roles::where('RLS_Nombre_Rol', '=', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))->first();
@@ -83,7 +85,7 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(Request $request, $id)
+    public function actualizar(ValidacionRol $request, $id)
     {
         $roles = Roles::where('RLS_Nombre_Rol', '<>', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))->get();
@@ -102,16 +104,20 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($id)
+    public function eliminar(Request $request, $id)
     {
-        $rol = Roles::findOrFail($id);
-        if($rol->RLS_Rol_Id == 0)
-            return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible eliminarlo.']);
-        try{
-            Roles::destroy($id);
-            return redirect()->back()->with('mensaje', 'El Rol fue eliminado satisfactoriamente.');
-        }catch(QueryException $e){
-            return redirect()->back()->withErrors(['El Rol está siendo usada por otro recurso.']);
+        if($request->ajax()){
+            $rol = Roles::findOrFail($id);
+            if($rol->RLS_Rol_Id == 0){
+                return response()->json(['mensaje' => 'rd']);
+            }else{
+                try{
+                    Roles::destroy($id);
+                    return response()->json(['mensaje' => 'ok']);
+                }catch(QueryException $e){
+                    return response()->json(['mensaje' => 'ng']);
+                }
+            }
         }
     }
 }

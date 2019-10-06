@@ -39,15 +39,20 @@ Crud Roles
                                 <tbody>
                                     @foreach ($roles as $rol)
                                         <tr>
-                                            <td>{{$rol->RLS_Nombre_Rol}}</td>
+                                            <td>
+                                                {{$rol->RLS_Nombre_Rol}}@if ($rol->RLS_Rol_Id == 0)
+                                                    <label style="color: red">(*)</label>
+                                                @endif
+                                            </td>
                                             <td>{{$rol->RLS_Descripcion_Rol}}</td>
                                             <td>
-                                                <a href="{{route('editar_rol_administrador', ['id'=>$rol->id])}}"
-                                                    class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                                    <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                                </a>
-                                                <form action="{{route('eliminar_rol_administrador', ['id'=>$rol->id])}}"
+                                                
+                                                <form class="form-eliminar" action="{{route('eliminar_rol_administrador', ['id'=>$rol->id])}}"
                                                     class="d-inline" method="POST">
+                                                    <a href="{{route('editar_rol_administrador', ['id'=>$rol->id])}}"
+                                                        class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                        <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                    </a>
                                                     @csrf @method("delete")
                                                     <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
                                                         title="Eliminar este registro">
@@ -65,4 +70,7 @@ Crud Roles
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="{{asset("assets/pages/scripts/Director/index.js")}}"></script>
 @endsection

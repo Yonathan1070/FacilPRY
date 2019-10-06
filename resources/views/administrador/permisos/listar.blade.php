@@ -14,7 +14,7 @@ Sistema de Permisos
             <div class="card">
                 <div class="header">
                     <h2>
-                        Permisos
+                        Asignar permisos a Usuarios
                     </h2>
                 </div>
                 <div class="body table-responsive">
@@ -27,6 +27,7 @@ Sistema de Permisos
                             <thead>
                                 <tr>
                                     <th>Nombre y Apellido</th>
+                                    <th>Rol Asignado</th>
                                     <th class="width70"></th>
                                 </tr>
                             </thead>
@@ -34,9 +35,10 @@ Sistema de Permisos
                                 @foreach ($usuarios as $usuario)
                                 <tr>
                                     <td>{{$usuario->USR_Nombres_Usuario.' '.$usuario->USR_Apellidos_Usuario}}</td>
+                                    <td>{{$usuario->RLS_Nombre_Rol}}</td>
                                     <td>
-                                        <a href="{{route('asignar_rol_usuario_administrador', ['id'=>$usuario->id])}}"
-                                            class="btn-accion-tabla tooltipsC" title="Asignar Roles">
+                                        <a href="{{route('asignar_menu_usuario_administrador', ['id'=>$usuario->id])}}"
+                                            class="btn-accion-tabla tooltipsC" title="Asignar Permisos">
                                             <i class="material-icons text-info" style="font-size: 17px;">merge_type</i>
                                         </a>
                                     </td>

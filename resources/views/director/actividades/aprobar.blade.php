@@ -84,11 +84,11 @@ Crud Actividades
             data: {"_token":"{{ csrf_token() }}", HRS_ACT_Cantidad_Horas_Asignadas:newValue},
             success:function(data){
                 if(data.msg == "alerta")
-                    Biblioteca.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'FacilPRY', 'warning');
+                    FacilPry.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'FacilPRY', 'warning');
                 if(data.msg == "error")
-                    Biblioteca.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'FacilPRY', 'error');
+                    FacilPry.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'FacilPRY', 'error');
                 if(data.msg == "exito")
-                    Biblioteca.notificaciones('Horas Asignadas', 'FacilPRY', 'success');
+                    FacilPry.notificaciones('Horas Asignadas', 'FacilPRY', 'success');
             }
         });
         

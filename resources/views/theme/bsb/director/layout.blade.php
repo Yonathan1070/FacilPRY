@@ -100,7 +100,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @extends("theme.bsb.director.menu")
+            @extends("theme.bsb.menu")
     </section>
 
     <section class="content">

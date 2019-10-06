@@ -1,4 +1,4 @@
-var Biblioteca = function (){
+var FacilPry = function (){
     return{
         validacionGeneral: function(id, reglas, mensajes){
             const formulario = $('#' + id);

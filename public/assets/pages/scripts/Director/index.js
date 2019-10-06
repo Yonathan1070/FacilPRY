@@ -1,5 +1,5 @@
-$(document).ready(function(){
-    $("#tabla-data").on('submit', '.form-eliminar', function(){
+$(document).ready(function () {
+    $("#tabla-data").on('submit', '.form-eliminar', function () {
         event.preventDefault();
         const form = $(this);
         swal({
@@ -11,7 +11,7 @@ $(document).ready(function(){
                 confirm: "Aceptar"
             },
         }).then((value) => {
-            if(value){
+            if (value) {
                 ajaxRequest(form);
             }
         });
@@ -22,16 +22,17 @@ $(document).ready(function(){
             url: form.attr('action'),
             type: 'POST',
             data: form.serialize(),
-            success: function(respuesta){
+            success: function (respuesta) {
                 if (respuesta.mensaje == "ok") {
                     form.parents('tr').remove();
-                    Biblioteca.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
-                } else{
-                    Biblioteca.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
+                    FacilPry.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
+                } else if (respuesta.mensaje == "rd") {
+                    FacilPry.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'FacilPRY', 'error');
+                } else {
+                    FacilPry.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
                 }
-
             },
-            error: function(){
+            error: function () {
 
             }
         });
