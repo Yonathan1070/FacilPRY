@@ -23,20 +23,24 @@ class InicioController extends Controller
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cobros = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
-            ->where('a.ACT_Estado_Actividad', '=', 'Facturado')
+            ->where('e.EST_Nombre_Estado', '=', 'Facturado')
             ->where('a.ACT_Costo_Actividad', '=', 0)
             ->orderBy('p.id')
             ->get();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
             ->where('a.ACT_Costo_Actividad', '<>', 0)
-            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
+            ->where('e.EST_Nombre_Estado', '=', 'Esperando Pago')
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
 

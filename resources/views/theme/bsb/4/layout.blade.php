@@ -94,7 +94,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @extends("theme.bsb.tester.menu")
+        @extends("theme.bsb.menu")
     </section>
 
     <section class="content">

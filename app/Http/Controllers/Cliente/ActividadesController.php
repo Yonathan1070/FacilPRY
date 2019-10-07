@@ -23,7 +23,7 @@ class ActividadesController extends Controller
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -34,7 +34,7 @@ class ActividadesController extends Controller
             ->where('a.ACT_Estado_Id', '=', 3)
             ->where('af.ACT_FIN_Estado_Id', '=', 11)
             ->get();
-        return view('cliente.actividades.inicio', compact('actividadesPendientes', 'datosU', 'notificaciones', 'cantidad'));
+        return view('cliente.actividades.inicio', compact('actividadesPendientes', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -46,7 +46,7 @@ class ActividadesController extends Controller
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
             ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
@@ -69,7 +69,7 @@ class ActividadesController extends Controller
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->first();
-        return view('cliente.actividades.aprobacion', compact('actividadesPendientes', 'datosU', 'perfil', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
+        return view('cliente.actividades.aprobacion', compact('actividadesPendientes', 'datos', 'perfil', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
     }
 
     /**

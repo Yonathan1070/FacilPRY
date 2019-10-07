@@ -39,7 +39,8 @@
         </div>
         <!-- Fin Menú -->
         <!-- Footer -->
-        @include('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.footer')
+        @include('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.footer')
+        
         <!-- Fin Footer -->
     </aside>
     <!-- Fin Barra Lateral Izquierda -->

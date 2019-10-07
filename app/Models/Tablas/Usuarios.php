@@ -32,6 +32,7 @@ class Usuarios extends Authenticatable
     public function setSession($roles){
         if (count($roles) == 1) {
             Session::put([
+                'Sub_Rol_Id' => $roles[0]['RLS_Rol_Id'],
                 'Rol_Id' => $roles[0]['id'],
                 'Rol_Nombre' => $roles[0]['RLS_Nombre_Rol'],
                 'Usuario_Id' => $this->id,

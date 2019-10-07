@@ -25,9 +25,9 @@ class InicioController extends Controller
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderBy('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyectos = $this->proyectosConsulta();
-        return view('cliente.inicio', compact('proyectos', 'datosU', 'notificaciones', 'cantidad'));
+        return view('cliente.inicio', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**

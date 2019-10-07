@@ -1,4 +1,4 @@
-@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Crud Perfil de Operación
 @endsection

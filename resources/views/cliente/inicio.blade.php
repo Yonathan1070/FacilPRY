@@ -1,4 +1,4 @@
-@extends('theme.bsb.cliente.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Mis Proyectos
 @endsection

@@ -1,4 +1,4 @@
-@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Crud Roles
 @endsection
@@ -40,7 +40,8 @@ Crud Roles
                                     @foreach ($roles as $rol)
                                         <tr>
                                             <td>
-                                                {{$rol->RLS_Nombre_Rol}}@if ($rol->RLS_Rol_Id == 0)
+                                                {{$rol->RLS_Nombre_Rol}}
+                                                @if ($rol->RLS_Rol_Id != 6)
                                                     <label style="color: red">(*)</label>
                                                 @endif
                                             </td>
