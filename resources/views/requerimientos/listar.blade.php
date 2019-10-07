@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Requerimientos
 @endsection
@@ -14,12 +14,12 @@ Crud Requerimientos
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_requerimiento_director', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-success waves-effect" href="{{route('crear_requerimiento', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nuevo Requerimiento
                             </a>
                         </li>
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('proyectos_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('proyectos')}}">
                                 <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                             </a>
                         </li>
@@ -29,7 +29,7 @@ Crud Requerimientos
                     @if (count($requerimientos)<=0)
                         <div class="alert alert-info">
                             No hay datos que mostrar
-                            <a href="{{route('crear_requerimiento_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                            <a href="{{route('crear_requerimiento', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                         </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -46,10 +46,10 @@ Crud Requerimientos
                                     <td>{{$requerimiento->REQ_Nombre_Requerimiento}}</td>
                                     <td>{{$requerimiento->REQ_Descripcion_Requerimiento}}</td>
                                     <td>
-                                        <a href="{{route('editar_requerimiento_director', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                        <a href="{{route('editar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                             <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                         </a>
-                                        <form action="{{route('eliminar_requerimiento_director', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="d-inline" method="POST">
+                                        <form action="{{route('eliminar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="d-inline" method="POST">
                                             @csrf @method("delete")
                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
                                                 <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>

@@ -10,7 +10,7 @@ function avance(id){
             $.ajax({
                 dataType: "json",
                 method: "get",
-                url: "/director/proyectos/" + id
+                url: "/proyectos/" + id
             }).done(function (dato) {
                     var html_progress = "<div class='progress'>\
                             <div class='progress-bar bg-cyan progress-bar-striped active' role='progressbar' style='width: "+ dato.porcentaje + "%' aria-valuenow='" + dato.porcentaje + "' aria-valuemin='0' aria-valuemax='100'>\

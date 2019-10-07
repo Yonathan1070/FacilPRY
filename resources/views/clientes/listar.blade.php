@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
     Crud Clientes
 @endsection
@@ -13,7 +13,7 @@
                         <h2>CLIENTES</h2>
                         <ul class="header-dropdown" style="top:10px;">
                             <li class="dropdown">
-                                <a class="btn btn-success waves-effect" href="{{route('crear_cliente_director')}}">
+                                <a class="btn btn-success waves-effect" href="{{route('crear_cliente')}}">
                                     <i class="material-icons" style="color:white;">add</i> Nuevo Cliente
                                 </a>
                             </li>
@@ -23,7 +23,7 @@
                         @if (count($clientes)<=0)
                             <div class="alert alert-warning">
                                 No hay Datos que mostrar
-                                <a href="{{route('crear_cliente_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                                <a href="{{route('crear_cliente')}}" class="alert-link">Clic aquí para agregar!</a>.
                             </div>
                         @else
                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -46,10 +46,10 @@
                                             <td>{{$cliente->USR_Correo_Usuario}}</td>
                                             <td>{{$cliente->USR_Nombre_Usuario}}</td>
                                             <td>
-                                                <a href="{{route('editar_cliente_director', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                <a href="{{route('editar_cliente', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                     <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                 </a>
-                                                <form action="{{route('eliminar_cliente_director', ['id'=>$cliente->id])}}" class="d-inline" method="POST">
+                                                <form action="{{route('eliminar_cliente', ['id'=>$cliente->id])}}" class="d-inline" method="POST">
                                                     @csrf @method("delete")
                                                     <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
                                                         <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>

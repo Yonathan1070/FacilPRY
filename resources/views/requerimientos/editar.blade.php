@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Requerimientos
 @endsection
@@ -13,17 +13,17 @@ Crud Requerimientos
                     <h2>EDITAR REQUERIMIENTO</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_requerimiento_director', ['idR' => $requerimiento->id])}}" method="POST">
+                    <form id="form_validation" action="{{route('actualizar_requerimiento', ['idR' => $requerimiento->id])}}" method="POST">
                         @csrf @method("put")
-                        @include('director.requerimientos.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}">CANCELAR</a>
+                        @include('requerimientos.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
                     </form>
                 </div>

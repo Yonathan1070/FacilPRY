@@ -1,30 +1,31 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
-Crud Clientes
+Crud Requerimientos
 @endsection
 @section('contenido')
 <div class="container-fluid">
     <!-- Basic Validation -->
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                @include('includes.form-error')
+            @include('includes.form-exito')    
+            @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    <h2>EDITAR CLIENTE</h2>
+                    <h2>CREAR REQUERIMIENTO PROYECTO {{strtoupper($proyecto->PRY_Nombre_Proyecto)}}</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('clientes_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_cliente_director', ['id' => $cliente->id])}}" method="POST">
-                        @csrf @method("put")
-                        @include('director.clientes.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('clientes_director')}}">CANCELAR</a>
-                        <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
+                    <form id="form_validation" action="{{route('guardar_requerimiento')}}" method="POST">
+                        @csrf
+                        @include('requerimientos.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">CANCELAR</a>
+                        <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>
             </div>

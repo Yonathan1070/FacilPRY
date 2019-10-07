@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Director;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,6 +25,7 @@ class ActividadesController extends Controller
      */
     public function index($idP)
     {
+        can('listar-actividades');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();
@@ -41,7 +42,7 @@ class ActividadesController extends Controller
             ->orderBy('a.Id', 'ASC')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);
-        return view('director.actividades.listar', compact('actividades', 'proyecto', 'datos', 'notificaciones', 'cantidad'));
+        return view('actividades.listar', compact('actividades', 'proyecto', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -51,6 +52,7 @@ class ActividadesController extends Controller
      */
     public function crear($idP)
     {
+        can('crear-actividades');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -64,7 +66,7 @@ class ActividadesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario')
             ->get();
-        return view('director.actividades.crear', compact('proyecto', 'perfilesOperacion', 'requerimientos', 'datos', 'notificaciones', 'cantidad'));
+        return view('actividades.crear', compact('proyecto', 'perfilesOperacion', 'requerimientos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -76,7 +78,7 @@ class ActividadesController extends Controller
     public function guardar(ValidacionActividad $request)
     {
         if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
-            return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
+            return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
         }
         $actividades = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -84,7 +86,7 @@ class ActividadesController extends Controller
             ->get();
         foreach ($actividades as $actividad) {
             if($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad){
-                return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
+                return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
         Actividades::create([
@@ -132,7 +134,7 @@ class ActividadesController extends Controller
             null,
             'add_to_photos'
         );
-        return redirect()->route('crear_actividad_director', [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
+        return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
     }
 
     private function obtenerFechasRango($fechaInicio, $fechaFin) { 
@@ -155,12 +157,13 @@ class ActividadesController extends Controller
      */
     public function editar($idP, $idR)
     {
+        can('editar-actividades');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP)->first();
         $requerimiento = Requerimientos::findOrFail($idR)->first();
-        return view('director.requerimientos.editar', compact('proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad'));
+        return view('requerimientos.editar', compact('proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -173,7 +176,7 @@ class ActividadesController extends Controller
     public function actualizar(ValidacionActividad $request, $idR)
     {
         Requerimientos::findOrFail($idR)->update($request->all());
-        return redirect()->route('requerimientos_director', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
+        return redirect()->route('requerimientos', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
     }
 
     /**
@@ -184,11 +187,12 @@ class ActividadesController extends Controller
      */
     public function eliminar($idP, $idR)
     {
+        can('eliminar-actividades');
         try{
             Requerimientos::destroy($idR);
-            return redirect()->route('requerimientos_director', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
+            return redirect()->route('requerimientos', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
         }catch(QueryException $e){
-            return redirect()->route('requerimientos_director', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
+            return redirect()->route('requerimientos', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
         }
     }
 
@@ -207,7 +211,7 @@ class ActividadesController extends Controller
         if(count($horasAprobar)==0){
             return redirect()->route('inicio_director')->with('mensaje', 'Las horas de trabajo ya han sido aprobadas.');
         }
-        return view('director.actividades.aprobar', compact('horasAprobar', 'notificaciones', 'cantidad', 'datos'));
+        return view('actividades.aprobar', compact('horasAprobar', 'notificaciones', 'cantidad', 'datos'));
         //dd($horasAprobar);
     }
 

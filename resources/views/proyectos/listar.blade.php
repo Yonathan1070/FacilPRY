@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Proyectos
 @endsection
@@ -25,7 +25,7 @@ Crud Proyectos
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto_director')}}"><i
+                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
                         </li>
                     </ul>
@@ -34,7 +34,7 @@ Crud Proyectos
                     @if (count($proyectos)<=0)
                     <div class="alert alert-info">
                         No hay datos que mostrar
-                        <a href="{{route('crear_proyecto_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                        <a href="{{route('crear_proyecto')}}" class="alert-link">Clic aquí para agregar!</a>.
                     </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -58,13 +58,13 @@ Crud Proyectos
                                         <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>
-                                            <a href="{{route('requerimientos_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
+                                            <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
                                                 <i class="material-icons text-info" style="font-size: 17px;">description</i>
                                             </a>
-                                            <a href="{{route('actividades_director', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">
+                                            <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">
                                                 <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                             </a>
-                                            <a href="{{route('generar_pdf_proyecto_director', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
+                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
                                                 <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                             </a>
                                         </td>

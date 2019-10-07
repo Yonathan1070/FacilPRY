@@ -58,6 +58,52 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::post('foto', 'EmpresaController@actualizarLogo')->name('actualizar_logo_empresa_administrador');
     });
 });
+
+//Enrutamiento Director de Proyectos
+Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
+    Route::get('', 'InicioController@index')->name('inicio_director');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
+
+    //Enrutamiento CRUD Roles
+    Route::Group(['prefix' => 'roles'], function () {
+        Route::get('', 'RolesController@index')->name('roles_director');
+        Route::get('crear', 'RolesController@crear')->name('crear_rol_director');
+        Route::post('crear', 'RolesController@guardar')->name('guardar_rol_director');
+        Route::get('{id}/editar', 'RolesController@editar')->name('editar_rol_director');
+        Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol_director');
+        Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol_director');
+    });
+
+    //Erutamiento CRUD Decisiones
+    Route::group(['prefix' => 'decisiones'], function () {
+        Route::get('', 'DecisionesController@index')->name('decisiones_director');
+        Route::get('crear-desicion', 'DecisionesController@crear')->name('crear_decision_director');
+        Route::post('crear-decision', 'DecisionesController@guardar')->name('guardar_decision_director');
+        Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_director');
+        Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_director');
+        Route::delete('{id}', 'DecisionesController@eliminar')->name('eliminar_decision_director');
+        Route::get('{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador_director');
+    });
+
+    //Erutamiento CRUD Perfil de Operación
+    Route::group(['prefix' => 'perfil-operacion'], function () {
+        Route::get('', 'PerfilOperacionController@index')->name('perfil_operacion_director');
+        Route::get('crear', 'PerfilOperacionController@crear')->name('crear_perfil_director');
+        Route::post('crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_director');
+        Route::get('{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_director');
+        Route::put('{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion_director');
+        Route::delete('{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_director');
+    });
+
+    //Enroutamiento para Editar Perfil
+    Route::group(['prefix' => 'perfil'], function () {
+        Route::get('', 'PerfilUsuarioController@index')->name('perfil_director');
+        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_director');
+        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_director');
+        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_director');
+    });
+});
+
 //Rutas Decisiones
 Route::get('decisiones', 'DecisionesController@index')->name('decisiones');
 Route::get('decisiones/crear-desicion', 'DecisionesController@crear')->name('crear_decision');
@@ -66,6 +112,7 @@ Route::post('decisiones/crear-decision', 'DecisionesController@guardar')->name('
 Route::get('decisiones/{id}/editar', 'DecisionesController@editar')->name('editar_decision');
 Route::put('decisiones/{id}', 'DecisionesController@actualizar')->name('actualizar_decision');
 Route::delete('decisiones/{id}', 'DecisionesController@eliminar')->name('eliminar_decision');
+
 //Rutas Roles
 Route::get('roles', 'RolesController@index')->name('roles');
 Route::get('roles/crear-rol', 'RolesController@crear')->name('crear_rol');
@@ -73,11 +120,51 @@ Route::post('roles/crear-rol', 'RolesController@guardar')->name('guardar_rol');
 Route::get('roles/{id}/editar', 'RolesController@editar')->name('editar_rol');
 Route::put('roles/{id}', 'RolesController@actualizar')->name('actualizar_rol');
 Route::delete('roles/{id}', 'RolesController@eliminar')->name('eliminar_rol');
+
 //Rutas Perfil de Usuario
 Route::get('perfil', 'PerfilUsuarioController@index')->name('perfil');
 Route::put('perfileditar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil');
 Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave');
 Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto');
+
+//Rutas CRUD Clientes
+Route::get('clientes', 'ClientesController@index')->name('clientes');
+Route::get('clientes/crear', 'ClientesController@crear')->name('crear_cliente');
+Route::post('clientes/crear', 'ClientesController@guardar')->name('guardar_cliente');
+Route::get('clientes/{id}/editar', 'ClientesController@editar')->name('editar_cliente');
+Route::put('clientes/{id}', 'ClientesController@actualizar')->name('actualizar_cliente');
+Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente');
+
+//Rutas CRUD Proyectos
+Route::get('proyectos', 'ProyectosController@index')->name('proyectos');
+Route::get('proyectos/crear', 'ProyectosController@crear')->name('crear_proyecto');
+Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
+Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
+Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
+
+//Rutas CRUD Requerimientos
+Route::get('requerimientos/{idP}', 'RequerimientosController@index')->name('requerimientos');
+Route::get('requerimientos/{idP}/crear', 'RequerimientosController@crear')->name('crear_requerimiento');
+Route::post('requerimientos/crear', 'RequerimientosController@guardar')->name('guardar_requerimiento');
+Route::get('requerimientos/{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento');
+Route::put('requerimientos/{idR}/editar', 'RequerimientosController@actualizar')->name('actualizar_requerimiento');
+Route::delete('requerimientos/{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento');
+
+//Rutas CRUD Actividades
+Route::get('actividades/{idP}', 'ActividadesController@index')->name('actividades');
+Route::get('actividades/{idP}/crear', 'ActividadesController@crear')->name('crear_actividad');
+Route::post('actividades/crear', 'ActividadesController@guardar')->name('guardar_actividad');
+Route::get('actividades/{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad');
+Route::put('actividades/{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad');
+Route::delete('actividades/{idP}-{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad');
+Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad');
+Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
+Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
+
+//Rutas Cobros
+Route::get('cobros', 'CobrosController@index')->name('cobros');
+Route::get('cobros/{idA}-{idC}/agregarFactura', 'CobrosController@agregarFactura')->name('agregar_factura');
+Route::get('cobros/{id}/factura', 'CobrosController@generarFactura')->name('generar_factura');
 
 //Enrutamiento Cliente
 Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => ['auth', 'cliente']], function () {
@@ -103,100 +190,6 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
         Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_cliente');
         Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_cliente');
         Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_cliente');
-    });
-});
-
-//Enrutamiento Director de Proyectos
-Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
-    Route::get('', 'InicioController@index')->name('inicio_director');
-    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
-
-    //Enrutamiento CRUD Roles
-    Route::Group(['prefix' => 'roles'], function () {
-        Route::get('', 'RolesController@index')->name('roles_director');
-        Route::get('crear', 'RolesController@crear')->name('crear_rol_director');
-        Route::post('crear', 'RolesController@guardar')->name('guardar_rol_director');
-        Route::get('{id}/editar', 'RolesController@editar')->name('editar_rol_director');
-        Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol_director');
-        Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol_director');
-    });
-
-    //Enrutamiento CRUD Actividades
-    Route::group(['prefix' => 'actividades'], function () {
-        Route::get('{idP}', 'ActividadesController@index')->name('actividades_director');
-        Route::get('{idP}/crear', 'ActividadesController@crear')->name('crear_actividad_director');
-        Route::post('crear', 'ActividadesController@guardar')->name('guardar_actividad_director');
-        Route::get('{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad_director');
-        Route::put('{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad_director');
-        Route::delete('{idP}-{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad_director');
-        Route::get('{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad_director');
-        Route::put('{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad_director');
-        Route::get('{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad_director');
-    });
-
-    //Erutamiento CRUD Decisiones
-    Route::group(['prefix' => 'decisiones'], function () {
-        Route::get('', 'DecisionesController@index')->name('decisiones_director');
-        Route::get('crear-desicion', 'DecisionesController@crear')->name('crear_decision_director');
-        Route::post('crear-decision', 'DecisionesController@guardar')->name('guardar_decision_director');
-        Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_director');
-        Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_director');
-        Route::delete('{id}', 'DecisionesController@eliminar')->name('eliminar_decision_director');
-        Route::get('{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador_director');
-    });
-
-    //Erutamiento CRUD Perfil de Operación
-    Route::group(['prefix' => 'perfil-operacion'], function () {
-        Route::get('', 'PerfilOperacionController@index')->name('perfil_operacion_director');
-        Route::get('crear', 'PerfilOperacionController@crear')->name('crear_perfil_director');
-        Route::post('crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_director');
-        Route::get('{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_director');
-        Route::put('{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion_director');
-        Route::delete('{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_director');
-    });
-
-    //Erutamiento CRUD Requerimientos
-    Route::group(['prefix' => 'requerimientos'], function () {
-        Route::get('{idP}', 'RequerimientosController@index')->name('requerimientos_director');
-        Route::get('{idP}/crear', 'RequerimientosController@crear')->name('crear_requerimiento_director');
-        Route::post('crear', 'RequerimientosController@guardar')->name('guardar_requerimiento_director');
-        Route::get('{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento_director');
-        Route::put('{idR}/editar', 'RequerimientosController@actualizar')->name('actualizar_requerimiento_director');
-        Route::delete('{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento_director');
-    });
-
-    //Erutamiento CRUD Clientes
-    Route::group(['prefix' => 'clientes'], function () {
-        Route::get('', 'ClientesController@index')->name('clientes_director');
-        Route::get('crear', 'ClientesController@crear')->name('crear_cliente_director');
-        Route::post('crear', 'ClientesController@guardar')->name('guardar_cliente_director');
-        Route::get('{id}/editar', 'ClientesController@editar')->name('editar_cliente_director');
-        Route::put('{id}', 'ClientesController@actualizar')->name('actualizar_cliente_director');
-        Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente_director');
-    });
-
-    //Enrutamiento CRUD Proyectos
-    Route::Group(['prefix' => 'proyectos'], function () {
-        Route::get('', 'ProyectosController@index')->name('proyectos_director');
-        Route::get('crear', 'ProyectosController@crear')->name('crear_proyecto_director');
-        Route::post('crear', 'ProyectosController@guardar')->name('guardar_proyecto_director');
-        Route::get('{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto_director');
-        Route::get('{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje_director');
-    });
-
-    //Enrutamiento Cobros
-    Route::Group(['prefix' => 'cobros'], function () {
-        Route::get('', 'CobrosController@index')->name('cobros_director');
-        Route::get('{idA}-{idC}/agregarFactura', 'CobrosController@agregarFactura')->name('agregar_factura_director');
-        Route::get('{id}/factura', 'CobrosController@generarFactura')->name('generar_factura_director');
-    });
-
-    //Enroutamiento para Editar Perfil
-    Route::group(['prefix' => 'perfil'], function () {
-        Route::get('', 'PerfilUsuarioController@index')->name('perfil_director');
-        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_director');
-        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_director');
-        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_director');
     });
 });
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Director;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +21,7 @@ class ProyectosController extends Controller
      */
     public function index()
     {
+        can('listar-proyectos');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -29,7 +30,7 @@ class ProyectosController extends Controller
             ->select('p.*', 'u.USR_Nombres_Usuario', 'u.USR_Apellidos_Usuario')
             ->orderBy('p.Id')
             ->get();
-        return view('director.proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
+        return view('proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -39,6 +40,7 @@ class ProyectosController extends Controller
      */
     public function crear()
     {
+        can('crear-proyectos');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -50,7 +52,7 @@ class ProyectosController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('director.proyectos.crear', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
+        return view('proyectos.crear', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**

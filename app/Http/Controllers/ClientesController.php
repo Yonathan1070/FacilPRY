@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Director;
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
@@ -21,6 +20,7 @@ class ClientesController extends Controller
      */
     public function index()
     {
+        can('listar-clientes');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -32,7 +32,7 @@ class ClientesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('director.clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
+        return view('clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -42,10 +42,11 @@ class ClientesController extends Controller
      */
     public function crear()
     {
+        can('crear-clientes');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('director.clientes.crear', compact('datos', 'notificaciones', 'cantidad'));
+        return view('clientes.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -128,11 +129,12 @@ class ClientesController extends Controller
      */
     public function editar($id)
     {
+        can('editar-clientes');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cliente = Usuarios::findOrFail($id);
-        return view('director.clientes.editar', compact('cliente', 'datos', 'notificaciones', 'cantidad'));
+        return view('clientes.editar', compact('cliente', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -175,6 +177,7 @@ class ClientesController extends Controller
      */
     public function eliminar($id)
     {
+        can('eliminar-clientes');
         try{
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
             $datosU = Usuarios::findOrFail($id);

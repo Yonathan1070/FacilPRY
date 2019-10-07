@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Proyectos
 @endsection
@@ -39,7 +39,7 @@ Crud Proyectos
                                         <td>{{$cobro->ACT_Descripcion_Actividad}}</td>
                                         <td>{{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}</td>
                                         <td>
-                                            <a href="{{route('agregar_factura_director', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}">
+                                            <a href="{{route('agregar_factura', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}">
                                                 <i class="material-icons text-info" style="font-size: 17px;">note_add</i>
                                             </a>
                                         </td>
@@ -82,7 +82,7 @@ Crud Proyectos
                                         <td>{{$proyecto->No_Actividades}}</td>
                                         <td>
                                             @if ($proyecto->ACT_Costo_Actividad != 0)
-                                                <a href="{{route('generar_factura_director', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                <a href="{{route('generar_factura', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
                                                     <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                 </a>
                                             @endif

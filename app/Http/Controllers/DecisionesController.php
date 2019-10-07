@@ -112,7 +112,7 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
-        can('editar-desiciones');
+        can('editar-decisiones');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $indicadores = Indicadores::orderBy('id')->get();

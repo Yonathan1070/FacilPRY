@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Actividades
 @endsection
@@ -15,12 +15,12 @@ Crud Actividades
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_director', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nueva Actividad
                             </a>
                         </li>
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('proyectos_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('proyectos')}}">
                                 <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                             </a>
                         </li>
@@ -30,7 +30,7 @@ Crud Actividades
                     @if (count($actividades)<=0)
                         <div class="alert alert-info">
                             No hay datos que mostrar. 
-                            <a href="{{route('crear_actividad_director', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                            <a href="{{route('crear_actividad', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                         </div>
                     @else
                         <table class="table table-striped table-bordered table-hover  dataTable js-exportable" id="tabla-data">

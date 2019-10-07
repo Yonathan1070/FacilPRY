@@ -1,9 +1,6 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
-Crud Decisiones
-@endsection
-@section('scripts')
-    <script src="{{asset('assets/pages/scripts/Director/progressBar.js')}}"></script>
+    Crud Clientes
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -14,21 +11,21 @@ Crud Decisiones
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>EDITAR DECISIÓN</h2>
+                    <h2>CREAR CLIENTE</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('decisiones_director')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('clientes')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_decision_director', ['id' => $decision->id])}}" method="POST">
-                        @csrf @method("put")
-                        @include('director.decisiones.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('decisiones_director')}}">CANCELAR</a>
-                        <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
+                    <form id="form_validation" action="{{route('guardar_cliente')}}" method="POST">
+                        @csrf
+                        @include('clientes.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('clientes')}}">CANCELAR</a>
+                        <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>
             </div>
