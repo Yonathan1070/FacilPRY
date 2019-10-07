@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administrador;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ValidacionPermiso;
 use App\Models\Tablas\Iconos;
 use App\Models\Tablas\Menu;
 use App\Models\Tablas\Notificaciones;
@@ -11,6 +12,8 @@ use App\Models\Tablas\Roles;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\MenuUsuario;
+use App\Models\Tablas\Permiso;
+use App\Models\Tablas\PermisoUsuario;
 
 class PermisosController extends Controller
 {
@@ -34,13 +37,39 @@ class PermisosController extends Controller
             ->get();
         return view('administrador.permisos.listar', compact('usuarios', 'datos', 'notificaciones', 'cantidad'));
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function crear()
+    {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        return view('administrador.permisos.crear', compact('datos', 'notificaciones', 'cantidad'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function guardar(ValidacionPermiso $request)
+    {
+        Permiso::create($request->all());
+        return redirect()->back()->with('mensaje', 'Permiso creado con exito');
+    }
     
     public function asignarMenu($id){
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $menus = Menu::orderBy('MN_Orden_Menu')->get();
-        return view('administrador.permisos.asignar', compact('menus', 'datos', 'id', 'notificaciones', 'cantidad'));
+        $permisos = Permiso::orderBy('PRM_Nombre_Permiso')->get();
+        return view('administrador.permisos.asignar', compact('menus', 'permisos', 'datos', 'id', 'notificaciones', 'cantidad'));
     }
 
     public function agregar($idU, $idM)
@@ -71,71 +100,33 @@ class PermisosController extends Controller
             return redirect()->back()->with('mensaje', 'Menú des-asignado');
         }
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function crear()
+
+    public function agregarPermiso($idU, $idP)
     {
-        $iconos = Iconos::get();
-        return view('administrador.permisos.crear', compact('iconos'));
+        $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $idU)
+            ->where('PRM_USR_Permiso_Id', '=', $idP)
+            ->first();
+        if (!$asignado) {
+            PermisoUsuario::create([
+                'PRM_USR_Usuario_Id' => $idU,
+                'PRM_USR_Permiso_Id' => $idP
+            ]);
+            return redirect()->back()->with('mensaje', 'Permiso Asignado.');
+        }else{
+            return redirect()->back()->with('mensaje', 'El Permiso se encuentra Asignado.');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function guardar(Request $request)
+    public function quitarPermiso($idU, $idP)
     {
-        Menu::create($request->all());
-        return redirect()->back()->with('mensaje', 'Menú creado con exito');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function mostrar($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editar($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function actualizar(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function eliminar($id)
-    {
-        //
+        $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $idU)
+            ->where('PRM_USR_Permiso_Id', '=', $idP)
+            ->first();
+        if (!$asignado) {
+            return redirect()->back()->withErrors('El Permiso no se encuentra asignado');
+        }else{
+            $asignado->delete();
+            return redirect()->back()->with('mensaje', 'Permiso des-asignado');
+        }
     }
 }

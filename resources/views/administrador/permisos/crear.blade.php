@@ -1,6 +1,6 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
-Crud Menú
+Crear Permiso
 @endsection
 @section('styles')
     <!-- Bootstrap Select Css -->
@@ -15,20 +15,20 @@ Crud Menú
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>CREAR MENÚ</h2>
+                    <h2>CREAR PERMISO</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('permisos_administrador')}}">
-                                <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
+                            <a class="btn btn-danger waves-effect" href="{{route('asignar_rol_administrador')}}">
+                                <i class="material-icons" style="color:white;">arrow_back</i> Volver a Permisos
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('guardar_menu_administrador')}}" method="POST">
+                    <form id="form_validation" action="{{route('guardar_permiso_administrador')}}" method="POST">
                         @csrf
                         @include('administrador.permisos.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('permisos_administrador')}}">CANCELAR</a>
+                        <a class="btn btn-danger waves-effect" href="{{route('asignar_rol_administrador')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>

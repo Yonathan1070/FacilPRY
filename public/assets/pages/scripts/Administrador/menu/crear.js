@@ -22,3 +22,15 @@ function route() {
     }
     x.value=contenido.toLowerCase();
 }
+function permisoSlug() {
+    var x = document.getElementById("PRM_Nombre_Permiso");
+    var y = document.getElementById("PRM_Slug_Permiso");
+    var contenido = "";
+    for (var i = 0; i < x.value.length; i++) {
+        if(x.value.charAt(i) == " ")
+            contenido = contenido + "-";
+        else
+            contenido = contenido + x.value.charAt(i);
+    }
+    y.value=contenido.toLowerCase();
+}

@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Roles
 @endsection
@@ -13,17 +13,17 @@ Crud Roles
                     <h2>EDITAR ROL</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('roles_administrador')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('roles')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('actualizar_rol_administrador', ['id' => $rol->id])}}" method="POST">
+                    <form id="form_validation" action="{{route('actualizar_rol', ['id' => $rol->id])}}" method="POST">
                         @csrf @method("put")
-                        @include('administrador.roles.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('roles_administrador')}}">CANCELAR</a>
+                        @include('roles.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('roles')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
                     </form>
                 </div>

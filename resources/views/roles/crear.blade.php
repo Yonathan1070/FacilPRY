@@ -1,9 +1,6 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
-Crud Decisiones
-@endsection
-@section('scripts')
-    <script src="{{asset('assets/pages/scripts/Administrador/progressBar.js')}}"></script>
+Crud Roles
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -14,20 +11,20 @@ Crud Decisiones
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>CREAR DECISIÓN</h2>
+                    <h2>CREAR ROL</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('decisiones_administrador')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('roles')}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" action="{{route('guardar_decision_administrador')}}" method="POST">
+                    <form id="form_validation" action="{{route('guardar_rol')}}" method="POST">
                         @csrf
-                        @include('administrador.decisiones.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('decisiones_administrador')}}">CANCELAR</a>
+                        @include('roles.form')
+                        <a class="btn btn-danger waves-effect" href="{{route('roles')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>

@@ -93,6 +93,8 @@ class DirectorProyectosController extends Controller
             session()->get('Usuario_Id'),
             $datosU->id,
             'perfil_director',
+            null,
+            null,
             'account_circle'
         );
         return redirect()->route('perfil_operacion_director')->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
@@ -137,6 +139,8 @@ class DirectorProyectosController extends Controller
             session()->get('Usuario_Id'),
             $id,
             'perfil_director',
+            null,
+            null,
             'update'
         );
         return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');

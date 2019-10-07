@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Roles
 @endsection
@@ -15,7 +15,7 @@ Crud Roles
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_rol_administrador')}}"><i
+                            <a class="btn btn-success waves-effect" href="{{route('crear_rol')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Rol</a>
                         </li>
                     </ul>
@@ -23,8 +23,8 @@ Crud Roles
                 <div class="body table-responsive">
                         @if (count($roles)<=0)
                             <div class="alert alert-warning">
-                                <strong>Advertencia!</strong> El sistema no cuenta con Roles agregados
-                                <a href="{{route('crear_rol_administrador')}}" class="alert-link">Clic aquí para
+                                El sistema no cuenta con Roles agregados
+                                <a href="{{route('crear_rol')}}" class="alert-link">Clic aquí para
                                     agregar!</a>.
                             </div>
                         @else
@@ -47,9 +47,9 @@ Crud Roles
                                             <td>{{$rol->RLS_Descripcion_Rol}}</td>
                                             <td>
                                                 
-                                                <form class="form-eliminar" action="{{route('eliminar_rol_administrador', ['id'=>$rol->id])}}"
+                                                <form class="form-eliminar" action="{{route('eliminar_rol', ['id'=>$rol->id])}}"
                                                     class="d-inline" method="POST">
-                                                    <a href="{{route('editar_rol_administrador', ['id'=>$rol->id])}}"
+                                                    <a href="{{route('editar_rol', ['id'=>$rol->id])}}"
                                                         class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                     </a>

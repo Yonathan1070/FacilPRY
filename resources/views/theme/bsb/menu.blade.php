@@ -17,8 +17,10 @@
                     <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="true">keyboard_arrow_down</i>
                     <ul class="dropdown-menu pull-right">
-                        <li><a href="{{route('perfil_administrador')}}"><i class="material-icons">person</i>Perfil</a></li>
-                        <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
+                        <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
+                        @if (session()->get('Rol_Nombre')=='Administrador')
+                            <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
+                        @endif
                         <li role="separator" class="divider"></li>
                         <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                     </ul>
@@ -37,7 +39,7 @@
         </div>
         <!-- Fin Menú -->
         <!-- Footer -->
-        @include("theme.bsb.administrador.footer")
+        @include('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.footer')
         <!-- Fin Footer -->
     </aside>
     <!-- Fin Barra Lateral Izquierda -->

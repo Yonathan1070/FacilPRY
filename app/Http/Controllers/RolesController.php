@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Administrador;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,11 +19,12 @@ class RolesController extends Controller
      */
     public function index()
     {
+        can('listar-roles');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::orderBy('id')->get();
-        return view('administrador.roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad'));
+        return view('roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -33,10 +34,11 @@ class RolesController extends Controller
      */
     public function crear()
     {
+        can('crear-roles');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('administrador.roles.crear', compact('datos', 'notificaciones', 'cantidad'));
+        return view('roles.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -69,13 +71,14 @@ class RolesController extends Controller
      */
     public function editar($id)
     {
+        can('editar-roles');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
         if($rol->RLS_Rol_Id == 0)
             return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
-        return view('administrador.roles.editar', compact('rol', 'datos', 'notificaciones', 'cantidad'));
+        return view('roles.editar', compact('rol', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -95,7 +98,7 @@ class RolesController extends Controller
             }
         }
         Roles::findOrFail($id)->update($request->all());
-        return redirect()->route('roles_administrador')->with('mensaje', 'Rol actualizado con exito');
+        return redirect()->route('roles')->with('mensaje', 'Rol actualizado con exito');
     }
 
     /**
@@ -106,6 +109,7 @@ class RolesController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
+        can('eliminar-roles');
         if($request->ajax()){
             $rol = Roles::findOrFail($id);
             if($rol->RLS_Rol_Id == 0){

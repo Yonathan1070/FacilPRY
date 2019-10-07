@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Editar Perfil 
 @endsection
@@ -41,7 +41,7 @@ Editar Perfil
 
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane fade in active" id="actualizar">
-                                        <form class="form-horizontal" id="form_validation" action="{{route('actualizar_perfil_administrador')}}" method="POST">
+                                        <form class="form-horizontal" id="form_validation" action="{{route('actualizar_perfil')}}" method="POST">
                                             @csrf @method("put")
                                             <div class="form-group">
                                                 <label for="USR_Documento_Usuario" class="col-sm-3 control-label">Documento</label>
@@ -99,7 +99,7 @@ Editar Perfil
                                         </form>
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade in" id="cambio_clave">
-                                        <form class="form-horizontal" id="form_validation" action="{{route('actualizar_clave_administrador')}}" method="POST">
+                                        <form class="form-horizontal" id="form_validation" action="{{route('actualizar_clave')}}" method="POST">
                                             @csrf @method("put")
                                             <div class="form-group">
                                                 <label for="USR_Clave_Anterior" class="col-sm-4 control-label">Antigua Contraseña</label>
@@ -158,7 +158,7 @@ Editar Perfil
             form = new FormData();
             form.append('USR_Foto_Perfil', $('#USR_Foto_Perfil')[0].files[0]);
             jQuery.ajax({
-                url:"{{route('actualizar_foto_administrador')}}",
+                url:"{{route('actualizar_foto')}}",
                 headers: {
                     'X-CSRF-TOKEN': "{{csrf_token()}}"
                 },

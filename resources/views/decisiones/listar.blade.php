@@ -1,4 +1,4 @@
-@extends('theme.bsb.administrador.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Rol_Id')).'.layout')
 @section('titulo')
 Crud Desiciones
 @endsection
@@ -18,7 +18,7 @@ Crud Desiciones
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_decision_administrador')}}"><i
+                            <a class="btn btn-success waves-effect" href="{{route('crear_decision')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nueva Desición</a>
                         </li>
                     </ul>
@@ -48,11 +48,11 @@ Crud Desiciones
                                     <td>{{$decision->DCS_Rango_Inicio_Decision.' - '.$decision->DCS_Rango_Fin_Decision}}</td>
                                     <td>{{$decision->INDC_Nombre_Indicador}}</td>
                                     <td>
-                                        <a href="{{route('editar_decision_administrador', ['id'=>$decision->id])}}"
+                                        <a href="{{route('editar_decision', ['id'=>$decision->id])}}"
                                             class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                             <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                         </a>
-                                        <form action="{{route('eliminar_decision_administrador', ['id'=>$decision->id])}}"
+                                        <form action="{{route('eliminar_decision', ['id'=>$decision->id])}}"
                                             class="d-inline" method="POST">
                                             @csrf @method("delete")
                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"

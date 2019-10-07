@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Administrador;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +21,7 @@ class DecisionesController extends Controller
      */
     public function index()
     {
+        can('listar-decisiones');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -28,7 +29,7 @@ class DecisionesController extends Controller
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
         //$decisiones = Decisiones::orderBy('id')->get();
-        return view('administrador.decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad'));
+        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -38,11 +39,12 @@ class DecisionesController extends Controller
      */
     public function crear()
     {
+        can('crear-decisiones');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
-        return view('administrador.decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
+        return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
     }
 
     public function totalIndicador($id){
@@ -110,12 +112,13 @@ class DecisionesController extends Controller
      */
     public function editar($id)
     {
+        can('editar-desiciones');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $indicadores = Indicadores::orderBy('id')->get();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
-        return view('administrador.decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad'));
+        return view('decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -168,6 +171,7 @@ class DecisionesController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
+        can('eliminar-decisiones');
         try{
             Decisiones::destroy($id);
             return redirect()->back()->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
