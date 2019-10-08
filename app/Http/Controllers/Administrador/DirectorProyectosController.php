@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\UsuariosRoles;
 use App\Models\Utilitarios\Correo;
 use Illuminate\Support\Facades\DB;
@@ -60,29 +62,32 @@ class DirectorProyectosController extends Controller
         Usuarios::crearUsuario($request);
         $director = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         UsuariosRoles::asignarRol(2, $director->id);
+        MenuUsuario::asignarMenuDirector($director->id);
+        PermisoUsuario::asignarPermisosDirector($director->id);
 
         Mail::send('general.correo.bienvenida', [
-            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
+            'nombre' => $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'],
+            'username' => $request['USR_Nombre_Usuario']
+        ], function ($message) use ($request) {
             $message->from('yonathancam1997@gmail.com', 'FacilPRY');
             $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
-                ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
+                ->subject('Bienvenido ' . $request['USR_Nombres_Usuario']);
         });
-        
+
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, verifique sus datos.',
+            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a FacilPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
             $director->id,
-            'perfil_director',
+            'perfil',
             null,
             null,
             'account_circle'
         );
-        
+
         if (Mail::failures()) {
             return redirect()->back()->withErrors('Director de Proyectos agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
         }
-        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
+        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que ' . $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'] . ' revise su correo electrónico');
     }
 
     /**
@@ -109,21 +114,12 @@ class DirectorProyectosController extends Controller
      */
     public function actualizar(ValidacionUsuario $request, $id)
     {
-        Usuarios::findOrFail($id)->update([
-            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
-            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
-            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
-            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
-            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
-            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
-            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
-        ]);
+        Usuarios::editarUsuario($request, $id);
         Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', sus datos fueron actualizados',
+            $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', sus datos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
-            'perfil_director',
+            'perfil',
             null,
             null,
             'update'
@@ -139,11 +135,13 @@ class DirectorProyectosController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
-        try{
-            Usuarios::destroy($id);
-            return redirect()->back()->with('mensaje', 'Director de proyectos eliminado satisfactoriamente.');
-        }catch(QueryException $e){
-            return redirect()->back()->withErrors(['Director de Proyectos está siendo usado por otro recurso.']);
+        if ($request->ajax()) {
+            try {
+                Usuarios::destroy($id);
+                return response()->json(['mensaje' => 'ok']);
+            } catch (QueryException $e) {
+                return response()->json(['mensaje' => 'ng']);
+            }
         }
     }
 }

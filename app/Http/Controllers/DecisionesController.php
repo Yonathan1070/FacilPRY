@@ -47,16 +47,17 @@ class DecisionesController extends Controller
         return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
     }
 
-    public function totalIndicador($id){
+    public function totalIndicador($id)
+    {
         $indicador = Indicadores::findOrFail($id);
         $diferencia = DB::table('TBL_Decisiones')
             ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
             ->where('DSC_Indicador_Id', '=', $id)
             ->groupBy('id')
             ->get();
-        $total=0;
+        $total = 0;
         foreach ($diferencia as $dif) {
-            $total = $total+$dif->diferencia;
+            $total = $total + $dif->diferencia;
         }
         $dato = new stdClass();
         $dato->total = $total;
@@ -79,24 +80,28 @@ class DecisionesController extends Controller
             ->where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)
             ->groupBy('id')
             ->get();
-        $total=0;
+        $total = 0;
         foreach ($diferencia as $dif) {
-            $total = $total+$dif->diferencia;
+            $total = $total + $dif->diferencia;
         }
-        if(((int)$request->DCS_Rango_Fin_Decision-(int)$request->DCS_Rango_Inicio_Decision)+$total > 100){
+        if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
             return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
         }
         $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')->get();
         foreach ($decisiones as $decision) {
-            if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
-                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision){
+            if (
+                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
+                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision
+            ) {
                 return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
             }
-            if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
-                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision){
+            if (
+                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
+                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
+            ) {
                 return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
             }
-            if($decision->DSC_Nombre_Decision == $request->DSC_Nombre_Decision){
+            if ($decision->DSC_Nombre_Decision == $request->DSC_Nombre_Decision) {
                 return redirect()->back()->withErrors('La desición ya está registrada en el sistema')->withInput();
             }
         }
@@ -139,28 +144,32 @@ class DecisionesController extends Controller
             ->where('id', '<>', $id)
             ->groupBy('id')
             ->get();
-        $total=0;
+        $total = 0;
         foreach ($diferencia as $dif) {
-            $total = $total+$dif->diferencia;
+            $total = $total + $dif->diferencia;
         }
-        if(((int)$request->DCS_Rango_Fin_Decision-(int)$request->DCS_Rango_Inicio_Decision)+$total > 100){
+        if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
             return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
         }
         $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)
             ->where('id', '<>', $id)
             ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision')->get();
         foreach ($decisiones as $decision) {
-            if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
-                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision){
+            if (
+                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
+                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision
+            ) {
                 return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
             }
-            if($decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
-                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision){
+            if (
+                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
+                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
+            ) {
                 return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
             }
         }
         Decisiones::findOrFail($id)->update($request->all());
-        return redirect()->route('decisiones_administrador')->with('mensaje', 'Decisión actualizada con exito');
+        return redirect()->route('decisiones')->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
@@ -171,12 +180,17 @@ class DecisionesController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
-        can('eliminar-decisiones');
-        try{
-            Decisiones::destroy($id);
-            return redirect()->back()->with('mensaje', 'La Decisión fue eliminada satisfactoriamente.');
-        }catch(QueryException $e){
-            return redirect()->back()->withErrors(['La Decision está siendo usada por otro recurso.']);
+        if (!can('eliminar-decisiones')) {
+            return response()->json(['mensaje' => 'np']);
+        } else {
+            if ($request->ajax()) {
+                try {
+                    Decisiones::destroy($id);
+                    return response()->json(['mensaje' => 'ok']);
+                } catch (QueryException $e) {
+                    return response()->json(['mensaje' => 'ng']);
+                }
+            }
         }
     }
 }

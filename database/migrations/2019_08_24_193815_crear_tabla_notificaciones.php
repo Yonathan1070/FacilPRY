@@ -20,10 +20,10 @@ class CrearTablaNotificaciones extends Migration
             $table->foreign('NTF_De', 'FK_Notificaciones_Usuarios_De')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('NTF_Para');
             $table->foreign('NTF_Para', 'FK_Notificaciones_Usuarios_Para')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
-            $table->date('NTF_Fecha');
-            $table->text('NTF_Route');
-            $table->string('NTF_Parametro', 50);
-            $table->bigInteger('NTF_Valor_Parametro');
+            $table->dateTime('NTF_Fecha');
+            $table->text('NTF_Route')->nullable();
+            $table->string('NTF_Parametro', 50)->nullable();
+            $table->bigInteger('NTF_Valor_Parametro')->nullable();
             $table->boolean('NTF_Estado');
             $table->string('NTF_Icono', 40);
             $table->timestamps();

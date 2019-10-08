@@ -23,7 +23,7 @@ class RolesController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::orderBy('id')->get();
+        $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
         return view('roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad'));
     }
 
@@ -109,17 +109,20 @@ class RolesController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
-        can('eliminar-roles');
-        if($request->ajax()){
-            $rol = Roles::findOrFail($id);
-            if($rol->RLS_Rol_Id != 6){
-                return response()->json(['mensaje' => 'rd']);
-            }else{
-                try{
-                    Roles::destroy($id);
-                    return response()->json(['mensaje' => 'ok']);
-                }catch(QueryException $e){
-                    return response()->json(['mensaje' => 'ng']);
+        if(!can('eliminar-roles')){
+            return response()->json(['mensaje' => 'np']);
+        }else{
+            if($request->ajax()){
+                $rol = Roles::findOrFail($id);
+                if($rol->RLS_Rol_Id != 6){
+                    return response()->json(['mensaje' => 'rd']);
+                }else{
+                    try{
+                        Roles::destroy($id);
+                        return response()->json(['mensaje' => 'ok']);
+                    }catch(QueryException $e){
+                        return response()->json(['mensaje' => 'ng']);
+                    }
                 }
             }
         }

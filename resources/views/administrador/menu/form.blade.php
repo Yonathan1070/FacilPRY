@@ -7,16 +7,23 @@
         </div>
     </div>
 </div>
-<div class="col-lg-11">
-    <div class="form-group form-float">
-        <div class="form-line">
-            <input type="text" class="form-control" name="MN_Nombre_Ruta_Menu" id="MN_Nombre_Ruta_Menu"
-                value="{{old('MN_Nombre_Ruta_Menu', $menu->MN_Nombre_Ruta_Menu ?? '')}}" maxlength="60" required
-                onkeyup="route()">
-            <label class="form-label">Nombre de Ruta</label>
+
+    <div class="col-lg-11">
+        <div class="form-group form-float">
+            <div class="form-line">
+                @if (Request::route()->getName() == 'editar_menu')
+                    <input type="text" class="form-control" name="MN_Nombre_Ruta_Menu" id="MN_Nombre_Ruta_Menu"
+                        value="{{old('MN_Nombre_Ruta_Menu', $menu->MN_Nombre_Ruta_Menu ?? '')}}" maxlength="60" required
+                        onkeyup="route()" readonly="true">
+                @else
+                    <input type="text" class="form-control" name="MN_Nombre_Ruta_Menu" id="MN_Nombre_Ruta_Menu"
+                        value="{{old('MN_Nombre_Ruta_Menu', $menu->MN_Nombre_Ruta_Menu ?? '')}}" maxlength="60" required
+                        onkeyup="route()">
+                @endif
+                <label class="form-label">Nombre de Ruta</label>
+            </div>
         </div>
     </div>
-</div>
 <div class="col-lg-11">
     <div class="form-group form-float">
         <div class="form-line">

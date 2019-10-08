@@ -28,6 +28,8 @@ $(document).ready(function () {
                     FacilPry.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
                 } else if (respuesta.mensaje == "rd") {
                     FacilPry.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'FacilPRY', 'error');
+                } else if (respuesta.mensaje == "np") {
+                    FacilPry.notificaciones('No tiene permisos para entrar en este modulo.', 'FacilPRY', 'error');
                 } else {
                     FacilPry.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
                 }

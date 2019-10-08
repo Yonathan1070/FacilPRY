@@ -20,8 +20,8 @@ if (!function_exists('canUser')) {
             if ($permisos == null) {
                 if ($redirect) {
                     if (!request()->ajax())
-                        return redirect()->back()->with('mensaje', 'No tiene permisos para entrar en este modulo')->send();
-                    abort(403, 'No tiene permiso');
+                        return false;
+                    return false;
                 } else {
                     return false;
                 }

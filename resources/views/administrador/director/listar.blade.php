@@ -50,12 +50,12 @@ Crud Director de Proyectos
                             <td>{{$director->USR_Telefono_Usuario}}</td>
                             <td>{{$director->USR_Nombre_Usuario}}</td>
                             <td>
-                                <a href="{{route('editar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"
-                                    class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                    <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                </a>
-                                <form action="{{route('eliminar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"
+                                <form class="form-eliminar" action="{{route('eliminar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"
                                     class="d-inline" method="POST">
+                                    <a href="{{route('editar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"
+                                        class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                        <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                    </a>
                                     @csrf @method("delete")
                                     <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
                                         data-type="confirm" title="Eliminar este registro">

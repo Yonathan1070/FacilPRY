@@ -26,7 +26,7 @@ Crud Desiciones
                 <div class="body table-responsive">
                     @if (count($decisiones)<=0) <div class="alert alert-warning">
                         <strong>Advertencia!</strong> El sistema no cuenta con Decisiones agregadas
-                        <a href="{{route('crear_decision_administrador')}}" class="alert-link">Clic aquí para
+                        <a href="{{route('crear_decision')}}" class="alert-link">Clic aquí para
                             agregar!</a>.
                         </div>
                     @else
@@ -48,12 +48,12 @@ Crud Desiciones
                                     <td>{{$decision->DCS_Rango_Inicio_Decision.' - '.$decision->DCS_Rango_Fin_Decision}}</td>
                                     <td>{{$decision->INDC_Nombre_Indicador}}</td>
                                     <td>
-                                        <a href="{{route('editar_decision', ['id'=>$decision->id])}}"
-                                            class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                        </a>
-                                        <form action="{{route('eliminar_decision', ['id'=>$decision->id])}}"
+                                        <form class="form-eliminar" action="{{route('eliminar_decision', ['id'=>$decision->id])}}"
                                             class="d-inline" method="POST">
+                                            <a href="{{route('editar_decision', ['id'=>$decision->id])}}"
+                                                class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                            </a>
                                             @csrf @method("delete")
                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
                                                 title="Eliminar este registro">
