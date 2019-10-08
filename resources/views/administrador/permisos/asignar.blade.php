@@ -23,7 +23,7 @@ Sistema de Permisos
                             No hay datos que mostrar
                         </div>
                     @else
-                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
                             <thead>
                                 <tr>
                                     <th>Rol</th>
@@ -63,7 +63,7 @@ Sistema de Permisos
                             No hay datos que mostrar
                         </div>
                     @else
-                        <table class="table table-striped table-bordered table-hover" id="tabla-data">
+                        <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
                             <thead>
                                 <tr>
                                     <th>Permiso</th>

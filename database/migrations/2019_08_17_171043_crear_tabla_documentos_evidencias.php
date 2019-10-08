@@ -18,6 +18,8 @@ class CrearTablaDocumentosEvidencias extends Migration
             $table->foreign('DOC_Actividad_Id', 'FK_Documentos_Evidencias_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
             $table->text('ACT_Documento_Evidencia_Actividad')->nullable();
             $table->timestamps();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_spanish_ci';
         });
     }
 

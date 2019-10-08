@@ -15,7 +15,7 @@ class CrearTablaMenuUsuario extends Migration
     {
         Schema::create('TBL_Menu_Usuario', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('MN_USR_Rol_Id');
+            $table->unsignedBigInteger('MN_USR_Usuario_Id');
             $table->foreign('MN_USR_Usuario_Id', 'FK_Menu_Usuario_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('MN_USR_Menu_Id');
             $table->foreign('MN_USR_Menu_Id', 'FK_Menu_Usuario_Menu')->references('id')->on('TBL_Menu')->onDelete('cascade')->onUpdate('restrict');

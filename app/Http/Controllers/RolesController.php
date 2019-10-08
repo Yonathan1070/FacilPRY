@@ -76,7 +76,7 @@ class RolesController extends Controller
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
-        if($rol->RLS_Rol_Id == 0)
+        if($rol->RLS_Rol_Id != 6)
             return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         return view('roles.editar', compact('rol', 'datos', 'notificaciones', 'cantidad'));
     }
@@ -112,7 +112,7 @@ class RolesController extends Controller
         can('eliminar-roles');
         if($request->ajax()){
             $rol = Roles::findOrFail($id);
-            if($rol->RLS_Rol_Id == 0){
+            if($rol->RLS_Rol_Id != 6){
                 return response()->json(['mensaje' => 'rd']);
             }else{
                 try{

@@ -28,6 +28,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'INDC_Nombre_Indicador' => 'Productividad',
             'INDC_Descripcion_Indicador' => 'Algo',
         ]);
+
         //Agregar Estados
         DB::table('TBL_Estados')->insert([
             'EST_Nombre_Estado' => 'En Proceso'
@@ -63,7 +64,6 @@ class UsuarioAdministradorSeeder extends Seeder
             'EST_Nombre_Estado' => 'En Cobro'
         ]);
 
-
         //Agregar Empresa
         DB::table('TBL_Empresas')->insert([
             'EMP_Nombre_Empresa' => 'INK Agencia Digital',
@@ -73,7 +73,243 @@ class UsuarioAdministradorSeeder extends Seeder
             'EMP_Correo_Empresa' => 'inkdigital@gmail.com',
             'EMP_Logo_Empresa' => '1565140718.png',
         ]);
-        //Agregar Usuarios
+
+        //Agregar Menús Iniciales
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Administrador',
+            'MN_Nombre_Ruta_Menu' => 'inicio_administrador',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Menu',
+            'MN_Nombre_Ruta_Menu' => 'menu',
+            'MN_Orden_Menu' => 5,
+            'MN_Icono_Menu' => 'list'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Director de Proyectos',
+            'MN_Nombre_Ruta_Menu' => 'directores_administrador',
+            'MN_Orden_Menu' => 2,
+            'MN_Icono_Menu' => 'insert_chart'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Roles',
+            'MN_Nombre_Ruta_Menu' => 'roles',
+            'MN_Orden_Menu' => 4,
+            'MN_Icono_Menu' => 'accessibility'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Permisos',
+            'MN_Nombre_Ruta_Menu' => 'asignar_rol_administrador',
+            'MN_Orden_Menu' => 6,
+            'MN_Icono_Menu' => 'assignment_ind'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Director',
+            'MN_Nombre_Ruta_Menu' => 'inicio_director',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Perfil de Operación',
+            'MN_Nombre_Ruta_Menu' => 'perfil_operacion_director',
+            'MN_Orden_Menu' => 2,
+            'MN_Icono_Menu' => 'account_circle'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Clientes',
+            'MN_Nombre_Ruta_Menu' => 'clientes',
+            'MN_Orden_Menu' => 3,
+            'MN_Icono_Menu' => 'account_circle'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Proyectos',
+            'MN_Nombre_Ruta_Menu' => 'proyectos',
+            'MN_Orden_Menu' => 4,
+            'MN_Icono_Menu' => 'note_add'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Decisiones',
+            'MN_Nombre_Ruta_Menu' => 'decisiones',
+            'MN_Orden_Menu' => 3,
+            'MN_Icono_Menu' => 'record_voice_over'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Cobros',
+            'MN_Nombre_Ruta_Menu' => 'cobros',
+            'MN_Orden_Menu' => 5,
+            'MN_Icono_Menu' => 'attach_money'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Perfil Operación',
+            'MN_Nombre_Ruta_Menu' => 'inicio_perfil_operacion',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Actividades',
+            'MN_Nombre_Ruta_Menu' => 'actividades_perfil_operacion',
+            'MN_Orden_Menu' => 2,
+            'MN_Icono_Menu' => 'toc'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Tester',
+            'MN_Nombre_Ruta_Menu' => 'inicio_tester',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Cliente',
+            'MN_Nombre_Ruta_Menu' => 'inicio_cliente',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Aprobar Actividades',
+            'MN_Nombre_Ruta_Menu' => 'actividades_cliente',
+            'MN_Orden_Menu' => 2,
+            'MN_Icono_Menu' => 'toc'
+        ]);
+        DB::table('TBL_Menu')->insert([
+            'MN_Nombre_Menu' => 'Inicio Finanzas',
+            'MN_Nombre_Ruta_Menu' => 'inicio_finanzas',
+            'MN_Orden_Menu' => 1,
+            'MN_Icono_Menu' => 'home'
+        ]);
+
+        //Agregar Permisos Iniciales
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Actividades',
+            'PRM_Slug_Permiso' => 'listar-actividades'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Actividades',
+            'PRM_Slug_Permiso' => 'crear-actividades'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Actividades',
+            'PRM_Slug_Permiso' => 'editar-actividades'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Actividades',
+            'PRM_Slug_Permiso' => 'eliminar-actividades'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Clientes',
+            'PRM_Slug_Permiso' => 'listar-clientes'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Clientes',
+            'PRM_Slug_Permiso' => 'crear-clientes'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Clientes',
+            'PRM_Slug_Permiso' => 'editar-clientes'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Clientes',
+            'PRM_Slug_Permiso' => 'eliminar-clientes'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Cobros',
+            'PRM_Slug_Permiso' => 'listar-cobros'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Decisiones',
+            'PRM_Slug_Permiso' => 'listar-decisiones'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Decisiones',
+            'PRM_Slug_Permiso' => 'crear-decisiones'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Decisiones',
+            'PRM_Slug_Permiso' => 'editar-decisiones'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Decisiones',
+            'PRM_Slug_Permiso' => 'eliminar-decisiones'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Perfil',
+            'PRM_Slug_Permiso' => 'editar-perfil'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Proyectos',
+            'PRM_Slug_Permiso' => 'listar-proyectos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Proyectos',
+            'PRM_Slug_Permiso' => 'crear-proyectos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Requerimientos',
+            'PRM_Slug_Permiso' => 'listar-requerimientos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Requerimientos',
+            'PRM_Slug_Permiso' => 'crear-requerimientos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Requerimientos',
+            'PRM_Slug_Permiso' => 'editar-requerimientos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Requerimientos',
+            'PRM_Slug_Permiso' => 'eliminar-requerimientos'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Roles',
+            'PRM_Slug_Permiso' => 'listar-roles'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Roles',
+            'PRM_Slug_Permiso' => 'crear-roles'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Roles',
+            'PRM_Slug_Permiso' => 'editar-roles'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Roles',
+            'PRM_Slug_Permiso' => 'eliminar-roles'
+        ]);
+
+        //Crear Roles Iniciales
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Administrador',
+            'RLS_Descripcion_Rol' => 'Super Admin del sistema',
+            'RLS_Empresa_Id' => 1
+        ]);
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Director de Proyectos',
+            'RLS_Descripcion_Rol' => 'Encargado del perfil de operación',
+            'RLS_Empresa_Id' => 1
+        ]);
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Finanzas',
+            'RLS_Descripcion_Rol' => 'Pertence al area financiera de la compañía',
+            'RLS_Empresa_Id' => 1
+        ]);
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Tester',
+            'RLS_Descripcion_Rol' => 'Encargado de realizar las pruebas a los Proyectos',
+            'RLS_Empresa_Id' => 1
+        ]);
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Cliente',
+            'RLS_Descripcion_Rol' => 'Cliente que adquiere servicios de la compañía',
+            'RLS_Empresa_Id' => 1
+        ]);
+        DB::table('TBL_Roles')->insert([
+            'RLS_Nombre_Rol' => 'Perfil de Operación',
+            'RLS_Descripcion_Rol' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.',
+            'RLS_Empresa_Id' => 1
+        ]);
+
+
+        //Agregar Usuario Administrador
         DB::table('TBL_Usuarios')->insert([
             'USR_Tipo_Documento_Usuario' => 'Cedula',
             'USR_Documento_Usuario' => '1070979976',
@@ -89,47 +325,39 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Supervisor_Id' => 0,
             'USR_Empresa_Id' => 1
         ]);
-
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Administrador',
-            'RLS_Descripcion_Rol' => 'Super Admin del sistema',
-            'RLS_Empresa_Id' => 1
-        ]);
-
+        //Asignar Rol
         DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 1,
             'USR_RLS_Usuario_Id' => 1,
             'USR_RLS_Estado' => 1
         ]);
-
-        DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula',
-            'USR_Documento_Usuario' => '1070954014',
-            'USR_Nombres_Usuario' => 'Edison',
-            'USR_Apellidos_Usuario'  => 'Mendez',
-            'USR_Fecha_Nacimiento_Usuario' => '1989/06/03',
-            'USR_Direccion_Residencia_Usuario' => 'Calle 5 # 13-18',
-            'USR_Telefono_Usuario' => '3108666902',
-            'USR_Correo_Usuario' => 'edialimenni@hotmail.com',
-            'USR_Nombre_Usuario' => 'edison',
-            'password' => bcrypt('edison'),
-            'USR_Foto_Perfil_Usuario' => '1565094989.png',
-            'USR_Supervisor_Id' => 1,
-            'USR_Empresa_Id' => 1
+        //Asignar Menú
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 1
+        ]);
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 3
+        ]);
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 10
+        ]);
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 4
+        ]);
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 2
+        ]);
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 1,
+            'MN_USR_Menu_Id' => 5
         ]);
 
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Director de Proyectos',
-            'RLS_Descripcion_Rol' => 'Encargado del perfil de operación',
-            'RLS_Empresa_Id' => 1
-        ]);
-
-        DB::table('TBL_Usuarios_Roles')->insert([
-            'USR_RLS_Rol_Id' => 2,
-            'USR_RLS_Usuario_Id' => 2,
-            'USR_RLS_Estado' => 1
-        ]);
-
+        //Agregar Usuario Financiero
         DB::table('TBL_Usuarios')->insert([
             'USR_Tipo_Documento_Usuario' => 'Cedula',
             'USR_Documento_Usuario' => '35526078',
@@ -145,19 +373,19 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
-
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Finanzas',
-            'RLS_Descripcion_Rol' => 'Pertence al area financiera de la compañía',
-            'RLS_Empresa_Id' => 1
-        ]);
-
+        //Asignar Rol
         DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 3,
-            'USR_RLS_Usuario_Id' => 3,
+            'USR_RLS_Usuario_Id' => 2,
             'USR_RLS_Estado' => 1
         ]);
+        //Asignar Menú
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 2,
+            'MN_USR_Menu_Id' => 17
+        ]);
 
+        //Agregar Usuario Tester
         DB::table('TBL_Usuarios')->insert([
             'USR_Tipo_Documento_Usuario' => 'Cedula',
             'USR_Documento_Usuario' => '80393256',
@@ -173,51 +401,16 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
-
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Tester',
-            'RLS_Descripcion_Rol' => 'Encargado de realizar las pruebas a los Proyectos',
-            'RLS_Empresa_Id' => 1
-        ]);
-
+        //Asignar Rol
         DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 4,
-            'USR_RLS_Usuario_Id' => 4,
+            'USR_RLS_Usuario_Id' => 3,
             'USR_RLS_Estado' => 1
         ]);
-
-        DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula',
-            'USR_Documento_Usuario' => '97021021982',
-            'USR_Nombres_Usuario' => 'Camilo',
-            'USR_Apellidos_Usuario'  => 'Rincon',
-            'USR_Fecha_Nacimiento_Usuario' => '1989/06/06',
-            'USR_Direccion_Residencia_Usuario' => 'Calle 5 # 13-18',
-            'USR_Telefono_Usuario' => '3183684338',
-            'USR_Correo_Usuario' => 'camyonathan@hotmail.com',
-            'USR_Nombre_Usuario' => 'potrillo',
-            'password' => bcrypt('potrillo'),
-            'USR_Foto_Perfil_Usuario' => '1565143051.png',
-            'USR_Supervisor_Id' => 2,
-            'USR_Empresa_Id' => 1
-        ]);
-
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Cliente',
-            'RLS_Descripcion_Rol' => 'Cliente que adquiere servicios de la compañía',
-            'RLS_Empresa_Id' => 1
-        ]);
-
-        DB::table('TBL_Usuarios_Roles')->insert([
-            'USR_RLS_Rol_Id' => 5,
-            'USR_RLS_Usuario_Id' => 5,
-            'USR_RLS_Estado' => 1
-        ]);
-
-        DB::table('TBL_Roles')->insert([
-            'RLS_Nombre_Rol' => 'Perfil de Operación',
-            'RLS_Descripcion_Rol' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.',
-            'RLS_Empresa_Id' => 1
+        //Asignar Menú
+        DB::table('TBL_Menu_Usuario')->insert([
+            'MN_USR_Usuario_Id' => 3,
+            'MN_USR_Menu_Id' => 14
         ]);
     }
 }

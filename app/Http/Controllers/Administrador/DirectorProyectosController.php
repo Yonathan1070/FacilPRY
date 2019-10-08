@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\UsuariosRoles;
+use App\Models\Utilitarios\Correo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Mail;
@@ -56,26 +57,9 @@ class DirectorProyectosController extends Controller
      */
     public function guardar(ValidacionUsuario $request)
     {
-        Usuarios::create([
-            'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
-            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
-            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
-            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
-            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
-            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
-            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
-            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
-            'password' => bcrypt($request['USR_Nombre_Usuario']),
-            'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => session()->get('Empresa_Id')
-        ]);
-        $director = Usuarios::where('USR_Documento_Usuario', '=', $request['USR_Documento_Usuario'])->first();
-        UsuariosRoles::create([
-            'USR_RLS_Rol_Id' => 2,
-            'USR_RLS_Usuario_Id' => $director->id,
-            'USR_RLS_Estado' => 1
-        ]);
+        Usuarios::crearUsuario($request);
+        $director = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
+        UsuariosRoles::asignarRol(2, $director->id);
 
         Mail::send('general.correo.bienvenida', [
             'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
@@ -84,20 +68,21 @@ class DirectorProyectosController extends Controller
             $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
                 ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
         });
-        if (Mail::failures()) {
-            return redirect()->back()->withErrors('Error al envíar el correo.');
-        }
-        $datosU = Usuarios::orderByDesc('created_at')->first();
+        
         Notificaciones::crearNotificacion(
             'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
-            $datosU->id,
+            $director->id,
             'perfil_director',
             null,
             null,
             'account_circle'
         );
-        return redirect()->route('perfil_operacion_director')->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
+        
+        if (Mail::failures()) {
+            return redirect()->back()->withErrors('Director de Proyectos agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
+        }
+        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que '.$request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'].' revise su correo electrónico');
     }
 
     /**

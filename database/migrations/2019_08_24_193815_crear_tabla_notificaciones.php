@@ -23,10 +23,12 @@ class CrearTablaNotificaciones extends Migration
             $table->date('NTF_Fecha');
             $table->text('NTF_Route');
             $table->string('NTF_Parametro', 50);
-            $table->bigIncrements('NTF_Valor_Parametro');
+            $table->bigInteger('NTF_Valor_Parametro');
             $table->boolean('NTF_Estado');
             $table->string('NTF_Icono', 40);
             $table->timestamps();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_spanish_ci';
         });
     }
 

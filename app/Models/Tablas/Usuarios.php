@@ -3,6 +3,7 @@
 namespace App\Models\Tablas;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 
 class Usuarios extends Authenticatable
@@ -39,5 +40,26 @@ class Usuarios extends Authenticatable
                 'Empresa_Id' => $this->USR_Empresa_Id
             ]);
         }
+    }
+
+    public static function crearUsuario($request){
+        Usuarios::create([
+            'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
+            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
+            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
+            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
+            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
+            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
+            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
+            'password' => bcrypt($request['USR_Nombre_Usuario']),
+            'USR_Supervisor_Id' => session()->get('Usuario_Id'),
+            'USR_Empresa_Id' => session()->get('Empresa_Id')
+        ]);
+    }
+
+    public static function obtenerUsuario($documento){
+        return Usuarios::where('USR_Documento_Usuario', '=', $documento)->first();
     }
 }

@@ -20,7 +20,6 @@ class CrearTablaUsuariosRoles extends Migration
             $table->unsignedBigInteger('USR_RLS_Usuario_Id');
             $table->foreign('USR_RLS_Usuario_Id', 'FK_Usuarios_Roles_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->boolean('USR_RLS_Estado');
-            $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
         });
