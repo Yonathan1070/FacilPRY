@@ -49,9 +49,6 @@ Actividades
                                                             <th>Descripción</th>
                                                             <th>Fecha de Entrega</th>
                                                             @foreach ($actividadesProceso as $actividad)
-                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
-                                                                    <th>Observación</th>
-                                                                @endif
                                                                 @if ($actividad->Horas != 0)
                                                                     <th>Horas Asignadas</th>
                                                                 @endif
@@ -66,10 +63,7 @@ Actividades
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                                <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
-                                                                @if ($actividad->ACT_FIN_Estado_Id == 6)
-                                                                    <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                @endif
+                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
                                                                 @if ($actividad->Horas != 0)
                                                                     <td>{{$actividad->Horas}}</td>
                                                                 @else

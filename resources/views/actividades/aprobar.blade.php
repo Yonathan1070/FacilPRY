@@ -1,4 +1,4 @@
-@extends('theme.bsb.director.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Crud Actividades
 @endsection
@@ -120,7 +120,7 @@ Crud Actividades
                         $.ajax({
                             dataType: "json",
                             method: "get",
-                            url: "/director/actividades/" + idActividad +"/terminar-aprobacion",
+                            url: "/actividades/" + idActividad +"/terminar-aprobacion",
                             success:function(data){
                                 if(data.msg == "exito")
                                     document.location.href="{!! route('inicio_director'); !!}";

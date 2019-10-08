@@ -29,7 +29,6 @@ class ActividadesController extends Controller
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesProceso = $this->actividadesProceso();
         foreach ($actividadesProceso as $actividad) {
@@ -66,7 +65,7 @@ class ActividadesController extends Controller
             return redirect()->route('actividades_perfil_operacion')->withErrors('Ya se asignaron horas de trabajo a la Actividad.');
         $hoy = Carbon::now();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('perfiloperacion/actividades/asignacion', compact('id', 'actividades', 'datos', 'notificaciones', 'cantidad'));
+        return view('perfiloperacion.actividades.asignacion', compact('id', 'actividades', 'datos', 'notificaciones', 'cantidad'));
     }
 
     public function guardarHoras(Request $request, $id)
@@ -104,7 +103,7 @@ class ActividadesController extends Controller
                 $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' se ha asignado sus horas de trabajo',
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                'aprobar_horas_actividad_director',
+                'aprobar_horas_actividad',
                 'idH',
                 $id,
                 'alarm'
@@ -207,9 +206,8 @@ class ActividadesController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
-            ->rightjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id', 'ASC')
