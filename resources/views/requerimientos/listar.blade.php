@@ -2,6 +2,9 @@
 @section('titulo')
 Crud Requerimientos
 @endsection
+@section("scripts")
+<script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <div class="row clearfix">
@@ -46,10 +49,10 @@ Crud Requerimientos
                                     <td>{{$requerimiento->REQ_Nombre_Requerimiento}}</td>
                                     <td>{{$requerimiento->REQ_Descripcion_Requerimiento}}</td>
                                     <td>
-                                        <a href="{{route('editar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                        </a>
-                                        <form action="{{route('eliminar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="d-inline" method="POST">
+                                        <form class="form-eliminar" action="{{route('eliminar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="d-inline" method="POST">
+                                            <a href="{{route('editar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                            </a>
                                             @csrf @method("delete")
                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
                                                 <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>

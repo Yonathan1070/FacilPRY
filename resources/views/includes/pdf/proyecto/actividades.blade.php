@@ -53,7 +53,7 @@
                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                 <td>{{$actividad->EST_Nombre_Estado}}</td>
-                                <td>{{$actividad->ACT_Fecha_Inicio_Actividad.' - '.$actividad->ACT_Fecha_Fin_Actividad}}</td>
+                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Inicio_Actividad)->format('d/m/Y').' - '.\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
                                 <td>{{$actividad->NombreT.' '.$actividad->ApellidoT}}</td>
                             </tr>
                         @endforeach

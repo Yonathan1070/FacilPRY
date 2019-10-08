@@ -25,6 +25,18 @@ class MenuUsuario extends Model
         MenuUsuario::asignarCobros($id);
     }
 
+    public static function asignarMenuPerfilOperacion($id)
+    {
+        MenuUsuario::asignarInicioPerfilOperacion($id);
+        MenuUsuario::asignarActividades($id);
+    }
+
+    public static function asignarMenuCliente($id)
+    {
+        MenuUsuario::asignarInicioCliente($id);
+        MenuUsuario::asignarAprobarActividades($id);
+    }
+
     public static function asignarInicioAdministrador($id)
     {
         MenuUsuario::create([

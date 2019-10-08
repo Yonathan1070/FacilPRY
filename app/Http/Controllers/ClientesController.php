@@ -8,7 +8,9 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ClientesController extends Controller
@@ -57,40 +59,23 @@ class ClientesController extends Controller
      */
     public function guardar(ValidacionUsuario $request)
     {
-        Usuarios::create([
-            'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
-            'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
-            'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
-            'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
-            'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
-            'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
-            'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
-            'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
-            'password' => bcrypt($request['USR_Nombre_Usuario']),
-            'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => $request->id
-        ]);
-        $cliente = Usuarios::where("USR_Documento_Usuario","=",$request['USR_Documento_Usuario'])->first();
-        UsuariosRoles::create([
-            'USR_RLS_Rol_Id' => 5,
-            'USR_RLS_Usuario_Id' => $cliente->id,
-            'USR_RLS_Estado' => 1
-        ]);
+        Usuarios::crearUsuario($request);
+        $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
+        UsuariosRoles::asignarRol(5, $cliente->id);
+        MenuUsuario::asignarMenuCliente($cliente->id);
+
         Mail::send('general.correo.bienvenida', [
-            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
+            'nombre' => $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'],
+            'username' => $request['USR_Nombre_Usuario']
+        ], function ($message) use ($request) {
             $message->from('yonathancam1997@gmail.com', 'FacilPRY');
             $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
-                ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
+                ->subject('Bienvenido ' . $request['USR_Nombres_Usuario']);
         });
-        if (Mail::failures()) {
-            return redirect()->back()->withErrors('Error al envíar el correo.');
-        }
+
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $datosU = Usuarios::orderByDesc('created_at')->first();
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
+            $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha creado el usuario ' . $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
             null,
@@ -99,14 +84,17 @@ class ClientesController extends Controller
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, revise sus datos.',
+            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a FacilPRY, revise sus datos.',
             session()->get('Usuario_Id'),
-            $datosU->id,
-            'perfil_cliente',
+            $cliente->id,
+            'perfil',
             null,
             null,
             'account_circle'
         );
+        if (Mail::failures()) {
+            return redirect()->back()->withErrors('Cliente agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
+        }
         return redirect()->back()->with('mensaje', 'Cliente agregado con exito');
     }
 
@@ -147,8 +135,9 @@ class ClientesController extends Controller
     public function actualizar(ValidacionUsuario $request, $id)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Usuarios::editarUsuario($request, $id);
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha actualizado los datos de '.$request->USR_Nombres_Usuario,
+            $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha actualizado los datos de ' . $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
             null,
@@ -157,16 +146,15 @@ class ClientesController extends Controller
             'update'
         );
         Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', susdatos fueron actualizados',
+            $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', susdatos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
-            'perfil_cliente',
+            'perfil',
             null,
             null,
             'update'
         );
-        Usuarios::findOrFail($id)->update($request->all());
-        return redirect()->route('clientes_director')->with('mensaje', 'Cliente actualizado con exito');
+        return redirect()->route('clientes')->with('mensaje', 'Cliente actualizado con exito');
     }
 
     /**
@@ -175,25 +163,30 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($id)
+    public function eliminar(Request $request, $id)
     {
-        can('eliminar-clientes');
-        try{
-            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            $datosU = Usuarios::findOrFail($id);
-            Notificaciones::crearNotificacion(
-                $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado al usuario '.$datosU->USR_Nombres_Usuario,
-                session()->get('Usuario_Id'),
-                $datos->USR_Supervisor_Id,
-                null,
-                null,
-                null,
-                'delete_forever'
-            );
-            Usuarios::destroy($id);
-            return redirect()->back()->with('mensaje', 'El Cliente fue eliminado satisfactoriamente.');
-        }catch(QueryException $e){
-            return redirect()->back()->withErrors(['El Cliente está siendo usado por otro recurso.']);
+        if (!can('eliminar-clientes')) {
+            return response()->json(['mensaje' => 'np']);
+        } else {
+            if ($request->ajax()) {
+                try {
+                    $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+                    $datosU = Usuarios::findOrFail($id);
+                    Usuarios::destroy($id);
+                    Notificaciones::crearNotificacion(
+                        $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha eliminado al usuario ' . $datosU->USR_Nombres_Usuario,
+                        session()->get('Usuario_Id'),
+                        $datos->USR_Supervisor_Id,
+                        null,
+                        null,
+                        null,
+                        'delete_forever'
+                    );
+                    return response()->json(['mensaje' => 'ok']);
+                } catch (QueryException $e) {
+                    return response()->json(['mensaje' => 'ng']);
+                }
+            }
         }
     }
 }

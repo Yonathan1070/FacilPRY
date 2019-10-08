@@ -8,6 +8,7 @@ use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Requerimientos;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RequerimientosController extends Controller
@@ -65,6 +66,7 @@ class RequerimientosController extends Controller
                 return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
             }
         }
+        Requerimientos::create($request->all());
         Notificaciones::crearNotificacion(
             'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se han agregado requerimientos a su proyecto.',
             session()->get('Usuario_Id'),
@@ -74,7 +76,6 @@ class RequerimientosController extends Controller
             null,
             'library_add'
         );
-        Requerimientos::create($request->all());
         return redirect()->route('crear_requerimiento', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
     }
 
@@ -126,6 +127,7 @@ class RequerimientosController extends Controller
                 return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
             }
         }
+        Requerimientos::findOrFail($idR)->update($request->all());
         Notificaciones::crearNotificacion(
             'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se ha editado un requerimiento de su proyecto.',
             session()->get('Usuario_Id'),
@@ -135,7 +137,6 @@ class RequerimientosController extends Controller
             null,
             'update'
         );
-        Requerimientos::findOrFail($idR)->update($request->all());
         return redirect()->route('requerimientos', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
     }
 
@@ -145,27 +146,32 @@ class RequerimientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($idP, $idR)
+    public function eliminar(Request $request, $idP, $idR)
     {
-        can('eliminar-requerimientos');
-        $datosU = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $idP)
-            ->first();
-        Notificaciones::crearNotificacion(
-            'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se ha eliminado un requerimiento de su proyecto.',
-            session()->get('Usuario_Id'),
-            $datosU->id,
-            'inicio_cliente',
-            null,
-            null,
-            'delete_forever'
-        );
-        try {
-            Requerimientos::destroy($idR);
-            return redirect()->route('requerimientos', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
-        } catch (QueryException $e) {
-            return redirect()->route('requerimientos', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
+        if (!can('eliminar-requerimientos')) {
+            return response()->json(['mensaje' => 'np']);
+        } else {
+            if ($request->ajax()) {
+                try {
+                    $datosU = DB::table('TBL_Proyectos as p')
+                        ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+                        ->where('p.id', '=', $idP)
+                        ->first();
+                    Requerimientos::destroy($idR);
+                    Notificaciones::crearNotificacion(
+                        'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se ha eliminado un requerimiento de su proyecto.',
+                        session()->get('Usuario_Id'),
+                        $datosU->id,
+                        'inicio_cliente',
+                        null,
+                        null,
+                        'delete_forever'
+                    );
+                    return response()->json(['mensaje' => 'ok']);
+                } catch (QueryException $e) {
+                    return response()->json(['mensaje' => 'ng']);
+                }
+            }
         }
     }
 }

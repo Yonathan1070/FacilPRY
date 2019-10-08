@@ -101,7 +101,7 @@ class DecisionesController extends Controller
             ) {
                 return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
             }
-            if ($decision->DSC_Nombre_Decision == $request->DSC_Nombre_Decision) {
+            if ($decision->DCS_Nombre_Decision == $request->DCS_Nombre_Decision) {
                 return redirect()->back()->withErrors('La desición ya está registrada en el sistema')->withInput();
             }
         }

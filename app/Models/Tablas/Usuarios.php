@@ -56,7 +56,8 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['USR_Nombre_Usuario']),
             'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => session()->get('Empresa_Id')
+            'USR_Empresa_Id' => session()->get('Empresa_Id'),
+            'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
     }
 
@@ -64,7 +65,7 @@ class Usuarios extends Authenticatable
         return Usuarios::where('USR_Documento_Usuario', '=', $documento)->first();
     }
 
-    public static function editarUsuario(ValidacionUsuario $request, $id){
+    public static function editarUsuario($request, $id){
         Usuarios::findOrFail($id)->update([
             'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
             'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
@@ -74,6 +75,7 @@ class Usuarios extends Authenticatable
             'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
             'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
+            'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
     }
 }

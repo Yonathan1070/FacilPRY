@@ -29,7 +29,7 @@ class CrearTablaUsuarios extends Migration
             $table->unsignedBigInteger('USR_Supervisor_Id')->default(0);
             $table->unsignedBigInteger('USR_Empresa_Id');
             $table->foreign('USR_Empresa_Id', 'FK_Usuarios_Empresa')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
-            $table->bigInteger('USR_Costo_Hora');
+            $table->bigInteger('USR_Costo_Hora')->default(0);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

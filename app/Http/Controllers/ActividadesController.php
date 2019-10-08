@@ -100,6 +100,23 @@ class ActividadesController extends Controller
             'ACT_Trabajador_Id' => $request['ACT_Usuario_Id'],
         ]);
         $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
+
+        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
+            foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
+                $archivo = null;
+                if ($documento->isValid()) {
+                    $archivo = time() . '.' . $documento->getClientOriginalName();
+                    $documento->move(public_path('documentos_soporte'), $archivo);
+                    DocumentosSoporte::create([
+                        'DOC_Actividad_Id' => $actividad->id,
+                        'ACT_Documento_Soporte_Actividad' => $archivo
+                    ]);
+                }else{
+                    $actividad->destroy();
+                }
+            }
+        }
+
         $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'],$request['ACT_Fecha_Fin_Actividad']);
         foreach ($rangos as $fecha) {
             HorasActividad::create([
@@ -112,19 +129,6 @@ class ActividadesController extends Controller
             'HST_EST_Estado' => 1,
             'HST_EST_Actividad' => $actividad->id
         ]);
-        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
-            foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
-                $archivo = null;
-                if ($documento->isValid()) {
-                    $archivo = time() . '.' . $documento->getClientOriginalName();
-                    $documento->move(public_path('documentos_soporte'), $archivo);
-                    DocumentosSoporte::create([
-                        'DOC_Actividad_Id' => $actividad->id,
-                        'ACT_Documento_Soporte_Actividad' => $archivo
-                    ]);
-                }
-            }
-        }
         Notificaciones::crearNotificacion(
             'Nueva actividad asignada',
             session()->get('Usuario_Id'),

@@ -1,5 +1,5 @@
 <input type="hidden" name="id" id="id" value="{{$datos->USR_Empresa_Id}}">
-@if (Request::route()->getName() == 'editar_cliente_director')
+@if (Request::route()->getName() == 'editar_cliente')
     <div class="row clearfix">
         <div class="col-lg-6">
             <div class="form-group form-float">
