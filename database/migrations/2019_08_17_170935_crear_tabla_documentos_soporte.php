@@ -14,6 +14,7 @@ class CrearTablaDocumentosSoporte extends Migration
     public function up()
     {
         Schema::create('TBL_Documentos_Soporte', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('DOC_Actividad_Id');
             $table->foreign('DOC_Actividad_Id', 'FK_Documentos_Soporte_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
             $table->text('ACT_Documento_Soporte_Actividad')->nullable();

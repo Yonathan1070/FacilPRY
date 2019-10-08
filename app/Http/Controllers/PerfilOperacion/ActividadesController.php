@@ -76,17 +76,17 @@ class ActividadesController extends Controller
         }
         $horas = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->select()
             ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('ha.id', '<>', $id)
             ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
-        if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<14){
+        if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<=14){
             HorasActividad::findOrFail($id)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
             return response()->json(['msg' => 'alerta']);
         }
-        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>18)
+        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>14)
             return response()->json(['msg' => 'error']);
         HorasActividad::findOrFail($id)->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas

@@ -25,51 +25,12 @@ PDF Actividades
                         <img src="{{$base64}}" height="150px">
                     </li>
                 </ul>
-                
+
             </div>
             <div class="body">
                 <div class="row clearfix">
                     <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
                         <div class="panel-group" id="accordion_19" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-col-cyan">
-                                <div class="panel-heading" role="tab" id="headingOne_19">
-                                    <h4 class="panel-title">
-                                        <a role="button" data-toggle="collapse"
-                                            aria-expanded="true" aria-controls="collapseOne_19">
-                                            ESTANCADAS
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne_19" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_19" aria-expanded="true">
-                                    <div class="panel-body table-responsive">
-                                        @if (count($actividadesEstancadas)<=0)
-                                            No hay datos que mostrar.
-                                        @else
-                                            <table class="table table-striped table-bordered table-hover" id="tabla-data">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Proyecto</th>
-                                                        <th>Actividad</th>
-                                                        <th>Descripción</th>
-                                                        <th>Fechas</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($actividadesEstancadas as $actividad)
-                                                        <tr>
-                                                            <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
-                                                            <td>{{$actividad->ACT_Nombre_Actividad}}</td>
-                                                            <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                            <td>{{$actividad->ACT_Fecha_Inicio_Actividad.' - '.$actividad->ACT_Fecha_Fin_Actividad}}
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
                             <div class="panel panel-col-cyan">
                                 <div class="panel-heading" role="tab" id="headingTwo_19">
                                     <h4 class="panel-title">
@@ -83,7 +44,7 @@ PDF Actividades
                                     <div class="panel-body table-responsive">
                                         @if (count($actividadesProceso)<=0)
                                             No hay datos que mostrar.
-                                        @else
+                                        @else 
                                             <table class="table table-striped table-bordered table-hover" id="tabla-data">
                                                 <thead>
                                                     <tr>
@@ -91,14 +52,6 @@ PDF Actividades
                                                         <th>Actividad</th>
                                                         <th>Descripción</th>
                                                         <th>Fecha Limite de Entrega</th>
-                                                        @foreach ($actividadesAtrasadas as $actividad)
-                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
-                                                                <th>Observación</th>
-                                                                <th>Estado</th>
-                                                                @break
-                                                            @endif
-                                                        @endforeach
-                                                        <th>Horas Asignadas</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -107,12 +60,7 @@ PDF Actividades
                                                             <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                            <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
-                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
-                                                                <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                <td>{{$actividad->ACT_FIN_Estado}}</td>
-                                                            @endif
-                                                            <td>{{$actividad->HRS_ACT_Cantidad_Horas}}</td>
+                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -124,14 +72,16 @@ PDF Actividades
                             <div class="panel panel-col-cyan">
                                 <div class="panel-heading" role="tab" id="headingThree_19">
                                     <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseThree_19">
+                                        <a class="collapsed" role="button" data-toggle="collapse" aria-expanded="false"
+                                            aria-controls="collapseThree_19">
                                             ATRASADAS
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapseThree_19" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree_19" aria-expanded="true">
+                                <div id="collapseThree_19" class="panel-collapse collapse in" role="tabpanel"
+                                    aria-labelledby="headingThree_19" aria-expanded="true">
                                     <div class="panel-body table-responsive">
-                                        @if (count($actividadesAtrasadas)<=0)
+                                        @if (count($actividadesAtrasadas)<=0) 
                                             No hay datos que mostrar.
                                         @else
                                             <table class="table table-striped table-bordered table-hover" id="tabla-data">
@@ -142,7 +92,7 @@ PDF Actividades
                                                         <th>Descripción</th>
                                                         <th>Fecha Limite de Entrega</th>
                                                         @foreach ($actividadesAtrasadas as $actividad)
-                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                            @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                 <th>Observación</th>
                                                                 <th>Estado</th>
                                                                 @break
@@ -156,10 +106,10 @@ PDF Actividades
                                                             <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                            <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
-                                                            @if ($actividad->ACT_FIN_Estado == 'Rechazado')
+                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
+                                                            @if ($actividad->ACT_FIN_Estado_Id == 6)
                                                                 <td>{{$actividad->ACT_FIN_Respuesta}}</td>
-                                                                <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                                <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                             @endif
                                                         </tr>
                                                     @endforeach
@@ -170,17 +120,20 @@ PDF Actividades
                                 </div>
                             </div>
                             <div class="panel panel-col-cyan">
-                                    <div class="panel-heading" role="tab" id="headingFour_19">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseFour_19" aria-expanded="false" aria-controls="collapseFour_19">
+                                <div class="panel-heading" role="tab" id="headingFour_19">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseFour_19">
                                             FINALIZADAS
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapseFour_19" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour_19">
+                                <div id="collapseFour_19" class="panel-collapse collapse in" role="tabpanel"
+                                    aria-labelledby="headingFour_19">
                                     <div class="panel-body table-responsive">
-                                        @if (count($actividadesFinalizadas)<=0)
-                                            No hay datos que mostrar.
+                                        @if (count($actividadesFinalizadas)<=0) 
+                                            <div class="alert alert-info">
+                                                No hay datos que mostrar.
+                                            </div>
                                         @else
                                             <table class="table table-striped table-bordered table-hover" id="tabla-data">
                                                 <thead>
@@ -198,8 +151,8 @@ PDF Actividades
                                                             <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                            <td>{{$actividad->ACT_FIN_Fecha_Finalizacion}}</td>
-                                                            <td>{{$actividad->ACT_FIN_Estado}}</td>
+                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_FIN_Fecha_Finalizacion)->format('d/m/Y')}}</td>
+                                                            <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -213,7 +166,7 @@ PDF Actividades
                 </div>
             </div>
         </div>
-    <!-- #END# Multiple Items To Be Open -->
+        <!-- #END# Multiple Items To Be Open -->
     </div>
 </div>
 @endsection
