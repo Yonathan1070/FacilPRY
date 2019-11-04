@@ -20,11 +20,12 @@ class RolesController extends Controller
     public function index()
     {
         can('listar-roles');
+        $permisos = ['crear'=> can2('crear-roles'), 'editar'=>can2('editar-roles'), 'eliminar'=>can2('eliminar-roles')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
-        return view('roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad'));
+        return view('roles.listar', compact('roles', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

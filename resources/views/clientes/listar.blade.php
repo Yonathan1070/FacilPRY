@@ -16,9 +16,11 @@
                         <h2>CLIENTES</h2>
                         <ul class="header-dropdown" style="top:10px;">
                             <li class="dropdown">
-                                <a class="btn btn-success waves-effect" href="{{route('crear_cliente')}}">
-                                    <i class="material-icons" style="color:white;">add</i> Nuevo Cliente
-                                </a>
+                                @if ($permisos['crear']==true)
+                                    <a class="btn btn-success waves-effect" href="{{route('crear_cliente')}}">
+                                        <i class="material-icons" style="color:white;">add</i> Nuevo Cliente
+                                    </a>
+                                @endif
                             </li>
                         </ul>
                     </div>
@@ -37,7 +39,9 @@
                                         <th>Telefono</th>
                                         <th>Correo Electrónico</th>
                                         <th>Nombre de Usuario</th>
-                                        <th class="width70"></th>
+                                        @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                            <th class="width70"></th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,17 +52,23 @@
                                             <td>{{$cliente->USR_Telefono_Usuario}}</td>
                                             <td>{{$cliente->USR_Correo_Usuario}}</td>
                                             <td>{{$cliente->USR_Nombre_Usuario}}</td>
-                                            <td>
-                                                <form class="form-eliminar" action="{{route('eliminar_cliente', ['id'=>$cliente->id])}}" class="d-inline" method="POST">
-                                                        <a href="{{route('editar_cliente', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                                        </a>
-                                                    @csrf @method("delete")
-                                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
-                                                        <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
-                                                    </button>
-                                                </form>
-                                            </td>
+                                            @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                                <td>
+                                                    <form class="form-eliminar" action="{{route('eliminar_cliente', ['id'=>$cliente->id])}}" class="d-inline" method="POST">
+                                                        @if ($permisos['editar']==true)
+                                                            <a href="{{route('editar_cliente', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                            </a>
+                                                        @endif    
+                                                        @if ($permisos['eliminar']==true)
+                                                            @csrf @method("delete")
+                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
+                                                                <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>

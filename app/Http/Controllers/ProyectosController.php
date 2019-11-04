@@ -22,6 +22,7 @@ class ProyectosController extends Controller
     public function index()
     {
         can('listar-proyectos');
+        $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarA'=>can2('listar-actividades')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -30,7 +31,7 @@ class ProyectosController extends Controller
             ->select('p.*', 'u.USR_Nombres_Usuario', 'u.USR_Apellidos_Usuario')
             ->orderBy('p.Id')
             ->get();
-        return view('proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
+        return view('proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

@@ -21,6 +21,7 @@ class RequerimientosController extends Controller
     public function index($idP)
     {
         can('listar-requerimientos');
+        $permisos = ['crear'=> can2('crear-requerimientos'), 'editar'=>can2('editar-requerimientos'), 'eliminar'=>can2('eliminar-requerimientos')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -30,7 +31,7 @@ class RequerimientosController extends Controller
             ->orderBy('r.Id')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);
-        return view('requerimientos.listar', compact('requerimientos', 'proyecto', 'datos', 'notificaciones', 'cantidad'));
+        return view('requerimientos.listar', compact('requerimientos', 'proyecto', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

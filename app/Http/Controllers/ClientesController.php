@@ -23,6 +23,7 @@ class ClientesController extends Controller
     public function index()
     {
         can('listar-clientes');
+        $permisos = ['crear'=> can2('crear-clientes'), 'editar'=>can2('editar-clientes'), 'eliminar'=>can2('eliminar-clientes')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -34,7 +35,7 @@ class ClientesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
+        return view('clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

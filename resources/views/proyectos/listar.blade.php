@@ -25,8 +25,11 @@ Crud Proyectos
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
+                            @if ($permisos['crear']==true)
+                                <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
+                            @endif
+                            
                         </li>
                     </ul>
                 </div>
@@ -58,12 +61,16 @@ Crud Proyectos
                                         <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>
-                                            <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Requerimientos">
-                                                <i class="material-icons text-info" style="font-size: 17px;">description</i>
-                                            </a>
-                                            <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Agregar Actividades">
-                                                <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
-                                            </a>
+                                            @if ($permisos['listarR']==true)
+                                                <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Requerimientos">
+                                                    <i class="material-icons text-info" style="font-size: 17px;">description</i>
+                                                </a>
+                                            @endif
+                                            @if ($permisos['listarA']==true)
+                                                <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
+                                                    <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
+                                                </a>
+                                            @endif
                                             <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
                                                 <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                             </a>
@@ -73,6 +80,77 @@ Crud Proyectos
                             </tbody>
                         </table>
                     @endif
+                </div>
+
+                <div class="body table-responsive">
+                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                            <thead>
+                                <tr>
+                                    <th>Logo</th>
+                                    <th colspan="3">Titulo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <td rowspan="2">Actividades</td>
+                                        <td colspan="5">
+                                            Noviembre
+                                        </td>
+                                        <td>
+                                            <tr>
+                                                <td>01</td>
+                                                <td>02</td>
+                                                <td>03</td>
+                                                <td>04</td>
+                                                <td>05</td>
+                                            </tr>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+
+                        <table border="1" style="width:100%;">
+                                <tr>
+                                  <td>Logo</td>
+                                  <td>Titulo</td>
+                                </tr>
+                                <tr>
+                                  <td>Actividades</td>
+                                  <td>
+                                    <table border="1" style="width: 100%;">
+                                      <tr>
+                                        Mes
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                            <table border="1" style="width: 100%;">
+                                                <tr>
+                                                    <td>Noviembre</td>
+                                                    <td>Diciembre</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>01</td>
+                                                    <td>Price 3</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>01</td>
+                                        <td>Price 3</td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>Act 1</td>
+                                  <td>Item 2</td>
+                                </tr>
+                                <tr>
+                                  <td>Act 2</td>
+                                  <td>Item 3</td>
+                                </tr>
+                              </table>
                 </div>
             </div>
         </div>

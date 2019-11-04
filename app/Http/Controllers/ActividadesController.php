@@ -26,6 +26,7 @@ class ActividadesController extends Controller
     public function index($idP)
     {
         can('listar-actividades');
+        $permisos = ['crear'=>can2('crear-actividades')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();
@@ -42,7 +43,7 @@ class ActividadesController extends Controller
             ->orderBy('a.Id', 'ASC')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);
-        return view('actividades.listar', compact('actividades', 'proyecto', 'datos', 'notificaciones', 'cantidad'));
+        return view('actividades.listar', compact('actividades', 'proyecto', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

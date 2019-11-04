@@ -67,8 +67,13 @@ class PermisosController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $menus = Menu::orderBy('MN_Orden_Menu')->get();
-        $permisos = Permiso::orderBy('PRM_Nombre_Permiso')->get();
+        $menus = Menu::where('MN_Nombre_Menu', 'not like', '%inicio%')
+            ->where('MN_Nombre_Menu', 'not like', '%director%')
+            ->where('MN_Nombre_Menu', 'not like', '%operacion%')
+            ->where('MN_Nombre_Menu', 'not like', '%permisos%')
+            ->where('MN_Nombre_Menu', 'not like', '%menu%')->get();
+        //Menu::orderBy('MN_Orden_Menu')->get();
+        $permisos = Permiso::where('PRM_Nombre_Permiso', 'not like', '%perfil%')->orderBy('PRM_Nombre_Permiso')->get();
         return view('administrador.permisos.asignar', compact('menus', 'permisos', 'datos', 'id', 'notificaciones', 'cantidad'));
     }
 

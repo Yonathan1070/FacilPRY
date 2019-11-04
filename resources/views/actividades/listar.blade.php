@@ -15,9 +15,11 @@ Crud Actividades
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad', ['idP'=>$proyecto->id])}}">
-                                <i class="material-icons" style="color:white;">add</i> Nueva Actividad
-                            </a>
+                            @if ($permisos['crear']==true)
+                                <a class="btn btn-success waves-effect" href="{{route('crear_actividad', ['idP'=>$proyecto->id])}}">
+                                    <i class="material-icons" style="color:white;">add</i> Nueva Actividad
+                                </a>
+                            @endif
                         </li>
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('proyectos')}}">

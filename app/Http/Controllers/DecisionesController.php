@@ -22,6 +22,7 @@ class DecisionesController extends Controller
     public function index()
     {
         can('listar-decisiones');
+        $permisos = ['crear'=> can2('crear-decisiones'), 'editar'=>can2('editar-decisiones'), 'eliminar'=>can2('eliminar-decisiones')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -29,7 +30,7 @@ class DecisionesController extends Controller
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
         //$decisiones = Decisiones::orderBy('id')->get();
-        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad'));
+        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**

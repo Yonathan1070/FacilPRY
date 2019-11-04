@@ -15,8 +15,10 @@ Crud Roles
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-success waves-effect" href="{{route('crear_rol')}}"><i
+                            @if ($permisos['crear'] == true)
+                                <a class="btn btn-success waves-effect" href="{{route('crear_rol')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Rol</a>
+                            @endif
                         </li>
                     </ul>
                 </div>
@@ -33,7 +35,9 @@ Crud Roles
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Descripción</th>
-                                        <th class="width70"></th>
+                                        @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                            <th class="width70"></th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -46,21 +50,26 @@ Crud Roles
                                                 @endif
                                             </td>
                                             <td>{{$rol->RLS_Descripcion_Rol}}</td>
-                                            <td>
-                                                
-                                                <form class="form-eliminar" action="{{route('eliminar_rol', ['id'=>$rol->id])}}"
-                                                    class="d-inline" method="POST">
-                                                    <a href="{{route('editar_rol', ['id'=>$rol->id])}}"
-                                                        class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                                        <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                                    </a>
-                                                    @csrf @method("delete")
-                                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
-                                                        title="Eliminar este registro">
-                                                        <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
-                                                    </button>
-                                                </form>
-                                            </td>
+                                            @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                                <td>
+                                                    <form class="form-eliminar" action="{{route('eliminar_rol', ['id'=>$rol->id])}}"
+                                                        class="d-inline" method="POST">
+                                                        @if ($permisos['editar'] == true)
+                                                            <a href="{{route('editar_rol', ['id'=>$rol->id])}}"
+                                                                class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($permisos['eliminar'] == true)
+                                                            @csrf @method("delete")
+                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
+                                                                title="Eliminar este registro">
+                                                                <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>
