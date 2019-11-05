@@ -62,8 +62,9 @@ class PermisosController extends Controller
         Permiso::create($request->all());
         return redirect()->back()->with('mensaje', 'Permiso creado con exito');
     }
-    
-    public function asignarMenu($id){
+
+    public function asignarMenu($id)
+    {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -77,61 +78,69 @@ class PermisosController extends Controller
         return view('administrador.permisos.asignar', compact('menus', 'permisos', 'datos', 'id', 'notificaciones', 'cantidad'));
     }
 
-    public function agregar($idU, $idM)
+    public function agregar(Request $request, $id, $menuId)
     {
-        $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $idU)
-            ->where('MN_USR_Menu_Id', '=', $idM)
-            ->first();
-        if (!$asignado) {
-            MenuUsuario::create([
-                'MN_USR_Usuario_Id' => $idU,
-                'MN_USR_Menu_Id' => $idM
-            ]);
-            return redirect()->back()->with('mensaje', 'Menú Asignado.');
-        }else{
-            return redirect()->back()->with('mensaje', 'El Menú se encuentra Asignado.');
+        if ($request->ajax()) {
+            $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $id)
+                ->where('MN_USR_Menu_Id', '=', $menuId)
+                ->first();
+            if (!$asignado) {
+                MenuUsuario::create([
+                    'MN_USR_Usuario_Id' => $request->id,
+                    'MN_USR_Menu_Id' => $request->menuId
+                ]);
+                return response()->json(['mensaje' => 'okMA']);
+            } else {
+                return response()->json(['mensaje' => 'ngMA']);
+            }
         }
     }
 
-    public function quitar($idU, $idM)
+    public function quitar(Request $request, $id, $menuId)
     {
-        $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $idU)
-            ->where('MN_USR_Menu_Id', '=', $idM)
-            ->first();
-        if (!$asignado) {
-            return redirect()->back()->withErrors('El Menú no se encuentra asignado');
-        }else{
-            $asignado->delete();
-            return redirect()->back()->with('mensaje', 'Menú des-asignado');
+        if ($request->ajax()) {
+            $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $id)
+                ->where('MN_USR_Menu_Id', '=', $menuId)
+                ->first();
+            if (!$asignado) {
+                return response()->json(['mensaje' => 'ngMD']);
+            } else {
+                $asignado->delete();
+                return response()->json(['mensaje' => 'okMD']);
+            }
         }
     }
 
-    public function agregarPermiso($idU, $idP)
+    public function agregarPermiso(Request $request, $id, $menuId)
     {
-        $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $idU)
-            ->where('PRM_USR_Permiso_Id', '=', $idP)
-            ->first();
-        if (!$asignado) {
-            PermisoUsuario::create([
-                'PRM_USR_Usuario_Id' => $idU,
-                'PRM_USR_Permiso_Id' => $idP
-            ]);
-            return redirect()->back()->with('mensaje', 'Permiso Asignado.');
-        }else{
-            return redirect()->back()->with('mensaje', 'El Permiso se encuentra Asignado.');
+        if ($request->ajax()) {
+            $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $id)
+                ->where('PRM_USR_Permiso_Id', '=', $menuId)
+                ->first();
+            if (!$asignado) {
+                PermisoUsuario::create([
+                    'PRM_USR_Usuario_Id' => $id,
+                    'PRM_USR_Permiso_Id' => $menuId
+                ]);
+                return response()->json(['mensaje' => 'okPA']);
+            } else {
+                return response()->json(['mensaje' => 'ngPA']);
+            }
         }
     }
 
-    public function quitarPermiso($idU, $idP)
+    public function quitarPermiso(Request $request, $id, $menuId)
     {
-        $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $idU)
-            ->where('PRM_USR_Permiso_Id', '=', $idP)
-            ->first();
-        if (!$asignado) {
-            return redirect()->back()->withErrors('El Permiso no se encuentra asignado');
-        }else{
-            $asignado->delete();
-            return redirect()->back()->with('mensaje', 'Permiso des-asignado');
+        if ($request->ajax()) {
+            $asignado = PermisoUsuario::where('PRM_USR_Usuario_Id', '=', $id)
+                ->where('PRM_USR_Permiso_Id', '=', $menuId)
+                ->first();
+            if (!$asignado) {
+                return response()->json(['mensaje' => 'ngPD']);
+            } else {
+                $asignado->delete();
+                return response()->json(['mensaje' => 'okPD']);
+            }
         }
     }
 }

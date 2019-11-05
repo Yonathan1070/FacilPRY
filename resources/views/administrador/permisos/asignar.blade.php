@@ -35,12 +35,12 @@ Sistema de Permisos
                                 <tr>
                                     <td>{{$menu->MN_Nombre_Menu}}</td>
                                     <td>
-                                        <a href="{{route('agregar_rol_administrador', ['idU' => $id, 'idR' => $menu->id])}}" class="btn-accion-tabla tooltipsC" title="Asignar">
+                                        <button type="button" onclick='ajax("agregar", {{$id}}, {{$menu->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
                                             <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                        </a>
-                                        <a href="{{route('quitar_rol_administrador', ['idU' => $id, 'idR' => $menu->id])}}" class="btn-accion-tabla tooltipsC" title="Quitar">
+                                        </button>
+                                        <button type="button" onclick='ajax("quitar", {{$id}}, {{$menu->id}})' class="btn-accion-tabla tooltipsC" title="Quitar">
                                             <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -75,12 +75,12 @@ Sistema de Permisos
                                 <tr>
                                     <td>{{$permiso->PRM_Nombre_Permiso}}</td>
                                     <td>
-                                        <a href="{{route('agregar_permiso_administrador', ['idU' => $id, 'idP' => $permiso->id])}}" class="btn-accion-tabla tooltipsC" title="Asignar">
+                                        <button type="button" onclick='ajax("agregarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
                                             <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                        </a>
-                                        <a href="{{route('quitar_permiso_administrador', ['idU' => $id, 'idP' => $permiso->id])}}" class="btn-accion-tabla tooltipsC" title="Quitar">
+                                        </button>
+                                        <button type="button" onclick='ajax("quitarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Quitar">
                                             <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -92,4 +92,7 @@ Sistema de Permisos
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script src="{{asset("assets/pages/scripts/Administrador/Permisos/index.js")}}"></script>
 @endsection

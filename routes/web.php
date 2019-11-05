@@ -31,10 +31,10 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
     Route::group(['prefix' => 'asignar-permiso'], function () {
         Route::get('', 'PermisosController@index')->name('asignar_rol_administrador');
         Route::get('{id}', 'PermisosController@asignarMenu')->name('asignar_menu_usuario_administrador');
-        Route::get('{idU}-{idM}/agregar', 'PermisosController@agregar')->name('agregar_rol_administrador');
-        Route::get('{idU}-{idM}/quitar', 'PermisosController@quitar')->name('quitar_rol_administrador');
-        Route::get('{idU}-{idM}/agregarPermiso', 'PermisosController@agregarPermiso')->name('agregar_permiso_administrador');
-        Route::get('{idU}-{idM}/quitarPermiso', 'PermisosController@quitarPermiso')->name('quitar_permiso_administrador');
+        Route::get('{id}-{menuId}/agregar', 'PermisosController@agregar')->name('agregar_rol_administrador');
+        Route::get('{id}-{menuId}/quitar', 'PermisosController@quitar')->name('quitar_rol_administrador');
+        Route::get('{id}-{menuId}/agregarPermiso', 'PermisosController@agregarPermiso')->name('agregar_permiso_administrador');
+        Route::get('{id}-{menuId}/quitarPermiso', 'PermisosController@quitarPermiso')->name('quitar_permiso_administrador');
     });
     //Enroutamiento para Crear de Permisos
     Route::group(['prefix' => 'permisos'], function () {
