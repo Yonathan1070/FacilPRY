@@ -200,6 +200,11 @@ class ActividadesController extends Controller
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }
 
+    public function solicitarTiempo($id){
+        $actividad = Actividades::findOrFail($id);
+        return json_encode($actividad);
+    }
+
 
     public function actividadesProceso(){
         $actividadesProceso = DB::table('TBL_Actividades as a')
@@ -226,7 +231,7 @@ class ActividadesController extends Controller
             ->where('a.ACT_Estado_Id', '=', 2)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id')
-            ->groupBy('af.ACT_FIN_Actividad_Id')
+            ->groupBy('a.id')
             ->get();
 
         return $actividadesAtrasadas;

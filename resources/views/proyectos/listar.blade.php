@@ -7,6 +7,7 @@ Crud Proyectos
         .card .bg-cyan{
             color: #000 !important; }
     </style>
+    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css" rel="stylesheet">
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -14,6 +15,20 @@ Crud Proyectos
 @endsection
 @section('contenido')
 <div class="container-fluid">
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        DIAGRAMA DE GANTT
+                    </h2>
+                </div>
+                <div class="body">
+                    @include('proyectos.gantt')
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             @include('includes.form-exito')
@@ -81,79 +96,15 @@ Crud Proyectos
                         </table>
                     @endif
                 </div>
-
-                <div class="body table-responsive">
-                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
-                            <thead>
-                                <tr>
-                                    <th>Logo</th>
-                                    <th colspan="3">Titulo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    <tr>
-                                        <td rowspan="2">Actividades</td>
-                                        <td colspan="5">
-                                            Noviembre
-                                        </td>
-                                        <td>
-                                            <tr>
-                                                <td>01</td>
-                                                <td>02</td>
-                                                <td>03</td>
-                                                <td>04</td>
-                                                <td>05</td>
-                                            </tr>
-                                        </td>
-                                    </tr>
-                            </tbody>
-                        </table>
-
-                        <table border="1" style="width:100%;">
-                                <tr>
-                                  <td>Logo</td>
-                                  <td>Titulo</td>
-                                </tr>
-                                <tr>
-                                  <td>Actividades</td>
-                                  <td>
-                                    <table border="1" style="width: 100%;">
-                                      <tr>
-                                        Mes
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                            <table border="1" style="width: 100%;">
-                                                <tr>
-                                                    <td>Noviembre</td>
-                                                    <td>Diciembre</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>01</td>
-                                                    <td>Price 3</td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>01</td>
-                                        <td>Price 3</td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>Act 1</td>
-                                  <td>Item 2</td>
-                                </tr>
-                                <tr>
-                                  <td>Act 2</td>
-                                  <td>Item 3</td>
-                                </tr>
-                              </table>
-                </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+    
+    <script type="text/javascript">
+        gantt.init("gantt_here");
+    </script>
 @endsection

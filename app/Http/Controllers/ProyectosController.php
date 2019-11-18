@@ -147,16 +147,9 @@ class ProyectosController extends Controller
         return json_encode($dato);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function actualizar(Request $request, $id)
+    public function gantt()
     {
-        //
+        return view('proyectos.gantt');
     }
 
     /**

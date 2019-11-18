@@ -148,8 +148,8 @@ Actividades
                                                                     <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                                 @endif
                                                                 <td>
-                                                                    <a href="#" class="btn-accion-tabla tooltipsC"
-                                                                        title="Solicitar más Tiempo">
+                                                                    <a id="{{$actividad->ID_Actividad}}" onclick="tiempo(this)" class="btn-accion-tabla tooltipsC"
+                                                                        title="Solicitar más Tiempo" data-toggle="modal" data-target="#defaultModal">
                                                                         <i class="material-icons text-info"
                                                                             style="font-size: 20px;">alarm_add</i>
                                                                     </a>
@@ -213,5 +213,85 @@ Actividades
             </div>
         </div>
     </div>
+    <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="defaultModalLabel">Modal title</h4>
+                </div>
+                <form class="form-horizontal" action="">
+                    <div class="modal-body">
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="nombreActividad">Actividad</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="nombreActividad" class="form-control" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="descripcionActividad">Descripción</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="descripcionActividad" class="form-control" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="fechaInicioActividad">Inicio</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="fechaInicioActividad" class="form-control" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="fechaFinActividad">Fin</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="text" id="fechaFinActividad" class="form-control" readonly="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="tiempo">Tiempo</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <input type="number" id="tiempo" class="form-control" placeholder="Digite la cantidad de tiempo a solicitar (En Horas)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-link waves-effect">Enviar Solicitud</button>
+                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
+@section('scripts')
+<script src="{{asset("assets/pages/scripts/PerfilOperacion/solicitudTiempo.js")}}"></script>
 @endsection

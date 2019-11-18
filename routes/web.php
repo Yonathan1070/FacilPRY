@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PerfilOperacion\ActividadesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -118,6 +119,7 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
         Route::get('generar-pdf', 'ActividadesController@generarPdf')->name('generar_pdf_perfil_operacion');
         Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_perfil_operacion');
         Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_perfil_operacion');
+        Route::get('{id}', 'ActividadesController@solicitarTiempo')->name('actividades_solicitar_tiempo_perfil_operacion');
     });
 });
 
@@ -212,6 +214,7 @@ Route::get('proyectos/crear', 'ProyectosController@crear')->name('crear_proyecto
 Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
 Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
+Route::get('proyectos/gantt/gantt', 'ProyectosController@gantt')->name('gantt');
 
 //Rutas CRUD Requerimientos
 Route::get('requerimientos/{idP}', 'RequerimientosController@index')->name('requerimientos');
