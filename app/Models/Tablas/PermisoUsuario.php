@@ -20,6 +20,12 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarCrudRoles($id);
         PermisoUsuario::asignarListarCobros($id);
         PermisoUsuario::asignarEditarPerfil($id);
+        PermisoUsuario::asignarCrudActividades($id);
+        PermisoUsuario::asignarCrudRequerimientos($id);
+    }
+
+    public static function asignarPermisoPerfil($id){
+        PermisoUsuario::asignarEditarPerfil($id);
     }
 
     public static function asignarCrudActividades($id){

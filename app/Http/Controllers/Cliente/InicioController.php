@@ -37,7 +37,9 @@ class InicioController extends Controller
      */
     public function pagar($id)
     {
-        $datosU = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = DB::table('TBL_Proyectos as p')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->where('p.id', '=', $id)
@@ -48,13 +50,13 @@ class InicioController extends Controller
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
-        $datos = ['proyecto'=>$proyecto, 
+        $datosU = ['proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
             'empresa'=>$empresa];
-        return view('cliente.pagar', compact('datos', 'datosU'));
+        return view('cliente.pagar', compact('datos', 'datosU', 'notificaciones', 'cantidad'));
     }
 
     public function generarPdf($id)
@@ -62,10 +64,12 @@ class InicioController extends Controller
         $proyecto = Proyectos::findOrFail($id);
         $actividades = DB::table('TBL_Actividades as a')
             ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->select('a.*', 'us.USR_Nombre as NombreT', 'us.USR_Apellido as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
+            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
+            ->select('a.*', 'es.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
             ->where('p.id', '=', $id)
             ->get();
         
@@ -148,10 +152,10 @@ class InicioController extends Controller
         $estadoTx = $this->datosRespuesta();
 
         if ($estadoTx == "Transacción aprobada") {
-            $usuario = Usuarios::where('USR_Correo', '=', $correo)->first();
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
             $actividades = $this->consultaActividades($usuario->id);
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 'Pagado', $fechaPago);
+                $this->actualizarEstado($actividad->id, 10, $fechaPago);
             }
             return redirect()->route('inicio_cliente')->with('mensaje', 'Pago exitoso.');
         }
@@ -204,11 +208,12 @@ class InicioController extends Controller
     public function informacionFacturacion($id){
         $informacion = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*', 'a.*', 'u.*', 'fc.*')
+            ->select('p.*', 'r.*', 'a.*', 'u.*', 'fc.*')
             ->where('a.ACT_Costo_Actividad', '<>', 0)
-            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
+            ->where('a.ACT_Estado_Id', '=', 9)
             ->where('p.id', '=', $id)
             ->get();
 
@@ -218,11 +223,12 @@ class InicioController extends Controller
     public function totalCosto($id){
         $total = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
+            ->where('a.ACT_Estado_Id', '=', 9)
             ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
-            ->groupBy('a.ACT_Proyecto_Id')
+            ->groupBy('r.REQ_Proyecto_Id')
             ->where('p.id', '=', $id)
             ->first();
 
@@ -242,8 +248,8 @@ class InicioController extends Controller
         $infoPago->currency="COP";
         $infoPago->signature=md5($apiKey."~".$infoPago->merchantId."~".$infoPago->referenceCode."~".$datos['total']->Costo."~COP");
         $infoPago->test="1";
-        $infoPago->buyerFullName=$datos['proyecto']->USR_Nombre." ".$datos['proyecto']->USR_Apellido;
-        $infoPago->buyerEmail=$datos['proyecto']->USR_Correo;
+        $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
+        $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
         $infoPago->responseUrl="http://facilpry.test/cliente/respuesta-pago";
         $infoPago->confirmationUrl="http://facilpry.test/cliente/confirmacion-pago";
 
@@ -288,9 +294,10 @@ class InicioController extends Controller
 
     public function consultaActividades($id){
         $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'a.ACT_Proyecto_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('a.ACT_Estado_Actividad', '=', 'Esperando Pago')
+            ->where('a.ACT_Estado_Id', '=', 9)
             ->where('u.id', '=', $id)
             ->select('a.id')
             ->get();
@@ -300,7 +307,7 @@ class InicioController extends Controller
 
     public function actualizarEstado($id, $estado, $fecha){
         Actividades::findOrFail($id)->update([
-            'ACT_Estado_Actividad' => $estado,
+            'ACT_Estado_Id' => $estado,
             'ACT_Fecha_Pago' => $fecha
         ]);
     }

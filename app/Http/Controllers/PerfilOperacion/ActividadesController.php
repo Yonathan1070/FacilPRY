@@ -17,6 +17,7 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Respuesta;
 
 class ActividadesController extends Controller
 {
@@ -71,7 +72,9 @@ class ActividadesController extends Controller
     public function guardarHoras(Request $request, $id)
     {
         $fecha = HorasActividad::findOrFail($id);
-        if($fecha->HRS_ACT_Fecha_Actividad < Carbon::now()){
+        //$vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24;
+        //dd(Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24);
+        if(Carbon::now() >= $fecha->HRS_ACT_Fecha_Actividad){
             return response()->json(['msg' => 'errorF']);
         }
         $horas = DB::table('TBL_Horas_Actividad as ha')
@@ -80,18 +83,20 @@ class ActividadesController extends Controller
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('ha.id', '<>', $id)
             ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
-        if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<=14){
+        if((($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<=14 )){
             HorasActividad::findOrFail($id)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
             return response()->json(['msg' => 'alerta']);
         }
-        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>14)
+        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>14){
             return response()->json(['msg' => 'error']);
-        HorasActividad::findOrFail($id)->update([
-            'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
-        ]);
-        return response()->json(['msg' => 'exito'], 200);
+        }else{
+            HorasActividad::findOrFail($id)->update([
+                'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
+            ]);
+            return response()->json(['msg' => 'exito'], 200);
+        }
     }
 
     public function terminarAsignacion($id){
@@ -168,10 +173,15 @@ class ActividadesController extends Controller
             return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
         }
         ActividadesFinalizadas::create([
+            'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
             'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
             'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
-            'ACT_FIN_Estado_Id' => 4,
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
+        ]);
+        $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
+        Respuesta::create([
+            'RTA_Actividad_Finalizada_Id' => $af->id,
+            'RTA_Estado_Id' => 4
         ]);
         $actFinalizada = ActividadesFinalizadas::orderByDesc('created_at')->first();
         Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
@@ -245,7 +255,6 @@ class ActividadesController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'e.*')
             ->where('a.ACT_Estado_Id', '<>', 1)
-            ->where('af.ACT_FIN_Estado_Id', '<>', 6)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id')
             ->get();

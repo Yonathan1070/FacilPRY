@@ -375,7 +375,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Correo_Usuario' => 'rosamendez74@hotmail.com',
             'USR_Nombre_Usuario' => 'rosa',
             'password' => bcrypt('rosa'),
-            'USR_Foto_Perfil_Usuario' => '1565106322.png',
+            'USR_Foto_Perfil_Usuario' => '1565106322.jpg',
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
@@ -390,6 +390,11 @@ class UsuarioAdministradorSeeder extends Seeder
             'MN_USR_Usuario_Id' => 2,
             'MN_USR_Menu_Id' => 17
         ]);
+        //Asignar Permiso
+        DB::table('TBL_Permiso_Usuario')->insert([
+            'PRM_USR_Usuario_Id' => 2,
+            'PRM_USR_Permiso_Id' => 14
+        ]);
 
         //Agregar Usuario Tester
         DB::table('TBL_Usuarios')->insert([
@@ -403,7 +408,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Correo_Usuario' => 'alirimendez@hotmail.com',
             'USR_Nombre_Usuario' => 'alirio',
             'password' => bcrypt('alirio'),
-            'USR_Foto_Perfil_Usuario' => '1565129434.png',
+            'USR_Foto_Perfil_Usuario' => '1565129434.jpg',
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
@@ -417,6 +422,11 @@ class UsuarioAdministradorSeeder extends Seeder
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 3,
             'MN_USR_Menu_Id' => 14
+        ]);
+        //Asignar Permiso
+        DB::table('TBL_Permiso_Usuario')->insert([
+            'PRM_USR_Usuario_Id' => 3,
+            'PRM_USR_Permiso_Id' => 14
         ]);
     }
 }

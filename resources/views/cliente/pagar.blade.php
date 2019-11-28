@@ -1,4 +1,4 @@
-@extends('theme.bsb.cliente.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Pagar
 @endsection
@@ -51,8 +51,8 @@ Pagar
                 <div class="header table-resposive">
                     <?php
                         $base64=null;
-                        if($datos['empresa']->EMP_Logo_Empresa != null){
-                            $path = base_path().'\public\assets\bsb\images\Logos/'.$datos['empresa']->EMP_Logo_Empresa;
+                        if($datosU['empresa']->EMP_Logo_Empresa != null){
+                            $path = base_path().'\public\assets\bsb\images\Logos/'.$datosU['empresa']->EMP_Logo_Empresa;
                             $type = pathinfo($path, PATHINFO_EXTENSION);
                             $data = file_get_contents($path);
                             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
@@ -61,30 +61,30 @@ Pagar
                     <header>
                         <h1>FACTURA DE COBRO</h1>
                         <address>
-                            <p>{{$datos['empresa']->EMP_Nombre_Empresa}}</p>
-                            <p>Dirección: {{$datos['empresa']->EMP_Direccion_Empresa}}<br>Correo Electrónico: {{$datos['empresa']->EMP_Correo_Empresa}}</p>
-                            <p>Telefono: {{$datos['empresa']->EMP_Telefono_Empresa}}</p>
-                            <p>NIT: {{$datos['empresa']->EMP_NIT_Empresa}}</p>
+                            <p>{{$datosU['empresa']->EMP_Nombre_Empresa}}</p>
+                            <p>Dirección: {{$datosU['empresa']->EMP_Direccion_Empresa}}<br>Correo Electrónico: {{$datosU['empresa']->EMP_Correo_Empresa}}</p>
+                            <p>Telefono: {{$datosU['empresa']->EMP_Telefono_Empresa}}</p>
+                            <p>NIT: {{$datosU['empresa']->EMP_NIT_Empresa}}</p>
                         </address>
                         <img height="200" src="{{$base64}}"> 
                     </header>
                     <article>
                         <address>
-                            <p>Proyecto: {{$datos['proyecto']->PRY_Nombre_Proyecto}}<br>
-                                Cliente: {{$datos['proyecto']->USR_Nombre.' '.$datos['proyecto']->USR_Apellido}}</p>
+                            <p>Proyecto: {{$datosU['proyecto']->PRY_Nombre_Proyecto}}<br>
+                                Cliente: {{$datosU['proyecto']->USR_Nombres_Usuario.' '.$datosU['proyecto']->USR_Apellidos_Usuario}}</p>
                         </address>
                         <table class="meta">
                             <tr>
                                 <th><span>Factura # </span></th>
-                                <td><span>INK-{{$datos['factura']}}</span></td>
+                                <td><span>INK-{{$datosU['factura']}}</span></td>
                             </tr>
                             <tr>
                                 <th><span>Fecha</span></th>
-                                <td><span>{{$datos['fecha']}}</span></td>
+                                <td><span>{{$datosU['fecha']}}</span></td>
                             </tr>
                             <tr>
                                 <th><span>Monto</span></th>
-                                <td><span id="prefix">$</span><span>{{$datos['total']->Costo}}</span></td>
+                                <td><span id="prefix">$</span><span>{{$datosU['total']->Costo}}</span></td>
                             </tr>
                         </table>
                         <table class="inventory">
@@ -96,7 +96,7 @@ Pagar
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($datos['informacion'] as $informacion)
+                                @foreach ($datosU['informacion'] as $informacion)
                                     <tr>
                                         <td><span>{{$informacion->ACT_Nombre_Actividad}}</span></td>
                                         <td><span>{{$informacion->ACT_Descripcion_Actividad}}</span></td>
@@ -108,13 +108,13 @@ Pagar
                         <table class="balance">
                             <tr>
                                 <th><span>Total</span></th>
-                                <td><span data-prefix>$</span><span>{{$datos['total']->Costo}}</span></td>
+                                <td><span data-prefix>$</span><span>{{$datosU['total']->Costo}}</span></td>
                             </tr>
                         </table>
                     </article>
                 </div>
                 <div class="body">
-                    <input type="hidden" id="idProyecto" value="{{$informacion->ACT_Proyecto_Id}}">
+                    <input type="hidden" id="idProyecto" value="{{$informacion->REQ_Proyecto_Id}}">
                     <div id="idPayuButtonContainer"></div>
                 </div>
             </div>

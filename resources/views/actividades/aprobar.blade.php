@@ -80,7 +80,7 @@ Crud Actividades
         $.ajax({
             dataType: "json",
             method: "put",
-            url: "/director/actividades/" + idHora +"/aprobar",
+            url: "/actividades/" + idHora +"/aprobar",
             data: {"_token":"{{ csrf_token() }}", HRS_ACT_Cantidad_Horas_Asignadas:newValue},
             success:function(data){
                 if(data.msg == "alerta")

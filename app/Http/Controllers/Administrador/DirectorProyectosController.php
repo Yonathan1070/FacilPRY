@@ -64,14 +64,7 @@ class DirectorProyectosController extends Controller
         UsuariosRoles::asignarRol(2, $director->id);
         MenuUsuario::asignarMenuDirector($director->id);
         PermisoUsuario::asignarPermisosDirector($director->id);
-
-        Mail::send('general.correo.bienvenida', [
-            'nombre' => $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']], function ($message) use ($request) {
-            $message->from('yonathancam1997@gmail.com', 'FacilPRY');
-            $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
-                ->subject('Bienvenido ' . $request['USR_Nombres_Usuario']);
-        });
+        Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
         Notificaciones::crearNotificacion(
             'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a FacilPRY, verifique sus datos.',
@@ -83,9 +76,6 @@ class DirectorProyectosController extends Controller
             'account_circle'
         );
 
-        if (Mail::failures()) {
-            return redirect()->back()->withErrors('Director de Proyectos agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
-        }
         return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que ' . $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'] . ' revise su correo electrónico');
     }
 

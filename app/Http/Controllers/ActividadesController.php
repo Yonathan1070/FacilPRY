@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -248,7 +246,7 @@ class ActividadesController extends Controller
 
     public function finalizarAprobacion($idA){
         $horasActividades = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->get();
-        $trabajador = Actividades::findOrFail($horasActividades->first()->HRS_ACT_Actividad_Id)->first();
+        $trabajador = Actividades::findOrFail($horasActividades->first()->HRS_ACT_Actividad_Id);
         foreach ($horasActividades as $actividad) {
             if($actividad->HRS_ACT_Cantidad_Horas_Reales == null){
                 $actividad->update([

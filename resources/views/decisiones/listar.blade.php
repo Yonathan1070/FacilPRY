@@ -26,8 +26,8 @@ Crud Desiciones
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    @if (count($decisiones)<=0) <div class="alert alert-warning">
-                        <strong>Advertencia!</strong> El sistema no cuenta con Decisiones agregadas
+                    @if (count($decisiones)<=0) <div class="alert alert-info">
+                        El sistema no cuenta con Decisiones agregadas
                         <a href="{{route('crear_decision')}}" class="alert-link">Clic aquí para
                             agregar!</a>.
                         </div>

@@ -53,16 +53,20 @@ Inicio
                     <div class="profile-footer">
                         <ul>
                             <li>
-                                @foreach ($documentosSoporte as $documento)
-                                    <span>Documento</span>
-                                    <span>
-                                        <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
-                                            class="btn bg-cyan btn-block btn-xs waves-effect">
-                                            <i class="material-icons"
-                                                style="font-size: 17px;">file_download</i>
-                                        </a>
-                                    </span>
-                                @endforeach
+                                @if (count($documentosSoporte)<=0)
+                                    <span>No hay documentos para descargar</span>
+                                @else
+                                    @foreach ($documentosSoporte as $documento)
+                                        <span>Documento</span>
+                                        <span>
+                                            <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
+                                                class="btn bg-cyan btn-block btn-xs waves-effect">
+                                                <i class="material-icons"
+                                                    style="font-size: 17px;">file_download</i>
+                                            </a>
+                                        </span>
+                                    @endforeach
+                                @endif
                             </li>
                         </ul>
                     </div>
@@ -121,9 +125,13 @@ Inicio
                     <div class="modal-body">
                         <div class="form-group form-float">
                             <div class="form-line">
-                                <textarea name="ACT_FIN_Respuesta" id="ACT_FIN_Respuesta" cols="30" rows="5"
+                                <input name="RTA_Titulo" id="RTA_Titulo" class="form-control" required>
+                                <label class="form-label">Titulo de Respuesta</label>
+                            </div>
+                            <div class="form-line">
+                                <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
                                     class="form-control no-resize" maxlength="1000"
-                                    required>{{old('ACT_FIN_Respuesta', $rol->RLS_Descripcion ?? '')}}</textarea>
+                                    required></textarea>
                                 <label class="form-label">Observaciones</label>
                             </div>
                         </div>
@@ -149,9 +157,13 @@ Inicio
                     <div class="modal-body">
                         <div class="form-group form-float">
                             <div class="form-line">
-                                <textarea name="ACT_FIN_Respuesta" id="ACT_FIN_Respuesta" cols="30" rows="5"
+                                <input name="RTA_Titulo" id="RTA_Titulo" class="form-control" required>
+                                <label class="form-label">Titulo de Respuesta</label>
+                            </div>
+                            <div class="form-line">
+                                <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
                                     class="form-control no-resize" maxlength="1000"
-                                    required>{{old('ACT_FIN_Respuesta', $rol->RLS_Descripcion ?? '')}}</textarea>
+                                    required></textarea>
                                 <label class="form-label">Observaciones</label>
                             </div>
                         </div>

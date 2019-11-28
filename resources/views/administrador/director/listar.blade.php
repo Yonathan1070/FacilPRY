@@ -24,8 +24,9 @@ Crud Director de Proyectos
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    @if (count($directores)<=0) <div class="alert alert-warning">
-                        <strong>Advertencia!</strong> El sistema no cuenta con Directores agregados
+                    @if (count($directores)<=0)
+                        <div class="alert alert-info">
+                        El sistema no cuenta con Directores agregados
                         <a href="{{route('crear_director_administrador')}}" class="alert-link">Clic aquí para
                             agregar!</a>.
                 </div>

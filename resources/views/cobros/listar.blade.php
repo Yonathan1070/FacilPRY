@@ -37,9 +37,9 @@ Crud Proyectos
                                     <tr>
                                         <td>{{$cobro->ACT_Nombre_Actividad}}</td>
                                         <td>{{$cobro->ACT_Descripcion_Actividad}}</td>
-                                        <td>{{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}</td>
+                                        <td>{{$cobro->USR_Nombres_Usuario.' '.$cobro->USR_Apellidos_Usuario}}</td>
                                         <td>
-                                            <a href="{{route('agregar_factura', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombre.' '.$cobro->USR_Apellido}}">
+                                            <a href="{{route('agregar_factura', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombres_Usuario.' '.$cobro->USR_Apellidos_Usuario}}">
                                                 <i class="material-icons text-info" style="font-size: 17px;">note_add</i>
                                             </a>
                                         </td>
@@ -78,7 +78,7 @@ Crud Proyectos
                                 @foreach ($proyectos as $proyecto)
                                     <tr>
                                         <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
-                                        <td>{{$proyecto->USR_Nombre.' '.$proyecto->USR_Apellido}}</td>
+                                        <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>{{$proyecto->No_Actividades}}</td>
                                         <td>
                                             @if ($proyecto->ACT_Costo_Actividad != 0)

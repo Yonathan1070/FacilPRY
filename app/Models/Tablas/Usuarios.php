@@ -4,6 +4,7 @@ namespace App\Models\Tablas;
 
 use App\Http\Requests\ValidacionUsuario;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -44,6 +45,9 @@ class Usuarios extends Authenticatable
     }
 
     public static function crearUsuario($request){
+        if($request['USR_Costo_Hora'] == null){
+            $request['USR_Costo_Hora'] = 0;
+        }
         Usuarios::create([
             'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
             'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
@@ -77,5 +81,15 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
+    }
+
+    public static function enviarcorreo($request, $mensaje, $asunto, $plantilla){
+        Mail::send($plantilla, [
+            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
+            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request, $mensaje, $asunto){
+            $message->from('from@example.com', 'Example');
+            $message->to($request['USR_Correo_Usuario'], $mensaje)
+                ->subject($asunto.' '.$request['USR_Nombres_Usuario']);
+        });
     }
 }

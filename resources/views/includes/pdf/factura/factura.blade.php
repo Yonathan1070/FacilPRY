@@ -268,7 +268,7 @@ Factura
                         <article>
                             <address>
                                 <p>Proyecto: {{$datos['proyecto']->PRY_Nombre_Proyecto}}<br>
-                                    Cliente: {{$datos['proyecto']->USR_Nombre.' '.$datos['proyecto']->USR_Apellido}}</p>
+                                    Cliente: {{$datos['proyecto']->USR_Nombres_Usuario.' '.$datos['proyecto']->USR_Apellidos_Usuario}}</p>
                             </address>
                             <table class="meta">
                                 <tr>

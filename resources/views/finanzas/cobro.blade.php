@@ -1,4 +1,4 @@
-@extends('theme.bsb.finanzas.layout')
+@extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
 Cobros
 @endsection
@@ -17,8 +17,8 @@ Cobros
             <div class="profile-body">
                 <div class="content-area">
                     <h6>{{$actividades->PRY_Nombre_Proyecto}}</h6>
-                    <p>{{$actividades->RLS_Nombre}}</p>
-                    <p>{{$actividades->USR_Nombre.' '.$actividades->USR_Apellido}}</p>
+                    <p>{{$actividades->RLS_Nombre_Rol}}</p>
+                    <p>{{$actividades->USR_Nombres_Usuario.' '.$actividades->USR_Apellidos_Usuario}}</p>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@ Cobros
                     <li>
                         <span>Evidencias</span>
                         <span>
-                            <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$actividades->ACT_FIN_Documento_Soporte])}}"
+                            <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$actividades->ACT_Documento_Evidencia_Actividad])}}"
                                 class="btn bg-cyan btn-block btn-xs waves-effect">
                                 <i class="material-icons"
                                     style="font-size: 17px;">file_download</i>

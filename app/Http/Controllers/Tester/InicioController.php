@@ -9,6 +9,7 @@ use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Respuesta;
 use Illuminate\Support\Carbon;
 use App\Models\Tablas\Usuarios;
 use stdClass;
@@ -30,10 +31,10 @@ class InicioController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Estados as ef', 'ef.id', '=', 'af.ACT_FIN_Estado_Id')
-            ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*', 'ef.*')
+            ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
+            ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
+            ->where('RTA_Titulo', '=', null)
             ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('af.ACT_FIN_Estado_Id', '=', 4)
             ->get();
         return view('tester.inicio', compact('actividadesPendientes', 'datos', 'notificaciones', 'cantidad'));
     }
@@ -43,7 +44,7 @@ class InicioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function aprobacionactividad($id)
+    public function aprobacionActividad($id)
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
@@ -63,6 +64,7 @@ class InicioController extends Controller
             ->get();
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
             ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
+            ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->get();
         $perfil = DB::table('TBL_Usuarios as u')
             ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
@@ -130,11 +132,16 @@ class InicioController extends Controller
      */
     public function respuestaAprobado(Request $request)
     {
-        ActividadesFinalizadas::findOrFail($request->id)->update([
-            'ACT_FIN_Estado_Id'=>11,
-            'ACT_FIN_Respuesta' => $request->ACT_FIN_Respuesta,
-            'ACT_FIN_Fecha_Respuesta' => Carbon::now()
-        ]);
+        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Titulo', '=', null)
+            ->first()
+            ->update([
+                'RTA_Titulo'=>$request->RTA_Titulo,
+                'RTA_Respuesta' => $request->RTA_Respuesta,
+                'RTA_Estado_Id' => 5,
+                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
         $idActFin = ActividadesFinalizadas::orderBy('created_at')->first()->id;
         $actividad = $this->actividad($request->id);
         HistorialEstados::create([

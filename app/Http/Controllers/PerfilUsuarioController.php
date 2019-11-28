@@ -69,19 +69,19 @@ class PerfilUsuarioController extends Controller
     public function actualizarFoto(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'USR_Foto_Perfil' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'USR_Foto_Perfil_Usuario' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->passes()) {
             $usuario = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            $ruta = public_path("assets/bsb/images/".$usuario->USR_Foto_Perfil);
-            if ($usuario->USR_Foto_Perfil != null) {
+            $ruta = public_path("assets/bsb/images/".$usuario->USR_Foto_Perfil_Usuario);
+            if ($usuario->USR_Foto_Perfil_Usuario != null) {
                 unlink($ruta);
             }
             $input = $request->all();
-            $nombreArchivo = $input['USR_Foto_Perfil'] = time() . '.' . $request->USR_Foto_Perfil->getClientOriginalExtension();
-            $request->USR_Foto_Perfil->move(public_path('assets/bsb/images'), $input['USR_Foto_Perfil']);
-            Usuarios::findOrFail(session()->get('Usuario_Id'))->update(['USR_Foto_Perfil' => $nombreArchivo]);
+            $nombreArchivo = $input['USR_Foto_Perfil_Usuario'] = time() . '.' . $request->USR_Foto_Perfil_Usuario->getClientOriginalExtension();
+            $request->USR_Foto_Perfil_Usuario->move(public_path('assets/bsb/images'), $input['USR_Foto_Perfil_Usuario']);
+            Usuarios::findOrFail(session()->get('Usuario_Id'))->update(['USR_Foto_Perfil_Usuario' => $nombreArchivo]);
             return response()->json(['success' => 'Foto Actualizada']);
         }
         return response()->json(['error' => $validator->errors()->all()]);

@@ -35,7 +35,9 @@ Crud Requerimientos
                     @if (count($requerimientos)<=0)
                         <div class="alert alert-info">
                             No hay datos que mostrar
-                            <a href="{{route('crear_requerimiento', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                            @if ($permisos['crear']==true)
+                                <a href="{{route('crear_requerimiento', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                            @endif
                         </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">

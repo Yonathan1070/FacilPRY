@@ -25,7 +25,7 @@
 <div class="row clearfix">
     <div class="col-lg-6">
         <div class="form-group form-float">
-            <div class="form-line focused">
+            <div class="form-line focused" id="bs_datepicker_container">
                 <input type="date" class="form-control" name="ACT_Fecha_Inicio_Actividad"
                     id="ACT_Fecha_Inicio_Actividad"
                     value="{{old('ACT_Fecha_Inicio_Actividad', $actividad->ACT_Fecha_Inicio_Actividad ?? '')}}"

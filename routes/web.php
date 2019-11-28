@@ -126,6 +126,7 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
 //Enrutamiento Tester
 Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['auth', 'tester']], function () {
     Route::get('', 'InicioController@index')->name('inicio_tester');
+    Route::get('{id}/verificar', 'InicioController@verificarActividad')->name('verificar_actividad_tester');
     Route::get('{id}/aprobacion', 'InicioController@aprobacionActividad')->name('aprobar_actividad_tester');
     Route::get('{ruta}/descargar', 'InicioController@descargarArchivo')->name('descargar_documento_actividad_tester');
     Route::post('respuestaR', 'InicioController@respuestaRechazado')->name('respuestaR_tester');
@@ -197,7 +198,7 @@ Route::delete('roles/{id}', 'RolesController@eliminar')->name('eliminar_rol');
 //Rutas Perfil de Usuario
 Route::get('perfil', 'PerfilUsuarioController@index')->name('perfil');
 Route::put('perfileditar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil');
-Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave');
+Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_perfil');
 Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto');
 
 //Rutas CRUD Clientes

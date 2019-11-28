@@ -64,15 +64,7 @@ class ClientesController extends Controller
         $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         UsuariosRoles::asignarRol(5, $cliente->id);
         MenuUsuario::asignarMenuCliente($cliente->id);
-
-        Mail::send('general.correo.bienvenida', [
-            'nombre' => $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']
-        ], function ($message) use ($request) {
-            $message->from('yonathancam1997@gmail.com', 'FacilPRY');
-            $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
-                ->subject('Bienvenido ' . $request['USR_Nombres_Usuario']);
-        });
+        Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(
@@ -93,9 +85,7 @@ class ClientesController extends Controller
             null,
             'account_circle'
         );
-        if (Mail::failures()) {
-            return redirect()->back()->withErrors('Cliente agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
-        }
+        
         return redirect()->back()->with('mensaje', 'Cliente agregado con exito');
     }
 

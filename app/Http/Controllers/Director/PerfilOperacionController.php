@@ -12,6 +12,7 @@ use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\PermisoUsuario;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -64,14 +65,9 @@ class PerfilOperacionController extends Controller
         $perfil = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         UsuariosRoles::asignarRol($request['USR_RLS_Rol_Id'], $perfil->id);
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
+        PermisoUsuario::asignarPermisoPerfil($perfil->id);
+        Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido '.$request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
-        Mail::send('general.correo.bienvenida', [
-            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request){
-            $message->from('yonathancam1997@gmail.com', 'FacilPRY');
-            $message->to($request['USR_Correo_Usuario'], 'Bienvenido a FacilPRY, Software de Gestión de Proyectos')
-                ->subject('Bienvenido '.$request['USR_Nombres_Usuario']);
-        });
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
@@ -88,9 +84,7 @@ class PerfilOperacionController extends Controller
             null, null,
             'account_circle'
         );
-        if (Mail::failures()) {
-            return redirect()->back()->withErrors('Perfil de Operación agregado con exito, Error al Envíar Correo, por favor verificar que esté correcto');
-        }
+
         return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
     }
 
