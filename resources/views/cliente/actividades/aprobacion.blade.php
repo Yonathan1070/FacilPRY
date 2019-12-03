@@ -111,6 +111,39 @@ Inicio
                 </div>
             </div>
         </div>
+        @if (count($respuestasAnteriores)>0)
+            <div class="row clearfix">
+                <div class="col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>Respuestas Anteriores</h2>
+                        </div>
+                        <div class="body table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTable" id="tabla-data">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Titulo</th>
+                                        <th>Respuesta</th>
+                                        <th>Respondió</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($respuestasAnteriores as $ra)
+                                        <tr>
+                                            <td>{{$ra->id}}</td>
+                                            <td>{{$ra->RTA_Titulo}}</td>
+                                            <td>{{$ra->RTA_Respuesta}}</td>
+                                            <td>{{$ra->USR_Nombres_Usuario." ".$ra->USR_Apellidos_Usuario}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="modal fade" id="modalRechaza" tabindex="-1" role="dialog">

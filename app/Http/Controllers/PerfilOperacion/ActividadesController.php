@@ -157,19 +157,7 @@ class ActividadesController extends Controller
     }
 
     public function guardarFinalizar(Request $request){
-        if ($request->hasFile('ACT_Documento_Evidencia_Actividad')) {
-            foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
-                $archivo = null;
-                if ($documento->isValid()) {
-                    $archivo = time() . '.' . $documento->getClientOriginalName();
-                    $documento->move(public_path('documentos_soporte'), $archivo);
-                    DocumentosEvidencias::create([
-                        'DOC_Actividad_Id' => $request['Actividad_Id'],
-                        'ACT_Documento_Evidencia_Actividad' => $archivo
-                    ]);
-                }
-            }
-        }else{
+        if (!$request->hasFile('ACT_Documento_Evidencia_Actividad')) {
             return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
         }
         ActividadesFinalizadas::create([
@@ -179,11 +167,21 @@ class ActividadesController extends Controller
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
         ]);
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
+        foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
+            $archivo = null;
+            if ($documento->isValid()) {
+                $archivo = time() . '.' . $documento->getClientOriginalName();
+                $documento->move(public_path('documentos_soporte'), $archivo);
+                DocumentosEvidencias::create([
+                    'DOC_Actividad_Finalizada_Id' => $af->id,
+                    'ACT_Documento_Evidencia_Actividad' => $archivo
+                ]);
+            }
+        }
         Respuesta::create([
             'RTA_Actividad_Finalizada_Id' => $af->id,
             'RTA_Estado_Id' => 4
         ]);
-        $actFinalizada = ActividadesFinalizadas::orderByDesc('created_at')->first();
         Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
         $tester = DB::table('TBL_Usuarios as u')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
@@ -204,7 +202,7 @@ class ActividadesController extends Controller
             $tester->id,
             'aprobar_actividad_tester',
             'id',
-            $actFinalizada->id,
+            $af->id,
             'find_in_page'
         );
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
@@ -257,8 +255,8 @@ class ActividadesController extends Controller
             ->where('a.ACT_Estado_Id', '<>', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id')
+            ->groupBy('a.id')
             ->get();
-
         return $actividadesFinalizadas;
     }
 

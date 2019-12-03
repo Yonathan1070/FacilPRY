@@ -34,7 +34,8 @@ class ActividadesController extends Controller
             ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
             ->where('a.ACT_Estado_Id', '=', 3)
             ->where('re.RTA_Usuario_Id', '<>', 0)
-            ->where('re.RTA_Estado_Id', '=', 4)
+            ->where('re.RTA_Estado_Id', '=', 5)
+            ->where('af.ACT_FIN_Revisado', '=', 0)
             ->get();
         return view('cliente.actividades.inicio', compact('actividadesPendientes', 'datos', 'notificaciones', 'cantidad'));
     }
@@ -63,16 +64,23 @@ class ActividadesController extends Controller
             ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
             ->get();
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
+            ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')
             ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->get();
+        $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
+        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
+            ->select('u.*', 'af.*', 'r.*')
+            ->where('af.ACT_FIN_Actividad_Id', '=', $actividadFinalizada->ACT_FIN_Actividad_Id)
+            ->where('r.RTA_Titulo', '<>', null)->get();
         $perfil = DB::table('TBL_Usuarios as u')
             ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->first();
-        return view('cliente.actividades.aprobacion', compact('actividadesPendientes', 'datos', 'perfil', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
+        return view('cliente.actividades.aprobacion', compact('actividadesPendientes', 'datos', 'perfil', 'documentosSoporte', 'documentosEvidencia', 'respuestasAnteriores', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -95,32 +103,43 @@ class ActividadesController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
-        ActividadesFinalizadas::findOrFail($request->id)->update([
-            'ACT_FIN_Estado_Id'=>6,
-            'ACT_FIN_Respuesta' => $request->ACT_FIN_Respuesta,
-            'ACT_FIN_Fecha_Respuesta' => Carbon::now()
-        ]);
-        $actividad = $this->actividad($request->id);
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 6,
-            'HST_EST_Actividad' => $actividad->id
-        ]);
-        Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Id'=>1]);
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $trabajador = DB::table('TBL_Actividades as a')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('a.id', '=', $actividad->id)
+        $rtaTest = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Usuario_Id', '<>', 0)
             ->first();
-        Notificaciones::crearNotificacion(
-            'El Cliente '.$datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
-            session()->get('Usuario_Id'),
-            $trabajador->ACT_Trabajador_Id,
-            'actividades_perfil_operacion',
-            null,
-            null,
-            'clear'
-        );
+        if($rtaTest!=null){
+            Respuesta::create([
+                'RTA_Titulo' => $request->RTA_Titulo,
+                'RTA_Respuesta' => $request->RTA_Respuesta,
+                'RTA_Actividad_Finalizada_Id' => $request->id,
+                'RTA_Estado_Id' => 6,
+                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
+            ActividadesFinalizadas::findOrFail($rtaTest->RTA_Actividad_Finalizada_Id)->update([
+                'ACT_FIN_Revisado' => 1
+            ]);
+            $actividad = $this->actividad($request->id);
+            HistorialEstados::create([
+                'HST_EST_Fecha' => Carbon::now(),
+                'HST_EST_Estado' => 6,
+                'HST_EST_Actividad' => $actividad->id
+            ]);
+            Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Id'=>1]);
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $trabajador = DB::table('TBL_Actividades as a')
+                ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+                ->where('a.id', '=', $actividad->id)
+                ->first();
+            Notificaciones::crearNotificacion(
+                'El Cliente '.$datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
+                session()->get('Usuario_Id'),
+                $trabajador->ACT_Trabajador_Id,
+                'actividades_perfil_operacion',
+                null,
+                null,
+                'clear'
+            );
+        }
         return redirect()->route('actividades_cliente')->with('mensaje', 'Respuesta envíada');
     }
 
@@ -143,6 +162,9 @@ class ActividadesController extends Controller
                 'RTA_Estado_Id' => 5,
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),
                 'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
+            ActividadesFinalizadas::findOrFail($rtaTest->RTA_Actividad_Finalizada_Id)->update([
+                'ACT_FIN_Revisado' => 1
             ]);
             $actividad = $this->actividad($request->id);
             HistorialEstados::create([

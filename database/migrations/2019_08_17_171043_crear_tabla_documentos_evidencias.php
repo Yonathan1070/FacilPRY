@@ -15,8 +15,8 @@ class CrearTablaDocumentosEvidencias extends Migration
     {
         Schema::create('TBL_Documentos_Evidencias', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('DOC_Actividad_Id');
-            $table->foreign('DOC_Actividad_Id', 'FK_Documentos_Evidencias_Actividades')->references('id')->on('TBL_Actividades')->onDelete('restrict')->onUpdate('restrict');
+            $table->unsignedBigInteger('DOC_Actividad_Finalizada_Id');
+            $table->foreign('DOC_Actividad_Finalizada_Id', 'FK_Documentos_Evidencias_Actividades_Finalizadas')->references('id')->on('TBL_Actividades_Finalizadas')->onDelete('restrict')->onUpdate('restrict');
             $table->text('ACT_Documento_Evidencia_Actividad')->nullable();
             $table->timestamps();
             $table->charset = 'utf8mb4';

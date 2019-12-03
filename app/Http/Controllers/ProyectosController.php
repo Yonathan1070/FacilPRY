@@ -133,7 +133,9 @@ class ProyectosController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('e.EST_Nombre_Estado', '=', 'Finalizado')
+            ->where('e.EST_Nombre_Estado', '<>', 'En Proceso')
+            ->where('e.EST_Nombre_Estado', '<>', 'Atrasado')
+            ->where('e.EST_Nombre_Estado', '<>', 'Rechazado')
             ->where('p.id', '=', $id)
             ->get();
         
@@ -143,7 +145,7 @@ class ProyectosController extends Controller
             $porcentaje = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales)*100;
         }
         $dato = new stdClass();
-        $dato->porcentaje = $porcentaje;
+        $dato->porcentaje = (int)$porcentaje;
         return json_encode($dato);
     }
 

@@ -58,13 +58,14 @@ class InicioController extends Controller
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
             ->where('af.Id', '=', $id)
+            ->orderByDesc('af.created_at')
             ->first();
         $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
             ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
             ->get();
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
-            ->where('a.id', '=', $actividadesPendientes->Id_Act)
+            ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')
+            ->where('a.id', '=', $id)
             ->get();
         $perfil = DB::table('TBL_Usuarios as u')
             ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
@@ -72,7 +73,14 @@ class InicioController extends Controller
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->first();
-        return view('tester.aprobacion', compact('actividadesPendientes', 'perfil', 'datos', 'documentosSoporte', 'documentosEvidencia', 'notificaciones', 'cantidad'));
+        $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
+        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
+            ->select('r.*', 'u.*', 'af.*')
+            ->where('af.ACT_FIN_Actividad_Id', '=', $actividadFinalizada->ACT_FIN_Actividad_Id)
+            ->where('r.RTA_Titulo', '<>', null)->get();
+        return view('tester.aprobacion', compact('actividadesPendientes', 'perfil', 'datos', 'documentosSoporte', 'documentosEvidencia', 'respuestasAnteriores', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -95,10 +103,18 @@ class InicioController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
+        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Titulo', '=', null)
+            ->first()
+            ->update([
+                'RTA_Titulo'=>$request->RTA_Titulo,
+                'RTA_Respuesta' => $request->RTA_Respuesta,
+                'RTA_Estado_Id' => 6,
+                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
         ActividadesFinalizadas::findOrFail($request->id)->update([
-            'ACT_FIN_Estado_Id'=>6,
-            'ACT_FIN_Respuesta' => $request->ACT_FIN_Respuesta,
-            'ACT_FIN_Fecha_Respuesta' => Carbon::now()
+            'ACT_FIN_Revisado' => 1
         ]);
         $actividad = $this->actividad($request->id);
         HistorialEstados::create([
@@ -107,6 +123,11 @@ class InicioController extends Controller
             'HST_EST_Actividad' => $actividad->id
         ]);
         Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Id'=>1]);
+        HistorialEstados::create([
+            'HST_EST_Fecha' => Carbon::now(),
+            'HST_EST_Estado' => 1,
+            'HST_EST_Actividad' => $actividad->id
+        ]);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $trabajador = DB::table('TBL_Actividades as a')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
@@ -142,6 +163,9 @@ class InicioController extends Controller
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);
+        ActividadesFinalizadas::findOrFail($request->id)->update([
+            'ACT_FIN_Revisado' => 1
+        ]);
         $idActFin = ActividadesFinalizadas::orderBy('created_at')->first()->id;
         $actividad = $this->actividad($request->id);
         HistorialEstados::create([

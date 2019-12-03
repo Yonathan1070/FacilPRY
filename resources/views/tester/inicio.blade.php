@@ -15,7 +15,7 @@ Inicio
                     </div>
                     <div class="body table-responsive">
                         @if (count($actividadesPendientes)<=0)
-                            <div class="alert alert-warning">
+                            <div class="alert alert-info">
                                 No cuenta con Actividades pendientes de aprobación.
                             </div>
                         @else

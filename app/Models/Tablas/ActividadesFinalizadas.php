@@ -10,6 +10,7 @@ class ActividadesFinalizadas extends Model
     protected $fillable = ['ACT_FIN_Titulo',
         'ACT_FIN_Descripcion',
         'ACT_FIN_Actividad_Id',
-        'ACT_FIN_Fecha_Finalizacion'];
+        'ACT_FIN_Fecha_Finalizacion',
+        'ACT_FIN_Revisado'];
     protected $guarded = ['id'];
 }
