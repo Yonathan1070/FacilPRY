@@ -31,9 +31,8 @@ class PerfilOperacionController extends Controller
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*', 'r.RLS_Nombre_Rol')
+            ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol')
             ->where('r.RLS_Rol_Id', '=', '6')
-            ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
         return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
@@ -155,12 +154,13 @@ class PerfilOperacionController extends Controller
     public function eliminar(Request $request, $id)
     {
         if ($request->ajax()) {
-            try {
-                $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-                $datosU = Usuarios::findOrFail($id);
-                Usuarios::destroy($id);
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($id);
+            $usuario = Usuarios::findOrFail($id);
+            if($usuario != null){
+                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
                 Notificaciones::crearNotificacion(
-                    $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha eliminado al usuario '.$datosU->USR_Nombres_Usuario,
+                    $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha inhabilitado de sus funciones al usuario '.$datosU->USR_Nombres_Usuario,
                     session()->get('Usuario_Id'),
                     $datos->USR_Supervisor_Id,
                     null,
@@ -169,9 +169,29 @@ class PerfilOperacionController extends Controller
                     'delete_forever'
                 );
                 return response()->json(['mensaje' => 'ok']);
-            } catch (QueryException $e) {
+            }else{
                 return response()->json(['mensaje' => 'ng']);
             }
         }
+    }
+
+    public function agregar($id)
+    {
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosU = Usuarios::findOrFail($id);
+        $usuario = Usuarios::findOrFail($id);
+        if($usuario != null){
+            UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+            Notificaciones::crearNotificacion(
+            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha inhabilitado de sus funciones al usuario '.$datosU->USR_Nombres_Usuario,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                null,
+                null,
+                null,
+                'arrow_upward'
+            );
+        }
+        return redirect()->route('perfil_operacion_director')->with('mensaje', 'Perfil de operación reingresado con exito');
     }
 }

@@ -98,7 +98,7 @@ Cobros
                             <input type="hidden" name="id" id="id" value="{{$id}}">
                             <div class="form-line">
                                 <input type="number" class="form-control" name="ACT_Costo_Actividad" id="ACT_Costo_Actividad"
-                                    value="{{old('ACT_Costo_Actividad', $actividades->ACT_Costo_Actividad ?? '')}}" min="1000" required>
+                                    value="{{old('ACT_Costo_Estimado_Actividad', $actividades->ACT_Costo_Estimado_Actividad ?? '')}}" min="1000" required>
                                 <label class="form-label">Costo</label>
                             </div>
                         </div>

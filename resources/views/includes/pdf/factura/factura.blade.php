@@ -297,7 +297,7 @@ Factura
                                         <tr>
                                             <td><span>{{$informacion->ACT_Nombre_Actividad}}</span></td>
                                             <td><span>{{$informacion->ACT_Descripcion_Actividad}}</span></td>
-                                            <td><span data-prefix>$</span><span>{{$informacion->ACT_Costo_Actividad}}</span></td>
+                                            <td><span data-prefix>$</span><span>{{$informacion->ACT_Costo_Real_Actividad}}</span></td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -81,7 +81,7 @@ Cobros
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>{{$proyecto->No_Actividades}}</td>
                                         <td>
-                                            @if ($proyecto->ACT_Costo_Actividad != 0)
+                                            @if ($proyecto->ACT_Costo_Real_Actividad != 0)
                                                 <a href="{{route('generar_factura_finanzas', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
                                                     <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                 </a>

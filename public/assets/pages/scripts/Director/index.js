@@ -24,7 +24,7 @@ $(document).ready(function () {
             data: form.serialize(),
             success: function (respuesta) {
                 if (respuesta.mensaje == "ok") {
-                    form.parents('tr').remove();
+                    location.reload();
                     FacilPry.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
                 } else if (respuesta.mensaje == "rd") {
                     FacilPry.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'FacilPRY', 'error');

@@ -198,7 +198,7 @@ class InicioController extends Controller
             ->select('a.*', 'p.*', 'a.id as Id_Actividad')
             ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
             ->where('es.id', '=', 9)
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->groupBy('p.id')
             ->get();
         
@@ -212,7 +212,7 @@ class InicioController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'r.*', 'a.*', 'u.*', 'fc.*')
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->where('a.ACT_Estado_Id', '=', 9)
             ->where('p.id', '=', $id)
             ->get();
@@ -227,7 +227,7 @@ class InicioController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->where('a.ACT_Estado_Id', '=', 9)
-            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
+            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Real_Actividad) as Costo'))
             ->groupBy('r.REQ_Proyecto_Id')
             ->where('p.id', '=', $id)
             ->first();

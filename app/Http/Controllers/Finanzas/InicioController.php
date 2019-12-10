@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Empresas;
+use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Carbon;
 use PDF;
@@ -31,7 +32,7 @@ class InicioController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
             ->where('e.id', '=', 8)
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->orderBy('p.id')
             ->get();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
@@ -41,8 +42,8 @@ class InicioController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
-            ->where('e.EST_Nombre_Estado', '=', 'Esperando Pago')
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
+            ->where('a.ACT_Estado_Id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
 
@@ -56,6 +57,8 @@ class InicioController extends Controller
      */
     public function agregarCosto($id)
     {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
@@ -68,11 +71,11 @@ class InicioController extends Controller
             ->join('TBL_Usuarios_Roles as urs', 'urs.USR_RLS_Usuario_Id', '=', 'us.id')
             ->join('TBL_Roles as ros', 'ros.id', '=', 'urs.USR_RLS_Rol_Id')
             ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Id', '=', 'a.id')
+            ->join('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Finalizada_Id', '=', 'af.id')
             ->select('af.*', 'a.*', 'p.*', 'u.*', 'ro.*', 'ds.*', 'de.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'ros.RLS_Nombre_Rol as RolT')
             ->where('a.id', '=', $id)
             ->first();
-        return view('finanzas.cobro', compact('datos', 'actividades', 'perfil', 'id'));
+        return view('finanzas.cobro', compact('datos', 'actividades', 'perfil', 'id', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -83,9 +86,17 @@ class InicioController extends Controller
      */
     public function actualizarCosto(Request $request)
     {
+        $actividad = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->where('HRS_ACT_Actividad_Id', '=', $request->id)
+            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
+            ->groupBy('HRS_ACT_Actividad_Id')->first();
+        $trabajador = Usuarios::findOrFail($actividad->ACT_Trabajador_Id);
+        $costoEstimado = $trabajador->USR_Costo_Hora * $actividad->HorasR;
         Actividades::findOrFail($request->id)->update([
             'ACT_Estado_Id' => 9,
-            'ACT_Costo_Actividad' => $request->ACT_Costo_Actividad
+            'ACT_Costo_Estimado_Actividad' => $costoEstimado,
+            'ACT_Costo_Real_Actividad' => $request->ACT_Costo_Actividad
         ]);
         return redirect()->route('inicio_finanzas')->with('mensaje', 'Costo agregado.');
     }
@@ -108,7 +119,7 @@ class InicioController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'a.*', 'u.*', 'r.*', 'fc.*')
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->where('a.ACT_Estado_Id', '=', 9)
             ->where('p.id', '=', $id)
             ->get();
@@ -118,7 +129,7 @@ class InicioController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
+            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Real_Actividad) as Costo'))
             ->groupBy('r.REQ_Proyecto_Id')
             ->where('p.id', '=', $id)
             ->where('a.ACT_Estado_Id', '=', 9)

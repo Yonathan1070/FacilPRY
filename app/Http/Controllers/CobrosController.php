@@ -46,7 +46,7 @@ class CobrosController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->where('e.id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
@@ -106,7 +106,7 @@ class CobrosController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->select('p.*', 'a.*', 'u.*', 'r.*', 'fc.*')
-            ->where('a.ACT_Costo_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
             ->where('a.ACT_Estado_Id', '=', 9)
             ->where('p.id', '=', $id)
             ->get();
@@ -116,7 +116,7 @@ class CobrosController extends Controller
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Actividad) as Costo'))
+            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Real_Actividad) as Costo'))
             ->groupBy('r.REQ_Proyecto_Id')
             ->where('p.id', '=', $id)
             ->where('a.ACT_Estado_Id', '=', 9)

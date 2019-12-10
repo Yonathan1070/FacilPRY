@@ -36,8 +36,8 @@
                                         <th>Nombre y Apellido</th>
                                         <th>Telefono</th>
                                         <th>Correo Electrónico</th>
-                                        <th>Nombre de Usuario</th>
-                                        <th>Tipo de Usuario</th>
+                                        <th>Cargo</th>
+                                        <th>Estado</th>
                                         <th class="width70"></th>
                                     </tr>
                                 </thead>
@@ -48,17 +48,29 @@
                                             <td>{{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}</td>
                                             <td>{{$perfilOperacion->USR_Telefono_Usuario}}</td>
                                             <td>{{$perfilOperacion->USR_Correo_Usuario}}</td>
-                                            <td>{{$perfilOperacion->USR_Nombre_Usuario}}</td>
                                             <td>{{$perfilOperacion->RLS_Nombre_Rol}}</td>
                                             <td>
+                                                @if ($perfilOperacion->USR_RLS_Estado == 1)
+                                                    Activo
+                                                @else
+                                                    Inactivo
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <form class="form-eliminar" action="{{route('eliminar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="d-inline" method="POST">
-                                                        <a href="{{route('editar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                    <a href="{{route('editar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                        <i class="material-icons text-info" style="font-size: 18px;">edit</i>
+                                                    </a>
+                                                    @if ($perfilOperacion->USR_RLS_Estado == 0)
+                                                        <a href="{{route('agregar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                            <i class="material-icons text-success" style="font-size: 18px;">arrow_upward</i>
                                                         </a>
+                                                    @else
                                                     @csrf @method("delete")
-                                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
-                                                        <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
-                                                    </button>
+                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
+                                                            <i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i>
+                                                        </button>
+                                                    @endif
                                                 </form>
                                             </td>
                                         </tr>

@@ -15,13 +15,15 @@
         <label class="form-label">Descripción de la Actividad</label>
     </div>
 </div>
-<div class="form-group form-float">
-    <div class="form-line focused">
-        <input type="file" class="form-control " name="ACT_Documento_Soporte_Actividad[]"
-            id="ACT_Documento_Soporte_Actividad" multiple>
-        <label class="form-label">Documento Soporte</label>
+@if (Request::route()->getName() == 'crear_actividad_trabajador')
+    <div class="form-group form-float">
+        <div class="form-line focused">
+            <input type="file" class="form-control " name="ACT_Documento_Soporte_Actividad[]"
+                id="ACT_Documento_Soporte_Actividad" multiple>
+            <label class="form-label">Documento Soporte</label>
+        </div>
     </div>
-</div>
+@endif
 <div class="row clearfix">
     <div class="col-lg-6">
         <div class="form-group form-float">
@@ -44,32 +46,34 @@
         </div>
     </div>
 </div>
-<div class="row clearfix">
-    <div class="col-lg-6">
-        <div class="form-group form-float">
-            <div class="form-line focused">
-                <select name="ACT_Usuario_Id" id="ACT_Usuario_Id" class="form-control show-tick" data-live-search="true"
-                    required>
-                    <option value="">-- Seleccione un Trabajador --</option>
-                    @foreach ($perfilesOperacion as $perfilOperacion)
-                    <option value="{{$perfilOperacion->id}}">
-                        {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}</option>
-                    @endforeach
-                </select>
+    <div class="row clearfix">
+        <div class="col-lg-6">
+            <div class="form-group form-float">
+                <div class="form-line focused">
+                    <select name="ACT_Usuario_Id" id="ACT_Usuario_Id" class="form-control show-tick" data-live-search="true"
+                        required>
+                        <option value="">-- Seleccione un Trabajador --</option>
+                        @foreach ($perfilesOperacion as $perfilOperacion)
+                        <option value="{{$perfilOperacion->id}}">
+                            {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group form-float">
-            <div class="form-line focused">
-                <select name="ACT_Requerimiento_Id" id="ACT_Requerimiento_Id" class="form-control show-tick" data-live-search="true" data-show-subtext="true" required>
-                    <option value="">-- Seleccione un Requerimiento --</option>
-                    @foreach ($requerimientos as $requerimiento)
-                    <option value="{{$requerimiento->id}}" data-subtext="{{$requerimiento->REQ_Descripcion_Requerimiento}}">
-                        {{$requerimiento->REQ_Nombre_Requerimiento}}</option>
-                    @endforeach
-                </select>
+        @if (Request::route()->getName() == 'crear_actividad_trabajador')
+            <div class="col-lg-6">
+                <div class="form-group form-float">
+                    <div class="form-line focused">
+                        <select name="ACT_Requerimiento_Id" id="ACT_Requerimiento_Id" class="form-control show-tick" data-live-search="true" data-show-subtext="true" required>
+                            <option value="">-- Seleccione un Requerimiento --</option>
+                            @foreach ($requerimientos as $requerimiento)
+                            <option value="{{$requerimiento->id}}" data-subtext="{{$requerimiento->REQ_Descripcion_Requerimiento}}">
+                                {{$requerimiento->REQ_Nombre_Requerimiento}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
-</div>

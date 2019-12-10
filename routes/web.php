@@ -94,6 +94,7 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
         Route::get('{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_director');
         Route::put('{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion_director');
         Route::delete('{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_director');
+        Route::get('{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_director');
     });
 
     //Enroutamiento para Editar Perfil
@@ -163,6 +164,8 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_cliente');
+        Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_cliente');
+        Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_cliente');
         Route::get('{id}/aprobar', 'ActividadesController@aprobarActividad')->name('aprobar_actividad_cliente');
         Route::get('{ruta}/descargar', 'ActividadesController@descargarArchivo')->name('descargar_documento_actividad_cliente');
         Route::post('respuestaR', 'ActividadesController@respuestaRechazado')->name('respuestaR_cliente');
@@ -227,7 +230,8 @@ Route::delete('requerimientos/{idP}-{idR}', 'RequerimientosController@eliminar')
 
 //Rutas CRUD Actividades
 Route::get('actividades/{idP}', 'ActividadesController@index')->name('actividades');
-Route::get('actividades/{idP}/crear', 'ActividadesController@crear')->name('crear_actividad');
+Route::get('actividades/{idP}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
+Route::get('actividades/{idP}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
 Route::post('actividades/crear', 'ActividadesController@guardar')->name('guardar_actividad');
 Route::get('actividades/{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad');
 Route::put('actividades/{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad');
