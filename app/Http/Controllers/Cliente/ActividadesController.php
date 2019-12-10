@@ -88,7 +88,8 @@ class ActividadesController extends Controller
             'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
             'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
             'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
-            'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
+            'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
+            'ACT_FIN_Revisado' => 1
         ]);
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
         foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {

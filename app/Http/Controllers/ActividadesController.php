@@ -192,6 +192,44 @@ class ActividadesController extends Controller
         } return $fechas; 
     } 
 
+    public function detalleActividad($id){
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
+            ->where('af.Id', '=', $id)
+            ->orderByDesc('af.created_at')
+            ->first();
+        $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
+            ->get();
+        $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
+            ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')
+            ->where('a.id', '=', $id)
+            ->get();
+        $perfil = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('a.id', '=', $actividadesPendientes->Id_Act)
+            ->first();
+        $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
+        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
+            ->select('r.*', 'u.*', 'af.*')
+            ->where('af.ACT_FIN_Actividad_Id', '=', $actividadFinalizada->ACT_FIN_Actividad_Id)
+            ->where('r.RTA_Titulo', '<>', null)->get();
+        return view('actividades.detalle', compact('actividadesPendientes', 'perfil', 'datos', 'documentosSoporte', 'documentosEvidencia', 'respuestasAnteriores', 'notificaciones', 'cantidad'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

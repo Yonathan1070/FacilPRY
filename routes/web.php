@@ -166,6 +166,7 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
         Route::get('', 'ActividadesController@index')->name('actividades_cliente');
         Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_cliente');
         Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_cliente');
+        Route::get('{id}/detalle', 'ActividadesController@detalle')->name('detalle_actividad_cliente');
         Route::get('{id}/aprobar', 'ActividadesController@aprobarActividad')->name('aprobar_actividad_cliente');
         Route::get('{ruta}/descargar', 'ActividadesController@descargarArchivo')->name('descargar_documento_actividad_cliente');
         Route::post('respuestaR', 'ActividadesController@respuestaRechazado')->name('respuestaR_cliente');
