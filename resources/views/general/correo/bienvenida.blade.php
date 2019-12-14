@@ -659,7 +659,7 @@
     <!-- HEADER -->
 <table class="w3-ban" width="100%" height="350" border="0" cellspacing="0" cellpadding="0" align="center">
     <tr>
-        <td bgcolor="#00BCD4">
+        <td bgcolor="#131426">
             <table width="620" border="0" cellspacing="0" cellpadding="0" align="center" class="scale">
                 <tr>
                     <td>
@@ -670,7 +670,7 @@
                             <tr>
                                 <td class="wthree-logo" align="center">
                                     <a href="{{route('inicio')}}" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 40px; text-decoration: none; padding: 12px 26px 13px 26px; border-radius: 4px; text-transform:uppercase">
-                                        BIENVENIDO A FACILPRY
+                                        BIENVENIDO(A) A INK BRUTALPRY
                                     </a>
                                 </td>
                             </tr>
@@ -678,7 +678,7 @@
                             <tr>
                                 <td class="agile-main" align="center" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 20px; line-height: 35px;" class="scale-center-both">
                                     ¡Hola, {{$nombre}}!<br>
-                                    ¡Gracias por unirte a FacilPRY! Aquí tienes información para que puedas acceder al Sistema
+                                    ¡Gracias por unirte a Ink BrutalPRY! Aquí tienes información para que puedas acceder al Sistema
                                 </td>
                             </tr>
                             <tr>
@@ -721,7 +721,7 @@
                     <td bgcolor="#FFFFFF">
                         <table width="540" border="0" cellspacing="0" cellpadding="0" align="center" class="agile1 scale">
                             <tr>
-                                <td class="agile-main" style="font-family:Bell Gothic Std; color: #00BCD4; font-size: 22px;" class="scale-center-both">
+                                <td class="agile-main" style="font-family:Bell Gothic Std; color: #131426; font-size: 22px;" class="scale-center-both">
                                     Importante!
                                 </td>
                             </tr>
@@ -768,7 +768,7 @@
     <!-- FOOTER -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
     <tr>
-        <td bgcolor="#00BCD4">
+        <td bgcolor="#131426">
             <table width="620" border="0" cellspacing="0" cellpadding="0" align="center" class="scale">
                 <tr>
                     <td>
@@ -813,7 +813,7 @@
                                 <tr><td class="hg11" height="54">&nbsp;</td></tr>
 								<tr>
 									<td align="center" style="font-family:'Candara', sans-serif; color: #fefefe; font-size: 15px;" class="scale-center-both">
-										© 2019 FacilPRY. Derechos Reservados | Diseñado por <a href="#"> INK-Digital</a>
+										© 2019 InkBrutalPRY. Derechos Reservados | Diseñado por <a href="#"> INK-Digital</a>
 									</td>
 								</tr>
 								<tr><td class="hg11" height="54">&nbsp;</td></tr>

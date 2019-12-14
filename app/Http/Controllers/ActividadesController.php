@@ -8,10 +8,12 @@ use App\Models\Tablas\Requerimientos;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionActividad;
+use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 
 class ActividadesController extends Controller
@@ -120,9 +122,9 @@ class ActividadesController extends Controller
                 return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
-        
+        $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
         if($request->ACT_Usuario_Id == null){
-            $idUsuario = $actividades->first()->PRY_Cliente_Id;
+            $idUsuario = $proyecto->PRY_Cliente_Id;
             $ruta = 'crear_actividad_cliente';
         }else{
             $idUsuario = $request['ACT_Usuario_Id'];
@@ -284,8 +286,9 @@ class ActividadesController extends Controller
 
         $horasAprobar = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'u.*', 'a.*')
+            ->select('ha.id as Id_Horas', 'ha.*', 'r.*', 'u.*', 'a.*')
             ->where('a.id', '=', $idH)
             ->where('ha.HRS_ACT_Cantidad_Horas_Reales', '=', null)
             ->get();

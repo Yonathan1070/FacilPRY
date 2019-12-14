@@ -29,6 +29,7 @@ class MenuUsuario extends Model
     {
         MenuUsuario::asignarInicioPerfilOperacion($id);
         MenuUsuario::asignarActividades($id);
+        MenuUsuario::asignarEmpresas($id);
     }
 
     public static function asignarMenuCliente($id)
@@ -86,74 +87,67 @@ class MenuUsuario extends Model
             'MN_USR_Menu_Id' => 7
         ]);
     }
-    public static function asignarClientes($id)
+    public static function asignarEmpresas($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 8
         ]);
     }
-    public static function asignarProyectos($id)
+    public static function asignarDecisiones($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 9
         ]);
     }
-    public static function asignarDecisiones($id)
+    public static function asignarCobros($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 10
         ]);
     }
-    public static function asignarCobros($id)
+    public static function asignarInicioPerfilOperacion($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 11
         ]);
     }
-    public static function asignarInicioPerfilOperacion($id)
+    public static function asignarActividades($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 12
         ]);
     }
-    public static function asignarActividades($id)
+    public static function asignarInicioTester($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 13
         ]);
     }
-    public static function asignarInicioTester($id)
+    public static function asignarInicioCliente($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 14
         ]);
     }
-    public static function asignarInicioCliente($id)
+    public static function asignarAprobarActividades($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 15
         ]);
     }
-    public static function asignarAprobarActividades($id)
-    {
-        MenuUsuario::create([
-            'MN_USR_Usuario_Id' => $id,
-            'MN_USR_Menu_Id' => 16
-        ]);
-    }
     public static function asignarFinanzas($id)
     {
         MenuUsuario::create([
             'MN_USR_Usuario_Id' => $id,
-            'MN_USR_Menu_Id' => 17
+            'MN_USR_Menu_Id' => 16
         ]);
     }
 }

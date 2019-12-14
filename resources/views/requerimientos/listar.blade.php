@@ -2,8 +2,15 @@
 @section('titulo')
 Crud Requerimientos
 @endsection
+@section('styles')
+    <style>
+        .card .bg-cyan{
+            color: #000 !important; }
+    </style>
+@endsection
 @section("scripts")
-<script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
+    <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
+    <script src="{{asset("assets/pages/scripts/Director/porcentaje.js")}}" type="text/javascript"></script>
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -25,7 +32,7 @@ Crud Requerimientos
                             
                         </li>
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('proyectos')}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('proyectos', ['id'=>$proyecto->PRY_Empresa_Id])}}">
                                 <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                             </a>
                         </li>
@@ -52,8 +59,13 @@ Crud Requerimientos
                             </thead>
                             <tbody>
                                 @foreach ($requerimientos as $requerimiento)
-                                <tr>
-                                    <td>{{$requerimiento->REQ_Nombre_Requerimiento}}</td>
+                                    <tr>
+                                    <td>
+                                        <a onclick="avanceR({{$requerimiento->id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
+                                            {{$requerimiento->REQ_Nombre_Requerimiento}}
+                                        </a>
+                                        <div id="progressBar{{$requerimiento->id}}" style="display: none;"></div>
+                                    </td>
                                     <td>{{$requerimiento->REQ_Descripcion_Requerimiento}}</td>
                                     @if ($permisos['editar']==true || $permisos['eliminar']==true)
                                         <td>

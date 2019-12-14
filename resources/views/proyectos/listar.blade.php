@@ -36,12 +36,12 @@ Crud Proyectos
             <div class="card">
                 <div class="header">
                     <h2>
-                        PROYECTOS
+                        PROYECTOS DE {{$empresa->EMP_Nombre_Empresa}}
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             @if ($permisos['crear']==true)
-                                <a class="btn btn-success waves-effect" href="{{route('crear_proyecto')}}"><i
+                                <a class="btn btn-success waves-effect" href="{{route('crear_proyecto', ['id'=>$empresa->id])}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
                             @endif
                             
@@ -52,7 +52,7 @@ Crud Proyectos
                     @if (count($proyectos)<=0)
                     <div class="alert alert-info">
                         No hay datos que mostrar
-                        <a href="{{route('crear_proyecto')}}" class="alert-link">Clic aquí para agregar!</a>.
+                        <a href="{{route('crear_proyecto', ['id'=>$empresa->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                     </div>
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">

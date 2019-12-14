@@ -6,11 +6,11 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>@yield('titulo', 'FacilPRY') | {{session()->get('Rol_Nombre')}} | FacilPRY</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{asset("assets/bsb/images/favicon.ico")}}" type="image/x-icon">
+    <link rel="icon" href="{{asset("assets/bsb/images/ink_logo.png")}}" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link href="{{asset("assets/bsb/css/fontfamilycss.css")}}" rel="stylesheet" type="text/css">
+    <link href="{{asset("assets/bsb/css/fontfamilyicon.css")}}" rel="stylesheet" type="text/css">
 
     <!-- Bootstrap Core Css -->
     <link href="{{asset("assets/bsb/plugins/bootstrap/css/bootstrap.css")}}" rel="stylesheet">
@@ -43,7 +43,9 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{{route("inicio_cliente")}}">FacilPRY - {{session()->get('Rol_Nombre')}}</a>
+                <a class="navbar-brand" href="{{route("inicio_cliente")}}" style="padding: 1px 1px;">
+                    <img src="{{asset("assets/images/ink_logo.png")}}" height="48px" width="200px" /> - {{session()->get('Rol_Nombre')}}
+                </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">

@@ -205,17 +205,25 @@ Route::put('perfileditar', 'PerfilUsuarioController@actualizarDatos')->name('act
 Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_perfil');
 Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto');
 
+//Rutas CRUD Empresas
+Route::get('empresas', 'EmpresasController@index')->name('empresas');
+Route::get('empresas/crear', 'EmpresasController@crear')->name('crear_empresa');
+Route::post('empresas/crear', 'EmpresasController@guardar')->name('guardar_empresa');
+Route::get('empresas/{id}/editar', 'EmpresasController@editar')->name('editar_empresa');
+Route::put('empresas/{id}', 'EmpresasController@actualizar')->name('actualizar_empresa');
+Route::delete('{id}', 'EmpresasController@eliminar')->name('eliminar_empresas');
+
 //Rutas CRUD Clientes
-Route::get('clientes', 'ClientesController@index')->name('clientes');
-Route::get('clientes/crear', 'ClientesController@crear')->name('crear_cliente');
+Route::get('clientes/{id}', 'ClientesController@index')->name('clientes');
+Route::get('clientes/crear/{id}', 'ClientesController@crear')->name('crear_cliente');
 Route::post('clientes/crear', 'ClientesController@guardar')->name('guardar_cliente');
-Route::get('clientes/{id}/editar', 'ClientesController@editar')->name('editar_cliente');
-Route::put('clientes/{id}', 'ClientesController@actualizar')->name('actualizar_cliente');
+Route::get('clientes/{idC}-{idE}/editar', 'ClientesController@editar')->name('editar_cliente');
+Route::put('clientes/{idC}-{idE}', 'ClientesController@actualizar')->name('actualizar_cliente');
 Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente');
 
 //Rutas CRUD Proyectos
-Route::get('proyectos', 'ProyectosController@index')->name('proyectos');
-Route::get('proyectos/crear', 'ProyectosController@crear')->name('crear_proyecto');
+Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');
+Route::get('proyectos/crear/{id}', 'ProyectosController@crear')->name('crear_proyecto');
 Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
 Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
@@ -228,6 +236,7 @@ Route::post('requerimientos/crear', 'RequerimientosController@guardar')->name('g
 Route::get('requerimientos/{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento');
 Route::put('requerimientos/{idR}/editar', 'RequerimientosController@actualizar')->name('actualizar_requerimiento');
 Route::delete('requerimientos/{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento');
+Route::get('prequerimientos/{id}', 'RequerimientosController@obtenerPorcentaje')->name('obtener_porcentaje_requerimiento');
 
 //Rutas CRUD Actividades
 Route::get('actividades/{idP}', 'ActividadesController@index')->name('actividades');
@@ -248,7 +257,7 @@ Route::get('cobros/{id}/factura', 'CobrosController@generarFactura')->name('gene
 
 //Enrutamiento Usuario General
 Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
-    Route::get('', 'InicioController@index')->name('inicio');
+    Route::get('', 'LoginController@index')->name('inicio');
     Route::get('iniciar-sesion', 'LoginController@index')->name('login');
     Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
     Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');

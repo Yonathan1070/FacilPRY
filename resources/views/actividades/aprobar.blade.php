@@ -18,8 +18,8 @@ Crud Actividades
                     @endforeach
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" onclick="volver()">
-                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver
+                            <a class="btn btn-success waves-effect" onclick="volver()">
+                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Guardar y Volver
                             </a>
                         </li>
                     </ul>
@@ -40,7 +40,8 @@ Crud Actividades
                                     <th style="display: none">Id Hora</th>
                                     <th>Actividad</th>
                                     <th>Descripción</th>
-                                    <th>Persona</th>
+                                    <th>Requerimiento</th>
+                                    <th>Encargado</th>
                                     <th>Horas</th>
                                 </tr>
                             </thead>
@@ -50,6 +51,7 @@ Crud Actividades
                                         <td style="display: none">{{$horas->Id_Horas}}</td>
                                         <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
                                         <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
+                                        <td class="uneditable">{{$horas->REQ_Nombre_Requerimiento}}</td>
                                         <td class="uneditable">{{$horas->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
                                         <td class="hora">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
                                     </tr>

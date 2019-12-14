@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Empresas;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Http\Request;
@@ -20,22 +21,25 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         can('listar-clientes');
         $permisos = ['crear'=> can2('crear-clientes'), 'editar'=>can2('editar-clientes'), 'eliminar'=>can2('eliminar-clientes')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $clientes = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
+        $clientes = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'ud.id', '=', 'uu.USR_Supervisor_Id')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'uu.USR_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'ud.USR_Empresa_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'uu.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*', 'r.RLS_Nombre_Rol')
+            ->select('uu.*', 'r.RLS_Nombre_Rol')
             ->where('ur.USR_RLS_Rol_Id', '=', '5')
             ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
-            ->get();
-        return view('clientes.listar', compact('clientes', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+            ->where('eu.id', '=', $id)->get();
+        $empresa = Empresas::findOrFail($id);
+        return view('clientes.listar', compact('clientes', 'empresa', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
@@ -43,13 +47,14 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function crear()
+    public function crear($id)
     {
         can('crear-clientes');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('clientes.crear', compact('datos', 'notificaciones', 'cantidad'));
+        $empresa = Empresas::findOrFail($id);
+        return view('clientes.crear', compact('datos', 'notificaciones', 'cantidad', 'empresa'));
     }
 
     /**
@@ -106,14 +111,15 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editar($id)
+    public function editar($idC, $idE)
     {
         can('editar-clientes');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $cliente = Usuarios::findOrFail($id);
-        return view('clientes.editar', compact('cliente', 'datos', 'notificaciones', 'cantidad'));
+        $cliente = Usuarios::findOrFail($idC);
+        $empresa = Empresas::findOrFail($idE);
+        return view('clientes.editar', compact('cliente', 'empresa', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -123,10 +129,10 @@ class ClientesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function actualizar(ValidacionUsuario $request, $id)
+    public function actualizar(Request $request, $idC, $idE)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        Usuarios::editarUsuario($request, $id);
+        Usuarios::editarUsuario($request, $idC);
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha actualizado los datos de ' . $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
@@ -139,13 +145,13 @@ class ClientesController extends Controller
         Notificaciones::crearNotificacion(
             $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', susdatos fueron actualizados',
             session()->get('Usuario_Id'),
-            $id,
+            $idC,
             'perfil',
             null,
             null,
             'update'
         );
-        return redirect()->route('clientes')->with('mensaje', 'Cliente actualizado con exito');
+        return redirect()->route('clientes', ['id'=>$idE])->with('mensaje', 'Cliente actualizado con exito');
     }
 
     /**

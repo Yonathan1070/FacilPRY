@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioAdministradorSeeder extends Seeder
 {
@@ -70,8 +71,8 @@ class UsuarioAdministradorSeeder extends Seeder
             'EMP_NIT_Empresa' => '900681523-6',
             'EMP_Telefono_Empresa'  => '2889617',
             'EMP_Direccion_Empresa' => 'Cra 69 # 7-95',
-            'EMP_Correo_Empresa' => 'inkdigital@gmail.com',
-            'EMP_Logo_Empresa' => '1565140718.png',
+            'EMP_Correo_Empresa' => 'gestion@inkdigital.co',
+            'EMP_Logo_Empresa' => '1574183841.png',
         ]);
 
         //Agregar Menús Iniciales
@@ -118,16 +119,10 @@ class UsuarioAdministradorSeeder extends Seeder
             'MN_Icono_Menu' => 'account_circle'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Clientes',
-            'MN_Nombre_Ruta_Menu' => 'clientes',
+            'MN_Nombre_Menu' => 'Empresas',
+            'MN_Nombre_Ruta_Menu' => 'empresas',
             'MN_Orden_Menu' => 3,
-            'MN_Icono_Menu' => 'account_circle'
-        ]);
-        DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Proyectos',
-            'MN_Nombre_Ruta_Menu' => 'proyectos',
-            'MN_Orden_Menu' => 4,
-            'MN_Icono_Menu' => 'note_add'
+            'MN_Icono_Menu' => 'business'
         ]);
         DB::table('TBL_Menu')->insert([
             'MN_Nombre_Menu' => 'Decisiones',
@@ -154,7 +149,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'MN_Icono_Menu' => 'toc'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Inicio Tester',
+            'MN_Nombre_Menu' => 'Validador',
             'MN_Nombre_Ruta_Menu' => 'inicio_tester',
             'MN_Orden_Menu' => 1,
             'MN_Icono_Menu' => 'home'
@@ -166,7 +161,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'MN_Icono_Menu' => 'home'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Aprobar Actividades',
+            'MN_Nombre_Menu' => 'Actividades',
             'MN_Nombre_Ruta_Menu' => 'actividades_cliente',
             'MN_Orden_Menu' => 2,
             'MN_Icono_Menu' => 'toc'
@@ -175,7 +170,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'MN_Nombre_Menu' => 'Inicio Finanzas',
             'MN_Nombre_Ruta_Menu' => 'inicio_finanzas',
             'MN_Orden_Menu' => 1,
-            'MN_Icono_Menu' => 'home'
+            'MN_Icono_Menu' => 'playlist_add_check'
         ]);
 
         //Agregar Permisos Iniciales
@@ -186,6 +181,10 @@ class UsuarioAdministradorSeeder extends Seeder
         DB::table('TBL_Permiso')->insert([
             'PRM_Nombre_Permiso' => 'Crear Actividades',
             'PRM_Slug_Permiso' => 'crear-actividades'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Actividades Cliente',
+            'PRM_Slug_Permiso' => 'crear-actividades-cliente'
         ]);
         DB::table('TBL_Permiso')->insert([
             'PRM_Nombre_Permiso' => 'Editar Actividades',
@@ -275,6 +274,22 @@ class UsuarioAdministradorSeeder extends Seeder
             'PRM_Nombre_Permiso' => 'Eliminar Roles',
             'PRM_Slug_Permiso' => 'eliminar-roles'
         ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Empresas',
+            'PRM_Slug_Permiso' => 'listar-empresas'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Empresas',
+            'PRM_Slug_Permiso' => 'crear-empresas'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Empresas',
+            'PRM_Slug_Permiso' => 'editar-empresas'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Empresas',
+            'PRM_Slug_Permiso' => 'eliminar-empresas'
+        ]);
 
         //Crear Roles Iniciales
         DB::table('TBL_Roles')->insert([
@@ -317,17 +332,17 @@ class UsuarioAdministradorSeeder extends Seeder
 
         //Agregar Usuario Administrador
         DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula',
-            'USR_Documento_Usuario' => '1070979976',
-            'USR_Nombres_Usuario' => 'Yonathan',
-            'USR_Apellidos_Usuario'  => 'Bohorquez',
-            'USR_Fecha_Nacimiento_Usuario' => '1997/02/10',
-            'USR_Direccion_Residencia_Usuario' => 'Calle 5 # 13-18',
-            'USR_Telefono_Usuario' => '3102144993',
-            'USR_Correo_Usuario' => 'yonathancam@hotmail.com',
-            'USR_Nombre_Usuario' => 'yonny',
-            'password' => bcrypt('yonny'),
-            'USR_Foto_Perfil_Usuario' => '1565046183.png',
+            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
+            'USR_Documento_Usuario' => '80845861',
+            'USR_Nombres_Usuario' => 'Alejandro',
+            'USR_Apellidos_Usuario'  => 'Ayure',
+            'USR_Fecha_Nacimiento_Usuario' => '1986/02/01',
+            'USR_Direccion_Residencia_Usuario' => 'Calle 10A # 72C-32',
+            'USR_Telefono_Usuario' => '3164637827',
+            'USR_Correo_Usuario' => 'alejandro@inkdigital.co',
+            'USR_Nombre_Usuario' => 'aayure',
+            'password' => bcrypt('aayure'),
+            'USR_Foto_Perfil_Usuario' => null,
             'USR_Supervisor_Id' => 0,
             'USR_Empresa_Id' => 1
         ]);
@@ -348,7 +363,7 @@ class UsuarioAdministradorSeeder extends Seeder
         ]);
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 1,
-            'MN_USR_Menu_Id' => 10
+            'MN_USR_Menu_Id' => 9
         ]);
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 1,
@@ -365,7 +380,7 @@ class UsuarioAdministradorSeeder extends Seeder
 
         //Agregar Usuario Financiero
         DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula',
+            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
             'USR_Documento_Usuario' => '35526078',
             'USR_Nombres_Usuario' => 'Maria',
             'USR_Apellidos_Usuario'  => 'Rincon',
@@ -375,7 +390,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Correo_Usuario' => 'rosamendez74@hotmail.com',
             'USR_Nombre_Usuario' => 'rosa',
             'password' => bcrypt('rosa'),
-            'USR_Foto_Perfil_Usuario' => '1565106322.jpg',
+            'USR_Foto_Perfil_Usuario' => null,
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
@@ -388,17 +403,17 @@ class UsuarioAdministradorSeeder extends Seeder
         //Asignar Menú
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 2,
-            'MN_USR_Menu_Id' => 17
+            'MN_USR_Menu_Id' => 16
         ]);
         //Asignar Permiso
         DB::table('TBL_Permiso_Usuario')->insert([
             'PRM_USR_Usuario_Id' => 2,
-            'PRM_USR_Permiso_Id' => 14
+            'PRM_USR_Permiso_Id' => 15
         ]);
 
         //Agregar Usuario Tester
         DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula',
+            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
             'USR_Documento_Usuario' => '80393256',
             'USR_Nombres_Usuario' => 'Alirio',
             'USR_Apellidos_Usuario'  => 'Mendez',
@@ -408,7 +423,7 @@ class UsuarioAdministradorSeeder extends Seeder
             'USR_Correo_Usuario' => 'alirimendez@hotmail.com',
             'USR_Nombre_Usuario' => 'alirio',
             'password' => bcrypt('alirio'),
-            'USR_Foto_Perfil_Usuario' => '1565129434.jpg',
+            'USR_Foto_Perfil_Usuario' => null,
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
         ]);
@@ -421,12 +436,12 @@ class UsuarioAdministradorSeeder extends Seeder
         //Asignar Menú
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 3,
-            'MN_USR_Menu_Id' => 14
+            'MN_USR_Menu_Id' => 13
         ]);
         //Asignar Permiso
         DB::table('TBL_Permiso_Usuario')->insert([
             'PRM_USR_Usuario_Id' => 3,
-            'PRM_USR_Permiso_Id' => 14
+            'PRM_USR_Permiso_Id' => 15
         ]);
     }
 }

@@ -1,12 +1,14 @@
 @extends("theme.bsb.general.layout")
-
+@section('titulo')
+    Inicio Sesión
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <div class="block-header">
         <div class="login-page">
             <div class="login-box">
                 <div class="logo">
-                    <a>Facil<b>PRY</b></a>
+                    <a><img src="{{asset("assets/images/ink_logo.png")}}" height="70px" width="200px" /></a>
                 </div>
                 <div class="card">
                     <div class="body">
@@ -39,7 +41,6 @@
                             </div>
                             <div class="row m-t-15 m-b--20">
                                 <div class="col-xs-5">
-                                    <a href="sign-up.html">Registrate Ahora!</a>
                                 </div>
                                 <div class="col-xs-7 align-right">
                                     <a href="{{route('recuperar_clave')}}">¿Olvidaste tu contraseña?</a>

@@ -1,4 +1,4 @@
-<input type="hidden" name="PRY_Empresa_Id" id="PRY_Empresa_Id" value="{{session()->get('Empresa_Id')}}">
+<input type="hidden" name="PRY_Empresa_Id" id="PRY_Empresa_Id" value="{{$empresa->id}}">
 <div class="form-group form-float">
     <div class="form-line">
         <input type="text" class="form-control" name="PRY_Nombre_Proyecto" id="PRY_Nombre_Proyecto"

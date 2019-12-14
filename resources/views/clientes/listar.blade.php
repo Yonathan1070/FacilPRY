@@ -17,10 +17,13 @@
                         <ul class="header-dropdown" style="top:10px;">
                             <li class="dropdown">
                                 @if ($permisos['crear']==true)
-                                    <a class="btn btn-success waves-effect" href="{{route('crear_cliente')}}">
+                                    <a class="btn btn-success waves-effect" href="{{route('crear_cliente', ['id'=>$empresa->id])}}">
                                         <i class="material-icons" style="color:white;">add</i> Nuevo Cliente
                                     </a>
                                 @endif
+                                <a class="btn btn-danger waves-effect" href="{{route('empresas')}}">
+                                    <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Empresas
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -28,7 +31,7 @@
                         @if (count($clientes)<=0)
                             <div class="alert alert-info">
                                 No hay Datos que mostrar
-                                <a href="{{route('crear_cliente')}}" class="alert-link">Clic aquí para agregar!</a>.
+                                <a href="{{route('crear_cliente', ['id'=>$empresa->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                             </div>
                         @else
                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -56,7 +59,7 @@
                                                 <td>
                                                     <form class="form-eliminar" action="{{route('eliminar_cliente', ['id'=>$cliente->id])}}" class="d-inline" method="POST">
                                                         @if ($permisos['editar']==true)
-                                                            <a href="{{route('editar_cliente', ['id'=>$cliente->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                            <a href="{{route('editar_cliente', ['idC'=>$cliente->id, 'idE'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                                 <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                             </a>
                                                         @endif    

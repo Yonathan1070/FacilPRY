@@ -10,6 +10,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class RequerimientosController extends Controller
 {
@@ -174,5 +175,31 @@ class RequerimientosController extends Controller
                 }
             }
         }
+    }
+
+    public function obtenerPorcentaje($id)
+    {
+        $actividadesTotales = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->where('r.id', '=', $id)
+            ->get();
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('e.EST_Nombre_Estado', '<>', 'En Proceso')
+            ->where('e.EST_Nombre_Estado', '<>', 'Atrasado')
+            ->where('e.EST_Nombre_Estado', '<>', 'Rechazado')
+            ->where('r.id', '=', $id)
+            ->get();
+        
+        if((double)count($actividadesTotales) == 0){
+            $porcentaje = 0;
+        }else {
+            $porcentaje = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales)*100;
+        }
+        $dato = new stdClass();
+        $dato->porcentaje = (int)$porcentaje;
+        return json_encode($dato);
     }
 }

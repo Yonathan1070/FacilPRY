@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>@yield('titulo', 'FacilPRY') | FacilPRY</title>
+    <title>@yield('titulo', 'Ink Brutal Pry') | Ink Brutal Pry</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{asset("assets/bsb/images/favicon.ico")}}" type="image/x-icon">
+    <link rel="icon" href="{{asset("assets/bsb/images/ink_logo.png")}}" type="image/x-icon">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link href="{{asset("assets/bsb/css/fontfamilycss.css")}}" rel="stylesheet" type="text/css">
+    <link href="{{asset("assets/bsb/css/fontfamilyicon.css")}}" rel="stylesheet" type="text/css">
 
     <!-- Bootstrap Core Css -->
     <link href="{{asset("assets/bsb/plugins/bootstrap/css/bootstrap.css")}}" rel="stylesheet">
@@ -40,16 +40,14 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{{route("inicio")}}">FacilPRY</a>
+                <a class="navbar-brand" href="{{route("inicio")}}" style="padding: 1px 1px;">
+                    <img src="{{asset("assets/images/ink_logo.png")}}" height="48px" width="200px" />
+                </a>
             </div>
         </div>
     </nav>
-    <!-- #Top Bar -->
-    <section>
-        @include("theme.bsb.general.menu")
-    </section>
 
-    <section class="content">
+    <section class="content" style="margin: 100px 15px 0 10px;">
         @yield('contenido')
     </section>
 

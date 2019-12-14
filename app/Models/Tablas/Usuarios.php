@@ -60,7 +60,7 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['USR_Nombre_Usuario']),
             'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => session()->get('Empresa_Id'),
+            'USR_Empresa_Id' => $request['id'],
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
     }

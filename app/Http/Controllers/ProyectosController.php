@@ -8,6 +8,7 @@ use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionProyecto;
+use App\Models\Tablas\Empresas;
 use App\Models\Tablas\Notificaciones;
 use PDF;
 use stdClass;
@@ -19,19 +20,21 @@ class ProyectosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         can('listar-proyectos');
         $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarA'=>can2('listar-actividades')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyectos = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Proyectos as p', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*', 'u.USR_Nombres_Usuario', 'u.USR_Apellidos_Usuario')
-            ->orderBy('p.Id')
+        $empresa = Empresas::findOrFail($id);
+        $proyectos = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Empresas as e', 'e.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('u.*', 'p.*')
+            ->where('p.PRY_Empresa_Id', '=', $id)
             ->get();
-        return view('proyectos.listar', compact('proyectos', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        return view('proyectos.listar', compact('proyectos', 'empresa', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
@@ -39,21 +42,23 @@ class ProyectosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function crear()
+    public function crear($id)
     {
         can('crear-proyectos');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $empresa = Empresas::findOrFail($id);
         $clientes = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
             ->select('u.*', 'r.RLS_Nombre_Rol')
             ->where('ur.USR_RLS_Rol_Id', '=', '5')
             ->where('ur.USR_RLS_Estado', '=', '1')
+            ->where('u.USR_Empresa_Id', '=', $id)
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
-        return view('proyectos.crear', compact('clientes', 'datos', 'notificaciones', 'cantidad'));
+        return view('proyectos.crear', compact('clientes', 'empresa', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -105,6 +110,9 @@ class ProyectosController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'us.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('ro.id', '<>', 5)
             ->where('p.id', '=', $id)
             ->select('a.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'p.*', 'r.*', 'u.*', 'es.*', 'e.*')
             ->get();

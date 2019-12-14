@@ -65,6 +65,7 @@ class PerfilOperacionController extends Controller
         UsuariosRoles::asignarRol($request['USR_RLS_Rol_Id'], $perfil->id);
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
         PermisoUsuario::asignarPermisoPerfil($perfil->id);
+        PermisoUsuario::asignarPermisosPerfilOperacion($perfil->id);
         Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido '.$request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));

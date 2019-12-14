@@ -16,19 +16,19 @@ Crud Actividades
                 </h2>
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">
-                        @if ($permisos['crear']==true)
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_trabajador', ['idP'=>$proyecto->id])}}">
+                        @if ($permisos['crearC']==true)
+                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_cliente', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nueva Actividad Cliente
                             </a>
                         @endif
-                        @if ($permisos['crearC'] == true)
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_cliente', ['idP'=>$proyecto->id])}}">
+                        @if ($permisos['crear'] == true)
+                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_trabajador', ['idP'=>$proyecto->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nueva Actividad Trabajador
                             </a>
                         @endif
                     </li>
                     <li class="dropdown">
-                        <a class="btn btn-danger waves-effect" href="{{route('proyectos')}}">
+                        <a class="btn btn-danger waves-effect" href="{{route('proyectos', ['id'=>$proyecto->PRY_Empresa_Id])}}">
                             <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                         </a>
                     </li>
@@ -62,6 +62,7 @@ Crud Actividades
                                                     <tr>
                                                         <th>Actividad</th>
                                                         <th>Descripción</th>
+                                                        <th>Requerimiento</th>
                                                         <th>Persona</th>
                                                         <th>Estado</th>
                                                     </tr>
@@ -71,6 +72,7 @@ Crud Actividades
                                                         <tr>
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
+                                                            <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                         </tr>
