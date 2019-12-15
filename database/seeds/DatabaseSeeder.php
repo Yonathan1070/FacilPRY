@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'TBL_Decisiones',
             'TBL_Calificaciones',
             'TBL_Menu',
-            'TNL_Menu_Usuario',
+            'TBL_Menu_Usuario',
             'TBL_Proyectos',
             'TBL_Requerimientos',
             'TBL_Estados',
@@ -31,13 +31,22 @@ class DatabaseSeeder extends Seeder
             'TBL_Horas_Actividad',
             'TBL_Actividades_Finalizadas',
             'TBL_Documentos_Soporte',
-            'TBL_Documentos_Evidencia',
+            'TBL_Documentos_Evidencias',
             'TBL_Notificaciones',
             'TBL_Permiso',
             'TBL_Permiso_Usuario',
             'TBL_Respuesta'
         ]);
-        $this->call(UsuarioAdministradorSeeder::class);
+        $this->call(TablaEmpresasSeeder::class);
+        $this->call(TablaEstadosSeeder::class);
+        $this->call(TablaIndicadoresSeeder::class);
+        $this->call(TablaMenuSeeder::class);
+        $this->call(TablaRolesSeeder::class);
+        $this->call(TablaPermisoSeeder::class);
+        $this->call(TablaUsuariosSeeder::class);
+        $this->call(TablaMenuUsuarioSeeder::class);
+        $this->call(TablaPermisoUsuarioSeeder::class);
+        $this->call(TablaUsuariosRolesSeeder::class);
     }
 
     protected function truncateTablas(array $tablas){
