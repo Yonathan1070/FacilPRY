@@ -11,9 +11,9 @@ $(document).ready(function(){
             data:data,
             success:function(respuesta){
                 if (respuesta.mensaje == "ok") {
-                    FacilPry.notificaciones('Menú Modificado', 'FacilPRY', 'success');
+                    InkBrutalPRY.notificaciones('Menú Modificado', 'InkBrutalPRY', 'success');
                 } else{
-                    FacilPry.notificaciones('No se ha podido modificar el orden del menú', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('No se ha podido modificar el orden del menú', 'InkBrutalPRY', 'error');
                 }
             }
         });

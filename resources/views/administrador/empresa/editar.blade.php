@@ -15,9 +15,9 @@ Editar Datos Empresa
                                     <input type="file" id="EMP_Logo_Empresa"/>
                                 </form>
                                 @if ($datos->EMP_Logo_Empresa==null)
-                                        <img id="logoEmpresa" src="{{asset("assets/bsb/images/Logos/defecto.png")}}" width="128" height="128" alt="FacilPRY - Logo Empresa" />
+                                        <img id="logoEmpresa" src="{{asset("assets/bsb/images/Logos/defecto.png")}}" width="128" height="128" alt="InkBrutalPRY - Logo Empresa" />
                                 @else
-                                        <img id="logoEmpresa" src="{{asset('/assets/bsb/images/Logos/'.$datos->EMP_Logo_Empresa)}}" width="128" height="128" alt="FacilPRY - Logo Empresa" />
+                                        <img id="logoEmpresa" src="{{asset('/assets/bsb/images/Logos/'.$datos->EMP_Logo_Empresa)}}" width="128" height="128" alt="InkBrutalPRY - Logo Empresa" />
                                 @endif
                                 <div class="text">Cambiar Foto</div>
                             </div>

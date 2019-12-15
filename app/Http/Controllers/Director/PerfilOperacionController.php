@@ -77,7 +77,7 @@ class PerfilOperacionController extends Controller
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a FacilPRY, verifique sus datos.',
+            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a InkBrutalPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
             $perfil->id,
             'perfil',

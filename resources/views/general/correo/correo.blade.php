@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Correo de recuperación de contraseña | FacilPRY</title>
+<title>Correo de recuperación de contraseña | InkBrutalPRY</title>
 <!-- Custom Theme files -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -669,7 +669,7 @@
                             </tr>
                             <tr>
                                 <td class="wthree-logo" align="center">
-                                    <a href="{{route('inicio')}}" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 40px; text-decoration: none; padding: 12px 26px 13px 26px; border-radius: 4px; text-transform:uppercase">FACILPRY</a>
+                                    <a href="{{route('inicio')}}" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 40px; text-decoration: none; padding: 12px 26px 13px 26px; border-radius: 4px; text-transform:uppercase">INKBRUTALPRY</a>
                                 </td>
                             </tr>
                             <tr><td class="logo-w3l-h" height="54">&nbsp;</td></tr>
@@ -818,7 +818,7 @@
                                 <tr><td class="hg11" height="54">&nbsp;</td></tr>
 								<tr>
 									<td align="center" style="font-family:'Candara', sans-serif; color: #fefefe; font-size: 15px;" class="scale-center-both">
-										© 2019 FacilPRY. Derechos Reservados | Diseñado por <a href="#"> INK-Digital</a>
+										© 2019 INKBRUTALPRY. Derechos Reservados | Diseñado por <a href="#"> INK-Digital</a>
 									</td>
 								</tr>
 								<tr><td class="hg11" height="54">&nbsp;</td></tr>

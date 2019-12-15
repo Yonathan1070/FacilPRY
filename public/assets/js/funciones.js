@@ -1,4 +1,4 @@
-var FacilPry = function (){
+var InkBrutalPRY = function (){
     return{
         validacionGeneral: function(id, reglas, mensajes){
             const formulario = $('#' + id);

@@ -25,13 +25,13 @@ $(document).ready(function () {
             success: function (respuesta) {
                 if (respuesta.mensaje == "ok") {
                     location.reload();
-                    FacilPry.notificaciones('El registro fue eliminado correctamente', 'FacilPRY', 'success');
+                    InkBrutalPRY.notificaciones('El registro fue eliminado correctamente', 'InkBrutalPRY', 'success');
                 } else if (respuesta.mensaje == "rd") {
-                    FacilPry.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'InkBrutalPRY', 'error');
                 } else if (respuesta.mensaje == "np") {
-                    FacilPry.notificaciones('No tiene permisos para entrar en este modulo.', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('No tiene permisos para entrar en este modulo.', 'InkBrutalPRY', 'error');
                 } else {
-                    FacilPry.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('El registro no pudo ser eliminado o hay otro recurso usándolo', 'InkBrutalPRY', 'error');
                 }
             },
             error: function () {

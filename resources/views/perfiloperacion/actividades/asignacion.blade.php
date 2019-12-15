@@ -88,13 +88,13 @@ Asignación de Horas
             data: {"_token":"{{ csrf_token() }}", HRS_ACT_Cantidad_Horas_Asignadas:newValue},
             success:function(data){
                 if(data.msg == "alerta")
-                    FacilPry.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'FacilPRY', 'warning');
+                    InkBrutalPRY.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'InkBrutalPRY', 'warning');
                 if(data.msg == "error")
-                    FacilPry.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'InkBrutalPRY', 'error');
                 if(data.msg == "errorF")
-                    FacilPry.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'FacilPRY', 'error');
+                    InkBrutalPRY.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'InkBrutalPRY', 'error');
                 if(data.msg == "exito")
-                    FacilPry.notificaciones('Horas Asignadas', 'FacilPRY', 'success');
+                    InkBrutalPRY.notificaciones('Horas Asignadas', 'InkBrutalPRY', 'success');
             }
         });
     });

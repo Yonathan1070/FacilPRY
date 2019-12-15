@@ -15,7 +15,7 @@
                         <form action="{{route('enviar_correo')}}" id="forgot_password" method="POST">
                             @csrf
                             <div class="msg">
-                                Ingrese la dirección de correo electrónico con que se encuentre registrado en FacilPRY.<br>
+                                Ingrese la dirección de correo electrónico con que se encuentre registrado en InkBrutalPRY.<br>
                                 Le enviaremos un correo electrónico con su nombre de usuario y un enlace para restablecer su contraseña.
                             </div>
                             <div class="input-group">

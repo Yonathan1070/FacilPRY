@@ -7,21 +7,21 @@ function ajaxRequest(slug, id, menuId) {
         type: 'GET',
         success: function (respuesta) {
             if (respuesta.mensaje == "okMA") {
-                FacilPry.notificaciones('Menú Asignado', 'FacilPRY', 'success');
+                InkBrutalPRY.notificaciones('Menú Asignado', 'InkBrutalPRY', 'success');
             } else if (respuesta.mensaje == "ngMA") {
-                FacilPry.notificaciones('El menú se encuentra asignado', 'FacilPRY', 'error');
+                InkBrutalPRY.notificaciones('El menú se encuentra asignado', 'InkBrutalPRY', 'error');
             }else if (respuesta.mensaje == "okMD") {
-                FacilPry.notificaciones('Menú des-asignado', 'FacilPRY', 'success');
+                InkBrutalPRY.notificaciones('Menú des-asignado', 'InkBrutalPRY', 'success');
             }else if (respuesta.mensaje == "ngMD") {
-                FacilPry.notificaciones('El menú no se encuentra asignado', 'FacilPRY', 'error');
+                InkBrutalPRY.notificaciones('El menú no se encuentra asignado', 'InkBrutalPRY', 'error');
             } else if (respuesta.mensaje == "okPA") {
-                FacilPry.notificaciones('Permiso Asignado.', 'FacilPRY', 'success');
+                InkBrutalPRY.notificaciones('Permiso Asignado.', 'InkBrutalPRY', 'success');
             } else if (respuesta.mensaje == "ngPA") {
-                FacilPry.notificaciones('El Permiso se encuentra asignado', 'FacilPRY', 'error');
+                InkBrutalPRY.notificaciones('El Permiso se encuentra asignado', 'InkBrutalPRY', 'error');
             } else if (respuesta.mensaje == "okPD") {
-                FacilPry.notificaciones('Permiso des-asignado.', 'FacilPRY', 'success');
+                InkBrutalPRY.notificaciones('Permiso des-asignado.', 'InkBrutalPRY', 'success');
             } else if (respuesta.mensaje == "ngPD") {
-                FacilPry.notificaciones('El Permiso no se encuentra asignado', 'FacilPRY', 'error');
+                InkBrutalPRY.notificaciones('El Permiso no se encuentra asignado', 'InkBrutalPRY', 'error');
             }
         },
         error: function () {
