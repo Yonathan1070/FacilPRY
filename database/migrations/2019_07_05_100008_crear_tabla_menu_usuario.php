@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CrearTablaMenuUsuario extends Migration
 {
@@ -31,6 +32,8 @@ class CrearTablaMenuUsuario extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_Menu_Rol');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+        Schema::dropIfExists('TBL_Menu_Usuario');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CrearTablaHorasActividades extends Migration
 {
@@ -33,6 +34,8 @@ class CrearTablaHorasActividades extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_Horas_Actividades');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+        Schema::dropIfExists('TBL_Horas_Actividad');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     }
 }

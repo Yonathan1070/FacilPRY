@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CrearTablaFacturasCobro extends Migration
 {
@@ -33,6 +34,8 @@ class CrearTablaFacturasCobro extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
         Schema::dropIfExists('TBL_Facturas_Cobro');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class CrearTablaActividadesFinalizadas extends Migration
 {
@@ -34,6 +35,8 @@ class CrearTablaActividadesFinalizadas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TBL_ActividadesFinalizadas');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+        Schema::dropIfExists('TBL_Actividades_Finalizadas');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     }
 }
