@@ -18,11 +18,20 @@
         </div>
     </div>
     <div class="form-group form-float">
+        <div class="form-line">
+            <input type="url" name="ACT_FIN_Link" id="ACT_FIN_Link" cols="30" rows="5"
+                class="form-control no-resize" maxlength="1000">
+            <label class="form-label">Link de la entrega</label>
+        </div>
+        <div class="help-info">Inicia con http://, https://, ftp:// etc</div>
+    </div>
+    <div class="form-group form-float">
         <div class="form-line focused">
             <input type="file" class="form-control " name="ACT_Documento_Evidencia_Actividad[]"
-                id="ACT_Documento_Evidencia_Actividad" multiple required>
+                id="ACT_Documento_Evidencia_Actividad" accept=".txt,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.ai" multiple>
             <label class="form-label">Documento Soporte de Actividad Terminada</label>
         </div>
+        <div class="help-info">Tamaño máximo del archivo: 10 Mb</div>
     </div>
 @else
     <input type="hidden" name="Horas_Restantes" id="Horas_Restantes"

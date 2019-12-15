@@ -16,7 +16,8 @@
 <div class="form-group form-float">
     <div class="form-line focused">
         <input type="file" class="form-control " name="ACT_Documento_Evidencia_Actividad[]"
-            id="ACT_Documento_Evidencia_Actividad" multiple required>
+            id="ACT_Documento_Evidencia_Actividad" accept=".txt,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.ai" multiple required>
         <label class="form-label">Documento Soporte de Actividad Terminada</label>
     </div>
+    <div class="help-info">Tamaño máximo del archivo: 10 Mb</div>
 </div>

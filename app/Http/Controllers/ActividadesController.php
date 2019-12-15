@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,6 +17,7 @@ use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class ActividadesController extends Controller
 {
@@ -26,11 +29,11 @@ class ActividadesController extends Controller
     public function index($idP)
     {
         can('listar-actividades');
-        $permisos = ['crear'=>can2('crear-actividades'), 'crearC'=>can2('crear-actividades-cliente')];
+        $permisos = ['crear' => can2('crear-actividades'), 'crearC' => can2('crear-actividades-cliente')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();
-        if(count($requerimientos)<=0){
+        if (count($requerimientos) <= 0) {
             return redirect()->back()->withErrors('No se pueden asignar actividades si no hay requerimientos previamente registrados.');
         }
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -118,16 +121,16 @@ class ActividadesController extends Controller
             ->get();
 
         foreach ($actividades as $actividad) {
-            if($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad){
+            if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad) {
                 return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
         $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
-        if($request->ACT_Usuario_Id == null){
+        if ($request->ACT_Usuario_Id == null) {
             $idUsuario = $proyecto->PRY_Cliente_Id;
             $ruta = 'crear_actividad_cliente';
             $rutaNotificacion = 'actividades_cliente';
-        }else{
+        } else {
             $idUsuario = $request['ACT_Usuario_Id'];
             $ruta = 'crear_actividad_trabajador';
             $rutaNotificacion = 'actividades_perfil_operacion';
@@ -137,7 +140,7 @@ class ActividadesController extends Controller
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Estado_Id' => 1,
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
-            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' '.$request['ACT_Hora_Entrega'],
+            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'],
             'ACT_Costo_Estimado_Actividad' => 0,
             'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
             'ACT_Trabajador_Id' => $idUsuario,
@@ -154,17 +157,17 @@ class ActividadesController extends Controller
                         'DOC_Actividad_Id' => $actividad->id,
                         'ACT_Documento_Soporte_Actividad' => $archivo
                     ]);
-                }else{
+                } else {
                     $actividad->destroy();
                 }
             }
         }
 
-        $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'],$request['ACT_Fecha_Fin_Actividad']);
+        $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']);
         foreach ($rangos as $fecha) {
             HorasActividad::create([
                 'HRS_ACT_Actividad_Id' => $actividad->id,
-                'HRS_ACT_Fecha_Actividad' => $fecha." 23:59:00"
+                'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
             ]);
         }
         HistorialEstados::create([
@@ -184,19 +187,22 @@ class ActividadesController extends Controller
         return redirect()->route($ruta, [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
     }
 
-    private function obtenerFechasRango($fechaInicio, $fechaFin) { 
+    private function obtenerFechasRango($fechaInicio, $fechaFin)
+    {
         // cut hours, because not getting last day when hours of time to is less than hours of time_from 
         // see while loop 
-        $inicio = Carbon::createFromFormat('Y-m-d', substr($fechaInicio, 0, 10)); 
-        $fin = Carbon::createFromFormat('Y-m-d', substr($fechaFin, 0, 10)); 
-        $fechas = []; 
-        while ($inicio->lte($fin)) { 
-            $fechas[] = $inicio->copy()->format('Y-m-d'); 
-            $inicio->addDay(); 
-        } return $fechas; 
-    } 
+        $inicio = Carbon::createFromFormat('Y-m-d', substr($fechaInicio, 0, 10));
+        $fin = Carbon::createFromFormat('Y-m-d', substr($fechaFin, 0, 10));
+        $fechas = [];
+        while ($inicio->lte($fin)) {
+            $fechas[] = $inicio->copy()->format('Y-m-d');
+            $inicio->addDay();
+        }
+        return $fechas;
+    }
 
-    public function detalleActividad($id){
+    public function detalleActividad($id)
+    {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -273,15 +279,16 @@ class ActividadesController extends Controller
     public function eliminar($idP, $idR)
     {
         can('eliminar-actividades');
-        try{
+        try {
             Requerimientos::destroy($idR);
             return redirect()->route('requerimientos', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             return redirect()->route('requerimientos', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
         }
     }
 
-    public function aprobarHoras($idH){
+    public function aprobarHoras($idH)
+    {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -294,14 +301,15 @@ class ActividadesController extends Controller
             ->where('a.id', '=', $idH)
             ->where('ha.HRS_ACT_Cantidad_Horas_Reales', '=', null)
             ->get();
-        if(count($horasAprobar)==0){
+        if (count($horasAprobar) == 0) {
             return redirect()->route('inicio_director')->with('mensaje', 'Las horas de trabajo ya han sido aprobadas.');
         }
         return view('actividades.aprobar', compact('horasAprobar', 'notificaciones', 'cantidad', 'datos'));
         //dd($horasAprobar);
     }
 
-    public function actualizarHoras(Request $request, $idH){
+    public function actualizarHoras(Request $request, $idH)
+    {
         $fecha = HorasActividad::findOrFail($idH);
         $actividades = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id');
@@ -311,27 +319,27 @@ class ActividadesController extends Controller
             ->where('a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id)
             ->where('ha.id', '<>', $idH)
             ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
-        if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<=18){
+        if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 && ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18) {
             HorasActividad::findOrFail($idH)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
                 'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
             return response()->json(['msg' => 'alerta']);
-        }
-        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>18)
+        } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18)
             return response()->json(['msg' => 'error']);
         HorasActividad::findOrFail($idH)->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
-                'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
+            'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
         return response()->json(['msg' => 'exito']);
     }
 
-    public function finalizarAprobacion($idA){
+    public function finalizarAprobacion($idA)
+    {
         $horasActividades = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->get();
         $trabajador = Actividades::findOrFail($horasActividades->first()->HRS_ACT_Actividad_Id);
         foreach ($horasActividades as $actividad) {
-            if($actividad->HRS_ACT_Cantidad_Horas_Reales == null){
+            if ($actividad->HRS_ACT_Cantidad_Horas_Reales == null) {
                 $actividad->update([
                     'HRS_ACT_Cantidad_Horas_Reales' => $actividad->HRS_ACT_Cantidad_Horas_Asignadas
                 ]);

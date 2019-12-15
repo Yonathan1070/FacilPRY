@@ -32,8 +32,9 @@ class ValidadorController extends Controller
             ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
             ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
             ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('RTA_Titulo', '=', null)
+            ->where('re.RTA_Titulo', '=', null)
             ->where('a.ACT_Estado_Id', '=', 3)
+            ->where('re.RTA_Estado_Id', '=', 4)
             ->get();
         return view('tester.inicio', compact('actividadesPendientes', 'datos', 'notificaciones', 'cantidad'));
     }
@@ -164,6 +165,10 @@ class ValidadorController extends Controller
             ]);
         ActividadesFinalizadas::findOrFail($request->id)->update([
             'ACT_FIN_Revisado' => 1
+        ]);
+        Respuesta::create([
+            'RTA_Actividad_Finalizada_Id' => $request->id,
+            'RTA_Estado_Id' => 4
         ]);
         $idActFin = ActividadesFinalizadas::orderBy('created_at')->first()->id;
         $actividad = $this->actividad($request->id);

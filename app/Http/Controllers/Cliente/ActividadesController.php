@@ -35,9 +35,9 @@ class ActividadesController extends Controller
             ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
             ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
             ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('re.RTA_Usuario_Id', '<>', 0)
-            ->where('re.RTA_Estado_Id', '=', 5)
-            ->where('af.ACT_FIN_Revisado', '=', 0)
+            ->where('re.RTA_Usuario_Id', '=', 0)
+            ->where('re.RTA_Estado_Id', '=', 12)
+            ->where('af.ACT_FIN_Revisado', '=', 1)
             ->get();
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -190,10 +190,12 @@ class ActividadesController extends Controller
             ->where('RTA_Usuario_Id', '<>', 0)
             ->first();
         if($rtaTest!=null){
-            Respuesta::create([
+            Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+                ->where('RTA_Usuario_Id', '=', 0)
+                ->first()
+                ->update([
                 'RTA_Titulo' => $request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
-                'RTA_Actividad_Finalizada_Id' => $request->id,
                 'RTA_Estado_Id' => 6,
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),
                 'RTA_Fecha_Respuesta' => Carbon::now()
@@ -238,14 +240,16 @@ class ActividadesController extends Controller
             ->where('RTA_Usuario_Id', '<>', 0)
             ->first();
         if($rtaTest!=null){
-            Respuesta::create([
-                'RTA_Titulo' => $request->RTA_Titulo,
-                'RTA_Respuesta' => $request->RTA_Respuesta,
-                'RTA_Actividad_Finalizada_Id' => $request->id,
-                'RTA_Estado_Id' => 11,
-                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
-                'RTA_Fecha_Respuesta' => Carbon::now()
-            ]);
+            Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+                ->where('RTA_Usuario_Id', '=', 0)
+                ->first()
+                ->update([
+                    'RTA_Titulo' => $request->RTA_Titulo,
+                    'RTA_Respuesta' => $request->RTA_Respuesta,
+                    'RTA_Estado_Id' => 7,
+                    'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                    'RTA_Fecha_Respuesta' => Carbon::now()
+                ]);
             ActividadesFinalizadas::findOrFail($rtaTest->RTA_Actividad_Finalizada_Id)->update([
                 'ACT_FIN_Revisado' => 1
             ]);

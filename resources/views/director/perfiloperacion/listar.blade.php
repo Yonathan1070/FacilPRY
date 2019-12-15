@@ -62,12 +62,12 @@
                                                         <i class="material-icons text-info" style="font-size: 18px;">edit</i>
                                                     </a>
                                                     @if ($perfilOperacion->USR_RLS_Estado == 0)
-                                                        <a href="{{route('agregar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                        <a href="{{route('agregar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Activar Usuario">
                                                             <i class="material-icons text-success" style="font-size: 18px;">arrow_upward</i>
                                                         </a>
                                                     @else
                                                     @csrf @method("delete")
-                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
+                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Desactivar Usuario">
                                                             <i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i>
                                                         </button>
                                                     @endif

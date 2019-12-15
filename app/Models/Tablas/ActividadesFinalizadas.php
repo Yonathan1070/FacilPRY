@@ -11,6 +11,7 @@ class ActividadesFinalizadas extends Model
         'ACT_FIN_Descripcion',
         'ACT_FIN_Actividad_Id',
         'ACT_FIN_Fecha_Finalizacion',
+        'ACT_FIN_Link',
         'ACT_FIN_Revisado'];
     protected $guarded = ['id'];
 }

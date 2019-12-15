@@ -19,10 +19,10 @@
     <div class="form-group form-float">
         <div class="form-line focused">
             <input type="file" class="form-control " name="ACT_Documento_Soporte_Actividad[]"
-                id="ACT_Documento_Soporte_Actividad" multiple>
+                id="ACT_Documento_Soporte_Actividad" accept=".txt,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.ai" multiple>
             <label class="form-label">Documento Soporte</label>
         </div>
-        <div class="help-info">Extensiones permitidas: txt, jpg, png, docx, pdf</div>
+        <div class="help-info">Tamaño máximo del archivo: 10 Mb</div>
     </div>
 @endif
 <br/>

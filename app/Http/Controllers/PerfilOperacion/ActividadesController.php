@@ -18,6 +18,7 @@ use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
+use Illuminate\Support\Facades\Validator;
 
 class ActividadesController extends Controller
 {
@@ -33,8 +34,8 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesProceso = $this->actividadesProceso();
         foreach ($actividadesProceso as $actividad) {
-            if(Carbon::now()>$actividad->ACT_Fecha_Fin_Actividad){
-                Actividades::findOrFail($actividad->ID_Actividad)->update(['ACT_Estado_Id'=>2]);
+            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
+                Actividades::findOrFail($actividad->ID_Actividad)->update(['ACT_Estado_Id' => 2]);
                 HistorialEstados::create([
                     'HST_EST_Fecha' => Carbon::now(),
                     'HST_EST_Estado' => 2,
@@ -45,7 +46,7 @@ class ActividadesController extends Controller
         }
         $actividadesAtrasadas = $this->actividadesAtrasadas();
         $actividadesFinalizadas = $this->actividadesFinalizadas();
-        return view('perfiloperacion.actividades.listar', compact('actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'datos', 'notificaciones', 'cantidad'));
+        return view('perfiloperacion.actividades.listar', compact('actividadesProceso', 'actividadesAtrasadas', 'actividadesFinalizadas', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -60,7 +61,7 @@ class ActividadesController extends Controller
         $actividades = $this->obtenerActividades($id);
         $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
             ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
-        if(count($actividades) == 0)
+        if (count($actividades) == 0)
             return redirect()->route('actividades_perfil_operacion')->withErrors('La actividad no existe.');
         if ($horas != 0)
             return redirect()->route('actividades_perfil_operacion')->withErrors('Ya se asignaron horas de trabajo a la Actividad.');
@@ -74,7 +75,7 @@ class ActividadesController extends Controller
         $fecha = HorasActividad::findOrFail($id);
         //$vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24;
         //dd(Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24);
-        if(Carbon::now() >= $fecha->HRS_ACT_Fecha_Actividad){
+        if (Carbon::now() >= $fecha->HRS_ACT_Fecha_Actividad) {
             return response()->json(['msg' => 'errorF']);
         }
         $horas = DB::table('TBL_Horas_Actividad as ha')
@@ -83,15 +84,14 @@ class ActividadesController extends Controller
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('ha.id', '<>', $id)
             ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
-        if((($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>8 && ($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)<=14 )){
+        if ((($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 && ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 14)) {
             HorasActividad::findOrFail($id)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
             return response()->json(['msg' => 'alerta']);
-        }
-        else if(($horas+$request->HRS_ACT_Cantidad_Horas_Asignadas)>14){
+        } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 14) {
             return response()->json(['msg' => 'error']);
-        }else{
+        } else {
             HorasActividad::findOrFail($id)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
@@ -99,13 +99,14 @@ class ActividadesController extends Controller
         }
     }
 
-    public function terminarAsignacion($id){
+    public function terminarAsignacion($id)
+    {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
             ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
-        if ($horas != 0){
+        if ($horas != 0) {
             Notificaciones::crearNotificacion(
-                $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' se ha asignado sus horas de trabajo',
+                $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' se ha asignado sus horas de trabajo',
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
                 'aprobar_horas_actividad',
@@ -128,19 +129,19 @@ class ActividadesController extends Controller
         $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
         $actividadesFinalizadas = $this->actividadesFinalizadas();
 
-        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas','actividadesProceso','actividadesAtrasadas', 'actividadesFinalizadas', 'empresa'));
+        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas', 'actividadesProceso', 'actividadesAtrasadas', 'actividadesFinalizadas', 'empresa'));
 
-        $fileName = 'Actividades'.session()->get('Usuario_Nombre');
+        $fileName = 'Actividades' . session()->get('Usuario_Nombre');
         return $pdf->download($fileName);
     }
 
     public function descargarDocumentoSoporte($id)
     {
         $actividad = DB::table('TBL_Actividades as a')
-        ->select('a.ACT_Documento_Soporte_Actividad')
-        ->where('a.id', '=', $id)
-        ->first();
-        return response()->download(public_path().'/documentos_soporte/'.$actividad->ACT_Documento_Soporte_Actividad);
+            ->select('a.ACT_Documento_Soporte_Actividad')
+            ->where('a.id', '=', $id)
+            ->first();
+        return response()->download(public_path() . '/documentos_soporte/' . $actividad->ACT_Documento_Soporte_Actividad);
     }
 
     public function finalizar($id)
@@ -156,26 +157,30 @@ class ActividadesController extends Controller
         return view('perfiloperacion.actividades.finalizar', compact('id', 'datos', 'notificaciones', 'cantidad'));
     }
 
-    public function guardarFinalizar(Request $request){
-        if (!$request->hasFile('ACT_Documento_Evidencia_Actividad')) {
-            return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
+    public function guardarFinalizar(Request $request)
+    {
+        if (!$request->hasFile('ACT_Documento_Evidencia_Actividad') && !$request['ACT_FIN_Link']) {
+            return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento o agregar un link que evidencie la actividad realizada.')->withInput();
         }
         ActividadesFinalizadas::create([
             'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
             'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
             'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
-            'ACT_FIN_Fecha_Finalizacion' => Carbon::now()
+            'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
+            'ACT_FIN_Link' => $request['ACT_FIN_Link']
         ]);
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
-        foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
-            $archivo = null;
-            if ($documento->isValid()) {
-                $archivo = time() . '.' . $documento->getClientOriginalName();
-                $documento->move(public_path('documentos_soporte'), $archivo);
-                DocumentosEvidencias::create([
-                    'DOC_Actividad_Finalizada_Id' => $af->id,
-                    'ACT_Documento_Evidencia_Actividad' => $archivo
-                ]);
+        if ($request->hasFile('ACT_Documento_Evidencia_Actividad')) {
+            foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
+                $archivo = null;
+                if ($documento->isValid()) {
+                    $archivo = time() . '.' . $documento->getClientOriginalName();
+                    $documento->move(public_path('documentos_soporte'), $archivo);
+                    DocumentosEvidencias::create([
+                        'DOC_Actividad_Finalizada_Id' => $af->id,
+                        'ACT_Documento_Evidencia_Actividad' => $archivo
+                    ]);
+                }
             }
         }
         Respuesta::create([
@@ -197,7 +202,7 @@ class ActividadesController extends Controller
         ]);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' ha finalizado una Actividad.',
+            $datos->USR_Nombres_Usuario . ' ha finalizado una Actividad.',
             session()->get('Usuario_Id'),
             $tester->id,
             'aprobar_actividad_tester',
@@ -208,19 +213,21 @@ class ActividadesController extends Controller
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }
 
-    public function solicitarTiempo($id){
+    public function solicitarTiempo($id)
+    {
         $actividad = Actividades::findOrFail($id);
         return json_encode($actividad);
     }
 
 
-    public function actividadesProceso(){
+    public function actividadesProceso()
+    {
         $actividadesProceso = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id', 'ASC')
@@ -229,13 +236,14 @@ class ActividadesController extends Controller
         return $actividadesProceso;
     }
 
-    public function actividadesAtrasadas(){
+    public function actividadesAtrasadas()
+    {
         $actividadesAtrasadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
+            ->select('a.id AS ID_Actividad', 'a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
             ->where('a.ACT_Estado_Id', '=', 2)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id')
@@ -245,13 +253,14 @@ class ActividadesController extends Controller
         return $actividadesAtrasadas;
     }
 
-    public function actividadesFinalizadas(){
+    public function actividadesFinalizadas()
+    {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad','a.*', 'p.*', 'af.*', 'e.*')
+            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'af.*', 'e.*')
             ->where('a.ACT_Estado_Id', '<>', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->orderBy('a.id')
@@ -260,7 +269,8 @@ class ActividadesController extends Controller
         return $actividadesFinalizadas;
     }
 
-    public function obtenerActividades($id){
+    public function obtenerActividades($id)
+    {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
             ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
