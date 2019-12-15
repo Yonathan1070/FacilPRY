@@ -44,7 +44,9 @@ Crud Proyectos
                                 <a class="btn btn-success waves-effect" href="{{route('crear_proyecto', ['id'=>$empresa->id])}}"><i
                                     class="material-icons" style="color:white;">add</i> Nuevo Proyecto</a>
                             @endif
-                            
+                            <a class="btn btn-danger waves-effect" href="{{route('empresas')}}">
+                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Empresas
+                            </a>
                         </li>
                     </ul>
                 </div>

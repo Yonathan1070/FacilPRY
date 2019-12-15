@@ -19,8 +19,7 @@ class MenuUsuario extends Model
         MenuUsuario::asignarInicioDirector($id);
         MenuUsuario::asignarPerfilOperacion($id);
         MenuUsuario::asignarDecisiones($id);
-        MenuUsuario::asignarClientes($id);
-        MenuUsuario::asignarProyectos($id);
+        MenuUsuario::asignarEmpresas($id);
         MenuUsuario::asignarRoles($id);
         MenuUsuario::asignarCobros($id);
     }

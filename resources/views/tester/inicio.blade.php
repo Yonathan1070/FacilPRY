@@ -37,7 +37,7 @@ Inicio
                                             <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
                                             <td>
-                                                <a href="{{route('aprobar_actividad_tester', ['id'=>$actividad->Id_Act_Fin])}}" class="btn-accion-tabla tooltipsC" title="Ver información detallada">
+                                                <a href="{{route('aprobar_actividad_validador', ['id'=>$actividad->Id_Act_Fin])}}" class="btn-accion-tabla tooltipsC" title="Ver información detallada">
                                                     <i class="material-icons text-info" style="font-size: 17px;">forward</i>
                                                 </a>
                                             </td>

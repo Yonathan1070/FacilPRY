@@ -7,10 +7,7 @@
 @section('contenido')
 <!-- Multiple Items To Be Open -->
 <?php
-    foreach ($actividades as $actividad) {
-        $logo = $actividad->EMP_Logo_Empresa;
-        break;
-    }
+    $logo = $empresa->EMP_Logo_Empresa;
     $base64=null;
     if($logo != null){
         $path = base_path().'\public\assets\bsb\images\Logos/'.$logo;

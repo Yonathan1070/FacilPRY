@@ -59,7 +59,7 @@ Inicio
                                     @foreach ($documentosSoporte as $documento)
                                         <span>Documento</span>
                                         <span>
-                                            <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
+                                            <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
                                                 class="btn bg-cyan btn-block btn-xs waves-effect">
                                                 <i class="material-icons"
                                                     style="font-size: 17px;">file_download</i>
@@ -91,7 +91,7 @@ Inicio
                                 @foreach ($documentosEvidencia as $documento)
                                     <span>Evidencias</span>
                                     <span>
-                                        <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
+                                        <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
                                             class="btn bg-cyan btn-block btn-xs waves-effect">
                                             <i class="material-icons"
                                                 style="font-size: 17px;">file_download</i>
@@ -153,7 +153,7 @@ Inicio
                 <div class="modal-header">
                     <h4 class="modal-title" id="smallModalLabel">Respuesta de Rechazado</h4>
                 </div>
-                <form action="{{route('respuestaR_tester')}}" id="form_validation" method="POST">
+                <form action="{{route('respuestaR_validador')}}" id="form_validation" method="POST">
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{$actividadesPendientes->Id_Act_Fin}}">
                     <div class="modal-body">
@@ -185,7 +185,7 @@ Inicio
                 <div class="modal-header">
                     <h4 class="modal-title" id="smallModalLabel">Observación de Aprobado</h4>
                 </div>
-                <form action="{{route('respuestaA_tester')}}" id="form_validation" method="POST">
+                <form action="{{route('respuestaA_validador')}}" id="form_validation" method="POST">
                     @csrf
                     <input type="hidden" name="id" id="id" value="{{$actividadesPendientes->Id_Act_Fin}}">
                     <div class="modal-body">

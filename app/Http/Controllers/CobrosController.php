@@ -36,7 +36,7 @@ class CobrosController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 're.RTA_Estado_Id')
             ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
-            ->where('e.id', '=', 11)
+            ->where('e.id', '=', 7)
             ->orderBy('p.id')
             ->get();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
@@ -46,8 +46,8 @@ class CobrosController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->where('e.id', '=', 9)
+            ->where('a.ACT_Costo_Estimado_Actividad', '<>', 0)
+            ->where('e.id', '=', 8)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
         return view('cobros.listar', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
@@ -79,7 +79,7 @@ class CobrosController extends Controller
             ->where('ha.HRS_ACT_Actividad_Id', '=', $idA)
             ->groupBy('ha.id')
             ->first();
-        Actividades::findOrFail($idA)->update(['ACT_Costo_Actividad' => ((int)$horas->HorasR * $trabajador->USR_Costo_Hora)]);
+        Actividades::findOrFail($idA)->update(['ACT_Costo_Estimado_Actividad' => ((int)$horas->HorasR * $trabajador->USR_Costo_Hora)]);
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),
             'HST_EST_Estado' => 8,

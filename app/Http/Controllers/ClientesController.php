@@ -11,6 +11,7 @@ use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\PermisoUsuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -69,7 +70,8 @@ class ClientesController extends Controller
         $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         UsuariosRoles::asignarRol(5, $cliente->id);
         MenuUsuario::asignarMenuCliente($cliente->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
+        PermisoUsuario::asignarPermisoPerfil($cliente->id);
+        Usuarios::enviarcorreo($request, 'Bienvenido a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(
@@ -82,7 +84,7 @@ class ClientesController extends Controller
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a FacilPRY, revise sus datos.',
+            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a InkBrutalPRY, revise sus datos.',
             session()->get('Usuario_Id'),
             $cliente->id,
             'perfil',

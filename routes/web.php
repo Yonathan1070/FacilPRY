@@ -126,21 +126,8 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
 
 //Enrutamiento Tester
 Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['auth', 'tester']], function () {
-    Route::get('', 'InicioController@index')->name('inicio_tester');
-    Route::get('{id}/verificar', 'InicioController@verificarActividad')->name('verificar_actividad_tester');
-    Route::get('{id}/aprobacion', 'InicioController@aprobacionActividad')->name('aprobar_actividad_tester');
-    Route::get('{ruta}/descargar', 'InicioController@descargarArchivo')->name('descargar_documento_actividad_tester');
-    Route::post('respuestaR', 'InicioController@respuestaRechazado')->name('respuestaR_tester');
-    Route::post('respuestaA', 'InicioController@respuestaAprobado')->name('respuestaA_tester');
+    
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_tester');
-
-    //Enroutamiento para Editar Perfil
-    Route::group(['prefix' => 'perfil'], function () {
-        Route::get('', 'PerfilUsuarioController@index')->name('perfil_tester');
-        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_tester');
-        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_tester');
-        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_tester');
-    });
 });
 
 // Enrutamiento Area de Finanzas
@@ -171,14 +158,6 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
         Route::get('{ruta}/descargar', 'ActividadesController@descargarArchivo')->name('descargar_documento_actividad_cliente');
         Route::post('respuestaR', 'ActividadesController@respuestaRechazado')->name('respuestaR_cliente');
         Route::post('respuestaA', 'ActividadesController@respuestaAprobado')->name('respuestaA_cliente');
-    });
-
-    //Enroutamiento para Editar Perfil
-    Route::group(['prefix' => 'perfil'], function () {
-        Route::get('', 'PerfilUsuarioController@index')->name('perfil_cliente');
-        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_cliente');
-        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_cliente');
-        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_cliente');
     });
 });
 
@@ -249,6 +228,14 @@ Route::delete('actividades/{idP}-{idR}', 'ActividadesController@eliminar')->name
 Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad');
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
+
+//Rutas Validador
+Route::get('validador', 'ValidadorController@index')->name('inicio_validador');
+Route::get('validador/{id}/verificar', 'ValidadorController@verificarActividad')->name('verificar_actividad_validador');
+Route::get('validador/{id}/aprobacion', 'ValidadorController@aprobacionActividad')->name('aprobar_actividad_validador');
+Route::get('validador/{ruta}/descargar', 'ValidadorController@descargarArchivo')->name('descargar_documento_actividad_validador');
+Route::post('validador/respuestaR', 'ValidadorController@respuestaRechazado')->name('respuestaR_validador');
+Route::post('validador/respuestaA', 'ValidadorController@respuestaAprobado')->name('respuestaA_validador');
 
 //Rutas Cobros
 Route::get('cobros', 'CobrosController@index')->name('cobros');

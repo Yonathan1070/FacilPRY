@@ -71,7 +71,12 @@ Crud Proyectos
                                     <th>Nombre</th>
                                     <th>Cliente</th>
                                     <th>Actividades</th>
-                                    <th class="width70"></th>
+                                    @foreach ($proyectos as $proyecto)
+                                        @if ($proyecto->ACT_Costo_Real_Actividad != 0)
+                                            <th class="width70"></th>
+                                        @endif
+                                        @break
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,13 +85,13 @@ Crud Proyectos
                                         <td>{{$proyecto->PRY_Nombre_Proyecto}}</td>
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>{{$proyecto->No_Actividades}}</td>
-                                        <td>
-                                            @if ($proyecto->ACT_Costo_Real_Actividad != 0)
+                                        @if ($proyecto->ACT_Costo_Real_Actividad != 0)
+                                            <td>
                                                 <a href="{{route('generar_factura', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
                                                     <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                 </a>
-                                            @endif
-                                        </td>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

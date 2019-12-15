@@ -45,7 +45,12 @@ class InicioController extends Controller
             ->where('p.id', '=', $id)
             ->first();
         $informacion = $this->informacionFacturacion($id);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $id_empresa = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
+            ->where('ud.id', '=', session()->get('Usuario_Id'))
+            ->select('uu.USR_Empresa_Id')
+            ->first();
+        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = $this->totalCosto($id);
         foreach ($informacion as $info) {
             $factura = $info->id;
@@ -69,11 +74,19 @@ class InicioController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
             ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
             ->select('a.*', 'es.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
             ->where('p.id', '=', $id)
+            ->where('r.id', '<>', 5)
             ->get();
-        
-        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades'));
+        $id_empresa = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
+            ->where('ud.id', '=', session()->get('Usuario_Id'))
+            ->select('uu.USR_Empresa_Id')
+            ->first();
+        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
+        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades', 'empresa'));
 
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
         return $pdf->download($fileName);
@@ -92,7 +105,12 @@ class InicioController extends Controller
             ->where('p.id', '=', $id)
             ->first();
         $informacion = $this->informacionFacturacion($id);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $id_empresa = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
+            ->where('ud.id', '=', session()->get('Usuario_Id'))
+            ->select('uu.USR_Empresa_Id')
+            ->first();
+        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = $this->totalCosto($id);
         foreach ($informacion as $info) {
             $factura = $info->id;
@@ -121,7 +139,12 @@ class InicioController extends Controller
             ->where('p.id', '=', $id)
             ->first();
         $informacion = $this->informacionFacturacion($id);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $id_empresa = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
+            ->where('ud.id', '=', session()->get('Usuario_Id'))
+            ->select('uu.USR_Empresa_Id')
+            ->first();
+        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = $this->totalCosto($id);
         foreach ($informacion as $info) {
             $factura = $info->id;

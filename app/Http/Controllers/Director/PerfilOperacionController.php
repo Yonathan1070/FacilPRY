@@ -66,7 +66,7 @@ class PerfilOperacionController extends Controller
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
         PermisoUsuario::asignarPermisoPerfil($perfil->id);
         PermisoUsuario::asignarPermisosPerfilOperacion($perfil->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido a FacilPRY, Software de Gestión de Proyectos', 'Bienvenido '.$request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
+        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido(a) '.$request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Notificaciones::crearNotificacion(

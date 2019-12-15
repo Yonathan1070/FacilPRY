@@ -22,8 +22,10 @@
                 id="ACT_Documento_Soporte_Actividad" multiple>
             <label class="form-label">Documento Soporte</label>
         </div>
+        <div class="help-info">Extensiones permitidas: txt, jpg, png, docx, pdf</div>
     </div>
 @endif
+<br/>
 <div class="row clearfix">
     <div class="col-lg-6">
         <div class="form-group form-float">
@@ -36,12 +38,21 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-3">
         <div class="form-group form-float">
             <div class="form-line focused">
                 <input type="date" class="form-control" name="ACT_Fecha_Fin_Actividad" id="ACT_Fecha_Fin_Actividad"
                     value="{{old('ACT_Fecha_Fin_Actividad', $actividad->ACT_Fecha_Fin_Actividad ?? '')}}" required>
                 <label class="form-label">Fecha Finalización</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group form-float">
+            <div class="form-line focused">
+                <input type="text" class="form-control" name="ACT_Hora_Entrega" id="ACT_Hora_Entrega"
+                    value="{{old('ACT_Hora_Entrega' ?? '')}}" required class="timepicker form-control">
+                <label class="form-label">Hora de Entrega</label>
             </div>
         </div>
     </div>

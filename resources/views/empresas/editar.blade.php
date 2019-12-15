@@ -23,7 +23,7 @@ Editar Empresa
                     <form id="form_validation" action="{{route('actualizar_empresa', ['id' => $empresa->id])}}" method="POST">
                         @csrf @method("put")
                         @include('empresas.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('clientes')}}">CANCELAR</a>
+                        <a class="btn btn-danger waves-effect" href="{{route('empresas')}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">ACTUALIZAR</button>
                     </form>
                 </div>

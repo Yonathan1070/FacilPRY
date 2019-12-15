@@ -26,6 +26,8 @@ class PermisoUsuario extends Model
     }
 
     public static function asignarPermisosPerfilOperacion($id){
+        PermisoUsuario::asignarListarEmpresas($id);
+        PermisoUsuario::asignarListarProyectos($id);
         PermisoUsuario::asignarListarRequerimientos($id);
     }
 

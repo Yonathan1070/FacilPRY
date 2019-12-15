@@ -48,6 +48,9 @@ class Usuarios extends Authenticatable
         if($request['USR_Costo_Hora'] == null){
             $request['USR_Costo_Hora'] = 0;
         }
+        if($request->id == null){
+            $request->id = session()->get('Empresa_Id');
+        }
         Usuarios::create([
             'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
             'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
@@ -60,7 +63,7 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['USR_Nombre_Usuario']),
             'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => $request['id'],
+            'USR_Empresa_Id' => $request->id,
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
     }

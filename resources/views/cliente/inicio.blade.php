@@ -14,7 +14,7 @@ Mis Proyectos
             <div class="card">
                 <div class="header">
                     <h2>
-                        MIS PROYECTOS
+                        MIS FACTURAS
                     </h2>
                 </div>
                 <div class="body table-responsive">

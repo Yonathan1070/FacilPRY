@@ -5,6 +5,8 @@ Crud Actividades
 @section('styles')
     <!-- Bootstrap Select Css -->
     <link href="{{asset('assets/bsb/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css')}}" rel="stylesheet" />
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="{{asset("assets/bsb/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css")}}" rel="stylesheet" />
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -50,7 +52,10 @@ Crud Actividades
 
 <!-- Select Plugin Js -->
 <script src="{{asset("assets/bsb/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js")}}"></script>
+<!-- Bootstrap Material Datetime Picker Plugin Js -->
+<script src="{{asset("assets/bsb/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js")}}"></script>
 <!-- Input Mask Plugin Js -->
 <script src="{{asset("assets/bsb/plugins/jquery-inputmask/jquery.inputmask.bundle.js")}}"></script>
 <script src="{{asset("assets/bsb/plugins/bootstrap-select/js/i18n/defaults-es_CL.js")}}"></script>
+<script src="{{asset("assets/bsb/js/pages/forms/basic-form-elements.js")}}"></script>
 @endsection

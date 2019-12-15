@@ -63,7 +63,7 @@ Actividades
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
+                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:s')}}</td>
                                                                 @if ($actividad->Horas != 0)
                                                                     <td>{{$actividad->Horas}}</td>
                                                                 @else
@@ -135,7 +135,7 @@ Actividades
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
+                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:s')}}</td>
                                                                 <td>
                                                                     <a id="{{$actividad->ID_Actividad}}" onclick="tiempo(this)" class="btn-accion-tabla tooltipsC"
                                                                         title="Solicitar más Tiempo" data-toggle="modal" data-target="#defaultModal">
@@ -185,7 +185,7 @@ Actividades
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
-                                                                <td>{{$actividad->ACT_FIN_Fecha_Finalizacion}}</td>
+                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_FIN_Fecha_Finalizacion)->format('d/m/Y H:s')}}</td>
                                                                 <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                             </tr>
                                                         @endforeach

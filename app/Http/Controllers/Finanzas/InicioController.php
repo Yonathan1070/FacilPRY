@@ -32,7 +32,7 @@ class InicioController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
             ->where('e.id', '=', 8)
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
+            ->where('a.ACT_Costo_Estimado_Actividad', '<>', 0)
             ->orderBy('p.id')
             ->get();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
@@ -86,16 +86,8 @@ class InicioController extends Controller
      */
     public function actualizarCosto(Request $request)
     {
-        $actividad = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->where('HRS_ACT_Actividad_Id', '=', $request->id)
-            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->groupBy('HRS_ACT_Actividad_Id')->first();
-        $trabajador = Usuarios::findOrFail($actividad->ACT_Trabajador_Id);
-        $costoEstimado = $trabajador->USR_Costo_Hora * $actividad->HorasR;
         Actividades::findOrFail($request->id)->update([
             'ACT_Estado_Id' => 9,
-            'ACT_Costo_Estimado_Actividad' => $costoEstimado,
             'ACT_Costo_Real_Actividad' => $request->ACT_Costo_Actividad
         ]);
         return redirect()->route('inicio_finanzas')->with('mensaje', 'Costo agregado.');

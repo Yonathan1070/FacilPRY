@@ -126,16 +126,18 @@ class ActividadesController extends Controller
         if($request->ACT_Usuario_Id == null){
             $idUsuario = $proyecto->PRY_Cliente_Id;
             $ruta = 'crear_actividad_cliente';
+            $rutaNotificacion = 'actividades_cliente';
         }else{
             $idUsuario = $request['ACT_Usuario_Id'];
             $ruta = 'crear_actividad_trabajador';
+            $rutaNotificacion = 'actividades_perfil_operacion';
         }
         Actividades::create([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Estado_Id' => 1,
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
-            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' 23:59:00',
+            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].' '.$request['ACT_Hora_Entrega'],
             'ACT_Costo_Estimado_Actividad' => 0,
             'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
             'ACT_Trabajador_Id' => $idUsuario,
@@ -174,7 +176,7 @@ class ActividadesController extends Controller
             'Nueva actividad asignada',
             session()->get('Usuario_Id'),
             $idUsuario,
-            'actividades_perfil_operacion',
+            $rutaNotificacion,
             null,
             null,
             'add_to_photos'

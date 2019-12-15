@@ -150,9 +150,9 @@ class UsuarioAdministradorSeeder extends Seeder
         ]);
         DB::table('TBL_Menu')->insert([
             'MN_Nombre_Menu' => 'Validador',
-            'MN_Nombre_Ruta_Menu' => 'inicio_tester',
+            'MN_Nombre_Ruta_Menu' => 'inicio_validador',
             'MN_Orden_Menu' => 1,
-            'MN_Icono_Menu' => 'home'
+            'MN_Icono_Menu' => 'assignment_late'
         ]);
         DB::table('TBL_Menu')->insert([
             'MN_Nombre_Menu' => 'Inicio Cliente',
@@ -289,6 +289,10 @@ class UsuarioAdministradorSeeder extends Seeder
         DB::table('TBL_Permiso')->insert([
             'PRM_Nombre_Permiso' => 'Eliminar Empresas',
             'PRM_Slug_Permiso' => 'eliminar-empresas'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Validador',
+            'PRM_Slug_Permiso' => 'validador'
         ]);
 
         //Crear Roles Iniciales

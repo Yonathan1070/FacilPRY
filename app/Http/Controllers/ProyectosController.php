@@ -119,7 +119,8 @@ class ProyectosController extends Controller
         if(count($actividades)<=0){
             return redirect()->back()->withErrors('No es posible generar el reporte de actividades debido a que no hay actividades registradas para el proyecto seleccionado!');
         }
-        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades'));
+        $empresa = Empresas::findOrFail(session()->get('Empresa_Id'));
+        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades', 'empresa'));
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
         return $pdf->download($fileName);
     }
