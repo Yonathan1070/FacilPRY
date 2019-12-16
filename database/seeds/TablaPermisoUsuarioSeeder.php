@@ -18,9 +18,9 @@ class TablaPermisoUsuarioSeeder extends Seeder
             'PRM_USR_Permiso_Id' => 15
         ]);
         //Asignar Permiso Validador
-        DB::table('TBL_Permiso_Usuario')->insert([
+        /*DB::table('TBL_Permiso_Usuario')->insert([
             'PRM_USR_Usuario_Id' => 3,
             'PRM_USR_Permiso_Id' => 15
-        ]);
+        ]);*/
     }
 }

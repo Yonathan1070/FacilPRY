@@ -45,7 +45,7 @@ class TablaUsuariosSeeder extends Seeder
             'USR_Empresa_Id' => 1
         ]);
         //Agregar Usuario Tester
-        DB::table('TBL_Usuarios')->insert([
+        /*DB::table('TBL_Usuarios')->insert([
             'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
             'USR_Documento_Usuario' => '80393256',
             'USR_Nombres_Usuario' => 'Alirio',
@@ -59,6 +59,6 @@ class TablaUsuariosSeeder extends Seeder
             'USR_Foto_Perfil_Usuario' => null,
             'USR_Supervisor_Id' => 2,
             'USR_Empresa_Id' => 1
-        ]);
+        ]);*/
     }
 }
