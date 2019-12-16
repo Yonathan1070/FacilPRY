@@ -63,6 +63,7 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
 //Enrutamiento Director de Proyectos
 Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
     Route::get('', 'InicioController@index')->name('inicio_director');
+    Route::get('/metrica', 'InicioController@metrica')->name('metrica_director');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
 
     //Enrutamiento CRUD Roles
