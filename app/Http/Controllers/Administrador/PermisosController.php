@@ -31,9 +31,6 @@ class PermisosController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
-            ->where('e.id', '=', session()->get('Empresa_Id'))
             ->select('r.*', 'u.*')
             ->get();
         return view('administrador.permisos.listar', compact('usuarios', 'datos', 'notificaciones', 'cantidad'));

@@ -38,6 +38,7 @@ class ActividadesController extends Controller
             ->where('re.RTA_Usuario_Id', '=', 0)
             ->where('re.RTA_Estado_Id', '=', 12)
             ->where('af.ACT_FIN_Revisado', '=', 1)
+            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
             ->get();
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')

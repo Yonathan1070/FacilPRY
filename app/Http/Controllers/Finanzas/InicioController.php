@@ -71,7 +71,7 @@ class InicioController extends Controller
             ->join('TBL_Usuarios_Roles as urs', 'urs.USR_RLS_Usuario_Id', '=', 'us.id')
             ->join('TBL_Roles as ros', 'ros.id', '=', 'urs.USR_RLS_Rol_Id')
             ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Finalizada_Id', '=', 'af.id')
+            ->leftjoin('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Finalizada_Id', '=', 'af.id')
             ->select('af.*', 'a.*', 'p.*', 'u.*', 'ro.*', 'ds.*', 'de.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'ros.RLS_Nombre_Rol as RolT')
             ->where('a.id', '=', $id)
             ->first();
