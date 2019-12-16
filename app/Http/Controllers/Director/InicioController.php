@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -54,7 +55,11 @@ class InicioController extends Controller
                 ->where('r.id', '<>', 5)
                 ->where('p.id', '=', $proyecto->id)
                 ->get();
-            $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
+            try{
+                $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
+            }catch(Exception $ex){
+                $eficaciaPorcentaje = 0;
+            }
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto, $eficaciaPorcentaje];
 
             $actividades = DB::table('TBL_Horas_Actividad as ha')
@@ -74,7 +79,11 @@ class InicioController extends Controller
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
-            $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
+            try{
+                $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
+            }catch(Exception $ex){
+                $eficienciaPorcentaje = 0;
+            }
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto, $eficienciaPorcentaje];
 
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);

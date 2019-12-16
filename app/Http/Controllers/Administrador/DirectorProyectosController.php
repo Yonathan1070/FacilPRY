@@ -64,7 +64,7 @@ class DirectorProyectosController extends Controller
         UsuariosRoles::asignarRol(2, $director->id);
         MenuUsuario::asignarMenuDirector($director->id);
         PermisoUsuario::asignarPermisosDirector($director->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido(a) ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
+        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido(a) ' . $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'], 'general.correo.bienvenida');
 
         Notificaciones::crearNotificacion(
             'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido(a) a InkBrutalPRY, verifique sus datos.',

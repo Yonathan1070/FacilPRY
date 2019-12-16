@@ -92,7 +92,7 @@ class Usuarios extends Authenticatable
             'username' => $request['USR_Nombre_Usuario']], function($message) use ($request, $mensaje, $asunto){
             $message->from('from@example.com', 'Example');
             $message->to($request['USR_Correo_Usuario'], $mensaje)
-                ->subject($asunto.' '.$request['USR_Nombres_Usuario']);
+                ->subject($asunto);
         });
     }
 }
