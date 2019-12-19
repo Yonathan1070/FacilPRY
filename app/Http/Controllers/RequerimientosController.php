@@ -70,12 +70,12 @@ class RequerimientosController extends Controller
         }
         Requerimientos::create($request->all());
         Notificaciones::crearNotificacion(
-            'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se han agregado requerimientos a su proyecto.',
+            'Se han agregado requerimientos al proyecto '.$datosU->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
             $datosU->id,
-            'inicio_cliente',
-            null,
-            null,
+            'requerimientos',
+            'idP',
+            $request->REQ_Proyecto_Id,
             'library_add'
         );
         return redirect()->route('crear_requerimiento', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
@@ -129,16 +129,6 @@ class RequerimientosController extends Controller
                 return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
             }
         }
-        Requerimientos::findOrFail($idR)->update($request->all());
-        Notificaciones::crearNotificacion(
-            'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se ha editado un requerimiento de su proyecto.',
-            session()->get('Usuario_Id'),
-            $datosU->id,
-            'inicio_cliente',
-            null,
-            null,
-            'update'
-        );
         return redirect()->route('requerimientos', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
     }
 
@@ -161,7 +151,7 @@ class RequerimientosController extends Controller
                         ->first();
                     Requerimientos::destroy($idR);
                     Notificaciones::crearNotificacion(
-                        'Hola! ' . $datosU->USR_Nombres_Usuario . ' ' . $datosU->USR_Apellidos_Usuario . ', se ha eliminado un requerimiento de su proyecto.',
+                        'Se ha eliminado un requerimiento de su proyecto.',
                         session()->get('Usuario_Id'),
                         $datosU->id,
                         'inicio_cliente',

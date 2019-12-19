@@ -328,7 +328,6 @@ class ActividadesController extends Controller
         } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18)
             return response()->json(['msg' => 'error']);
         HorasActividad::findOrFail($idH)->update([
-            'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
         return response()->json(['msg' => 'exito']);

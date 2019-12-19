@@ -48,6 +48,7 @@ class CobrosController extends Controller
             ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
             ->where('a.ACT_Costo_Estimado_Actividad', '<>', 0)
             ->where('e.id', '=', 8)
+            ->orWhere('e.id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
         return view('cobros.listar', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
@@ -60,6 +61,7 @@ class CobrosController extends Controller
      */
     public function agregarFactura($idA, $idC)
     {
+
         $cliente = Usuarios::findOrFail($idC);
         Actividades::findOrFail($idA)->update(['ACT_Estado_Id' => 8]);
         $rta = DB::table('TBL_Respuesta as re')
@@ -77,7 +79,6 @@ class CobrosController extends Controller
         $horas = DB::table('TBL_Horas_Actividad as ha')
             ->select(DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('ha.HRS_ACT_Actividad_Id', '=', $idA)
-            ->groupBy('ha.id')
             ->first();
         Actividades::findOrFail($idA)->update(['ACT_Costo_Estimado_Actividad' => ((int)$horas->HorasR * $trabajador->USR_Costo_Hora)]);
         HistorialEstados::create([
@@ -110,7 +111,12 @@ class CobrosController extends Controller
             ->where('a.ACT_Estado_Id', '=', 9)
             ->where('p.id', '=', $id)
             ->get();
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $idEmpresa = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
+            ->select('ed.id')
+            ->first()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')

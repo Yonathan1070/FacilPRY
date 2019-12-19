@@ -40,16 +40,16 @@ Cobros
             <div class="profile-footer">
                 <ul>
                     <li>
-                        @if ($actividades->ACT_Documento_Soporte_Actividad!=null)
-                            <span>Documento</span>
+                        @foreach ($documentosSoporte as $documento)
+                            <span>Soporte</span>
                             <span>
-                                <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$actividades->ACT_Documento_Soporte_Actividad])}}"
+                                <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
                                     class="btn bg-cyan btn-block btn-xs waves-effect">
                                     <i class="material-icons"
                                         style="font-size: 17px;">file_download</i>
                                 </a>
                             </span>
-                        @endif
+                        @endforeach
                     </li>
                 </ul>
             </div>
@@ -70,14 +70,19 @@ Cobros
             <div class="profile-footer">
                 <ul>
                     <li>
-                        <span>Evidencias</span>
-                        <span>
-                            <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$actividades->ACT_Documento_Evidencia_Actividad])}}"
-                                class="btn bg-cyan btn-block btn-xs waves-effect">
-                                <i class="material-icons"
-                                    style="font-size: 17px;">file_download</i>
-                            </a>
-                        </span>
+                        @if ($actividades->ACT_FIN_Link != null)
+                            <a href="{{$actividades->ACT_FIN_Link}}" target="_blank">Ir a la evidencia</a>
+                        @endif<br/>
+                        @foreach ($documentosEvidencias as $documento)
+                            <span>Evidencias</span>
+                            <span>
+                                <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
+                                    class="btn bg-cyan btn-block btn-xs waves-effect">
+                                    <i class="material-icons"
+                                        style="font-size: 17px;">file_download</i>
+                                </a>
+                            </span>
+                        @endforeach
                     </li>
                 </ul>
             </div>

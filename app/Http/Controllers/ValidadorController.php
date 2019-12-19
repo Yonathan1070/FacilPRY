@@ -168,9 +168,9 @@ class ValidadorController extends Controller
         ]);
         Respuesta::create([
             'RTA_Actividad_Finalizada_Id' => $request->id,
-            'RTA_Estado_Id' => 4
+            'RTA_Estado_Id' => 12
         ]);
-        $idActFin = ActividadesFinalizadas::orderBy('created_at')->first()->id;
+        $idActFin = ActividadesFinalizadas::orderByDesc('created_at')->first()->id;
         $actividad = $this->actividad($request->id);
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),

@@ -188,28 +188,13 @@ class ActividadesController extends Controller
             'RTA_Estado_Id' => 4
         ]);
         Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
-        $tester = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'USR_RLS_Rol_Id')
-            ->select('u.*')
-            ->where('e.id', '=', session()->get('Empresa_Id'))
-            ->where('r.RLS_Nombre_Rol', '=', 'Tester')->first();
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),
             'HST_EST_Estado' => 4,
             'HST_EST_Actividad' => $request['Actividad_Id']
         ]);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario . ' ha finalizado una Actividad.',
-            session()->get('Usuario_Id'),
-            $tester->id,
-            'aprobar_actividad_tester',
-            'id',
-            $af->id,
-            'find_in_page'
-        );
+        
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }
 

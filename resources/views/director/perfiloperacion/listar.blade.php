@@ -16,7 +16,7 @@
                         <h2>PERFIL DE OPERACIÓN</h2>
                         <ul class="header-dropdown" style="top:10px;">
                             <li class="dropdown">
-                                <a class="btn btn-success waves-effect" href="{{route('crear_perfil_director')}}">
+                                <a class="btn btn-success waves-effect" href="{{route('crear_perfil_operacion')}}">
                                     <i class="material-icons" style="color:white;">add</i> Nuevo Perfil de Operación
                                 </a>
                             </li>
@@ -26,7 +26,7 @@
                         @if (count($perfilesOperacion)<=0)
                             <div class="alert alert-info">
                                 El sistema no cuenta con Perfil de Operación registrado
-                                <a href="{{route('crear_perfil_director')}}" class="alert-link">Clic aquí para agregar!</a>.
+                                <a href="{{route('crear_perfil_operacion')}}" class="alert-link">Clic aquí para agregar!</a>.
                             </div>
                         @else
                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -57,12 +57,12 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <form class="form-eliminar" action="{{route('eliminar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="d-inline" method="POST">
-                                                    <a href="{{route('editar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                <form class="form-eliminar" action="{{route('eliminar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="d-inline" method="POST">
+                                                    <a href="{{route('editar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                         <i class="material-icons text-info" style="font-size: 18px;">edit</i>
                                                     </a>
                                                     @if ($perfilOperacion->USR_RLS_Estado == 0)
-                                                        <a href="{{route('agregar_perfil_director', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Activar Usuario">
+                                                        <a href="{{route('agregar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Activar Usuario">
                                                             <i class="material-icons text-success" style="font-size: 18px;">arrow_upward</i>
                                                         </a>
                                                     @else

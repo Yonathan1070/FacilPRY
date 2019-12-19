@@ -44,14 +44,14 @@ class TablaMenuSeeder extends Seeder
             'MN_Icono_Menu' => 'assignment_ind'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Inicio Director',
+            'MN_Nombre_Menu' => 'Metricas',
             'MN_Nombre_Ruta_Menu' => 'inicio_director',
             'MN_Orden_Menu' => 1,
-            'MN_Icono_Menu' => 'home'
+            'MN_Icono_Menu' => 'pie_chart'
         ]);
         DB::table('TBL_Menu')->insert([
             'MN_Nombre_Menu' => 'Perfil de Operación',
-            'MN_Nombre_Ruta_Menu' => 'perfil_operacion_director',
+            'MN_Nombre_Ruta_Menu' => 'perfil_operacion',
             'MN_Orden_Menu' => 2,
             'MN_Icono_Menu' => 'account_circle'
         ]);
@@ -104,9 +104,9 @@ class TablaMenuSeeder extends Seeder
             'MN_Icono_Menu' => 'toc'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Inicio Finanzas',
+            'MN_Nombre_Menu' => 'Finanzas',
             'MN_Nombre_Ruta_Menu' => 'inicio_finanzas',
-            'MN_Orden_Menu' => 1,
+            'MN_Orden_Menu' => 6,
             'MN_Icono_Menu' => 'playlist_add_check'
         ]);
     }

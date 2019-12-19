@@ -23,6 +23,7 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarCrudActividades($id);
         PermisoUsuario::asignarCrudEmpresas($id);
         PermisoUsuario::asignarCrudRequerimientos($id);
+        PermisoUsuario::asignarCrudPerfilOperacion($id);
     }
 
     public static function asignarPermisosPerfilOperacion($id){
@@ -33,6 +34,11 @@ class PermisoUsuario extends Model
 
     public static function asignarPermisoPerfil($id){
         PermisoUsuario::asignarEditarPerfil($id);
+    }
+
+    public static function asignarPermisosCliente($id){
+        PermisoUsuario::asignarListarRequerimientos($id);
+        PermisoUsuario::asignarListarProyectos($id);
     }
 
     public static function asignarCrudActividades($id){
@@ -185,6 +191,24 @@ class PermisoUsuario extends Model
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 25
+        ]);
+    }
+    public static function asignarCrudPerfilOperacion($id){
+        PermisoUsuario::create([
+            'PRM_USR_Usuario_Id' => $id,
+            'PRM_USR_Permiso_Id' => 31
+        ]);
+        PermisoUsuario::create([
+            'PRM_USR_Usuario_Id' => $id,
+            'PRM_USR_Permiso_Id' => 32
+        ]);
+        PermisoUsuario::create([
+            'PRM_USR_Usuario_Id' => $id,
+            'PRM_USR_Permiso_Id' => 33
+        ]);
+        PermisoUsuario::create([
+            'PRM_USR_Usuario_Id' => $id,
+            'PRM_USR_Permiso_Id' => 34
         ]);
     }
 }

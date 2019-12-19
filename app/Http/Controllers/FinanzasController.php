@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Finanzas;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,7 +13,7 @@ use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Carbon;
 use PDF;
 
-class InicioController extends Controller
+class FinanzasController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,6 +22,7 @@ class InicioController extends Controller
      */
     public function index()
     {
+        can('finanzas');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -47,7 +48,7 @@ class InicioController extends Controller
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
 
-            return view('finanzas.inicio', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
+        return view('finanzas.inicio', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -70,12 +71,19 @@ class InicioController extends Controller
             ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
             ->join('TBL_Usuarios_Roles as urs', 'urs.USR_RLS_Usuario_Id', '=', 'us.id')
             ->join('TBL_Roles as ros', 'ros.id', '=', 'urs.USR_RLS_Rol_Id')
-            ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->leftjoin('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Finalizada_Id', '=', 'af.id')
-            ->select('af.*', 'a.*', 'p.*', 'u.*', 'ro.*', 'ds.*', 'de.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'ros.RLS_Nombre_Rol as RolT')
+            ->select('af.*', 'a.*', 'p.*', 'u.*', 'ro.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'ros.RLS_Nombre_Rol as RolT')
             ->where('a.id', '=', $id)
             ->first();
-        return view('finanzas.cobro', compact('datos', 'actividades', 'perfil', 'id', 'notificaciones', 'cantidad'));
+        $documentosEvidencias = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->join('TBL_Documentos_Evidencias as de', 'de.DOC_Actividad_Finalizada_Id', '=', 'af.id')
+            ->where('a.id', '=', $id)
+            ->get();
+        $documentosSoporte = DB::table('TBL_Actividades as a')
+            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->where('a.id', '=', $id)
+            ->get();
+        return view('finanzas.cobro', compact('datos', 'actividades', 'documentosEvidencias', 'documentosSoporte', 'perfil', 'id', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -142,39 +150,5 @@ class InicioController extends Controller
 
         $fileName = 'FacturaINK-'.$factura;
         return $pdf->download($fileName);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

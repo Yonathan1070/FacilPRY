@@ -71,9 +71,15 @@
                                         @foreach ($notificaciones as $notificacion)
                                             <li>
                                                 <a onclick="notificacion({{$notificacion->id}})">
-                                                    <div class="icon-circle bg-light-green">
-                                                        <i class="material-icons">{{$notificacion->NTF_Icono}}</i>
-                                                    </div>
+                                                    @if ($notificacion->NTF_Estado == 0)
+                                                        <div class="icon-circle bg-indigo">
+                                                            <i class="material-icons">{{$notificacion->NTF_Icono}}</i>
+                                                        </div>
+                                                    @else
+                                                        <div class="icon-circle bg-blue">
+                                                            <i class="material-icons">{{$notificacion->NTF_Icono}}</i>
+                                                        </div>
+                                                    @endif
                                                     <div class="menu-info">
                                                         <h4>{{$notificacion->NTF_Titulo}}</h4>
                                                         @if (\Carbon\Carbon::now()->diffInSeconds($notificacion->NTF_Fecha) < 60)

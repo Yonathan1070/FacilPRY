@@ -65,46 +65,6 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
     Route::get('', 'InicioController@index')->name('inicio_director');
     Route::get('/metrica', 'InicioController@metrica')->name('metrica_director');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
-
-    //Enrutamiento CRUD Roles
-    Route::Group(['prefix' => 'roles'], function () {
-        Route::get('', 'RolesController@index')->name('roles_director');
-        Route::get('crear', 'RolesController@crear')->name('crear_rol_director');
-        Route::post('crear', 'RolesController@guardar')->name('guardar_rol_director');
-        Route::get('{id}/editar', 'RolesController@editar')->name('editar_rol_director');
-        Route::put('{id}', 'RolesController@actualizar')->name('actualizar_rol_director');
-        Route::delete('{id}', 'RolesController@eliminar')->name('eliminar_rol_director');
-    });
-
-    //Erutamiento CRUD Decisiones
-    Route::group(['prefix' => 'decisiones'], function () {
-        Route::get('', 'DecisionesController@index')->name('decisiones_director');
-        Route::get('crear-desicion', 'DecisionesController@crear')->name('crear_decision_director');
-        Route::post('crear-decision', 'DecisionesController@guardar')->name('guardar_decision_director');
-        Route::get('{id}/editar', 'DecisionesController@editar')->name('editar_decision_director');
-        Route::put('{id}', 'DecisionesController@actualizar')->name('actualizar_decision_director');
-        Route::delete('{id}', 'DecisionesController@eliminar')->name('eliminar_decision_director');
-        Route::get('{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador_director');
-    });
-
-    //Erutamiento CRUD Perfil de Operación
-    Route::group(['prefix' => 'perfil-operacion'], function () {
-        Route::get('', 'PerfilOperacionController@index')->name('perfil_operacion_director');
-        Route::get('crear', 'PerfilOperacionController@crear')->name('crear_perfil_director');
-        Route::post('crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_director');
-        Route::get('{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_director');
-        Route::put('{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion_director');
-        Route::delete('{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_director');
-        Route::get('{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_director');
-    });
-
-    //Enroutamiento para Editar Perfil
-    Route::group(['prefix' => 'perfil'], function () {
-        Route::get('', 'PerfilUsuarioController@index')->name('perfil_director');
-        Route::put('editar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil_director');
-        Route::put('clave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_director');
-        Route::post('foto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto_director');
-    });
 });
 
 //Enrutamiento Perfil de Operacion
@@ -127,16 +87,8 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
 
 //Enrutamiento Tester
 Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['auth', 'tester']], function () {
-    
-    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_tester');
-});
 
-// Enrutamiento Area de Finanzas
-Route::group(['prefix' => 'finanzas', 'namespace' => 'Finanzas', 'middleware' => ['auth', 'finanzas']], function () {
-    Route::get('', 'InicioController@index')->name('inicio_finanzas');
-    Route::get('{id}', 'InicioController@agregarCosto')->name('agregar_costo_actividad_finanzas');
-    Route::put('cobro', 'InicioController@actualizarCosto')->name('actualizar_costo_actividad_finanzas');
-    Route::get('{id}/factura', 'InicioController@generarFactura')->name('generar_factura_finanzas');
+    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_tester');
 });
 
 //Enrutamiento Cliente
@@ -149,7 +101,7 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     Route::get('respuesta-pago', 'InicioController@respuestaPago')->name('respuesta_pago_cliente');
     Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_cliente');
-    
+
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_cliente');
         Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_cliente');
@@ -201,6 +153,15 @@ Route::get('clientes/{idC}-{idE}/editar', 'ClientesController@editar')->name('ed
 Route::put('clientes/{idC}-{idE}', 'ClientesController@actualizar')->name('actualizar_cliente');
 Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente');
 
+//Rutas CRUD Perfil de Operación
+Route::get('lperfil-operacion', 'PerfilOperacionController@index')->name('perfil_operacion');
+Route::get('perfil-operacion/crear', 'PerfilOperacionController@crear')->name('crear_perfil_operacion');
+Route::post('perfil-operacion/crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_operacion');
+Route::get('perfil-operacion/{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_operacion');
+Route::put('perfil-operacion/{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion');
+Route::delete('perfil-operacion/{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_operacion');
+Route::get('perfil-operacion/{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_operacion');
+
 //Rutas CRUD Proyectos
 Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');
 Route::get('proyectos/crear/{id}', 'ProyectosController@crear')->name('crear_proyecto');
@@ -243,6 +204,17 @@ Route::get('cobros', 'CobrosController@index')->name('cobros');
 Route::get('cobros/{idA}-{idC}/agregarFactura', 'CobrosController@agregarFactura')->name('agregar_factura');
 Route::get('cobros/{id}/factura', 'CobrosController@generarFactura')->name('generar_factura');
 
+//Rutas Finanzas
+Route::get('finanzas', 'FinanzasController@index')->name('inicio_finanzas');
+Route::get('finanzas/{id}', 'FinanzasController@agregarCosto')->name('agregar_costo_actividad_finanzas');
+Route::put('finanzas/cobro', 'FinanzasController@actualizarCosto')->name('actualizar_costo_actividad_finanzas');
+Route::get('finanzas/{id}/factura', 'FinanzasController@generarFactura')->name('generar_factura_finanzas');
+
+//Rutas Metricas
+Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general');
+Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general');
+Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general');
+
 //Enrutamiento Usuario General
 Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('', 'LoginController@index')->name('inicio');
@@ -254,3 +226,5 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('actualizar-clave/{token}', 'RecuperarClaveController@cambiarClave')->name('cambiar_clave');
     Route::post('actualizar-clave', 'RecuperarClaveController@actualizarClave')->name('actualizar_clave');
 });
+
+

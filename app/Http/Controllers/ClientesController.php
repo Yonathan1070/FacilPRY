@@ -71,20 +71,24 @@ class ClientesController extends Controller
         UsuariosRoles::asignarRol(5, $cliente->id);
         MenuUsuario::asignarMenuCliente($cliente->id);
         PermisoUsuario::asignarPermisoPerfil($cliente->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
+        PermisoUsuario::asignarPermisosCliente($cliente->id);
+        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido ' . $request['USR_Nombres_Usuario'].' ' . $request['USR_Apellidos_Usuario'], 'general.correo.bienvenida');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        if($datos->USR_Supervisor_Id == 0)
+            $datos->USR_Supervisor_Id = 1;
+        
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha creado el usuario ' . $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            null,
-            null,
-            null,
+            'clientes',
+            'id',
+            $request->id,
             'person_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido a InkBrutalPRY, revise sus datos.',
+            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido(a) a InkBrutalPRY, revise sus datos.',
             session()->get('Usuario_Id'),
             $cliente->id,
             'perfil',

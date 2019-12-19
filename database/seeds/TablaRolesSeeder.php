@@ -25,7 +25,7 @@ class TablaRolesSeeder extends Seeder
             'RLS_Descripcion_Rol' => 'Encargado del perfil de operación',
             'RLS_Empresa_Id' => 1
         ]);
-        DB::table('TBL_Roles')->insert([
+        /*DB::table('TBL_Roles')->insert([
             'RLS_Rol_Id' => 3,
             'RLS_Nombre_Rol' => 'Finanzas',
             'RLS_Descripcion_Rol' => 'Pertence al area financiera de la compañía',
@@ -36,7 +36,7 @@ class TablaRolesSeeder extends Seeder
             'RLS_Nombre_Rol' => 'Tester',
             'RLS_Descripcion_Rol' => 'Encargado de realizar las pruebas a los Proyectos',
             'RLS_Empresa_Id' => 1
-        ]);
+        ]);*/
         DB::table('TBL_Roles')->insert([
             'RLS_Rol_Id' => 5,
             'RLS_Nombre_Rol' => 'Cliente',

@@ -146,10 +146,11 @@ class ActividadesController extends Controller
             ->first();
         $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
             ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
+            ->where('a.id', '=', $actividadesPendientes->Id_Act)
             ->get();
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
             ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')
-            ->where('a.id', '=', $actividadesPendientes->Id_Act)
+            ->where('a.id', '=', $id)
             ->get();
         $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
         $respuestasAnteriores = DB::table('TBL_Respuesta as r')
@@ -257,7 +258,7 @@ class ActividadesController extends Controller
             $actividad = $this->actividad($request->id);
             HistorialEstados::create([
                 'HST_EST_Fecha' => Carbon::now(),
-                'HST_EST_Estado' => 11,
+                'HST_EST_Estado' => 7,
                 'HST_EST_Actividad' => $actividad->id
             ]);
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));

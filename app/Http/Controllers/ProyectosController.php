@@ -23,7 +23,7 @@ class ProyectosController extends Controller
     public function index($id)
     {
         can('listar-proyectos');
-        $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarA'=>can2('listar-actividades')];
+        $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarA'=>can2('listar-actividades'), 'listarE'=>can2('listar-empresas')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -71,24 +71,25 @@ class ProyectosController extends Controller
     {
         Proyectos::create($request->all());
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $datosP = Proyectos::orderByDesc('created_at')->first();
-        $datosU = Usuarios::findOrFail($datosP->PRY_Cliente_Id);
+        $datosU = Usuarios::findOrFail($request->PRY_Cliente_Id);
+        if($datos->USR_Supervisor_Id == 0)
+            $datos->USR_Supervisor_Id = 1;
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el proyecto '.$request->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            null,
-            null,
-            null,
+            'proyectos',
+            'id',
+            $request->PRY_Empresa_Id,
             'library_add'
         );
         Notificaciones::crearNotificacion(
-            'Hola! '.$datosU->USR_Nombres_Usuario.' '.$datosU->USR_Apellidos_Usuario.', su proyecto ha sido creado',
+            'Hola! '.$datosU->USR_Nombres_Usuario.' '.$datosU->USR_Apellidos_Usuario.', su proyecto '.$request->PRY_Nombre_Proyecto.' ha sido creado',
             session()->get('Usuario_Id'),
             $datosU->id,
-            'inicio_cliente',
-            null,
-            null,
+            'proyectos',
+            'id',
+            $request->PRY_Empresa_Id,
             'library_add'
         );
         return redirect()->back()->with('mensaje', 'Proyecto agregado con exito');

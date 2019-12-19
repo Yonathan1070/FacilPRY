@@ -670,7 +670,8 @@
                             <tr>
                                 <td class="wthree-logo" align="center">
                                     <a href="{{route('inicio')}}" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 40px; text-decoration: none; padding: 12px 26px 13px 26px; border-radius: 4px; text-transform:uppercase">
-                                        BIENVENIDO(A) A INK BRUTALPRY
+										<img src="{{asset('assets/images/ink_logo.png')}}" /><br/>
+										BIENVENIDO(A)
                                     </a>
                                 </td>
                             </tr>

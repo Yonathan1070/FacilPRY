@@ -133,5 +133,21 @@ class TablaPermisoSeeder extends Seeder
             'PRM_Nombre_Permiso' => 'Validador',
             'PRM_Slug_Permiso' => 'validador'
         ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Perfil Operacion',
+            'PRM_Slug_Permiso' => 'listar-perfil-operacion'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Crear Perfil Operacion',
+            'PRM_Slug_Permiso' => 'crear-perfil-operacion'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Editar Perfil Operacion',
+            'PRM_Slug_Permiso' => 'editar-perfil-operacion'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Perfil Operacion',
+            'PRM_Slug_Permiso' => 'eliminar-perfil-operacion'
+        ]);
     }
 }

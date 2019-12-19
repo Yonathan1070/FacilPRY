@@ -14,7 +14,7 @@ Inicio
                     <h2>Indicador de Eficacia General</h2>
                 </div>
                 <div class="body">
-                        {!! $chartEficacia->container() !!}
+                        {!! $metricas['eficacia']->container() !!}
 
                 </div>
             </div>
@@ -27,7 +27,7 @@ Inicio
                     <h2>Indicador de Eficiencia General</h2>
                 </div>
                 <div class="body">
-                        {!! $chartEficiencia->container() !!}
+                        {!! $metricas['eficiencia']->container() !!}
 
                 </div>
             </div>
@@ -40,7 +40,7 @@ Inicio
                         <h2>Indicador de Efectividad General</h2>
                     </div>
                     <div class="body">
-                            {!! $chartEfectividad->container() !!}
+                            {!! $metricas['efectividad']->container() !!}
     
                     </div>
                 </div>
@@ -59,9 +59,9 @@ Inicio
 
 <script src="{{asset("assets/bsb/js/pages/charts/chartjs.js")}}"></script>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js charset=utf-8></script>
-{!! $chartEficacia->script() !!}
-{!! $chartEficiencia->script() !!}
-{!! $chartEfectividad->script() !!}
+{!! $metricas['eficacia']->script() !!}
+{!! $metricas['eficiencia']->script() !!}
+{!! $metricas['efectividad']->script() !!}
 <script>
         /*$.ajax({
             url: '/director/metrica',

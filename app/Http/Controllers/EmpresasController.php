@@ -52,11 +52,13 @@ class EmpresasController extends Controller
         Empresas::crearEmpresa($request);
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        if($datos->USR_Supervisor_Id == 0)
+            $datos->USR_Supervisor_Id = 1;
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha creado la empresa ' . $request->EMP_Nombre_Empresa,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
-            null,
+            'empresas',
             null,
             null,
             'person_add'
@@ -90,17 +92,8 @@ class EmpresasController extends Controller
      */
     public function actualizar(Request $request, $id)
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Empresas::editarEmpresa($request, $id);
-        Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha actualizado los datos de la empresa' . $request->EMP_Nombre_Empresa,
-            session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
-            null,
-            null,
-            null,
-            'update'
-        );
+
         return redirect()->route('empresas')->with('mensaje', 'Empresa actualizada con exito');
     }
 
