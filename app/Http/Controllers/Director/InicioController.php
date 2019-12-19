@@ -26,10 +26,28 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $proyectos = Proyectos::get();
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->select('u.*')
+            ->get();
         
-        $metricas = $this->metricasGenerales();
-        
-        return view('director.inicio', compact('datos', 'notificaciones', 'cantidad', 'metricas'));
+        $metricasG = $this->metricasGenerales();
+        $metricasT = $this->metricasTrabajadores();
+
+        $chartBarEficacia=$metricasT['barrEficacia'];
+        $chartBarEficiencia=$metricasT['barrEficiencia'];
+        $chartBarEfectividad=$metricasT['barrEfectividad'];
+
+        $chartEficacia=$metricasG['eficacia'];
+        $chartEficiencia=$metricasG['eficiencia'];
+        $chartEfectividad=$metricasG['efectividad'];
+
+        return view('director.inicio', compact('datos', 'proyectos', 'trabajadores', 'notificaciones', 'cantidad', 'chartEficacia', 'chartEficiencia', 'chartEfectividad', 'chartBarEficacia', 'chartBarEficiencia', 'chartBarEfectividad'));
     }
 
     public function metricasGenerales(){
@@ -70,6 +88,53 @@ class InicioController extends Controller
         $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
 
         $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
+        return $datos;
+    }
+
+    public function metricasTrabajadores(){
+        $eficacia = [];
+        $eficiencia = [];
+        $efectividad = [];
+
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->select('u.*')->get();
+        foreach ($trabajadores as $key => $trabajador) {
+            $eficacia[++$key] = [$trabajador->USR_Nombres_Usuario];
+            $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario];
+            $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario];
+        }
+        $pryEficaciaLlave = [];
+        $pryEficienciaLlave = [];
+        $pryEfectividadLlave = [];
+
+        foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
+        }
+        foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
+        }
+        foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
+        }
+        //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        $chartbarrEficacia = new Eficacia;
+        $apiEficacia = url('/barraseficacia');
+        $chartbarrEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
+
+        $chartbarrEficiencia = new Eficiencia;
+        $apiEficiencia = url('/barraseficiencia');
+        $chartbarrEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
+
+        $chartbarrEfectividad = new Efectividad;
+        $apiEfectividad = url('/barrasefectividad');
+        $chartbarrEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
+
+        $datos = ['barrEficacia'=> $chartbarrEficacia, 'barrEficiencia'=>$chartbarrEficiencia, 'barrEfectividad'=>$chartbarrEfectividad];
         return $datos;
     }
 

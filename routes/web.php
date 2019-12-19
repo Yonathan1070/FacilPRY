@@ -63,6 +63,7 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
 //Enrutamiento Director de Proyectos
 Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' => ['auth', 'director']], function () {
     Route::get('', 'InicioController@index')->name('inicio_director');
+    Route::get('/met', 'InicioController@index')->name('met');
     Route::get('/metrica', 'InicioController@metrica')->name('metrica_director');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
 });
@@ -214,6 +215,9 @@ Route::get('finanzas/{id}/factura', 'FinanzasController@generarFactura')->name('
 Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general');
 Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general');
 Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general');
+Route::get('barraseficacia', 'MetricasController@barrasEficaciaPorTrabajador')->name('eficacia_barras_trabajador');
+Route::get('barraseficiencia', 'MetricasController@barrasEficienciaPorTrabajador')->name('eficiencia_barras_trabajador');
+Route::get('barrasefectividad', 'MetricasController@barrasEfectividadPorTrabajador')->name('efectividad_barras_trabajador');
 
 //Enrutamiento Usuario General
 Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
