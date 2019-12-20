@@ -6,7 +6,7 @@
         <div class="fp-page">
             <div class="fp-box">
                 <div class="logo">
-                    <a>Facil<b>PRY</b></a>
+                        <a><img src="{{asset("assets/images/ink_logo.png")}}" height="70px" width="200px" /></a>
                 </div>
                 <div class="card">
                     <div class="body">
@@ -17,7 +17,7 @@
                             <div class="msg">
                                 Digite su nueva contraseña
                             </div>
-                            <input type="hidden" name="USR_Correo" id="USR_Correo" value="{{$consulta->USR_Correo}}">
+                            <input type="hidden" name="USR_Correo_Usuario" id="USR_Correo_Usuario" value="{{$consulta->USR_Correo_Usuario}}">
                             <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="material-icons">lock</i>

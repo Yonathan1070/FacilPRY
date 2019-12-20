@@ -29,18 +29,18 @@ class RecuperarClaveController extends Controller
     {
         $this->validateEmail($request);
 
-        if($user = Usuarios::where('USR_Correo', $request->input('USR_Correo'))->first()){
+        if($user = Usuarios::where('USR_Correo_Usuario', $request->input('USR_Correo_Usuario'))->first()){
             $token=Crypt::encryptString(Carbon::now());
 
-            DB::table(config('auth.passwords.users.table'))->where('USR_Correo', '=', $user->USR_Correo)->delete();
+            DB::table(config('auth.passwords.users.table'))->where('USR_Correo_Usuario', '=', $user->USR_Correo_Usuario)->delete();
             DB::table(config('auth.passwords.users.table'))->insert([
-                'USR_Correo' => $user->USR_Correo,
+                'USR_Correo_Usuario' => $user->USR_Correo_Usuario,
                 'token' => $token,
                 'created_at' => Carbon::now()
             ]);
             Mail::send('general.correo.correo', ['user' => $user, 'token' => $token], function($message) use ($user){
                 $message->from('yonathancam1997@gmail.com', 'InkBrutalPRY');
-                $message->to($user->USR_Correo, 'Envío nombre de usuario')
+                $message->to($user->USR_Correo_Usuario, 'Envío nombre de usuario')
                     ->subject('Reestablecer Clave');
             });
             if (Mail::failures()) {
@@ -50,25 +50,25 @@ class RecuperarClaveController extends Controller
             }
             return redirect()->back()->with('status', trans(Password::RESET_LINK_SENT));
         }
-        return redirect()->back()->withErrors('El correo no está registrado en el sistema.');
+        return redirect()->route('login')->withErrors('El correo no está registrado en el sistema.');
     }
     
 
     protected function validateEmail(Request $request)
     {
-        $request->validate(['USR_Correo' => 'required|email']);
+        $request->validate(['USR_Correo_Usuario' => 'required|email']);
     }
 
     protected function credentials(Request $request)
     {
-        return $request->only('USR_Correo');
+        return $request->only('USR_Correo_Usuario');
     }
 
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
         return back()
-            ->withInput($request->only('USR_Correo'))
-            ->withErrors(['USR_Correo' => trans($response)]);
+            ->withInput($request->only('USR_Correo_Usuario'))
+            ->withErrors(['USR_Correo_Usuario' => trans($response)]);
     }
 
     protected function cambiarClave($token){
@@ -89,8 +89,9 @@ class RecuperarClaveController extends Controller
         if($request->password != $request->confirmar){
             return redirect()->back()->withErrors('Las contraseñas no coinciden.');
         }
-        DB::table(config('auth.passwords.users.table'))->where('USR_Correo', '=', $request->USR_Correo)->delete();
-        DB::table('TBL_Usuarios')->where('USR_Correo', '=', $request->USR_Correo)->update([
+        DB::table(config('auth.passwords.users.table'))->where('USR_Correo_Usuario', '=', $request->USR_Correo_Usuario)->delete();
+        $usuario = DB::table('TBL_Usuarios')->where('USR_Correo_Usuario', '=', $request->USR_Correo_Usuario)->first();
+        Usuarios::findOrFail($usuario->id)->update([
             'password' => bcrypt($request->password)
         ]);
         return redirect()->route('login')->with('mensaje', 'Contraseña reestablecida, Inicia Sesión.');

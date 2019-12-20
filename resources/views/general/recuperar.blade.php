@@ -6,7 +6,7 @@
         <div class="fp-page">
             <div class="fp-box">
                 <div class="logo">
-                    <a>Facil<b>PRY</b></a>
+                        <a><img src="{{asset("assets/images/ink_logo.png")}}" height="70px" width="200px" /></a>
                 </div>
                 <div class="card">
                     <div class="body">
@@ -23,7 +23,7 @@
                                     <i class="material-icons">email</i>
                                 </span>
                                 <div class="form-line">
-                                    <input type="email" class="form-control" id="USR_Correo" name="USR_Correo" value="{{old('USR_Correo')}}" placeholder="Correo Electrónico" required autofocus>
+                                    <input type="email" class="form-control" id="USR_Correo_Usuario" name="USR_Correo_Usuario" value="{{old('USR_Correo_Usuario')}}" placeholder="Correo Electrónico" required autofocus>
                                 </div>
                             </div>
                             

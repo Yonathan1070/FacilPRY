@@ -90,7 +90,7 @@ class Usuarios extends Authenticatable
         Mail::send($plantilla, [
             'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
             'username' => $request['USR_Nombre_Usuario']], function($message) use ($request, $mensaje, $asunto){
-            $message->from('from@example.com', 'Example');
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to($request['USR_Correo_Usuario'], $mensaje)
                 ->subject($asunto);
         });
