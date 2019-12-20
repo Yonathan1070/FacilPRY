@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Administrador;
 
+use App\Charts\Efectividad;
+use App\Charts\Eficacia;
+use App\Charts\Eficiencia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InicioController extends Controller
@@ -20,7 +25,117 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('administrador.inicio', compact('datos', 'notificaciones', 'cantidad'));
+
+        $proyectos = Proyectos::get();
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->select('u.*')
+            ->get();
+        
+        $metricasG = $this->metricasGenerales();
+        $metricasT = $this->metricasTrabajadores();
+
+        $chartBarEficacia=$metricasT['barrEficacia'];
+        $chartBarEficiencia=$metricasT['barrEficiencia'];
+        $chartBarEfectividad=$metricasT['barrEfectividad'];
+
+        $chartEficacia=$metricasG['eficacia'];
+        $chartEficiencia=$metricasG['eficiencia'];
+        $chartEfectividad=$metricasG['efectividad'];
+        
+        return view('administrador.inicio', compact('datos', 'notificaciones', 'trabajadores', 'cantidad', 'chartEficacia', 'chartEficiencia', 'chartEfectividad', 'chartBarEficacia', 'chartBarEficiencia', 'chartBarEfectividad'));
+    }
+
+    public function metricasGenerales(){
+        $eficacia = [];
+        $eficiencia = [];
+        $efectividad = [];
+
+        $proyectos = Proyectos::get();
+        foreach ($proyectos as $key => $proyecto) {
+            $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+            $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+            $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+        }
+        $pryEficaciaLlave = [];
+        $pryEficienciaLlave = [];
+        $pryEfectividadLlave = [];
+
+        foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
+        }
+        foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
+        }
+        foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
+        }
+        //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        $chartEficacia = new Eficacia;
+        $apiEficacia = url('/eficacia');
+        $chartEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
+
+        $chartEficiencia = new Eficiencia;
+        $apiEficiencia = url('/eficiencia');
+        $chartEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
+
+        $chartEfectividad = new Efectividad;
+        $apiEfectividad = url('/efectividad');
+        $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
+
+        $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
+        return $datos;
+    }
+
+    public function metricasTrabajadores(){
+        $eficacia = [];
+        $eficiencia = [];
+        $efectividad = [];
+
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->select('u.*')->get();
+        foreach ($trabajadores as $key => $trabajador) {
+            $eficacia[++$key] = [$trabajador->USR_Nombres_Usuario];
+            $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario];
+            $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario];
+        }
+        $pryEficaciaLlave = [];
+        $pryEficienciaLlave = [];
+        $pryEfectividadLlave = [];
+
+        foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
+        }
+        foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
+        }
+        foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
+        }
+        //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        $chartbarrEficacia = new Eficacia;
+        $apiEficacia = url('/barraseficacia');
+        $chartbarrEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
+
+        $chartbarrEficiencia = new Eficiencia;
+        $apiEficiencia = url('/barraseficiencia');
+        $chartbarrEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
+
+        $chartbarrEfectividad = new Efectividad;
+        $apiEfectividad = url('/barrasefectividad');
+        $chartbarrEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
+
+        $datos = ['barrEficacia'=> $chartbarrEficacia, 'barrEficiencia'=>$chartbarrEficiencia, 'barrEfectividad'=>$chartbarrEfectividad];
+        return $datos;
     }
 
     /**

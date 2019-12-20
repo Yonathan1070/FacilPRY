@@ -14,7 +14,7 @@ Inicio
                 </div>
                 <div class="body">
                     <div class="row clearfix">
-                        <div class="col-lg-4">
+                        <div class="col-lg-12">
                             <div class="form-group form-float">
                                 <div class="form-line">
                                     <select name="opcionFiltro" id="opcionFiltro" class="form-control">

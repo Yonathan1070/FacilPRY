@@ -84,6 +84,13 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
         Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_perfil_operacion');
         Route::get('{id}', 'ActividadesController@solicitarTiempo')->name('actividades_solicitar_tiempo_perfil_operacion');
     });
+    //Enrutamiento Metricas
+    Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general_perfil_operacion');
+    Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general_perfil_operacion');
+    Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general_perfil_operacion');
+    Route::get('barraseficacia', 'MetricasController@barrasEficaciaPorTrabajador')->name('eficacia_barras_trabajador_perfil_operacion');
+    Route::get('barraseficiencia', 'MetricasController@barrasEficienciaPorTrabajador')->name('eficiencia_barras_trabajador_perfil_operacion');
+    Route::get('barrasefectividad', 'MetricasController@barrasEfectividadPorTrabajador')->name('efectividad_barras_trabajador_perfil_operacion');
 });
 
 //Enrutamiento Tester

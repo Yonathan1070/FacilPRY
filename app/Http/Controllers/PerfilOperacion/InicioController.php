@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\PerfilOperacion;
 
+use App\Charts\Efectividad;
+use App\Charts\Eficacia;
+use App\Charts\Eficiencia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Usuarios;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InicioController extends Controller
@@ -20,7 +24,59 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('perfiloperacion.inicio', compact('datos', 'notificaciones', 'cantidad'));
+
+        $metricas = $this->metricasGenerales();
+        
+        $chartEficacia=$metricas['eficacia'];
+        $chartEficiencia=$metricas['eficiencia'];
+        $chartEfectividad=$metricas['efectividad'];
+
+        return view('perfiloperacion.inicio', compact('datos', 'notificaciones', 'cantidad', 'chartEficacia', 'chartEficiencia', 'chartEfectividad'));
+    }
+
+    public function metricasGenerales(){
+        $eficacia = [];
+        $eficiencia = [];
+        $efectividad = [];
+
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('u.id', '=', session()->get('Usuario_Id'))
+            ->select('u.*', 'p.*')->get();
+        foreach ($proyectos as $key => $proyecto) {
+            $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+            $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+            $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto];
+        }
+        $pryEficaciaLlave = [];
+        $pryEficienciaLlave = [];
+        $pryEfectividadLlave = [];
+
+        foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
+        }
+        foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
+        }
+        foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
+        }
+        //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        $chartEficacia = new Eficacia;
+        $apiEficacia = url('/eficacia');
+        $chartEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
+        
+        $chartEficiencia = new Eficiencia;
+        $apiEficiencia = url('/eficiencia');
+        $chartEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
+
+        $chartEfectividad = new Efectividad;
+        $apiEfectividad = url('/efectividad');
+        $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
+        $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
+        return $datos;
     }
 
     /**

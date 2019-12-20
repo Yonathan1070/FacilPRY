@@ -26,8 +26,11 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyectos = $this->proyectosConsulta();
-        return view('cliente.inicio', compact('proyectos', 'datos', 'notificaciones', 'cantidad'));
+
+        $proyectos = $this->proyectos();
+        $proyectosPagar = $this->proyectosPagarConsulta();
+
+        return view('cliente.inicio', compact('proyectos', 'proyectosPagar', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -210,7 +213,7 @@ class InicioController extends Controller
         return json_encode($notif);
     }
 
-    public function proyectosConsulta()
+    public function proyectosPagarConsulta()
     {
         $proyectos = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -225,6 +228,15 @@ class InicioController extends Controller
             ->groupBy('p.id')
             ->get();
         
+        return $proyectos;
+    }
+
+    public function proyectos(){
+        $proyectos = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('p.*')
+            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
+            ->get();
         return $proyectos;
     }
 
