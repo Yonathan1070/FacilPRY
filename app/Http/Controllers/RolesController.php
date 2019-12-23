@@ -56,7 +56,7 @@ class RolesController extends Controller
             return redirect()->back()->withErrors('Ya se encuentra registrado el rol en el sistema')->withInput();
         }
         Roles::create([
-            'RLS_Rol_Id' => 6,
+            'RLS_Rol_Id' => 4,
             'RLS_Nombre_Rol' => $request->RLS_Nombre_Rol,
             'RLS_Descripcion_Rol' => $request->RLS_Descripcion_Rol,
             'RLS_Empresa_Id' => session()->get('Empresa_Id')
@@ -77,7 +77,7 @@ class RolesController extends Controller
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $rol = Roles::findOrFail($id);
-        if($rol->RLS_Rol_Id != 6)
+        if($rol->RLS_Rol_Id != 4)
             return redirect()->back()->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         return view('roles.editar', compact('rol', 'datos', 'notificaciones', 'cantidad'));
     }
@@ -115,7 +115,7 @@ class RolesController extends Controller
         }else{
             if($request->ajax()){
                 $rol = Roles::findOrFail($id);
-                if($rol->RLS_Rol_Id != 6){
+                if($rol->RLS_Rol_Id != 4){
                     return response()->json(['mensaje' => 'rd']);
                 }else{
                     try{

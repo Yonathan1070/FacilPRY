@@ -149,5 +149,9 @@ class TablaPermisoSeeder extends Seeder
             'PRM_Nombre_Permiso' => 'Eliminar Perfil Operacion',
             'PRM_Slug_Permiso' => 'eliminar-perfil-operacion'
         ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Finanzas',
+            'PRM_Slug_Permiso' => 'finanzas'
+        ]);
     }
 }

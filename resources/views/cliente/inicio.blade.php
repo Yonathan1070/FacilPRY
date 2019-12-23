@@ -27,7 +27,7 @@ Mis Proyectos
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Pagar</th>
+                                    <th>Reporte</th>
                                 </tr>
                             </thead>
                             <tbody>

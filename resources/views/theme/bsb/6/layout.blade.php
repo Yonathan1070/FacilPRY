@@ -18,8 +18,6 @@
     <!-- Waves Effect Css -->
     <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
 
-    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
-
     <!-- Animation Css -->
     <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
 
@@ -29,12 +27,8 @@
     <!-- Custom Css -->
     <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
 
-    <link href="{{asset("assets/css/custom.css")}}" rel="stylesheet">
-
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     @yield('styles')
 </head>
@@ -49,7 +43,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{{route("inicio_perfil_operacion")}}" style="padding: 1px 1px;">
+                <a class="navbar-brand" href="{{route("inicio_tester")}}" style="padding: 1px 1px;">
                     <img src="{{asset("assets/images/ink_logo.png")}}" height="48px" width="200px" /> - {{session()->get('Rol_Nombre')}}
                 </a>
             </div>
@@ -121,15 +115,19 @@
     <!-- Bootstrap Core Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap/js/bootstrap.js")}}"></script>
 
-    <!-- Select Plugin Js -->
-    <script src="{{asset("assets/bsb/plugins/bootstrap-select/js/bootstrap-select.js")}}"></script>
-
     <!-- Waves Effect Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
     <!-- Slimscroll Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
 
+    <!-- Plugin Js para Validaciones -->
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
+    <!-- Mensajes en español -->
+    <script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
+
+    <script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
+    
     <!-- Jquery DataTable Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/jquery.dataTables.js")}}"></script>
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js")}}"></script>
@@ -150,21 +148,20 @@
 
     <script src="{{asset("assets/js/funciones.js")}}"></script>
     <script src="{{asset("assets/js/scripts.js")}}"></script>
-
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
     <script>
         function notificacion(id){
-            $.ajax({
-                dataType: "json",
-                method: "get",
-                url: "/perfil-operacion/" + id + "/cambio-estado"
-            }).done(function (notif) {
-                if(notif.ruta != null)
-                    document.location.replace(notif.ruta);
-            });
-        }
+                    $.ajax({
+                        dataType: "json",
+                        method: "get",
+                        url: "/tester/" + id + "/cambio-estado"
+                    }).done(function (notif) {
+                        if(notif.ruta != null)
+                            document.location.replace(notif.ruta);
+                    });
+                }
     </script>
+
     @yield('scripts')
 </body>
 

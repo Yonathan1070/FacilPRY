@@ -38,13 +38,13 @@ class TablaRolesSeeder extends Seeder
             'RLS_Empresa_Id' => 1
         ]);*/
         DB::table('TBL_Roles')->insert([
-            'RLS_Rol_Id' => 5,
+            'RLS_Rol_Id' => 3,
             'RLS_Nombre_Rol' => 'Cliente',
             'RLS_Descripcion_Rol' => 'Cliente que adquiere servicios de la compañía',
             'RLS_Empresa_Id' => 1
         ]);
         DB::table('TBL_Roles')->insert([
-            'RLS_Rol_Id' => 6,
+            'RLS_Rol_Id' => 4,
             'RLS_Nombre_Rol' => 'Perfil de Operación',
             'RLS_Descripcion_Rol' => 'Rol en el que se almacenarán los distintos roles creados en el sistema.',
             'RLS_Empresa_Id' => 1

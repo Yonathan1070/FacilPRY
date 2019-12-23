@@ -36,7 +36,7 @@ class ClientesController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'uu.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
             ->select('uu.*', 'r.RLS_Nombre_Rol')
-            ->where('ur.USR_RLS_Rol_Id', '=', '5')
+            ->where('ur.USR_RLS_Rol_Id', '=', '3')
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->where('eu.id', '=', $id)->get();
         $empresa = Empresas::findOrFail($id);
@@ -68,7 +68,7 @@ class ClientesController extends Controller
     {
         Usuarios::crearUsuario($request);
         $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
-        UsuariosRoles::asignarRol(5, $cliente->id);
+        UsuariosRoles::asignarRol(3, $cliente->id);
         MenuUsuario::asignarMenuCliente($cliente->id);
         PermisoUsuario::asignarPermisoPerfil($cliente->id);
         PermisoUsuario::asignarPermisosCliente($cliente->id);

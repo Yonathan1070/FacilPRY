@@ -62,20 +62,12 @@ class LoginController extends Controller
                 break;
 
             case '3':
-                return '/finanzas';
-                break;
-
-            case '4':
-                return '/tester';
-                break;
-
-            case '5':
                 return '/cliente';
                 break;
 
             default:
                 switch ($rol[0]['RLS_Rol_Id']) {
-                    case '6':
+                    case '4':
                         return '/perfil-operacion';
                         break;
                 }

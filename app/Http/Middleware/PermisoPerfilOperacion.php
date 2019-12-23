@@ -25,6 +25,6 @@ class PermisoPerfilOperacion
 
     private function permiso(){
         $rol = Auth::user()->roles()->get();
-        return $rol[0]['RLS_Rol_Id'] == '6';
+        return $rol[0]['RLS_Rol_Id'] == '4';
     }
 }

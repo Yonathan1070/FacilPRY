@@ -53,7 +53,7 @@ class ProyectosController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
             ->select('u.*', 'r.RLS_Nombre_Rol')
-            ->where('ur.USR_RLS_Rol_Id', '=', '5')
+            ->where('ur.USR_RLS_Rol_Id', '=', '3')
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->where('u.USR_Empresa_Id', '=', $id)
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
@@ -113,7 +113,7 @@ class ProyectosController extends Controller
             ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'us.id')
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('ro.id', '<>', 5)
+            ->where('ro.id', '<>', 3)
             ->where('p.id', '=', $id)
             ->select('a.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'p.*', 'r.*', 'u.*', 'es.*', 'e.*')
             ->get();

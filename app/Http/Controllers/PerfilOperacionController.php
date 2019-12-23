@@ -30,7 +30,7 @@ class PerfilOperacionController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
             ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol')
-            ->where('r.RLS_Rol_Id', '=', '6')
+            ->where('r.RLS_Rol_Id', '=', '4')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
         return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
@@ -47,7 +47,7 @@ class PerfilOperacionController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '<>', '6')->where('RLS_Rol_Id', '=', 6)->orderBy('id')->get();
+        $roles = Roles::where('id', '<>', '4')->where('RLS_Rol_Id', '=', 4)->orderBy('id')->get();
         return view('director.perfiloperacion.crear', compact('roles', 'datos', 'notificaciones', 'cantidad'));
     }
 

@@ -43,7 +43,7 @@ Cobros
                         @foreach ($documentosSoporte as $documento)
                             <span>Soporte</span>
                             <span>
-                                <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
+                                <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
                                     class="btn bg-cyan btn-block btn-xs waves-effect">
                                     <i class="material-icons"
                                         style="font-size: 17px;">file_download</i>

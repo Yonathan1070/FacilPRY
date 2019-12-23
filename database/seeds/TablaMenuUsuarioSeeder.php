@@ -38,10 +38,10 @@ class TablaMenuUsuarioSeeder extends Seeder
             'MN_USR_Menu_Id' => 5
         ]);
         //Asignar Menú Financiero
-        DB::table('TBL_Menu_Usuario')->insert([
+        /*DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 2,
             'MN_USR_Menu_Id' => 16
-        ]);
+        ]);*/
         //Asignar Menú Validador
         /*DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 3,

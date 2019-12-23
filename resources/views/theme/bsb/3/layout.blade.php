@@ -30,12 +30,25 @@
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
 
+    <script>
+        function notificacion(id){
+            $.ajax({
+                dataType: "json",
+                method: "get",
+                url: "/cliente/" + id + "/cambio-estado"
+            }).done(function (notif) {
+                if(notif.ruta != null)
+                    document.location.replace(notif.ruta);
+            });
+        }
+    </script>
+    
     @yield('styles')
 </head>
 
 <body class="theme-cyan">
     <!-- Cargador de Página -->
-    @include('includes/loader')
+    
     <!-- Fin Cargador de Página -->
     <!-- Top Bar -->
     <nav class="navbar">
@@ -43,12 +56,12 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{{route("inicio_finanzas")}}" style="padding: 1px 1px;">
+                <a class="navbar-brand" href="{{route("inicio_cliente")}}" style="padding: 1px 1px;">
                     <img src="{{asset("assets/images/ink_logo.png")}}" height="48px" width="200px" /> - {{session()->get('Rol_Nombre')}}
                 </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">                                            
+                <ul class="nav navbar-nav navbar-right">
                     <!-- Notifications -->
                     <li class="dropdown">
                             <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
@@ -142,6 +155,8 @@
     <script src="{{asset("assets/js/funciones.js")}}"></script>
     <script src="{{asset("assets/js/scripts.js")}}"></script>
     
+    
+
     @yield('scripts')
 </body>
 
