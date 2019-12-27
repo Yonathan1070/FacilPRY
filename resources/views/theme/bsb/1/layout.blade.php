@@ -27,7 +27,7 @@
     <link href="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css")}}" rel="stylesheet">
 
     <!-- Sweetalert Css -->
-    <link href="asset('assets/bsb/plugins/sweetalert/sweetalert.css')" rel="stylesheet" />
+    <link href="{{asset("assets/bsb/plugins/sweetalert/sweetalert.css")}}" rel="stylesheet" />
 
     <!-- Custom Css -->
     <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
@@ -136,7 +136,7 @@
     <script src="{{asset("assets/bsb/plugins/bootstrap-notify/bootstrap-notify.js")}}"></script>
 
     <!-- SweetAlert Plugin Js -->
-    <script src="asset('assets/bsb/plugins/sweetalert/sweetalert.min.js')"></script>
+    <script src="{{asset('assets/bsb/plugins/sweetalert/sweetalert.min.js')}}"></script>
 
     <!-- Plugin Js para Validaciones -->
     <script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
