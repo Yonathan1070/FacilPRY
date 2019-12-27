@@ -65,15 +65,15 @@ class InicioController extends Controller
         }
         //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         $chartEficacia = new Eficacia;
-        $apiEficacia = url('/eficacia');
+        $apiEficacia = route('eficacia_general_perfil_operacion');
         $chartEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
         
         $chartEficiencia = new Eficiencia;
-        $apiEficiencia = url('/eficiencia');
+        $apiEficiencia = route('eficiencia_general_perfil_operacion');
         $chartEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
 
         $chartEfectividad = new Efectividad;
-        $apiEfectividad = url('/efectividad');
+        $apiEfectividad = route('efectividad_general_perfil_operacion');
         $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
         $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
         return $datos;

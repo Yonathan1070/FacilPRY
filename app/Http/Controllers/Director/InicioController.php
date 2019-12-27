@@ -76,15 +76,15 @@ class InicioController extends Controller
         }
         //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         $chartEficacia = new Eficacia;
-        $apiEficacia = url('/eficacia');
+        $apiEficacia = route('eficacia_general');
         $chartEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
 
         $chartEficiencia = new Eficiencia;
-        $apiEficiencia = url('/eficiencia');
+        $apiEficiencia = route('eficiencia_general');
         $chartEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
 
         $chartEfectividad = new Efectividad;
-        $apiEfectividad = url('/efectividad');
+        $apiEfectividad = route('efectividad_general');
         $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
 
         $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
@@ -123,15 +123,15 @@ class InicioController extends Controller
         }
         //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         $chartbarrEficacia = new Eficacia;
-        $apiEficacia = url('/barraseficacia');
+        $apiEficacia = route('eficacia_barras_trabajador');
         $chartbarrEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
 
         $chartbarrEficiencia = new Eficiencia;
-        $apiEficiencia = url('/barraseficiencia');
+        $apiEficiencia = route('eficiencia_barras_trabajador');
         $chartbarrEficiencia->labels($pryEficienciaLlave)->load($apiEficiencia);
 
         $chartbarrEfectividad = new Efectividad;
-        $apiEfectividad = url('/barrasefectividad');
+        $apiEfectividad = route('efectividad_barras_trabajador');
         $chartbarrEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
 
         $datos = ['barrEficacia'=> $chartbarrEficacia, 'barrEficiencia'=>$chartbarrEficiencia, 'barrEfectividad'=>$chartbarrEfectividad];
