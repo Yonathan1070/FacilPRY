@@ -333,12 +333,14 @@ class InicioController extends Controller
     }
 
     public function informacionPayu($datos){
+        $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
+
         $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
         $infoPago = new stdClass();
         $infoPago->merchantId="708186";
         $infoPago->accountId="711450";
         $infoPago->description="Cobro Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
-        $infoPago->referenceCode="Pago".$datos['factura'];
+        $infoPago->referenceCode="Pago".$datos['factura'].'-'.$fecha->format("U");
         $infoPago->amount=$datos['total']->Costo;
         $infoPago->tax="0";
         $infoPago->taxReturnBase="0";

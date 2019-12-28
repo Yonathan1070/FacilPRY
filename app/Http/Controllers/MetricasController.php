@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tablas\Proyectos;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -300,7 +301,7 @@ class MetricasController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('e.id', '<>', 1)
             ->where('e.id', '<>', 2)
-            ->where('r.id', '<>', 5)
+            ->where('r.id', '<>', 3)
             ->where('p.id', '=', $id)
             ->get();
         return $actividadesFinalizadas;
@@ -315,7 +316,7 @@ class MetricasController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
             ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '<>', 5)
+            ->where('r.id', '<>', 3)
             ->where('p.id', '=', $id)
             ->get();
             
@@ -333,7 +334,7 @@ class MetricasController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('e.id', '<>', 1)
             ->where('e.id', '<>', 2)
-            ->where('r.id', '<>', 5)
+            ->where('r.id', '<>', 3)
             ->where('uu.id', '=', $id)
             ->get();
         return $actividadesFinalizadas;
@@ -348,7 +349,7 @@ class MetricasController extends Controller
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
             ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '<>', 5)
+            ->where('r.id', '<>', 3)
             ->where('uu.id', '=', $id)
             ->get();
         return $actividadesTotales;
