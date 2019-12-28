@@ -196,7 +196,7 @@ class InicioController extends Controller
             $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
             $actividades = $this->consultaActividades($usuario->id);
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 13, $fechaPago);
+                $this->actualizarEstado($actividad->id, 14, $fechaPago);
             }
             return redirect()->route('inicio_cliente')->with('mensaje', 'Pago Pendiente.');
         }
