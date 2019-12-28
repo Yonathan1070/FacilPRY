@@ -271,10 +271,10 @@ class InicioController extends Controller
     }
 
     public function informacionPayu($datos){
-        $apiKey="4Vj8eK4rloUd272L48hsrarnUA";
+        $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
         $infoPago = new stdClass();
-        $infoPago->merchantId="508029";
-        $infoPago->accountId="512321";
+        $infoPago->merchantId="708186";
+        $infoPago->accountId="711450";
         $infoPago->description="Cobro Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
         $infoPago->referenceCode="Pago".$datos['factura'];
         $infoPago->amount=$datos['total']->Costo;
@@ -282,7 +282,7 @@ class InicioController extends Controller
         $infoPago->taxReturnBase="0";
         $infoPago->currency="COP";
         $infoPago->signature=md5($apiKey."~".$infoPago->merchantId."~".$infoPago->referenceCode."~".$datos['total']->Costo."~COP");
-        $infoPago->test="1";
+        $infoPago->test="0";
         $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
         $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
         $infoPago->responseUrl=route("respuesta_pago_cliente");
