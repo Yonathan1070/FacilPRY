@@ -220,6 +220,7 @@ Route::get('finanzas/{id}/factura', 'FinanzasController@generarFactura')->name('
 
 //Rutas Metricas
 Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general');
+Route::get('eficaciad', 'MetricasController@metricasGenerales')->name('metricas_generales');
 Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general');
 Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general');
 Route::get('barraseficacia', 'MetricasController@barrasEficaciaPorTrabajador')->name('eficacia_barras_trabajador');

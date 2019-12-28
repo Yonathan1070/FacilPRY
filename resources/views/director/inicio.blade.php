@@ -50,7 +50,7 @@ Inicio
                     <h2>Indicador de Eficacia General</h2>
                 </div>
                 <div class="body">
-                    {!! $chartEficacia->container() !!}
+                    <canvas id="chartEficacia" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ Inicio
                     <h2>Indicador de Eficiencia General</h2>
                 </div>
                 <div class="body">
-                    {!! $chartEficiencia->container() !!}
+                    <canvas id="chartEficiencia" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@ Inicio
                     <h2>Indicador de Efectividad General</h2>
                 </div>
                 <div class="body">
-                    {!! $chartEfectividad->container() !!}
+                    <canvas id="chartEfectividad" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@ Inicio
                     <h2>Indicador de Eficacia Por Trabajadores</h2>
                 </div>
                 <div class="body">
-                    {!! $chartBarEficacia->container() !!}
+                    <canvas id="chartEficaciaBar" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@ Inicio
                     <h2>Indicador de Eficiencia Por Trabajadores</h2>
                 </div>
                 <div class="body">
-                    {!! $chartBarEficiencia->container() !!}
+                    <canvas id="chartEficienciaBar" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@ Inicio
                     <h2>Indicador de Efectividad Por Trabajadores</h2>
                 </div>
                 <div class="body">
-                    {!! $chartBarEfectividad->container() !!}
+                    <canvas id="chartEfectividadBar" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -126,14 +126,162 @@ Inicio
 
 <script src="{{asset("assets/bsb/js/pages/charts/chartjs.js")}}"></script>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js charset=utf-8></script>
-{!! $chartEficacia->script() !!}
-{!! $chartEficiencia->script() !!}
-{!! $chartEfectividad->script() !!}
-{!! $chartBarEficacia->script() !!}
-{!! $chartBarEficiencia->script() !!}
-{!! $chartBarEfectividad->script() !!}
+
+<script>
+    var chEficacia = document.getElementById('chartEficacia');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/eficacia"
+    }).done(function (chartEficacia) {
+        if(chartEficacia != null){
+            var charEficacia = new Chart(chEficacia, {
+                type: chartEficacia.type,
+                data: {
+                    labels: chartEficacia.labels,
+                    datasets: [{
+                        label: chartEficacia.label,
+                        data: chartEficacia.data,
+                        backgroundColor: chartEficacia.backgroundColor,
+                        borderWidth: chartEficacia.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    var chEficaciaBar = document.getElementById('chartEficaciaBar');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/barraseficacia"
+    }).done(function (chartEficaciaBar) {
+        if(chartEficaciaBar != null){
+            var charEficaciaBar = new Chart(chEficaciaBar, {
+                type: chartEficaciaBar.type,
+                data: {
+                    labels: chartEficaciaBar.labels,
+                    datasets: [{
+                        label: chartEficaciaBar.label,
+                        data: chartEficaciaBar.data,
+                        backgroundColor: chartEficaciaBar.backgroundColor,
+                        borderWidth: chartEficaciaBar.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    var chEficiencia = document.getElementById('chartEficiencia');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/eficiencia"
+    }).done(function (chartEficiencia) {
+        if(chartEficiencia != null){
+            var chartEficiencia = new Chart(chEficiencia, {
+        
+                type: chartEficiencia.type,
+                data: {
+                    labels: chartEficiencia.labels,
+                    datasets: [{
+                        label: chartEficiencia.label,
+                        data: chartEficiencia.data,
+                        backgroundColor: chartEficiencia.backgroundColor,
+                        borderWidth: chartEficiencia.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    var chEficienciaBar = document.getElementById('chartEficienciaBar');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/barraseficiencia"
+    }).done(function (chartEficienciaBar) {
+        if(chartEficienciaBar != null){
+            var chartEficienciaBar = new Chart(chEficienciaBar, {
+        
+                type: chartEficienciaBar.type,
+                data: {
+                    labels: chartEficienciaBar.labels,
+                    datasets: [{
+                        label: chartEficienciaBar.label,
+                        data: chartEficienciaBar.data,
+                        backgroundColor: chartEficienciaBar.backgroundColor,
+                        borderWidth: chartEficienciaBar.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    var chEfectividad = document.getElementById('chartEfectividad');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/efectividad"
+    }).done(function (chartEfectividad) {
+        if(chartEfectividad != null){
+            var chartEfectividad = new Chart(chEfectividad, {
+        
+                type: chartEfectividad.type,
+                data: {
+                    labels: chartEfectividad.labels,
+                    datasets: [{
+                        label: chartEfectividad.label,
+                        data: chartEfectividad.data,
+                        backgroundColor: chartEfectividad.backgroundColor,
+                        borderWidth: chartEfectividad.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    var chEfectividadBar = document.getElementById('chartEfectividadBar');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/barrasefectividad"
+    }).done(function (chartEfectividadBar) {
+        if(chartEfectividadBar != null){
+            var chartEfectividadBar = new Chart(chEfectividadBar, {
+        
+                type: chartEfectividadBar.type,
+                data: {
+                    labels: chartEfectividadBar.labels,
+                    datasets: [{
+                        label: chartEfectividadBar.label,
+                        data: chartEfectividadBar.data,
+                        backgroundColor: chartEfectividadBar.backgroundColor,
+                        borderWidth: chartEfectividadBar.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
 <script type="text/javascript">
-    var original_api_url = {{ $chartEficacia->id }}_api_url;
     $("#opcionFiltro").change(function(){
         var opcion = $(this).val();
         var pie = document.getElementById('pie');

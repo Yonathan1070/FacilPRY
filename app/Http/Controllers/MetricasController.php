@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Charts\Efectividad;
-use App\Charts\Eficacia;
-use App\Charts\Eficiencia;
 use App\Models\Tablas\Proyectos;
-use App\Models\Tablas\Usuarios;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MetricasController extends Controller
 {
-    public function metricaEficaciaGeneral(Request $request){
+    public function metricaEficaciaGeneral(){
         $eficacia = [];
 
         $proyectos = Proyectos::get();
@@ -27,18 +23,23 @@ class MetricasController extends Controller
             }
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$eficaciaPorcentaje];
         }
-        $pryEficaciaValor = []; $pryEficaciaColor = [];
+        $pryEficaciaLlave = []; $pryEficaciaValor = []; $pryEficaciaColor = [];
 
         foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
             array_push($pryEficaciaValor, $indEficacia[1]);
             array_push($pryEficaciaColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
         
-        $chartEficacia = new Eficacia;
-        $dsetEficacia = $chartEficacia->dataset('Eficacia General', 'pie', $pryEficaciaValor);
-        $dsetEficacia->backgroundColor(collect($pryEficaciaColor));
-        
-        return $chartEficacia->api();
+        $chartEficaciaPie = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEficaciaColor,
+            'data' => $pryEficaciaValor,
+            'label' => 'Eficacia General',
+            'type' => 'pie',
+            'labels' => $pryEficaciaLlave
+        ];
+        return json_encode($chartEficaciaPie);
     }
 
     public function metricaEficienciaGeneral(){
@@ -65,17 +66,23 @@ class MetricasController extends Controller
             }
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
         }
-        $pryEficienciaValor = []; $pryEficienciaColor = [];
+        $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
 
         foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
             array_push($pryEficienciaValor, $indEficiencia[1]);
             array_push($pryEficienciaColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
-        $chartEficiencia = new Eficiencia;
-        $dsetEficiencia = $chartEficiencia->dataset('Eficiencia General', 'pie', $pryEficienciaValor);
-        $dsetEficiencia->backgroundColor(collect($pryEficienciaColor));
         
-        return $chartEficiencia->api();
+        $chartEficienciaPie = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEficienciaColor,
+            'data' => $pryEficienciaValor,
+            'label' => 'Eficacia General',
+            'type' => 'pie',
+            'labels' => $pryEficienciaLlave
+        ];
+        return json_encode($chartEficienciaPie);
     }
 
     public function metricaEfectividadGeneral(){
@@ -115,17 +122,23 @@ class MetricasController extends Controller
             $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$efectividadPorcentaje];
         }
 
-        $pryEfectividadValor = []; $pryEfectividadColor = [];
+        $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];
 
         foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
             array_push($pryEfectividadValor, $indEfectividad[1]);
             array_push($pryEfectividadColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
-        $chartEfectividad = new Efectividad;
-        $dsetEfectividad = $chartEfectividad->dataset('Efectividad General', 'pie', $pryEfectividadValor);
-        $dsetEfectividad->backgroundColor(collect($pryEfectividadColor));
         
-        return $chartEfectividad->api();
+        $chartEficienciaPie = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEfectividadColor,
+            'data' => $pryEfectividadValor,
+            'label' => 'Eficacia General',
+            'type' => 'pie',
+            'labels' => $pryEfectividadLlave
+        ];
+        return json_encode($chartEficienciaPie);
     }
 
     public function barrasEficaciaPorTrabajador(){
@@ -148,18 +161,23 @@ class MetricasController extends Controller
             }
             $eficacia[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$eficaciaPorcentaje];
         }
-        $pryEficaciaValor = []; $pryEficaciaColor = [];
+        $pryEficaciaLlave = []; $pryEficaciaValor = []; $pryEficaciaColor = [];
 
         foreach ($eficacia as $indEficacia) {
+            array_push($pryEficaciaLlave, $indEficacia[0]);
             array_push($pryEficaciaValor, $indEficacia[1]);
             array_push($pryEficaciaColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
         
-        $chartEficacia = new Eficacia;
-        $dsetEficacia = $chartEficacia->dataset('Eficacia Por Trabajadores', 'bar', $pryEficaciaValor);
-        $dsetEficacia->backgroundColor(collect($pryEficaciaColor));
-        
-        return $chartEficacia->api();
+        $chartEficaciaBar = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEficaciaColor,
+            'data' => $pryEficaciaValor,
+            'label' => 'Eficacia General',
+            'type' => 'bar',
+            'labels' => $pryEficaciaLlave
+        ];
+        return json_encode($chartEficaciaBar);
     }
 
     public function barrasEficienciaPorTrabajador(){
@@ -192,17 +210,23 @@ class MetricasController extends Controller
             }
             $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario.' '.$trabajador->USR_Apellidos_Usuario,(int)$eficienciaPorcentaje];
         }
-        $pryEficienciaValor = []; $pryEficienciaColor = [];
+        $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
 
         foreach ($eficiencia as $indEficiencia) {
+            array_push($pryEficienciaLlave, $indEficiencia[0]);
             array_push($pryEficienciaValor, $indEficiencia[1]);
             array_push($pryEficienciaColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
-        $chartEficiencia = new Eficiencia;
-        $dsetEficiencia = $chartEficiencia->dataset('Eficiencia Por Trabajadores', 'bar', $pryEficienciaValor);
-        $dsetEficiencia->backgroundColor(collect($pryEficienciaColor));
         
-        return $chartEficiencia->api();
+        $chartEficienciaBar = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEficienciaColor,
+            'data' => $pryEficienciaValor,
+            'label' => 'Eficacia General',
+            'type' => 'bar',
+            'labels' => $pryEficienciaLlave
+        ];
+        return json_encode($chartEficienciaBar);
     }
 
     public function barrasEfectividadPorTrabajador(){
@@ -246,17 +270,23 @@ class MetricasController extends Controller
             $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario.' '.$trabajador->USR_Apellidos_Usuario, (int)$efectividadPorcentaje];
         }
 
-        $pryEfectividadValor = []; $pryEfectividadColor = [];
+        $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];
 
         foreach ($efectividad as $indEfectividad) {
+            array_push($pryEfectividadValor, $indEfectividad[0]);
             array_push($pryEfectividadValor, $indEfectividad[1]);
             array_push($pryEfectividadColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
-        $chartEfectividad = new Efectividad;
-        $dsetEfectividad = $chartEfectividad->dataset('Efectividad Por Trabajador', 'bar', $pryEfectividadValor);
-        $dsetEfectividad->backgroundColor(collect($pryEfectividadColor));
         
-        return $chartEfectividad->api();
+        $chartEfectividadBar = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryEfectividadColor,
+            'data' => $pryEfectividadValor,
+            'label' => 'Eficacia General',
+            'type' => 'bar',
+            'labels' => $pryEfectividadLlave
+        ];
+        return json_encode($chartEfectividadBar);
     }
 
     public function obtenerFinalizadas($id)
@@ -288,6 +318,7 @@ class MetricasController extends Controller
             ->where('r.id', '<>', 5)
             ->where('p.id', '=', $id)
             ->get();
+            
         return $actividadesTotales;
     }
 
