@@ -79,7 +79,7 @@ class MetricasController extends Controller
             'borderWidth' => 2,
             'backgroundColor' => $pryEficienciaColor,
             'data' => $pryEficienciaValor,
-            'label' => 'Eficacia General',
+            'label' => 'Eficiencia General',
             'type' => 'pie',
             'labels' => $pryEficienciaLlave
         ];
@@ -135,7 +135,7 @@ class MetricasController extends Controller
             'borderWidth' => 2,
             'backgroundColor' => $pryEfectividadColor,
             'data' => $pryEfectividadValor,
-            'label' => 'Eficacia General',
+            'label' => 'Efectividad General',
             'type' => 'pie',
             'labels' => $pryEfectividadLlave
         ];
@@ -174,7 +174,7 @@ class MetricasController extends Controller
             'borderWidth' => 2,
             'backgroundColor' => $pryEficaciaColor,
             'data' => $pryEficaciaValor,
-            'label' => 'Eficacia General',
+            'label' => 'Eficacia Trabajadores',
             'type' => 'bar',
             'labels' => $pryEficaciaLlave
         ];
@@ -223,7 +223,7 @@ class MetricasController extends Controller
             'borderWidth' => 2,
             'backgroundColor' => $pryEficienciaColor,
             'data' => $pryEficienciaValor,
-            'label' => 'Eficacia General',
+            'label' => 'Eficiencia Trabajadores',
             'type' => 'bar',
             'labels' => $pryEficienciaLlave
         ];
@@ -274,7 +274,7 @@ class MetricasController extends Controller
         $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];
 
         foreach ($efectividad as $indEfectividad) {
-            array_push($pryEfectividadValor, $indEfectividad[0]);
+            array_push($pryEfectividadLlave, $indEfectividad[0]);
             array_push($pryEfectividadValor, $indEfectividad[1]);
             array_push($pryEfectividadColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
         }
@@ -283,7 +283,7 @@ class MetricasController extends Controller
             'borderWidth' => 2,
             'backgroundColor' => $pryEfectividadColor,
             'data' => $pryEfectividadValor,
-            'label' => 'Eficacia General',
+            'label' => 'Efectividad Trabajadores',
             'type' => 'bar',
             'labels' => $pryEfectividadLlave
         ];
