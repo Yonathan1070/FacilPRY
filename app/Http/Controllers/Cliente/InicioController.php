@@ -229,7 +229,12 @@ class InicioController extends Controller
 
         $phone=$_REQUEST['phone'];
         
+        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
+        $actividades = $this->consultaActividadesPendientes($usuario->id);
         if($state_pol==4){
+            foreach ($actividades as $actividad) {
+                $this->actualizarEstado($actividad->id, 10, $transaction_date);
+            }
             Mail::send('general.correo.respuesta', [
                 'estado' => '',
                 'nombre' => 'Ink Brutal',
@@ -245,6 +250,9 @@ class InicioController extends Controller
             });
         }
         else{
+            foreach ($actividades as $actividad) {
+                $this->actualizarEstado($actividad->id, 9, $transaction_date);
+            }
             Mail::send('general.correo.respuesta', [
                 'estado' => 'PERO NO HA SIDO EXITOSA',
                 'nombre' => 'Ink Brutal',
@@ -397,6 +405,19 @@ class InicioController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->where('a.ACT_Estado_Id', '=', 9)
+            ->where('u.id', '=', $id)
+            ->select('a.id')
+            ->get();
+
+        return $actividades;
+    }
+
+    public function consultaActividadesPendientes($id){
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('a.ACT_Estado_Id', '=', 14)
             ->where('u.id', '=', $id)
             ->select('a.id')
             ->get();

@@ -729,7 +729,7 @@
                             <tr><td height="12" style="font-size: 1px;">&nbsp;</td></tr>
                             <tr>
                                 <td class="w3l-p2" style="font-family: Candara, sans-serif; color: #7f8c8d; font-size: 18px; line-height: 28px;" class="scale-center-both">
-                                    SE HA REALIZADO UNA COMPRA DESDE LA PAGINA WEB InkBrutalPry<br>
+                                    SE HA REALIZADO UNA COMPRA DESDE LA PAGINA WEB InkBrutalPry {{$estado}}<br>
                                     Descripción: {{$descripcion}}<br>
                                     Email: {{$email}}<br>
                                     Telefono: {{$telefono}}<br>
