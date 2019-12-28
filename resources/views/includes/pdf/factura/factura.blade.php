@@ -233,12 +233,6 @@ Factura
 @endsection
 @section('contenido')
 <!-- Multiple Items To Be Open -->
-<?php
-    $path = base_path().'\public\imagenes\logo\LOGO INK.png';
-    $type = pathinfo($path, PATHINFO_EXTENSION);
-    $data = file_get_contents($path);
-    $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-?>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">

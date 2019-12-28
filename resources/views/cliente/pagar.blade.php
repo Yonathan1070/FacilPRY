@@ -57,7 +57,7 @@ Pagar
                             <p>Telefono: {{$datosU['empresa']->EMP_Telefono_Empresa}}</p>
                             <p>NIT: {{$datosU['empresa']->EMP_NIT_Empresa}}</p>
                         </address>
-                        <img height="200" src="{{public_path("assets\bsb\images\Logos/".$datosU['empresa']->EMP_Logo_Empresa)}}"> 
+                        <img height="200" src="{{asset("assets\bsb\images\Logos/".$datosU['empresa']->EMP_Logo_Empresa)}}"> 
                     </header>
                     <article>
                         <address>
