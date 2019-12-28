@@ -245,15 +245,6 @@ Factura
             <div class="body">
                 <div class="row clearfix">
                     <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
-                        <?php
-                            $base64=null;
-                            if($datos['empresa']->EMP_Logo_Empresa != null){
-                                $path = base_path().'\public\assets\bsb\images\Logos/'.$datos['empresa']->EMP_Logo_Empresa;
-                                $type = pathinfo($path, PATHINFO_EXTENSION);
-                                $data = file_get_contents($path);
-                                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                            }
-                        ?>
                         <header>
                             <h1>FACTURA DE COBRO</h1>
                             <address>
@@ -262,7 +253,7 @@ Factura
                                 <p>Telefono: {{$datos['empresa']->EMP_Telefono_Empresa}}</p>
                                 <p>NIT: {{$datos['empresa']->EMP_NIT_Empresa}}</p>
                             </address>
-                            <img height="200" src="{{$base64}}">
+                            <img height="200" src="{{public_path("assets\bsb\images\Logos/".$datos['empresa']->EMP_Logo_Empresa)}}">
                             
                         </header>
                         <article>

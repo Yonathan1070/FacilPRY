@@ -49,15 +49,6 @@ Pagar
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header table-resposive">
-                    <?php
-                        $base64=null;
-                        if($datosU['empresa']->EMP_Logo_Empresa != null){
-                            $path = base_path().'\public\assets\bsb\images\Logos/'.$datosU['empresa']->EMP_Logo_Empresa;
-                            $type = pathinfo($path, PATHINFO_EXTENSION);
-                            $data = file_get_contents($path);
-                            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                        }
-                    ?>
                     <header>
                         <h1>FACTURA DE COBRO</h1>
                         <address>
@@ -66,7 +57,7 @@ Pagar
                             <p>Telefono: {{$datosU['empresa']->EMP_Telefono_Empresa}}</p>
                             <p>NIT: {{$datosU['empresa']->EMP_NIT_Empresa}}</p>
                         </address>
-                        <img height="200" src="{{$base64}}"> 
+                        <img height="200" src="{{public_path("assets\bsb\images\Logos/".$datosU['empresa']->EMP_Logo_Empresa)}}"> 
                     </header>
                     <article>
                         <address>

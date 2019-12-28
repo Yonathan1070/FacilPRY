@@ -4,15 +4,6 @@ PDF Actividades
 @endsection
 @section('contenido')
 <!-- Multiple Items To Be Open -->
-<?php
-    $base64=null;
-    if($empresa->EMP_Logo_Empresa != null){
-        $path = base_path().'\public\assets\bsb\images\Logos/'.$empresa->EMP_Logo_Empresa;
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    }
-?>
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
@@ -22,7 +13,7 @@ PDF Actividades
                 </h2>
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">
-                        <img src="{{$base64}}" height="150px">
+                        <img src="{{public_path("assets\bsb\images\Logos/".$empresa->EMP_Logo_Empresa)}}" height="150px">
                     </li>
                 </ul>
 
