@@ -285,8 +285,8 @@ class InicioController extends Controller
         $infoPago->test="1";
         $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
         $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
-        $infoPago->responseUrl="http://facilpry.test/cliente/respuesta-pago";
-        $infoPago->confirmationUrl="http://facilpry.test/cliente/confirmacion-pago";
+        $infoPago->responseUrl=route("respuesta_pago_cliente");
+        $infoPago->confirmationUrl=route("confirmacion_pago_cliente");
 
         return $infoPago;
     }
