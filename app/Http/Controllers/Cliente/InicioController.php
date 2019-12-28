@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use stdClass;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Support\Facades\Mail;
 
 class InicioController extends Controller
 {
@@ -192,10 +193,71 @@ class InicioController extends Controller
             return redirect()->route('inicio_cliente')->withErrors('Error al pagar.');
         }
         else if ($estadoTx == "Transacción pendiente" ) {
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+            $actividades = $this->consultaActividades($usuario->id);
+            foreach ($actividades as $actividad) {
+                $this->actualizarEstado($actividad->id, 13, $fechaPago);
+            }
             return redirect()->route('inicio_cliente')->with('mensaje', 'Pago Pendiente.');
         }
         else {
             return redirect()->route('inicio_cliente')->withErrors('Otro.');
+        }
+    }
+
+    public function confirmacionPago(){
+        $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
+		$merchant_id =  $_REQUEST['merchant_id'];
+		$state_pol = $_REQUEST['state_pol'];
+		$response_code_pol=$_REQUEST['response_code_pol	'];
+		$reference_sale=$_REQUEST['reference_sale'];
+		$reference_pol=$_REQUEST['reference_pol'];
+		$sign=$_REQUEST['sign'];
+		$extra1=$_REQUEST['extra1'];
+		$payment_method=$_REQUEST['payment_method'];
+		$payment_method_type=$_REQUEST['payment_method_type	'];
+		$installments_number=$_REQUEST['installments_number'];	
+		$TX_VALUE = $_REQUEST['value'];
+		$New_value = number_format($TX_VALUE, 1, '.', '');
+		$transaction_date=$_REQUEST['transaction_date'];
+		$currency=$_REQUEST['currency'];
+		$email_buyer=$_REQUEST['email_buyer'];
+		$cus=$_REQUEST['cus'];
+		$pse_bank=$_REQUEST['pse_bank'];
+		$test=$_REQUEST['test'];
+		$description=$_REQUEST['description'];
+
+        $phone=$_REQUEST['phone'];
+        
+        if($state_pol==4){
+            Mail::send('general.correo.respuesta', [
+                'estado' => '',
+                'nombre' => 'Ink Brutal',
+                'descripcion' => $description,
+                'email' => $email_buyer,
+                'telefono' => $phone,
+                'referencia' => $reference_sale,
+                'valor' => $New_value
+            ], function($message){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to('soporte@inkdigital.co', 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos')
+                    ->subject('Pago Actividad');
+            });
+        }
+        else{
+            Mail::send('general.correo.respuesta', [
+                'estado' => 'PERO NO HA SIDO EXITOSA',
+                'nombre' => 'Ink Brutal',
+                'descripcion' => $description,
+                'email' => $email_buyer,
+                'telefono' => $phone,
+                'referencia' => $reference_sale,
+                'valor' => $New_value
+            ], function($message){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to('soporte@inkdigital.co', 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos')
+                    ->subject('Pago Actividad');
+            });
         }
     }
 

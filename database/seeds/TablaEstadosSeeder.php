@@ -49,5 +49,8 @@ class TablaEstadosSeeder extends Seeder
         DB::table('TBL_Estados')->insert([
             'EST_Nombre_Estado' => 'Esperando Aprobacion Cliente'
         ]);
+        DB::table('TBL_Estados')->insert([
+            'EST_Nombre_Estado' => 'Pago Pendiente'
+        ]);
     }
 }
