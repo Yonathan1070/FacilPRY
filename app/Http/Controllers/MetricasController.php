@@ -249,7 +249,7 @@ class MetricasController extends Controller
             }
 
             //Obtenemos la Eficiencia
-            $actividades = $this->obtenerActividades($trabajador->id);
+            $actividades = $this->obtenerActividadesHorasTrabajador($trabajador->id);
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;

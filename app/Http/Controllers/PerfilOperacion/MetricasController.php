@@ -182,8 +182,10 @@ class MetricasController extends Controller
             ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('uu.id', '=', $id)
             ->groupBy('HRS_ACT_Actividad_Id')->get();
         return $actividades;
     }
