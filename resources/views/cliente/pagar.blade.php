@@ -17,7 +17,7 @@ Pagar
                 method: "get",
                 url: "/cliente/"+id+"/info-pago"
             }).done(function( infoPago ){
-                var html_button = "<form method='post' action='https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/'>\
+                var html_button = "<form method='post' action='https://checkout.payulatam.com/ppp-web-gateway-payu/'>\
                     <input name='merchantId' type='hidden' value='"+infoPago.merchantId+"'>\
                     <input name='accountId' type='hidden' value='"+infoPago.accountId+"' >\
                     <input name='description' type='hidden'  value='"+infoPago.description+"'>\
