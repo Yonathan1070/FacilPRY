@@ -129,7 +129,7 @@ class ActividadesController extends Controller
         $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
         $actividadesFinalizadas = $this->actividadesFinalizadas();
 
-        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesEstancadas', 'actividadesProceso', 'actividadesAtrasadas', 'actividadesFinalizadas', 'empresa'));
+        $pdf = PDF::loadView('includes.pdf.actividades', compact('actividadesProceso', 'actividadesAtrasadas', 'actividadesFinalizadas', 'empresa'));
 
         $fileName = 'Actividades' . session()->get('Usuario_Nombre');
         return $pdf->download($fileName);

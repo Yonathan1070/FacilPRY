@@ -83,7 +83,7 @@ class FinanzasController extends Controller
             ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
             ->where('a.id', '=', $id)
             ->get();
-        return view('finanzas.cobro', compact('datos', 'actividades', 'documentosEvidencias', 'documentosSoporte', 'perfil', 'id', 'notificaciones', 'cantidad'));
+        return view('finanzas.cobro', compact('datos', 'actividades', 'documentosEvidencias', 'documentosSoporte', 'id', 'notificaciones', 'cantidad'));
     }
 
     /**
