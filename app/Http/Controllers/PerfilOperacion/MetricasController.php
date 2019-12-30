@@ -16,12 +16,7 @@ class MetricasController extends Controller
     public function metricaEficaciaGeneral(Request $request){
         $eficacia = [];
 
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('uu.id', '=', session()->get('Usuario_Id'))
-            ->get();
+        $proyectos = Proyectos::get();
         
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
@@ -46,7 +41,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEficaciaColor,
             'data' => $pryEficaciaValor,
             'label' => 'Eficacia General',
-            'type' => 'pie',
+            'type' => 'bar',
             'labels' => $pryEficaciaLlave
         ];
         return json_encode($chartEficaciaBar);
@@ -76,7 +71,7 @@ class MetricasController extends Controller
             }
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
         }
-        $pryEficienciaValor = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
+        $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
 
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
@@ -161,6 +156,7 @@ class MetricasController extends Controller
             ->where('e.id', '<>', 1)
             ->where('e.id', '<>', 2)
             ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('p.id', '=', $id)
             ->get();
         return $actividadesFinalizadas;
     }
@@ -172,6 +168,7 @@ class MetricasController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
             ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('p.id', '=', $id)
             ->get();
         return $actividadesTotales;
     }
@@ -181,11 +178,15 @@ class MetricasController extends Controller
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
             ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
             ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->where('uu.id', '=', $id)
+            ->where('e.id', '<>', 1)
+            ->where('e.id', '<>', 2)
+            ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('p.id', '=', $id)
             ->groupBy('HRS_ACT_Actividad_Id')->get();
         return $actividades;
     }
