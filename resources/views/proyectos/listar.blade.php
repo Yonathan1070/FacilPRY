@@ -81,16 +81,16 @@ Crud Proyectos
                                         <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                         <td>
                                             @if ($permisos['listarR']==true)
-                                                <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Requerimientos">
+                                                <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
                                                     <i class="material-icons text-info" style="font-size: 17px;">description</i>
                                                 </a>
                                             @endif
                                             @if ($permisos['listarA']==true)
-                                                <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
+                                                <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Tareas">
                                                     <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                                 </a>
                                             @endif
-                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
+                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
                                                 <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                             </a>
                                         </td>

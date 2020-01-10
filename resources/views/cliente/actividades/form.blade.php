@@ -9,7 +9,7 @@
 <div class="form-group form-float">
     <div class="form-line">
         <textarea name="ACT_FIN_Descripcion" id="ACT_FIN_Descripcion" cols="30" rows="5" class="form-control no-resize"
-            maxlength="1000" required></textarea>
+            required></textarea>
         <label class="form-label">Descripción para la entrega de la Actividad</label>
     </div>
 </div>

@@ -17,7 +17,7 @@ use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Route;
 
 class ActividadesController extends Controller
 {
@@ -111,8 +111,13 @@ class ActividadesController extends Controller
      */
     public function guardar(ValidacionActividad $request)
     {
+        $hoy = Carbon::now();
+        $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
         if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
-            return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
+            return redirect()->route($request['ruta'], [$request['ACT_Proyecto_Id']])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
+        }else if (($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+                    ($diferencia < 60 || $diferencia > 600)) {
+            return redirect()->route($request['ruta'], [$request['ACT_Proyecto_Id']])->withErrors('La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas')->withInput();
         }
         $actividades = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -122,7 +127,7 @@ class ActividadesController extends Controller
 
         foreach ($actividades as $actividad) {
             if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad) {
-                return redirect()->route('crear_actividad', [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
+                return redirect()->route($request['ruta'], [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
         $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);

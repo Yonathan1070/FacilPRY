@@ -12,18 +12,18 @@ Crud Actividades
         <div class="card">
             <div class="header">
                 <h2>
-                    ACTIVIDADES
+                    TAREAS
                 </h2>
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">
                         @if ($permisos['crearC']==true)
                             <a class="btn btn-success waves-effect" href="{{route('crear_actividad_cliente', ['idP'=>$proyecto->id])}}">
-                                <i class="material-icons" style="color:white;">add</i> Nueva Actividad Cliente
+                                <i class="material-icons" style="color:white;">add</i> Nueva Tarea Cliente
                             </a>
                         @endif
                         @if ($permisos['crear'] == true)
                             <a class="btn btn-success waves-effect" href="{{route('crear_actividad_trabajador', ['idP'=>$proyecto->id])}}">
-                                <i class="material-icons" style="color:white;">add</i> Nueva Actividad Trabajador
+                                <i class="material-icons" style="color:white;">add</i> Nueva Tarea Trabajador
                             </a>
                         @endif
                     </li>
@@ -60,10 +60,10 @@ Crud Actividades
                                             <table class="table table-striped table-bordered table-hover  dataTable js-exportable" id="tabla-data">
                                                 <thead>
                                                     <tr>
-                                                        <th>Actividad</th>
+                                                        <th>Tarea</th>
                                                         <th>Descripción</th>
-                                                        <th>Requerimiento</th>
-                                                        <th>Persona</th>
+                                                        <th>Actividad</th>
+                                                        <th>Encargado</th>
                                                         <th>Estado</th>
                                                     </tr>
                                                 </thead>
@@ -104,9 +104,9 @@ Crud Actividades
                                             <table class="table table-striped table-bordered table-hover  dataTable js-exportable" id="tabla-data">
                                                 <thead>
                                                     <tr>
-                                                        <th>Actividad</th>
+                                                        <th>Tarea</th>
                                                         <th>Descripción</th>
-                                                        <th>Persona</th>
+                                                        <th>Cliente</th>
                                                         <th>Estado</th>
                                                     </tr>
                                                 </thead>

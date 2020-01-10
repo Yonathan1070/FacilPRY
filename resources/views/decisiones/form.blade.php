@@ -9,7 +9,7 @@
 <div class="form-group form-float">
     <div class="form-line">
         <textarea name="DCS_Descripcion_Decision" id="DCS_Descripcion_Decision" cols="30" rows="5"
-            class="form-control no-resize" maxlength="100"
+            class="form-control no-resize"
             required>{{old('DCS_Descripcion_Decision', $decision->DCS_Descripcion_Decision ?? '')}}</textarea>
         <label class="form-label">Descripción De La Decisión</label>
     </div>

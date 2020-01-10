@@ -167,7 +167,7 @@ Inicio
                             </div>
                             <div class="form-line">
                                 <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
-                                    class="form-control no-resize" maxlength="1000"
+                                    class="form-control no-resize"
                                     required></textarea>
                                 <label class="form-label">Observaciones</label>
                             </div>
@@ -199,7 +199,7 @@ Inicio
                             </div>
                             <div class="form-line">
                                 <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
-                                    class="form-control no-resize" maxlength="1000"
+                                    class="form-control no-resize"
                                     required></textarea>
                                 <label class="form-label">Observaciones</label>
                             </div>

@@ -1,18 +1,19 @@
 <input type="hidden" name="ACT_Proyecto_Id" id="ACT_Proyecto_Id"
     value="{{old('ACT_Proyecto_Id', $proyecto->id ?? '')}}">
+<input type="hidden" name="ruta" value="{{Request::route()->getName()}}">
 <div class="form-group form-float">
     <div class="form-line">
         <input type="text" class="form-control" name="ACT_Nombre_Actividad" id="ACT_Nombre_Actividad"
             value="{{old('ACT_Nombre_Actividad', $actividad->ACT_Nombre_Actividad ?? '')}}" maxlength="30" required>
-        <label class="form-label">Nombre de la Actividad</label>
+        <label class="form-label">Nombre de la Tarea</label>
     </div>
 </div>
 <div class="form-group form-float">
     <div class="form-line">
         <textarea name="ACT_Descripcion_Actividad" id="ACT_Descripcion_Actividad" cols="30" rows="5"
-            class="form-control no-resize" maxlength="100"
+            class="form-control no-resize"
             required>{{old('ACT_Descripcion_Actividad', $actividad->ACT_Descripcion_Actividad ?? '')}}</textarea>
-        <label class="form-label">Descripción de la Actividad</label>
+        <label class="form-label">Descripción de la Tarea</label>
     </div>
 </div>
 @if (Request::route()->getName() == 'crear_actividad_trabajador')
@@ -34,8 +35,8 @@
                     id="ACT_Fecha_Inicio_Actividad"
                     value="{{old('ACT_Fecha_Inicio_Actividad', $actividad->ACT_Fecha_Inicio_Actividad ?? '')}}"
                     required>
-                <label class="form-label">Fecha Inicio</label>
             </div>
+            <div class="help-info">Fecha de Inicio</div>
         </div>
     </div>
     <div class="col-lg-3">
@@ -43,17 +44,17 @@
             <div class="form-line focused">
                 <input type="date" class="form-control" name="ACT_Fecha_Fin_Actividad" id="ACT_Fecha_Fin_Actividad"
                     value="{{old('ACT_Fecha_Fin_Actividad', $actividad->ACT_Fecha_Fin_Actividad ?? '')}}" required>
-                <label class="form-label">Fecha Finalización</label>
             </div>
+            <div class="help-info">Fecha de Entrega</div>
         </div>
     </div>
     <div class="col-sm-3">
         <div class="form-group form-float">
-            <div class="form-line focused">
-                <input type="text" class="form-control" name="ACT_Hora_Entrega" id="ACT_Hora_Entrega"
-                    value="{{old('ACT_Hora_Entrega' ?? '')}}" required class="timepicker form-control">
-                <label class="form-label">Hora de Entrega</label>
+            <div class="form-line">
+                <input type="text" class="timepicker form-control" name="ACT_Hora_Entrega" id="ACT_Hora_Entrega"
+                    value="{{old('ACT_Hora_Entrega' ?? '')}}" required>
             </div>
+            <div class="help-info">Hora de Entrega</div>
         </div>
     </div>
 </div>
@@ -78,7 +79,7 @@
             <div class="form-group form-float">
                 <div class="form-line focused">
                     <select name="ACT_Requerimiento_Id" id="ACT_Requerimiento_Id" class="form-control show-tick" data-live-search="true" data-show-subtext="true" required>
-                        <option value="">-- Seleccione un Requerimiento --</option>
+                        <option value="">-- Seleccione una Actividad --</option>
                         @foreach ($requerimientos as $requerimiento)
                         <option value="{{$requerimiento->id}}" data-subtext="{{$requerimiento->REQ_Descripcion_Requerimiento}}">
                             {{$requerimiento->REQ_Nombre_Requerimiento}}</option>

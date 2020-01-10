@@ -9,7 +9,7 @@
 <div class="form-group form-float">
     <div class="form-line">
         <textarea name="PRY_Descripcion_Proyecto" id="PRY_Descripcion_Proyecto" cols="30" rows="5"
-            class="form-control no-resize" maxlength="100"
+            class="form-control no-resize"
             required>{{old('PRY_Descripcion_Proyecto', $proyecto->PRY_Descripcion_Proyecto ?? '')}}</textarea>
         <label class="form-label">Descripción del Proyecto</label>
     </div>

@@ -125,11 +125,17 @@
     <!-- Select Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap-select/js/bootstrap-select.js")}}"></script>
 
+    <!-- Slimscroll Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
+
     <!-- Waves Effect Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
 
-    <!-- Slimscroll Plugin Js -->
-    <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
+    <!-- Autosize Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/autosize/autosize.js")}}"></script>
+
+    <!-- Moment Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/momentjs/moment.js")}}"></script>
 
     <!-- Jquery DataTable Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/jquery.dataTables.js")}}"></script>

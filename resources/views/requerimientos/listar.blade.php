@@ -20,13 +20,13 @@ Crud Requerimientos
             <div class="card">
                 <div class="header">
                     <h2>
-                        REQUERIMIENTOS
+                        ACTIVIDADES
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             @if ($permisos['crear']==true)
                                 <a class="btn btn-success waves-effect" href="{{route('crear_requerimiento', ['idP'=>$proyecto->id])}}">
-                                    <i class="material-icons" style="color:white;">add</i> Nuevo Requerimiento
+                                    <i class="material-icons" style="color:white;">add</i> Nueva Actividad
                                 </a>
                             @endif
                             
