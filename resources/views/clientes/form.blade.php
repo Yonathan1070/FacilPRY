@@ -126,7 +126,7 @@
     </div>
 
     <div class="row clearfix">
-        <div class="col-lg-3">
+        <div class="col-lg-2">
             <div class="form-group form-float">
                 <div class="form-line focused">
                     <input type="date" class="form-control" name="USR_Fecha_Nacimiento_Usuario" id="USR_Fecha_Nacimiento_Usuario"
@@ -145,7 +145,17 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" class="form-control" name="USR_Ciudad_Residencia_Usuario" id="USR_Ciudad_Residencia_Usuario"
+                        value="{{old('USR_Ciudad_Residencia_Usuario', $perfil->USR_Ciudad_Residencia_Usuario ?? '')}}"
+                        maxlength="100" required>
+                    <label class="form-label">Ciudad de Residencia</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
             <div class="form-group form-float">
                 <div class="form-line">
                     <input type="text" class="form-control" name="USR_Telefono_Usuario" id="USR_Telefono_Usuario"

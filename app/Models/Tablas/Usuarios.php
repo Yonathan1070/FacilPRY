@@ -57,7 +57,7 @@ class Usuarios extends Authenticatable
             'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
             'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
             'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario']+" "+$request['USR_Ciudad_Residencia_Usuario'],
             'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
             'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
