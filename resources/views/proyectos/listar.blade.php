@@ -36,7 +36,7 @@ Crud Proyectos
             <div class="card">
                 <div class="header">
                     <h2>
-                        PROYECTOS DE {{$empresa->EMP_Nombre_Empresa}}
+                        PROYECTOS DE {{strtoupper($empresa->EMP_Nombre_Empresa)}}
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
@@ -72,7 +72,7 @@ Crud Proyectos
                                 @foreach ($proyectos as $proyecto)
                                     <tr>
                                         <td>
-                                        <a onclick="avance({{$proyecto->id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
+                                            <a onclick="avance({{$proyecto->id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
                                                 {{$proyecto->PRY_Nombre_Proyecto}}
                                             </a>
                                             <div id="progressBar{{$proyecto->id}}" style="display: none;"></div>

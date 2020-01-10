@@ -29,7 +29,7 @@ class ActividadesController extends Controller
     public function index($idP)
     {
         can('listar-actividades');
-        $permisos = ['crear' => can2('crear-actividades'), 'crearC' => can2('crear-actividades-cliente')];
+        $permisos = ['crear' => can2('crear-actividades'), 'crearC' => can2('crear-actividades-cliente'), 'listarP' => can2('listar-proyectos')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();

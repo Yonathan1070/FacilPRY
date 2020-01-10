@@ -39,6 +39,7 @@ class PermisoUsuario extends Model
     public static function asignarPermisosCliente($id){
         PermisoUsuario::asignarListarRequerimientos($id);
         PermisoUsuario::asignarListarProyectos($id);
+        PermisoUsuario::asignarListarActividades($id);
     }
 
     public static function asignarCrudActividades($id){
@@ -61,6 +62,12 @@ class PermisoUsuario extends Model
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 5
+        ]);
+    }
+    public static function asignarListarActividades($id){
+        PermisoUsuario::create([
+            'PRM_USR_Usuario_Id' => $id,
+            'PRM_USR_Permiso_Id' => 1
         ]);
     }
     public static function asignarCrudClientes($id){

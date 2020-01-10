@@ -26,11 +26,11 @@ Crud Actividades
                                 <i class="material-icons" style="color:white;">add</i> Nueva Tarea Trabajador
                             </a>
                         @endif
-                    </li>
-                    <li class="dropdown">
+                        @if ($permisos['listarP'] == true)
                         <a class="btn btn-danger waves-effect" href="{{route('proyectos', ['id'=>$proyecto->PRY_Empresa_Id])}}">
                             <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                         </a>
+                        @endif
                     </li>
                 </ul>
             </div>

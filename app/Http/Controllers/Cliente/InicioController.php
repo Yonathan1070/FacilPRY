@@ -27,11 +27,12 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $permisos = ['listarA'=>can2('listar-actividades')];
 
         $proyectos = $this->proyectos();
         $proyectosPagar = $this->proyectosPagarConsulta();
 
-        return view('cliente.inicio', compact('proyectos', 'proyectosPagar', 'datos', 'notificaciones', 'cantidad'));
+        return view('cliente.inicio', compact('proyectos', 'proyectosPagar', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
