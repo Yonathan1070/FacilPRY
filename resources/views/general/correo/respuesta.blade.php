@@ -671,7 +671,6 @@
                                 <td class="wthree-logo" align="center">
                                     <a href="{{route('inicio')}}" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 40px; text-decoration: none; padding: 12px 26px 13px 26px; border-radius: 4px; text-transform:uppercase">
 										<img src="{{asset('assets/images/ink_logo.png')}}" /><br/>
-										BIENVENIDO(A)
                                     </a>
                                 </td>
                             </tr>
@@ -679,7 +678,7 @@
                             <tr>
                                 <td class="agile-main" align="center" style="font-family:'Bell Gothic Std', sans-serif; color: #fefefe; font-size: 20px; line-height: 35px;" class="scale-center-both">
                                     ¡Hola, {{$nombre}}!<br>
-                                    ¡Pago Exitoso!
+                                    ¡Pago Actividad!
                                 </td>
                             </tr>
                             <tr>

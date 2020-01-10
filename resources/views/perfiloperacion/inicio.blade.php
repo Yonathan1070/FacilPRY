@@ -58,7 +58,7 @@
     $.ajax({
         dataType: "json",
         method: "get",
-        url: "{{route('eficacia_general_perfil_operacion')}}"
+        url: "/perfil-operacion/eficacia"
     }).done(function (chartEficaciaBar) {
         if(chartEficaciaBar != null){
             var charEficaciaBar = new Chart(chEficaciaBar, {
@@ -83,7 +83,7 @@
     $.ajax({
         dataType: "json",
         method: "get",
-        url: "{{route('eficiencia_general_perfil_operacion')}}"
+        url: "/perfil-operacion/eficiencia"
     }).done(function (chartEficienciaBar) {
         if(chartEficienciaBar != null){
             var chartEficienciaBar = new Chart(chEficienciaBar, {
@@ -109,7 +109,7 @@
     $.ajax({
         dataType: "json",
         method: "get",
-        url: "{{route('efectividad_general_perfil_operacion')}}"
+        url: "/perfil-operacion/efectividad"
     }).done(function (chartEfectividadBar) {
         if(chartEfectividadBar != null){
             var chartEfectividadBar = new Chart(chEfectividadBar, {

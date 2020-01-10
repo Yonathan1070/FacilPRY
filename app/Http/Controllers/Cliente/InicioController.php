@@ -209,13 +209,13 @@ class InicioController extends Controller
         $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
 		$merchant_id =  $_REQUEST['merchant_id'];
 		$state_pol = $_REQUEST['state_pol'];
-		$response_code_pol=$_REQUEST['response_code_pol	'];
+		$response_code_pol=$_REQUEST['response_code_pol'];
 		$reference_sale=$_REQUEST['reference_sale'];
 		$reference_pol=$_REQUEST['reference_pol'];
 		$sign=$_REQUEST['sign'];
 		$extra1=$_REQUEST['extra1'];
 		$payment_method=$_REQUEST['payment_method'];
-		$payment_method_type=$_REQUEST['payment_method_type	'];
+		$payment_method_type=$_REQUEST['payment_method_type'];
 		$installments_number=$_REQUEST['installments_number'];	
 		$TX_VALUE = $_REQUEST['value'];
 		$New_value = number_format($TX_VALUE, 1, '.', '');
@@ -226,7 +226,6 @@ class InicioController extends Controller
 		$pse_bank=$_REQUEST['pse_bank'];
 		$test=$_REQUEST['test'];
 		$description=$_REQUEST['description'];
-
         $phone=$_REQUEST['phone'];
         
         $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
@@ -245,9 +244,10 @@ class InicioController extends Controller
                 'valor' => $New_value
             ], function($message){
                 $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to('soporte@inkdigital.co', 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos')
+                $message->to('soporte@inkdigital.co', 'InkBrutalPRY, Software de Gestión de Proyectos')
                     ->subject('Pago Actividad');
             });
+            return redirect()->route('inicio_cliente')->with('mensaje', 'Pago exitoso.');
         }
         else{
             foreach ($actividades as $actividad) {
@@ -263,9 +263,10 @@ class InicioController extends Controller
                 'valor' => $New_value
             ], function($message){
                 $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to('soporte@inkdigital.co', 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos')
+                $message->to('soporte@inkdigital.co', 'InkBrutalPRY, Software de Gestión de Proyectos')
                     ->subject('Pago Actividad');
             });
+            return redirect()->route('inicio_cliente')->withErrors('Transacción Rechazada o Expirada.');
         }
     }
 
