@@ -63,7 +63,7 @@ Mis Proyectos
                                                                                 <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                                                             </a>
                                                                         @endif
-                                                                        <a href="{{route('generar_pdf_proyecto_cliente', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
+                                                                        <a href="{{route('generar_pdf_proyecto_cliente', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
                                                                             <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                                                         </a>
                                                                     </td>

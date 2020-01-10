@@ -11,7 +11,7 @@ Inicio
                 <div class="card">
                     <div class="header">
                         <h2>
-                            ACTIVIDADES
+                            TAREAS
                         </h2>
                     </div>
                     <div class="body">
@@ -38,14 +38,14 @@ Inicio
                                                 <div role="tabpanel" class="tab-pane fade in active" id="proceso">
                                                     @if (count($actividadesEntregar)<=0)
                                                         <div class="alert alert-info">
-                                                            No cuenta con Actividades para entregar.
+                                                            No cuenta con Tareas para entregar.
                                                         </div>
                                                     @else
                                                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Proyecto</th>
-                                                                    <th>Actividad</th>
+                                                                    <th>Tarea</th>
                                                                     <th>Descripción</th>
                                                                     <th class="width70"></th>
                                                                 </tr>
@@ -59,7 +59,7 @@ Inicio
                                                                         <td>
                                                                             <a href="{{route('actividades_finalizar_cliente', ['id'=>$actividad->Id_Actividad])}}"
                                                                                 class="btn-accion-tabla tooltipsC"
-                                                                                title="Finalizar Actividad">
+                                                                                title="Finalizar Tarea">
                                                                                 <i class="material-icons text-info"
                                                                                     style="font-size: 17px;">done_all</i>
                                                                             </a>
@@ -73,14 +73,14 @@ Inicio
                                                 <div role="tabpanel" class="tab-pane fade in" id="entregado">
                                                         @if (count($actividadesFinalizadas)<=0)
                                                         <div class="alert alert-info">
-                                                            No cuenta con Actividades para entregar.
+                                                            No cuenta con Tareas finalizadas.
                                                         </div>
                                                     @else
                                                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Proyecto</th>
-                                                                    <th>Actividad</th>
+                                                                    <th>Tarea</th>
                                                                     <th>Descripción</th>
                                                                     <th>Estado</th>
                                                                 </tr>
@@ -115,14 +115,14 @@ Inicio
                                     <div class="panel-body table-responsive">
                                         @if (count($actividadesPendientes)<=0)
                                             <div class="alert alert-info">
-                                                No cuenta con Actividades pendientes de aprobación.
+                                                No cuenta con Tareas pendientes de aprobación.
                                             </div>
                                         @else
                                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                 <thead>
                                                     <tr>
                                                         <th>Proyecto</th>
-                                                        <th>Actividad</th>
+                                                        <th>Tarea</th>
                                                         <th>Requerimiento</th>
                                                         <th class="width70"></th>
                                                     </tr>

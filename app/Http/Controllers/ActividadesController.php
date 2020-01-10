@@ -181,7 +181,7 @@ class ActividadesController extends Controller
             'HST_EST_Actividad' => $actividad->id
         ]);
         Notificaciones::crearNotificacion(
-            'Nueva actividad asignada',
+            'Nueva tarea asignada',
             session()->get('Usuario_Id'),
             $idUsuario,
             $rutaNotificacion,

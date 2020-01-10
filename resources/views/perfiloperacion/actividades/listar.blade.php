@@ -11,7 +11,7 @@ Actividades
             @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    <h2>MIS ACTIVIDADES</h2>
+                    <h2>MIS TAREAS</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-success waves-effect" href="{{route('generar_pdf_perfil_operacion')}}">
@@ -45,7 +45,7 @@ Actividades
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
-                                                            <th>Actividad</th>
+                                                            <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha de Entrega</th>
                                                             @foreach ($actividadesProceso as $actividad)
@@ -80,7 +80,7 @@ Actividades
                                                                         @endif
                                                                         <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
                                                                             class="btn-accion-tabla tooltipsC"
-                                                                            title="Finalizar Actividad">
+                                                                            title="Finalizar Tarea">
                                                                             <i class="material-icons text-info"
                                                                                 style="font-size: 17px;">done_all</i>
                                                                         </a>
@@ -123,7 +123,7 @@ Actividades
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
-                                                            <th>Actividad</th>
+                                                            <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha Limite de Entrega</th>
                                                             <th class="width70"></th>
@@ -173,7 +173,7 @@ Actividades
                                                     <thead>
                                                         <tr>
                                                             <th>Proyecto</th>
-                                                            <th>Actividad</th>
+                                                            <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha de Finalización</th>
                                                             <th>Estado</th>
@@ -212,7 +212,7 @@ Actividades
                     <div class="modal-body">
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label for="nombreActividad">Actividad</label>
+                                <label for="nombreActividad">Tarea</label>
                             </div>
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group">

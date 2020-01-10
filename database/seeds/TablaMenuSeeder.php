@@ -80,7 +80,7 @@ class TablaMenuSeeder extends Seeder
             'MN_Icono_Menu' => 'home'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Actividades',
+            'MN_Nombre_Menu' => 'Tareas',
             'MN_Nombre_Ruta_Menu' => 'actividades_perfil_operacion',
             'MN_Orden_Menu' => 2,
             'MN_Icono_Menu' => 'toc'
@@ -98,7 +98,7 @@ class TablaMenuSeeder extends Seeder
             'MN_Icono_Menu' => 'home'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Actividades',
+            'MN_Nombre_Menu' => 'Tareas',
             'MN_Nombre_Ruta_Menu' => 'actividades_cliente',
             'MN_Orden_Menu' => 2,
             'MN_Icono_Menu' => 'toc'

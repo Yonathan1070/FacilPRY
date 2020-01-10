@@ -70,7 +70,7 @@ class RequerimientosController extends Controller
         }
         Requerimientos::create($request->all());
         Notificaciones::crearNotificacion(
-            'Se han agregado requerimientos al proyecto '.$datosU->PRY_Nombre_Proyecto,
+            'Se han agregado actividades al proyecto '.$datosU->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
             $datosU->id,
             'requerimientos',
@@ -151,7 +151,7 @@ class RequerimientosController extends Controller
                         ->first();
                     Requerimientos::destroy($idR);
                     Notificaciones::crearNotificacion(
-                        'Se ha eliminado un requerimiento de su proyecto.',
+                        'Se ha eliminado una actividad de su proyecto.',
                         session()->get('Usuario_Id'),
                         $datosU->id,
                         'inicio_cliente',
