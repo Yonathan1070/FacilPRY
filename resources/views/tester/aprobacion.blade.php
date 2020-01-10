@@ -25,7 +25,7 @@ Inicio
             <div class="col-xs-12 col-sm-3">
                 <div class="card profile-card">
                     <div class="header">
-                        <h2>REQUERIMIENTO</h2>
+                        <h2>ACTIVIDAD</h2>
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
@@ -40,7 +40,7 @@ Inicio
             <div class="col-xs-12 col-sm-3">
                 <div class="card profile-card card-about-me">
                     <div class="header">
-                        <h2>ACTIVIDAD ASIGNADA</h2>
+                        <h2>TAREA ASIGNADA</h2>
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
