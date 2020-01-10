@@ -13,10 +13,10 @@
             var defaults = {
 
                 // width in pixels of the visible scroll area
-                width: '420px',
+                width: 'auto',
 
                 // height in pixels of the visible scroll area
-                height: '250px',
+                height: '163px',
 
                 // width in pixels of the scrollbar and rail
                 size: '7px',
