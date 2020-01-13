@@ -133,7 +133,7 @@ class PerfilOperacionController extends Controller
             null,
             'update'
         );
-        return redirect()->route('perfil_operacion_director')->with('mensaje', 'Perfi de operación  actualizado con exito');
+        return redirect()->route('perfil_operacion')->with('mensaje', 'Perfi de operación  actualizado con exito');
     }
 
     /**

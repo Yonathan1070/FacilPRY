@@ -43,7 +43,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("perfil_operacion_director")}}">
+                <a href="{{route("perfil_operacion")}}">
                     <i class="material-icons">account_circle</i>
                     <span>Perfil de Operación</span>
                 </a>

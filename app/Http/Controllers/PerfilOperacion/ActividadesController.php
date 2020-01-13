@@ -75,7 +75,7 @@ class ActividadesController extends Controller
         $fecha = HorasActividad::findOrFail($id);
         //$vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24;
         //dd(Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24);
-        if (Carbon::now() >= $fecha->HRS_ACT_Fecha_Actividad) {
+        if (Carbon::now() > $fecha->HRS_ACT_Fecha_Actividad) {
             return response()->json(['msg' => 'errorF']);
         }
         $horas = DB::table('TBL_Horas_Actividad as ha')
