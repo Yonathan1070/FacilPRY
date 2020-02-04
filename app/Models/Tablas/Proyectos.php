@@ -10,6 +10,13 @@ class Proyectos extends Model
     protected $fillable = ['PRY_Nombre_Proyecto',
         'PRY_Descripcion_Proyecto',
         'PRY_Cliente_Id',
-        'PRY_Empresa_Id'];
+        'PRY_Empresa_Id',
+        'PRY_Estado_Proyecto'];
     protected $guarded = ['id'];
+
+    public static function cambiarEstado($id){
+        Proyectos::where('PRY_Empresa_Id', '=', $id)->update([
+            'PRY_Estado_Proyecto' => 0
+        ]);
+    }
 }

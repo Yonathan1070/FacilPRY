@@ -26,6 +26,9 @@ $(document).ready(function () {
                 if (respuesta.mensaje == "ok") {
                     location.reload();
                     InkBrutalPRY.notificaciones('El registro fue eliminado correctamente', 'InkBrutalPRY', 'success');
+                } else if (respuesta.mensaje == "okI") {
+                    location.reload();
+                    InkBrutalPRY.notificaciones('La empresa ha quedado inactiva', 'InkBrutalPRY', 'success');
                 } else if (respuesta.mensaje == "rd") {
                     InkBrutalPRY.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'InkBrutalPRY', 'error');
                 } else if (respuesta.mensaje == "np") {

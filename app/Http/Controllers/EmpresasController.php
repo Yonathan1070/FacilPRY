@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tablas\Empresas;
-use App\Models\Tablas\Notificaciones;
-use App\Models\Tablas\Usuarios;
 use Illuminate\Http\Request;
+use App\Models\Tablas\Empresas;
+use App\Models\Tablas\Usuarios;
+use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tablas\Notificaciones;
 
 class EmpresasController extends Controller
 {
@@ -22,7 +23,8 @@ class EmpresasController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $empresas = DB::table('TBL_Empresas')->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))->get();
+        $empresas = DB::table('TBL_Empresas')->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
+            ->where('EMP_Estado_Empresa', '=', 1)->get();
 
         return view('empresas.listar', compact('empresas', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
@@ -103,8 +105,12 @@ class EmpresasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($id)
+    public function inactivar(Request $request, $id)
     {
-        //
+        if($request->ajax()){
+            Empresas::cambiarEstado($id);
+            Proyectos::cambiarEstado($id);
+            return response()->json(['mensaje' => 'okI']);
+        }
     }
 }

@@ -16,7 +16,13 @@ class MetricasController extends Controller
     public function metricaEficaciaGeneral(Request $request){
         $eficacia = [];
 
-        $proyectos = Proyectos::get();
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('u.id', '=', session()->get('Usuario_Id'))
+            ->groupBy('p.id')
+            ->select('u.*', 'p.*')->get();
         
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
@@ -49,7 +55,14 @@ class MetricasController extends Controller
 
     public function metricaEficienciaGeneral(){
         $eficiencia = [];
-        $proyectos = Proyectos::get();
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('u.id', '=', session()->get('Usuario_Id'))
+            ->groupBy('p.id')
+            ->select('u.*', 'p.*')->get();
+
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);
@@ -93,7 +106,14 @@ class MetricasController extends Controller
     public function metricaEfectividadGeneral(){
         $efectividad = [];
 
-        $proyectos = Proyectos::get();
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('u.id', '=', session()->get('Usuario_Id'))
+            ->groupBy('p.id')
+            ->select('u.*', 'p.*')->get();
+	
         foreach ($proyectos as $key => $proyecto) {
             //Obtenermos la Eficacia
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);

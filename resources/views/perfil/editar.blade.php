@@ -158,7 +158,7 @@ Editar Perfil
             form = new FormData();
             form.append('USR_Foto_Perfil_Usuario', $('#USR_Foto_Perfil_Usuario')[0].files[0]);
             jQuery.ajax({
-                url:"{{route('actualizar_foto')}}",
+                url:"/perfilfoto",
                 headers: {
                     'X-CSRF-TOKEN': "{{csrf_token()}}"
                 },

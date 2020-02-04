@@ -52,16 +52,16 @@
                                             <td>{{$empresa->EMP_Correo_Empresa}}</td>
                                             <td class="width100">
                                                 @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
-                                                    <form class="form-eliminar" action="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="d-inline" method="POST">
+                                                    <form class="form-eliminar" action="{{route('inactivar_empresa', ['id'=>$empresa->id])}}" class="d-inline" method="POST">
                                                         @if ($permisos['editar']==true)
                                                             <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                                 <i class="material-icons text-info" style="font-size: 20px;">edit</i>
                                                             </a>
                                                         @endif    
                                                         @if ($permisos['eliminar']==true)
-                                                            @csrf @method("delete")
-                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
-                                                                <i class="material-icons text-danger" style="font-size: 20px;">delete_forever</i>
+                                                            @csrf @method("put")
+                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Inactivar la empresa {{$empresa->EMP_Nombre_Empresa}}">
+                                                                <i class="material-icons text-danger" style="font-size: 20px;">arrow_downward</i>
                                                             </button>
                                                         @endif
                                                         @if ($permisos['lUsuarios']==true)

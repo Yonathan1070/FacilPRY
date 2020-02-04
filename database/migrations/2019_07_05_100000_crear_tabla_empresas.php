@@ -23,6 +23,7 @@ class CrearTablaEmpresas extends Migration
             $table->string('EMP_Correo_Empresa', 100);
             $table->text('EMP_Logo_Empresa')->nullable();
             $table->bigInteger('EMP_Empresa_Id')->default(0);
+            $table->boolean('EMP_Estado_Empresa')->default(1);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

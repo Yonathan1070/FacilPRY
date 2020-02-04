@@ -215,6 +215,7 @@ class ActividadesController extends Controller
             ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('p.PRY_Estado_Proyecto', '=', 1)
             ->orderBy('a.id', 'ASC')
             ->groupBy('a.id')
             ->get();
@@ -231,6 +232,7 @@ class ActividadesController extends Controller
             ->select('a.id AS ID_Actividad', 'a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
             ->where('a.ACT_Estado_Id', '=', 2)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('p.PRY_Estado_Proyecto', '=', 1)
             ->orderBy('a.id')
             ->groupBy('a.id')
             ->get();
@@ -248,6 +250,7 @@ class ActividadesController extends Controller
             ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'af.*', 'e.*')
             ->where('a.ACT_Estado_Id', '<>', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('p.PRY_Estado_Proyecto', '=', 1)
             ->orderBy('a.id')
             ->groupBy('a.id')
             ->get();

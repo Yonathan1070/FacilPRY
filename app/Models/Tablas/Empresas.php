@@ -13,7 +13,8 @@ class Empresas extends Model
         'EMP_Direccion_Empresa',
         'EMP_Correo_Empresa',
         'EMP_Logo_Empresa',
-        'EMP_Empresa_Id'];
+        'EMP_Empresa_Id',
+        'EMP_Estado_Empresa'];
     protected $guarded = ['id'];
 
     public static function crearEmpresa($request){
@@ -35,6 +36,12 @@ class Empresas extends Model
             'EMP_Telefono_Empresa' => $request['EMP_Telefono_Empresa'],
             'EMP_Direccion_Empresa' => $request['EMP_Direccion_Empresa'],
             'EMP_Correo_Empresa' => $request['EMP_Correo_Empresa']
+        ]);
+    }
+
+    public static function cambiarEstado($id){
+        Empresas::findOrFail($id)->update([
+            'EMP_Estado_Empresa' => 0
         ]);
     }
 }
