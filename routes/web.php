@@ -195,6 +195,7 @@ Route::delete('actividades/{idP}-{idR}', 'ActividadesController@eliminar')->name
 Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad');
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
+Route::get('actividades/{id}/detalle', 'ActividadesController@detalleActividadModal')->name('detalle_actividades');
 
 //Rutas Validador
 Route::get('validador', 'ValidadorController@index')->name('inicio_validador');
