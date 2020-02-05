@@ -45,7 +45,7 @@ class ActividadesController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('r.REQ_Proyecto_Id', '=', $idP)
             ->where('a.ACT_Trabajador_Id', '<>', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*')
+            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*', 'r.*')
             ->orderBy('a.Id', 'ASC')
             ->get();
         $actividadesCliente = DB::table('TBL_Actividades as a')
@@ -55,7 +55,7 @@ class ActividadesController extends Controller
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('r.REQ_Proyecto_Id', '=', $idP)
             ->where('a.ACT_Trabajador_Id', '=', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*')
+            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*', 'r.*')
             ->orderBy('a.Id', 'ASC')
             ->get();
         $proyecto = Proyectos::findOrFail($idP);

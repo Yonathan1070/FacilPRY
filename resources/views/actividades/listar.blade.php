@@ -61,6 +61,7 @@ Crud Actividades
                                                 <thead>
                                                     <tr>
                                                         <th>Tarea</th>
+                                                        <th>Actividad</th>
                                                         <th>Encargado</th>
                                                         <th>Estado</th>
                                                     </tr>
@@ -74,6 +75,7 @@ Crud Actividades
                                                                     {{$actividad->ACT_Nombre_Actividad}}
                                                                 </a>
                                                             </td>
+                                                            <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                         </tr>
@@ -114,12 +116,9 @@ Crud Actividades
                                                     @foreach ($actividadesCliente as $actividad)
                                                         <tr>
                                                             <td>
-                                                                <a
-                                                                    href="#"
-                                                                    class="btn-accion-tabla"
-                                                                    title="Ver Detalles"
-                                                                >
-                                                                {{$actividad->ACT_Nombre_Actividad}}
+                                                                <a id="{{$actividad->ID_Actividad}}" onclick="detalle(this)" class="btn-accion-tabla tooltipsC"
+                                                                    title="Ver Detalles" data-toggle="modal" data-target="#defaultModal">
+                                                                    {{$actividad->ACT_Nombre_Actividad}}
                                                                 </a>
                                                             </td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
@@ -142,7 +141,7 @@ Crud Actividades
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="defaultModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="defaultModalLabel">Detalles de la actividad</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row clearfix">
@@ -164,7 +163,7 @@ Crud Actividades
                         <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                             <div class="form-group">
                                 <div class="form-line">
-                                    <input type="text" id="descripcionActividad" class="form-control" readonly="true">
+                                    <textarea name="" id="descripcionActividad" readonly="true" class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
