@@ -63,6 +63,7 @@ Crud Actividades
                                                         <th>Tarea</th>
                                                         <th>Actividad</th>
                                                         <th>Encargado</th>
+                                                        <th>Fecha de Entrega</th>
                                                         <th>Estado</th>
                                                     </tr>
                                                 </thead>
@@ -77,6 +78,7 @@ Crud Actividades
                                                             </td>
                                                             <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
+                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y h:i A.')}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                         </tr>
                                                     @endforeach
@@ -109,6 +111,7 @@ Crud Actividades
                                                     <tr>
                                                         <th>Tarea</th>
                                                         <th>Cliente</th>
+                                                        <th>Fecha de Entrega</th>
                                                         <th>Estado</th>
                                                     </tr>
                                                 </thead>
@@ -122,6 +125,7 @@ Crud Actividades
                                                                 </a>
                                                             </td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
+                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:i A.')}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                         </tr>
                                                     @endforeach
