@@ -23,10 +23,12 @@ class EmpresasController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $empresas = DB::table('TBL_Empresas')->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
+        $empresasActivas = DB::table('TBL_Empresas')->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->where('EMP_Estado_Empresa', '=', 1)->get();
+        $empresasInActivas = DB::table('TBL_Empresas')->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
+            ->where('EMP_Estado_Empresa', '=', 0)->get();
 
-        return view('empresas.listar', compact('empresas', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        return view('empresas.listar', compact('empresasActivas', 'empresasInActivas', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
@@ -112,5 +114,12 @@ class EmpresasController extends Controller
             Proyectos::cambiarEstado($id);
             return response()->json(['mensaje' => 'okI']);
         }
+    }
+
+    public function activar(Request $request, $id)
+    {
+        Empresas::cambiarEstadoActivado($id);
+        Proyectos::cambiarEstadoActivado($id);
+        return redirect()->back()->with('mensaje', 'Empresa activada satisfactoriamente.');
     }
 }

@@ -148,7 +148,8 @@ Route::get('empresas/crear', 'EmpresasController@crear')->name('crear_empresa');
 Route::post('empresas/crear', 'EmpresasController@guardar')->name('guardar_empresa');
 Route::get('empresas/{id}/editar', 'EmpresasController@editar')->name('editar_empresa');
 Route::put('empresas/{id}', 'EmpresasController@actualizar')->name('actualizar_empresa');
-Route::put('empresa/{id}', 'EmpresasController@inactivar')->name('inactivar_empresa');
+Route::put('empresa/{id}/inactivar', 'EmpresasController@inactivar')->name('inactivar_empresa');
+Route::get('empresa/{id}/activar', 'EmpresasController@activar')->name('activar_empresa');
 
 //Rutas CRUD Clientes
 Route::get('clientes/{id}', 'ClientesController@index')->name('clientes');

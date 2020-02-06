@@ -44,4 +44,10 @@ class Empresas extends Model
             'EMP_Estado_Empresa' => 0
         ]);
     }
+
+    public static function cambiarEstadoActivado($id){
+        Empresas::findOrFail($id)->update([
+            'EMP_Estado_Empresa' => 1
+        ]);
+    }
 }

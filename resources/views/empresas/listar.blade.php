@@ -25,63 +25,128 @@
                         </ul>
                     </div>
                     <div class="body table-responsive">
-                        @if (count($empresas)<=0)
-                            <div class="alert alert-info">
-                                No hay Datos que mostrar
-                                <a href="{{route('crear_empresa')}}" class="alert-link">Clic aquí para agregar!</a>.
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#activas" aria-controls="settings" role="tab" data-toggle="tab">Activas</a></li>
+                                <li role="presentation"><a href="#inactivas" aria-controls="settings" role="tab" data-toggle="tab">InActivas</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade in active" id="activas">
+                                    @if (count($empresasActivas)<=0)
+                                        <div class="alert alert-info">
+                                            No hay Datos que mostrar
+                                            <a href="{{route('crear_empresa')}}" class="alert-link">Clic aquí para agregar!</a>.
+                                        </div>
+                                    @else
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                            <thead>
+                                                <tr>
+                                                    <th>NIT</th>
+                                                    <th>Empresa</th>
+                                                    <th>Dirección</th>
+                                                    <th>Correo Electrónico</th>
+                                                    @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                                        <th class="width100"></th>
+                                                    @endif
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($empresasActivas as $empresa)
+                                                    <tr>
+                                                        <td>{{$empresa->EMP_NIT_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Nombre_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Direccion_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Correo_Empresa}}</td>
+                                                        <td class="width100">
+                                                            @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
+                                                                <form class="form-eliminar" action="{{route('inactivar_empresa', ['id'=>$empresa->id])}}" class="d-inline" method="POST">
+                                                                    @if ($permisos['editar']==true)
+                                                                        <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                            <i class="material-icons text-info" style="font-size: 20px;">edit</i>
+                                                                        </a>
+                                                                    @endif    
+                                                                    @if ($permisos['eliminar']==true)
+                                                                        @csrf @method("put")
+                                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Inactivar la empresa {{$empresa->EMP_Nombre_Empresa}}">
+                                                                            <i class="material-icons text-danger" style="font-size: 20px;">arrow_downward</i>
+                                                                        </button>
+                                                                    @endif
+                                                                    @if ($permisos['lUsuarios']==true)
+                                                                        <a href="{{route('clientes', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios">
+                                                                            <i class="material-icons text-info" style="font-size: 20px;">list</i>
+                                                                        </a>
+                                                                    @endif
+                                                                    @if ($permisos['lProyectos']==true)
+                                                                        <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
+                                                                            <i class="material-icons text-info" style="font-size: 20px;">notes</i>
+                                                                        </a>
+                                                                    @endif
+                                                                </form>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade in" id="inactivas">
+                                    @if (count($empresasInActivas)<=0)
+                                        <div class="alert alert-info">
+                                            No hay Datos que mostrar
+                                        </div>
+                                    @else
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                            <thead>
+                                                <tr>
+                                                    <th>NIT</th>
+                                                    <th>Empresa</th>
+                                                    <th>Dirección</th>
+                                                    <th>Correo Electrónico</th>
+                                                    @if ($permisos['editar']==true || $permisos['eliminar']==true)
+                                                        <th class="width100"></th>
+                                                    @endif
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($empresasInActivas as $empresa)
+                                                    <tr>
+                                                        <td>{{$empresa->EMP_NIT_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Nombre_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Direccion_Empresa}}</td>
+                                                        <td>{{$empresa->EMP_Correo_Empresa}}</td>
+                                                        <td class="width100">
+                                                            @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
+                                                                @if ($permisos['editar']==true)
+                                                                    <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                        <i class="material-icons text-info" style="font-size: 20px;">edit</i>
+                                                                    </a>
+                                                                @endif    
+                                                                @if ($permisos['eliminar']==true)
+                                                                    <a href="{{route('activar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Activar la empresa {{$empresa->EMP_Nombre_Empresa}}">
+                                                                        <i class="material-icons text-success" style="font-size: 20px;">arrow_upward</i>
+                                                                    </a>
+                                                                @endif
+                                                                @if ($permisos['lUsuarios']==true)
+                                                                    <a href="{{route('clientes', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios">
+                                                                        <i class="material-icons text-info" style="font-size: 20px;">list</i>
+                                                                    </a>
+                                                                @endif
+                                                                @if ($permisos['lProyectos']==true)
+                                                                    <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
+                                                                        <i class="material-icons text-info" style="font-size: 20px;">notes</i>
+                                                                    </a>
+                                                                @endif
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+                                </div>
                             </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>NIT</th>
-                                        <th>Empresa</th>
-                                        <th>Dirección</th>
-                                        <th>Correo Electrónico</th>
-                                        @if ($permisos['editar']==true || $permisos['eliminar']==true)
-                                            <th class="width100"></th>
-                                        @endif
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($empresas as $empresa)
-                                        <tr>
-                                            <td>{{$empresa->EMP_NIT_Empresa}}</td>
-                                            <td>{{$empresa->EMP_Nombre_Empresa}}</td>
-                                            <td>{{$empresa->EMP_Direccion_Empresa}}</td>
-                                            <td>{{$empresa->EMP_Correo_Empresa}}</td>
-                                            <td class="width100">
-                                                @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
-                                                    <form class="form-eliminar" action="{{route('inactivar_empresa', ['id'=>$empresa->id])}}" class="d-inline" method="POST">
-                                                        @if ($permisos['editar']==true)
-                                                            <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
-                                                                <i class="material-icons text-info" style="font-size: 20px;">edit</i>
-                                                            </a>
-                                                        @endif    
-                                                        @if ($permisos['eliminar']==true)
-                                                            @csrf @method("put")
-                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Inactivar la empresa {{$empresa->EMP_Nombre_Empresa}}">
-                                                                <i class="material-icons text-danger" style="font-size: 20px;">arrow_downward</i>
-                                                            </button>
-                                                        @endif
-                                                        @if ($permisos['lUsuarios']==true)
-                                                            <a href="{{route('clientes', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios">
-                                                                <i class="material-icons text-info" style="font-size: 20px;">list</i>
-                                                            </a>
-                                                        @endif
-                                                        @if ($permisos['lProyectos']==true)
-                                                            <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
-                                                                <i class="material-icons text-info" style="font-size: 20px;">notes</i>
-                                                            </a>
-                                                        @endif
-                                                    </form>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
