@@ -11,6 +11,7 @@ use App\Models\Tablas\Usuarios;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ValidadorController extends Controller
 {
@@ -134,7 +135,7 @@ class ValidadorController extends Controller
             ->where('a.id', '=', $actividad->id)
             ->first();
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
+            $datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Tarea.',
             session()->get('Usuario_Id'),
             $trabajador->ACT_Trabajador_Id,
             'actividades_perfil_operacion',
@@ -142,6 +143,17 @@ class ValidadorController extends Controller
             null,
             'clear'
         );
+        $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Mail::send('general.correo.informacion', [
+            'titulo' => $datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Tarea.',
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a rechazado la entrega de la tarea.'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Entrega de la tarea, rechazada');
+        });
         return redirect()->route('inicio_validador')->with('mensaje', 'Respuesta envíada');
     }
 
@@ -203,6 +215,17 @@ class ValidadorController extends Controller
             $idActFin,
             'info'
         );
+        $para = Usuarios::findOrFail($trabajador->PRY_Cliente_Id);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Mail::send('general.correo.informacion', [
+            'titulo' => 'Se ha finalizado una actividad del proyecto '.$trabajador->PRY_Nombre_Proyecto,
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' está en espera de su aprobado en tarea entregada.'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Tarea finalizada, pendiente de aprobación');
+        });
         return redirect()->route('inicio_validador')->with('mensaje', 'Respuesta envíada');
     }
 

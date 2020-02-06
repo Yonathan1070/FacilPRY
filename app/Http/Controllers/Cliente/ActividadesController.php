@@ -14,6 +14,7 @@ use App\Models\Tablas\Respuesta;
 use App\Models\Tablas\Usuarios;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ActividadesController extends Controller
 {
@@ -226,6 +227,17 @@ class ActividadesController extends Controller
                 null,
                 'clear'
             );
+            $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
+            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            Mail::send('general.correo.informacion', [
+                'titulo' => 'El Cliente '.$datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Actividad.',
+                'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+                'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a rechazado la entrega de la tarea.'
+            ], function($message) use ($para){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                    ->subject('Entrega de la tarea, rechazada');
+            });
         }
         return redirect()->route('actividades_cliente')->with('mensaje', 'Respuesta envíada');
     }
@@ -278,14 +290,25 @@ class ActividadesController extends Controller
                 'done_all'
             );
             Notificaciones::crearNotificacion(
-                'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la entrega una Actividad',
+                'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la entrega una tarea',
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
-                'cobros_director',
+                'cobros',
                 null,
                 null,
                 'done_all'
             );
+            $para = Usuarios::findOrFail($datos->USR_Supervisor_Id);
+            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            Mail::send('general.correo.informacion', [
+                'titulo' => 'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la tarea entregada',
+                'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+                'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' ha aprobado la tarea entregada.'
+            ], function($message) use ($para){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                    ->subject('Tarea finalizada');
+            });
         }
         return redirect()->route('actividades_cliente')->with('mensaje', 'Respuesta envíada');
     }

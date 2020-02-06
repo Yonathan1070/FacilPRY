@@ -18,6 +18,7 @@ use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ActividadesController extends Controller
@@ -114,6 +115,17 @@ class ActividadesController extends Controller
                 $id,
                 'alarm'
             );
+            $para = Usuarios::findOrFail($datos->USR_Supervisor_Id);
+            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            Mail::send('general.correo.informacion', [
+                'titulo' => $datos->USR_Nombres_Usuario . ' ' . $datos->USR_Apellidos_Usuario . ' ha asignado sus horas de trabajo',
+                'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+                'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a asignado sus horas de trabajo, para que las apruebes.'
+            ], function($message) use ($para){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                    ->subject('Horas de trabajo asignadas');
+            });
         }
         return response()->json(['msg' => 'exito'], 200);
     }
@@ -193,7 +205,21 @@ class ActividadesController extends Controller
             'HST_EST_Estado' => 4,
             'HST_EST_Actividad' => $request['Actividad_Id']
         ]);
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $para = DB::table('TBL_Permiso as p')
+            ->join('TBL_Permiso_Usuario as pu', 'pu.PRM_USR_Permiso_Id', '=', 'p.id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'pu.PRM_USR_Usuario_Id')
+            ->where('p.PRM_Nombre_Permiso', '=', 'validador')
+            ->select('u.*')->first();
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Mail::send('general.correo.informacion', [
+            'titulo' => 'Tarea finalizada y entregada',
+            'nombre' => $para->USR_Nombres_Usuario.' '.$para->USR_Apellidos_Usuario,
+            'contenido' => $para->USR_Nombres_Usuario.', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a realizado la entrega de una tarea y está esperando a ser aprobada.'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para->USR_Correo_Usuario, 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Tarea finalizada y entregada');
+        });
         
         return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
     }

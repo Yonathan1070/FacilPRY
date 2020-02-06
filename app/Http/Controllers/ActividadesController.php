@@ -17,6 +17,7 @@ use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 class ActividadesController extends Controller
@@ -192,6 +193,17 @@ class ActividadesController extends Controller
             null,
             'add_to_photos'
         );
+        $para = Usuarios::findOrFail($idUsuario);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Mail::send('general.correo.informacion', [
+            'titulo' => 'Nueva Tarea Asignada',
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' le ha asignado una Tarea'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Tarea Asignada');
+        });
         return redirect()->route($ruta, [$idR])->with('mensaje', 'Actividad agregada con exito');
     }
 
@@ -362,6 +374,17 @@ class ActividadesController extends Controller
             null,
             'done_all'
         );
+        $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Mail::send('general.correo.informacion', [
+            'titulo' => 'Horas de trabajo Aprobadas',
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a aprobado tus horas de trabajo, ya tienes acceso  a la entrega de la tarea.'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Horas de trabajo aprobadas');
+        });
         return response()->json(['msg' => 'exito']);
     }
 

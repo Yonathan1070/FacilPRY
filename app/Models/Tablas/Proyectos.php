@@ -22,7 +22,7 @@ class Proyectos extends Model
 
     public static function cambiarEstadoActivado($id){
         Proyectos::where('PRY_Empresa_Id', '=', $id)->update([
-            'PRY_Estado_Proyecto' => 0
+            'PRY_Estado_Proyecto' => 1
         ]);
     }
 }
