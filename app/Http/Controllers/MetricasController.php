@@ -142,6 +142,46 @@ class MetricasController extends Controller
         return json_encode($chartEficienciaPie);
     }
 
+    public function metricaProductividad(){
+        $proyectos = Proyectos::get();
+        foreach ($proyectos as $key => $proyecto) {
+            
+            $actividades = $this->obtenerActividades($proyecto->id);
+            $costoEstimado = 0;
+            $costoReal = 0;
+
+            foreach ($actividades as $actividad) {
+                $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
+                $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
+            }
+            try{
+                $productividadPorcentaje = ($costoReal  / $costoEstimado) * 100;
+            }catch(Exception $ex){
+                $productividadPorcentaje = 0;
+            }
+
+            $productividad[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$productividadPorcentaje];
+        }
+
+        $pryProductividadLlave = []; $pryProductividadValor = []; $pryProductividadColor = [];
+
+        foreach ($productividad as $indProductividad) {
+            array_push($pryProductividadLlave, $indProductividad[0]);
+            array_push($pryProductividadValor, $indProductividad[1]);
+            array_push($pryProductividadColor, sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        }
+        
+        $chartProductividadPie = [
+            'borderWidth' => 2,
+            'backgroundColor' => $pryProductividadColor,
+            'data' => $pryProductividadValor,
+            'label' => 'Productividad',
+            'type' => 'pie',
+            'labels' => $pryProductividadLlave
+        ];
+        return json_encode($chartProductividadPie);
+    }
+
     public function barrasEficaciaPorTrabajador(){
         $eficacia = [];
 
@@ -209,7 +249,7 @@ class MetricasController extends Controller
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
-            $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario.' '.$trabajador->USR_Apellidos_Usuario,(int)$eficienciaPorcentaje];
+            $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$eficienciaPorcentaje];
         }
         $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
 
@@ -268,7 +308,7 @@ class MetricasController extends Controller
 
             //Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
-            $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario.' '.$trabajador->USR_Apellidos_Usuario, (int)$efectividadPorcentaje];
+            $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$efectividadPorcentaje];
         }
 
         $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];

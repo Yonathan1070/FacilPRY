@@ -44,7 +44,7 @@ Inicio
     </div>
     <div id="pie" class="row clearfix">
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficacia General</h2>
@@ -56,7 +56,7 @@ Inicio
         </div>
         <!-- #END# Pie Chart -->
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficiencia General</h2>
@@ -68,7 +68,7 @@ Inicio
         </div>
         <!-- #END# Pie Chart -->
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Efectividad General</h2>
@@ -79,10 +79,22 @@ Inicio
             </div>
         </div>
         <!-- #END# Pie Chart -->
+        <!-- Pie Chart -->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Indicador de Productividad</h2>
+                </div>
+                <div class="body">
+                    <canvas id="chartProductividad" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- #END# Pie Chart -->
     </div>
     <div id="barras" style="display:none" class="row clearfix">
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficacia Por Trabajadores</h2>
@@ -94,7 +106,7 @@ Inicio
         </div>
         <!-- #END# Pie Chart -->
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficiencia Por Trabajadores</h2>
@@ -106,7 +118,8 @@ Inicio
         </div>
         <!-- #END# Pie Chart -->
         <!-- Pie Chart -->
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Efectividad Por Trabajadores</h2>
@@ -256,6 +269,32 @@ Inicio
 </script>
 
 <script>
+    var chProductividad = document.getElementById('chartProductividad');
+    var data;
+    $.ajax({
+        dataType: "json",
+        method: "get",
+        url: "/productividad"
+    }).done(function (chartProductividad) {
+        if(chartProductividad != null){
+            var chartProductividad = new Chart(chProductividad, {
+        
+                type: chartProductividad.type,
+                data: {
+                    labels: chartProductividad.labels,
+                    datasets: [{
+                        label: chartProductividad.label,
+                        data: chartProductividad.data,
+                        backgroundColor: chartProductividad.backgroundColor,
+                        borderWidth: chartProductividad.borderWidth
+                    }]
+                }
+            });
+        }
+    });
+</script>
+
+<script>
     var chEfectividadBar = document.getElementById('chartEfectividadBar');
     var data;
     $.ajax({
@@ -293,7 +332,6 @@ Inicio
             pie.style.display = 'none';
             barras.style.display = 'block';
         }
-        /*{{ $chartEficacia->id }}_refresh(original_api_url + "?opcion="+opcion);*/
     });
 </script>
 @endsection
