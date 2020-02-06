@@ -15,20 +15,6 @@ Crud Proyectos
 @endsection
 @section('contenido')
 <div class="container-fluid">
-    <!--<div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>
-                        DIAGRAMA DE GANTT
-                    </h2>
-                </div>
-                <div class="body">
-                    @include('proyectos.gantt')
-                </div>
-            </div>
-        </div>
-    </div>-->
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             @include('includes.form-exito')
@@ -83,11 +69,6 @@ Crud Proyectos
                                             @if ($permisos['listarR']==true)
                                                 <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
                                                     <i class="material-icons text-info" style="font-size: 17px;">description</i>
-                                                </a>
-                                            @endif
-                                            @if ($permisos['listarA']==true)
-                                                <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Tareas">
-                                                    <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                                 </a>
                                             @endif
                                             <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">

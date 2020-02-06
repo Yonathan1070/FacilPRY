@@ -17,18 +17,18 @@ Crud Actividades
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">
                         @if ($permisos['crearC']==true)
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_cliente', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_cliente', ['idR'=>$requerimiento->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nueva Tarea Cliente
                             </a>
                         @endif
                         @if ($permisos['crear'] == true)
-                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_trabajador', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-success waves-effect" href="{{route('crear_actividad_trabajador', ['idR'=>$requerimiento->id])}}">
                                 <i class="material-icons" style="color:white;">add</i> Nueva Tarea Trabajador
                             </a>
                         @endif
                         @if ($permisos['listarP'] == true)
-                        <a class="btn btn-danger waves-effect" href="{{route('proyectos', ['id'=>$proyecto->PRY_Empresa_Id])}}">
-                            <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
+                        <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">
+                            <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Actividades
                         </a>
                         @endif
                     </li>
@@ -52,7 +52,7 @@ Crud Actividades
                                             <div class="alert alert-info">
                                                 No hay datos que mostrar.
                                                 @if ($permisos['crear']==true)
-                                                <a href="{{route('crear_actividad_trabajador', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                                                <a href="{{route('crear_actividad_trabajador', ['idR'=>$requerimiento->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                                                     </a>
                                                 @endif
                                             </div>
@@ -102,7 +102,7 @@ Crud Actividades
                                             <div class="alert alert-info">
                                                 No hay datos que mostrar.
                                                 @if ($permisos['crearC'] == true)
-                                                    <a href="{{route('crear_actividad_cliente', ['idP'=>$proyecto->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                                                    <a href="{{route('crear_actividad_cliente', ['idR'=>$requerimiento->id])}}" class="alert-link">Clic aquí para agregar!</a>.
                                                 @endif 
                                             </div>
                                         @else

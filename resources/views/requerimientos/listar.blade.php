@@ -81,7 +81,11 @@ Crud Requerimientos
                                                         <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
                                                     </button>
                                                 @endif
-                                                
+                                                @if ($permisos['listarA']==true)
+                                                    <a href="{{route('actividades', ['idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Tareas">
+                                                        <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
+                                                    </a>
+                                                @endif
                                             </form>
                                         </td>
                                     @endif

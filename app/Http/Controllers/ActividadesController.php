@@ -26,26 +26,27 @@ class ActividadesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($idP)
+    public function index($idR)
     {
         can('listar-actividades');
         $permisos = ['crear' => can2('crear-actividades'), 'crearC' => can2('crear-actividades-cliente'), 'listarP' => can2('listar-proyectos')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->get();
+        $requerimiento = Requerimientos::findOrFail($idR);
+        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $requerimiento['REQ_Proyecto_Id'])->get();
         if (count($requerimientos) <= 0) {
             return redirect()->back()->withErrors('No se pueden asignar actividades si no hay requerimientos previamente registrados.');
         }
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $cliente = Proyectos::findOrFail($idP);
+        $cliente = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
         $actividades = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.REQ_Proyecto_Id', '=', $idP)
+            ->where('r.id', '=', $idR)
             ->where('a.ACT_Trabajador_Id', '<>', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*', 'r.*')
+            ->select('a.id as ID_Actividad', 'r.id as ID_Requerimiento', 'a.*', 'u.*', 'e.*', 'r.*')
             ->orderBy('a.Id', 'ASC')
             ->get();
         $actividadesCliente = DB::table('TBL_Actividades as a')
@@ -53,13 +54,13 @@ class ActividadesController extends Controller
             ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.REQ_Proyecto_Id', '=', $idP)
+            ->where('r.id', '=', $idR)
             ->where('a.ACT_Trabajador_Id', '=', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'a.*', 'u.*', 'e.*', 'r.*')
+            ->select('a.id as ID_Actividad', 'r.id as ID_Requerimiento', 'a.*', 'u.*', 'e.*', 'r.*')
             ->orderBy('a.Id', 'ASC')
             ->get();
-        $proyecto = Proyectos::findOrFail($idP);
-        return view('actividades.listar', compact('actividades', 'actividadesCliente', 'proyecto', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
+        return view('actividades.listar', compact('actividades', 'actividadesCliente', 'proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
@@ -67,14 +68,14 @@ class ActividadesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function crearTrabajador($idP)
+    public function crearTrabajador($idR)
     {
         can('crear-actividades');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyecto = Proyectos::findOrFail($idP);
-        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->orderBy('id', 'ASC')->get();
+        $requerimiento = Requerimientos::findOrFail($idR);
+        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
@@ -83,17 +84,17 @@ class ActividadesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario')
             ->get();
-        return view('actividades.crear', compact('proyecto', 'perfilesOperacion', 'requerimientos', 'datos', 'notificaciones', 'cantidad'));
+        return view('actividades.crear', compact('proyecto', 'requerimiento', 'perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
     }
 
-    public function crearCliente($idP)
+    public function crearCliente($idR)
     {
         can('crear-actividades-cliente');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyecto = Proyectos::findOrFail($idP);
-        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $idP)->orderBy('id', 'ASC')->get();
+        $requerimiento = Requerimientos::findOrFail($idR);
+        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
             ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
@@ -102,7 +103,7 @@ class ActividadesController extends Controller
             ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario')
             ->get();
-        return view('actividades.crear', compact('proyecto', 'perfilesOperacion', 'requerimientos', 'datos', 'notificaciones', 'cantidad'));
+        return view('actividades.crear', compact('proyecto', 'requerimiento', 'perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
@@ -111,7 +112,7 @@ class ActividadesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function guardar(ValidacionActividad $request)
+    public function guardar(ValidacionActividad $request, $idR)
     {
         $hoy = Carbon::now();
         $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
@@ -129,7 +130,7 @@ class ActividadesController extends Controller
 
         foreach ($actividades as $actividad) {
             if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad) {
-                return redirect()->route($request['ruta'], [$request['ACT_Proyecto_Id']])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
+                return redirect()->route($request['ruta'], [$idR])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
             }
         }
         $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
@@ -149,7 +150,7 @@ class ActividadesController extends Controller
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
             'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'],
             'ACT_Costo_Estimado_Actividad' => 0,
-            'ACT_Requerimiento_Id' => $request['ACT_Requerimiento_Id'],
+            'ACT_Requerimiento_Id' => $idR,
             'ACT_Trabajador_Id' => $idUsuario,
         ]);
         $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
@@ -191,7 +192,7 @@ class ActividadesController extends Controller
             null,
             'add_to_photos'
         );
-        return redirect()->route($ruta, [$request['ACT_Proyecto_Id']])->with('mensaje', 'Actividad agregada con exito');
+        return redirect()->route($ruta, [$idR])->with('mensaje', 'Actividad agregada con exito');
     }
 
     private function obtenerFechasRango($fechaInicio, $fechaFin)
@@ -253,14 +254,14 @@ class ActividadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function editar($idP, $idR)
+    public function editar($idR)
     {
         can('editar-actividades');
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyecto = Proyectos::findOrFail($idP)->first();
-        $requerimiento = Requerimientos::findOrFail($idR)->first();
+        $requerimiento = Requerimientos::findOrFail($idR);
+        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         return view('requerimientos.editar', compact('proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad'));
     }
 
@@ -283,14 +284,15 @@ class ActividadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($idP, $idR)
+    public function eliminar($idR)
     {
         can('eliminar-actividades');
         try {
+            $requerimiento = Requerimientos::findOrFail($idR);
             Requerimientos::destroy($idR);
-            return redirect()->route('requerimientos', [$idP])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
+            return redirect()->route('requerimientos', [$requerimiento->REQ_Proyecto_Id])->with('mensaje', 'El Requerimiento fue eliminado satisfactoriamente.');
         } catch (QueryException $e) {
-            return redirect()->route('requerimientos', [$idP])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
+            return redirect()->route('requerimientos', [$requerimiento->REQ_Proyecto_Id])->withErrors(['El Requerimiento está siendo usada por otro recurso.']);
         }
     }
 

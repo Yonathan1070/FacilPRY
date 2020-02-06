@@ -23,7 +23,7 @@ class ProyectosController extends Controller
     public function index($id)
     {
         can('listar-proyectos');
-        $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarA'=>can2('listar-actividades'), 'listarE'=>can2('listar-empresas')];
+        $permisos = ['crear'=> can2('crear-proyectos'), 'listarR'=>can2('listar-requerimientos'), 'listarE'=>can2('listar-empresas')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));

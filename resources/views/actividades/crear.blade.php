@@ -20,17 +20,17 @@ Crud Actividades
                     <h2>CREAR TAREA</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
-                            <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idP'=>$proyecto->id])}}">
+                            <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idR'=>$requerimiento->id])}}">
                                 <i class="material-icons" style="color:white;">arrow_back</i> Volver al listado
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="body">
-                    <form id="form_validation" enctype="multipart/form-data" action="{{route('guardar_actividad')}}" method="POST">
+                    <form id="form_validation" enctype="multipart/form-data" action="{{route('guardar_actividad', ['idR'=>$requerimiento->id])}}" method="POST">
                         @csrf
                         @include('actividades.form')
-                        <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idP'=>$proyecto->id])}}">CANCELAR</a>
+                        <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idR'=>$requerimiento->id])}}">CANCELAR</a>
                         <button class="btn btn-primary waves-effect" type="submit">GUARDAR</button>
                     </form>
                 </div>

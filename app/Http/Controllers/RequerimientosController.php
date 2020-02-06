@@ -22,7 +22,7 @@ class RequerimientosController extends Controller
     public function index($idP)
     {
         can('listar-requerimientos');
-        $permisos = ['crear'=> can2('crear-requerimientos'), 'editar'=>can2('editar-requerimientos'), 'eliminar'=>can2('eliminar-requerimientos')];
+        $permisos = ['crear'=> can2('crear-requerimientos'), 'editar'=>can2('editar-requerimientos'), 'eliminar'=>can2('eliminar-requerimientos'), 'listarA'=>can2('listar-actividades')];
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));

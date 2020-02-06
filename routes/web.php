@@ -185,13 +185,13 @@ Route::delete('requerimientos/{idP}-{idR}', 'RequerimientosController@eliminar')
 Route::get('prequerimientos/{id}', 'RequerimientosController@obtenerPorcentaje')->name('obtener_porcentaje_requerimiento');
 
 //Rutas CRUD Actividades
-Route::get('actividades/{idP}', 'ActividadesController@index')->name('actividades');
-Route::get('actividades/{idP}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
-Route::get('actividades/{idP}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
-Route::post('actividades/crear', 'ActividadesController@guardar')->name('guardar_actividad');
-Route::get('actividades/{idP}-{idR}/editar', 'ActividadesController@editar')->name('editar_actividad');
-Route::put('actividades/{idP}-{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad');
-Route::delete('actividades/{idP}-{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad');
+Route::get('actividades/{idR}', 'ActividadesController@index')->name('actividades');
+Route::get('actividades/{idR}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
+Route::get('actividades/{idR}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
+Route::post('actividades/crear/{idR}', 'ActividadesController@guardar')->name('guardar_actividad');
+Route::get('actividades/{idR}/editar', 'ActividadesController@editar')->name('editar_actividad');
+Route::put('actividades/{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad');
+Route::delete('actividades/{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad');
 Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad');
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
