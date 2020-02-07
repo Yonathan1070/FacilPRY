@@ -18,9 +18,6 @@
     <!-- Waves Effect Css -->
     <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
 
-
-    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
-
     <!-- Animation Css -->
     <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
 
@@ -36,6 +33,8 @@
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
     
     @yield('styles')
 </head>

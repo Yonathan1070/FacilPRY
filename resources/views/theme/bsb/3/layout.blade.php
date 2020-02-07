@@ -27,8 +27,14 @@
     <!-- Custom Css -->
     <link href="{{asset("assets/bsb/css/style.css")}}" rel="stylesheet">
 
+    <link href="{{asset("assets/css/custom.css")}}" rel="stylesheet">
+
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
 
     <script>
         function notificacion(id){
@@ -128,11 +134,26 @@
     <!-- Bootstrap Core Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap/js/bootstrap.js")}}"></script>
 
-    <!-- Waves Effect Plugin Js -->
-    <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
+    <!-- Select Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/bootstrap-select/js/bootstrap-select.js")}}"></script>
 
     <!-- Slimscroll Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-slimscroll/jquery.slimscroll.js")}}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/node-waves/waves.js")}}"></script>
+
+    <!-- Custom Js -->
+    <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
+
+    <!-- Autosize Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/autosize/autosize.js")}}"></script>
+
+    <!-- Moment Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/momentjs/moment.js")}}"></script>
+
+    <!-- Demo Js -->
+    <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 
     <!-- Jquery DataTable Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/jquery.dataTables.js")}}"></script>
@@ -145,8 +166,6 @@
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/buttons.html5.min.js")}}"></script>
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/extensions/export/buttons.print.min.js")}}"></script>
     
-    <!-- Custom Js -->
-    <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
     <script src="{{asset("assets/bsb/js/pages/tables/jquery-datatable.js")}}"></script>
     
     <!-- Demo Js -->
