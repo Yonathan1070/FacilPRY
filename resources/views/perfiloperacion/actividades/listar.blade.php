@@ -92,6 +92,14 @@ Actividades
                                                                                 style="font-size: 17px;">alarm</i>
                                                                         </a>
                                                                     @endif
+                                                                    @if ($actividad->DOC_Actividad_Id != null)
+                                                                        <a href="{{route('actividades_descargar_archivo_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC"
+                                                                            title="Descargar documento soporte">
+                                                                            <i class="material-icons text-info"
+                                                                                style="font-size: 17px;">get_app</i>
+                                                                        </a>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                         @endforeach

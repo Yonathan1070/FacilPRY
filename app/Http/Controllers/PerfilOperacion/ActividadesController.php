@@ -150,9 +150,13 @@ class ActividadesController extends Controller
     public function descargarDocumentoSoporte($id)
     {
         $actividad = DB::table('TBL_Actividades as a')
-            ->select('a.ACT_Documento_Soporte_Actividad')
+            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->select('ds.ACT_Documento_Soporte_Actividad')
             ->where('a.id', '=', $id)
             ->first();
+        if(!$actividad){
+            return redirect()->back()->withErrors('No hay documento disponible para descargar');
+        }
         return response()->download(public_path() . '/documentos_soporte/' . $actividad->ACT_Documento_Soporte_Actividad);
     }
 
@@ -238,7 +242,8 @@ class ActividadesController extends Controller
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
             ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->select('a.id AS ID_Actividad', 'a.*', 'ds.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('p.PRY_Estado_Proyecto', '=', 1)
