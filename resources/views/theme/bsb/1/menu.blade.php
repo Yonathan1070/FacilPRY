@@ -32,14 +32,8 @@
             <li class="header">MENÚ DE NAVEGACIÓN</li>
             <li>
                 <a href="{{route("inicio_administrador")}}">
-                    <i class="material-icons">home</i>
-                    <span>Inicio</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("decisiones_administrador")}}">
-                    <i class="material-icons">group_work</i>
-                    <span>Decisiones</span>
+                    <i class="material-icons">pie_chart</i>
+                    <span>Metricas</span>
                 </a>
             </li>
             <li>
@@ -49,9 +43,9 @@
                 </a>
             </li>
             <li>
-                <a href="{{route("roles_administrador")}}">
-                    <i class="material-icons">accessibility</i>
-                    <span>Roles</span>
+                <a href="{{route("menu")}}">
+                    <i class="material-icons">list</i>
+                    <span>Menu</span>
                 </a>
             </li>
             <li>
@@ -60,11 +54,12 @@
                     <span>Permisos</span>
                 </a>
             </li>
+            @include("theme.bsb.menu")
         </ul>
     </div>
     <!-- Fin Menú -->
     <!-- Footer -->
-    @include("theme.bsb.administrador.footer")
+    @include('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.footer')
     <!-- Fin Footer -->
 </aside>
 <!-- Fin Barra Lateral Izquierda -->

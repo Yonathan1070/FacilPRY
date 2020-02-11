@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class PermisoDirector
 {
@@ -23,6 +24,7 @@ class PermisoDirector
     }
 
     private function permiso(){
-        return session()->get('Rol_Nombre') == 'Director de Proyectos';
+        $rol = Auth::user()->roles()->get();
+        return $rol[0]['RLS_Rol_Id'] == '2';
     }
 }

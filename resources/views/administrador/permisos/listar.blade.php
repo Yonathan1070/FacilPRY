@@ -41,7 +41,11 @@ Sistema de Permisos
                         @foreach ($usuarios as $usuario)
                         <tr>
                             <td>{{$usuario->USR_Nombres_Usuario.' '.$usuario->USR_Apellidos_Usuario}}</td>
-                            <td>{{$usuario->RLS_Nombre_Rol}}</td>
+                            <td>
+                                @foreach ($usuario['roles'] as $rol)
+                                    {{$loop->last ? $rol['RLS_Nombre_Rol'] : $rol['RLS_Nombre_Rol'].', '}}
+                                @endforeach
+                            </td>
                             <td>
                                 <a href="{{route('asignar_menu_usuario_administrador', ['id'=>$usuario->id])}}"
                                     class="btn-accion-tabla tooltipsC" title="Asignar Permisos">

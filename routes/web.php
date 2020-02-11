@@ -36,6 +36,8 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::get('{id}-{menuId}/quitar', 'PermisosController@quitar')->name('quitar_rol_administrador');
         Route::get('{id}-{menuId}/agregarPermiso', 'PermisosController@agregarPermiso')->name('agregar_permiso_administrador');
         Route::get('{id}-{menuId}/quitarPermiso', 'PermisosController@quitarPermiso')->name('quitar_permiso_administrador');
+        Route::get('{id}-{rolId}/agregarRol', 'PermisosController@agregarRol')->name('agregar_rol_administrador');
+        Route::get('{id}-{rolId}/quitarRol', 'PermisosController@quitarRol')->name('quitar_rol_administrador');
     });
     //Enroutamiento para Crear de Permisos
     Route::group(['prefix' => 'permisos'], function () {
@@ -237,6 +239,7 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::post('enviar-correo', 'RecuperarClaveController@sendResetLinkEmail')->name('enviar_correo');
     Route::get('actualizar-clave/{token}', 'RecuperarClaveController@cambiarClave')->name('cambiar_clave');
     Route::post('actualizar-clave', 'RecuperarClaveController@actualizarClave')->name('actualizar_clave');
+    Route::post('elegir-rol', 'AjaxController@asignarSesion')->name('ajax');
 });
 
 

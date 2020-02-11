@@ -4,6 +4,7 @@ namespace App\Models\Tablas;
 
 use App\Http\Requests\ValidacionUsuario;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -33,13 +34,20 @@ class Usuarios extends Authenticatable
     }
 
     public function setSession($roles){
+        Session::put([
+            'Usuario_Id' => $this->id,
+            'Empresa_Id' => $this->USR_Empresa_Id
+        ]);
         if (count($roles) == 1) {
             Session::put([
-                'Sub_Rol_Id' => $roles[0]['RLS_Rol_Id'],
                 'Rol_Id' => $roles[0]['id'],
                 'Rol_Nombre' => $roles[0]['RLS_Nombre_Rol'],
-                'Usuario_Id' => $this->id,
-                'Empresa_Id' => $this->USR_Empresa_Id
+                'Sub_Rol_Id' => $roles[0]['RLS_Rol_Id']
+            ]);
+        } else {
+            Session::put([
+                'Sub_Rol_Id' => $roles[0]['RLS_Rol_Id'],
+                'roles' => $roles
             ]);
         }
     }

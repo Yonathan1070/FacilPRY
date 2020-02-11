@@ -11,14 +11,16 @@
         </div>
         <div class="info-container">
             <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{$datos->USR_Nombre_Usuario.' '.$datos->USR_Apellido_Usuario}}
-            </div>
+                {{$datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario}}</div>
             <div class="email">{{$datos->USR_Correo_Usuario}}</div>
             <div class="btn-group user-helper-dropdown">
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="true">keyboard_arrow_down</i>
                 <ul class="dropdown-menu pull-right">
-                    <li><a href="{{route('perfil_director')}}"><i class="material-icons">person</i>Perfil</a></li>
+                    <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
+                    @if (session()->get('Rol_Nombre')=='Administrador')
+                        <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
+                    @endif
                     <li role="separator" class="divider"></li>
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
@@ -32,51 +34,16 @@
             <li class="header">MENÚ DE NAVEGACIÓN</li>
             <li>
                 <a href="{{route("inicio_director")}}">
-                    <i class="material-icons">home</i>
-                    <span>Inicio</span>
+                    <i class="material-icons">pie_chart</i>
+                    <span>Metricas</span>
                 </a>
             </li>
-            <li>
-                <a href="{{route("roles_director")}}">
-                    <i class="material-icons">accessibility</i>
-                    <span>Roles del Sistema</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("perfil_operacion")}}">
-                    <i class="material-icons">account_circle</i>
-                    <span>Perfil de Operación</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("clientes_director")}}">
-                    <i class="material-icons">account_circle</i>
-                    <span>Clientes</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("proyectos_director")}}">
-                    <i class="material-icons">note_add</i>
-                    <span>Proyectos</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("decisiones_director")}}">
-                    <i class="material-icons">record_voice_over</i>
-                    <span>Decisiones</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("cobros_director")}}">
-                    <i class="material-icons">attach_money</i>
-                    <span>Cobros</span>
-                </a>
-            </li>
+            @include("theme.bsb.menu")
         </ul>
     </div>
     <!-- Fin Menú -->
     <!-- Footer -->
-    @include("theme.bsb.director.footer")
+    @include('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.footer')
     <!-- Fin Footer -->
 </aside>
 <!-- Fin Barra Lateral Izquierda -->

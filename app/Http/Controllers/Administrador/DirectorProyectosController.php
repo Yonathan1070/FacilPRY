@@ -9,6 +9,7 @@ use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
+use App\Models\Tablas\Roles;
 use App\Models\Tablas\UsuariosRoles;
 use App\Models\Utilitarios\Correo;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class DirectorProyectosController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        //$user = Usuarios::with('roles:USR_RLS_Usuario_Id,RLS_Nombre_Rol')->orderBy('id')->get();
         $directores = DB::table('TBL_Usuarios')
             ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
             ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
@@ -48,7 +50,8 @@ class DirectorProyectosController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        return view('administrador.director.crear', compact('datos', 'notificaciones', 'cantidad'));
+        $roles = Roles::where('id', '!=', 4)->get();
+        return view('administrador.director.crear', compact('datos', 'notificaciones', 'cantidad', 'roles'));
     }
 
     /**
@@ -91,7 +94,7 @@ class DirectorProyectosController extends Controller
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
-        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad'));
+        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad', 'roles', 'rolUsuario'));
     }
 
     /**

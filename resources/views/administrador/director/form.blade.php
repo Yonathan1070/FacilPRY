@@ -183,5 +183,13 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-6">
+            <select class="form-control show-tick" multiple>
+                @foreach ($roles as $id => $rol)
+                    <option value="{{$id}}" {{old("USR_Rol_Id", $director->roles[0]->id ?? "")==$id ? "selected" : ""}}>{{$rol->RLS_Nombre_Rol}}</option>
+                @endforeach
+            </select>
+            <label class="form-label">Rol(es) Del Usuario</label>
+        </div>
     </div>
 @endif

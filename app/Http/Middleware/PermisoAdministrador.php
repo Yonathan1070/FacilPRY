@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class PermisoAdministrador
@@ -24,6 +25,7 @@ class PermisoAdministrador
     }
 
     private function permiso(){
-        return session()->get('Rol_Nombre') == 'Administrador';
+        $rol = Auth::user()->roles()->get();
+        return $rol[0]['RLS_Rol_Id'] == '1';
     }
 }

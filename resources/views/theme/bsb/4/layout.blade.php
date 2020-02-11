@@ -108,7 +108,7 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @extends("theme.bsb.menu")
+        @extends("theme.bsb.4.menu")
     </section>
 
     <section class="content">

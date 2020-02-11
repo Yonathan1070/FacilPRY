@@ -22,7 +22,16 @@ function ajaxRequest(slug, id, menuId) {
                 InkBrutalPRY.notificaciones('Permiso des-asignado.', 'InkBrutalPRY', 'success');
             } else if (respuesta.mensaje == "ngPD") {
                 InkBrutalPRY.notificaciones('El Permiso no se encuentra asignado', 'InkBrutalPRY', 'error');
+            } else if (respuesta.mensaje == "okRA") {
+                InkBrutalPRY.notificaciones('Rol Asignado.', 'InkBrutalPRY', 'success');
+            } else if (respuesta.mensaje == "ngRA") {
+                InkBrutalPRY.notificaciones('El Rol se encuentra asignado', 'InkBrutalPRY', 'error');
+            } else if (respuesta.mensaje == "okRD") {
+                InkBrutalPRY.notificaciones('Rol des-asignado.', 'InkBrutalPRY', 'success');
+            } else if (respuesta.mensaje == "ngRD") {
+                InkBrutalPRY.notificaciones('El Rol no se encuentra asignado', 'InkBrutalPRY', 'error');
             }
+            location.reload();
         },
         error: function () {
 

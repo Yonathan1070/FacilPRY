@@ -18,7 +18,7 @@
                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="true">keyboard_arrow_down</i>
                 <ul class="dropdown-menu pull-right">
-                    <li><a href="{{route('perfil_perfil_operacion')}}"><i class="material-icons">person</i>Perfil</a></li>
+                    <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
@@ -39,14 +39,15 @@
             <li>
                 <a href="{{route("actividades_perfil_operacion")}}">
                     <i class="material-icons">toc</i>
-                    <span>Actividades</span>
+                    <span>Tareas</span>
                 </a>
             </li>
+            @include("theme.bsb.menu")
         </ul>
     </div>
     <!-- Fin Menú -->
     <!-- Footer -->
-    @include("theme.bsb.perfiloperacion.footer")
+    @include('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.footer')
     <!-- Fin Footer -->
 </aside>
 <!-- Fin Barra Lateral Izquierda -->

@@ -17,14 +17,14 @@
 
     <!-- Waves Effect Css -->
     <link href="{{asset("assets/bsb/plugins/node-waves/waves.css")}}" rel="stylesheet" />
-
-    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
     
     <!-- Animation Css -->
     <link href="{{asset("assets/bsb/plugins/animate-css/animate.css")}}" rel="stylesheet" />
 
     <!-- JQuery DataTable Css -->
     <link href="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css")}}" rel="stylesheet">
+
+    <link href="{{asset("assets/bsb/plugins/bootstrap-select/css/bootstrap-select.css")}}" rel="stylesheet">
 
     <!-- Sweetalert Css -->
     <link href="{{asset("assets/bsb/plugins/sweetalert/sweetalert.css")}}" rel="stylesheet" />
@@ -110,12 +110,34 @@
     </nav>
     <!-- #Top Bar -->
     <section>
-        @extends("theme.bsb.menu")
+        @extends("theme.bsb.1.menu")
     </section>
 
     <section class="content">
         @yield('contenido')
     </section>
+    @if (session()->get('roles') && count(session()->get('roles')) > 1)
+        @csrf
+        <div class="modal fade" id="modal-seleccionar-rol" data-rol-set="{{empty(session()->get('Rol_Id')) ? 'NO' : 'SI'}}" tabindex="-1" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Roles del Usuario</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Cuentas con más de un rol en InkBrutalPRY, acontinuación seleccione con cual desea ingresar.</p>
+                        @foreach (session()->get('roles') as $id => $rol)
+                            <li>
+                                <a href="#" class="asignar-rol" data-rolid="{{$rol['id']}}" data-rolnombre="{{$rol["RLS_Nombre_Rol"]}}" data-subrolid="{{$rol['RLS_Rol_Id']}}">
+                                    {{$rol['RLS_Nombre_Rol']}}
+                                </a>
+                            </li>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Jquery Core Js -->
     <script src="{{asset("assets/bsb/plugins/jquery/jquery.min.js")}}"></script>
@@ -159,9 +181,7 @@
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
     <script src="{{asset("assets/bsb/js/pages/tables/jquery-datatable.js")}}"></script>
-    <script>
-        
-    </script>
+
     <!-- Demo Js -->
     <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
     <script src="{{asset('assets/bsb/js/pages/ui/dialogs.js')}}"></script>

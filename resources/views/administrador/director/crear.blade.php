@@ -2,6 +2,10 @@
 @section('titulo')
 Crud Director de Proyectos
 @endsection
+@section('styles')
+    <!-- Multi Select Css -->
+    <link href="{{asset("assets/bsb/plugins/multi-select/css/multi-select.css")}}" rel="stylesheet">
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <!-- Basic Validation -->
@@ -42,4 +46,8 @@ Crud Director de Proyectos
 <script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
 
 <script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
+
+<!-- Multi Select Plugin Js -->
+<script src="{{asset("assets/bsb/plugins/multi-select/js/jquery.multi-select.js")}}"></script>
+<script src="{{asset("assets/bsb/js/pages/forms/advanced-form-elements.js")}}"></script>
 @endsection
