@@ -112,15 +112,9 @@ Sistema de Permisos
                 <div class="body table-responsive">
                     <div class="col-lg-6">
                         @if (count($permisoAsignado)<=0) 
-                            @if ($id == 1) 
-                                <div class="alert alert-info">
-                                    El usuario administrador tiene acceso a todos los permisos
-                                </div>
-                            @else
-                                <div class="alert alert-info">
-                                    No se han asignado permisos
-                                </div>
-                            @endif
+                            <div class="alert alert-info">
+                                No se han asignado permisos
+                            </div>
                         @else
                             <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
                                 <thead>
@@ -147,35 +141,29 @@ Sistema de Permisos
                     <div class="col-lg-6">
                         @if (count($permisoNoAsignado)<=0) 
                             <div class="alert alert-info">
-                                Todos los permisos ha sido asignados
+                                Todos los permisos han sido asignados
                             </div>
                         @else
-                            @if ($id == 1) 
-                                <div class="alert alert-info">
-                                    El usuario administrador tiene acceso a todos los permisos
-                                </div>
-                            @else
-                                <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                    <thead>
-                                        <tr>
-                                            <th>Permiso</th>
-                                            <th class="width70"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($permisoNoAsignado as $permiso)
-                                        <tr>
-                                            <td>{{$permiso->PRM_Nombre_Permiso}}</td>
-                                            <td>
-                                                <button type="button" onclick='ajax("agregarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
-                                                    <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @endif
+                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
+                                <thead>
+                                    <tr>
+                                        <th>Permiso</th>
+                                        <th class="width70"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($permisoNoAsignado as $permiso)
+                                    <tr>
+                                        <td>{{$permiso->PRM_Nombre_Permiso}}</td>
+                                        <td>
+                                            <button type="button" onclick='ajax("agregarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
+                                                <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         @endif
                     </div>
                 </div>
