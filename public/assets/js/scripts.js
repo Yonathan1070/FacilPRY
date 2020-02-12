@@ -32,6 +32,11 @@ $(document).ready(function(){
         ajaxRequest(data, '/elegir-rol', 'asignar-rol');
     });
 
+    $('.cambiar-rol').on('click', function(event) {
+        event.preventDefault();
+        modal.modal('show');
+    });
+
     function ajaxRequest(data, url, funcion) {
         $.ajax({
             url: url,

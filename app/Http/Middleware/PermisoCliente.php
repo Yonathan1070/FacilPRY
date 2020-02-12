@@ -24,7 +24,11 @@ class PermisoCliente
     }
 
     private function permiso(){
-        $rol = Auth::user()->roles()->get();
-        return $rol[0]['RLS_Rol_Id'] == '3';
+        if(session()->get('Sub_Rol_Id') == null){
+            $rol = Auth::user()->roles()->get();
+            return $rol[0]['RLS_Rol_Id'] == '3';
+        }else{
+            return session()->get('Sub_Rol_Id') == '3';
+        }
     }
 }

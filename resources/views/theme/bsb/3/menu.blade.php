@@ -20,6 +20,9 @@
                 <ul class="dropdown-menu pull-right">
                     <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
                     <li role="separator" class="divider"></li>
+                    @if (session()->get('roles') && count(session()->get('roles')) > 1)
+                        <li><a href="#" class="cambiar-rol"><i class="material-icons">autorenew</i>Cambiar de Rol</a></li>
+                    @endif
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
             </div>

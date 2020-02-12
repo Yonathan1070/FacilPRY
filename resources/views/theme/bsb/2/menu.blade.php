@@ -22,6 +22,9 @@
                         <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
                     @endif
                     <li role="separator" class="divider"></li>
+                    @if (session()->get('roles') && count(session()->get('roles')) > 1)
+                        <li><a href="#" class="cambiar-rol"><i class="material-icons">autorenew</i>Cambiar de Rol</a></li>
+                    @endif
                     <li><a href="{{route('logout')}}"><i class="material-icons">input</i>Cerrar Sesión</a></li>
                 </ul>
             </div>
