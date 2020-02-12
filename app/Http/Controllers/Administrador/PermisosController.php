@@ -87,6 +87,7 @@ class PermisosController extends Controller
         $rolesAsignados = DB::table('TBL_Roles as r')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Rol_Id', '=', 'r.id')
             ->where('ur.USR_RLS_Usuario_Id', '=', $id)
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
             ->select('r.*')
             ->get();
         $rolesNoAsignados = $this->rolesNoAsignados($rolesAsignados);
@@ -117,7 +118,8 @@ class PermisosController extends Controller
     }
 
     public function rolesNoAsignados($rolesAsignados){
-        $roles = Roles::where('id', '!=', 4)->get();
+        $roles = Roles::where('id', '!=', 4)
+            ->where('RLS_Nombre_Rol', '<>', 'Cliente')->get();
         $disponibles = [];
         foreach ($roles as $rol) {
             if(!$rolesAsignados->contains('id', $rol->id)){

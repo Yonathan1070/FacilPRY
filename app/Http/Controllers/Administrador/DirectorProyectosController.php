@@ -50,7 +50,8 @@ class DirectorProyectosController extends Controller
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '!=', 4)->get();
+        $roles = Roles::where('id', '!=', 4)
+            ->where('RLS_Nombre_Rol', '<>', 'Cliente')->get();
         return view('administrador.director.crear', compact('datos', 'notificaciones', 'cantidad', 'roles'));
     }
 
