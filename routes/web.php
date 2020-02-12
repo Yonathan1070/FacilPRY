@@ -196,9 +196,11 @@ Route::get('actividades/{idR}', 'ActividadesController@index')->name('actividade
 Route::get('actividades/{idR}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
 Route::get('actividades/{idR}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
 Route::post('actividades/crear/{idR}', 'ActividadesController@guardar')->name('guardar_actividad');
-Route::get('actividades/{idR}/editar', 'ActividadesController@editar')->name('editar_actividad');
-Route::put('actividades/{idR}', 'ActividadesController@actualizar')->name('actualizar_actividad');
-Route::delete('actividades/{idR}', 'ActividadesController@eliminar')->name('eliminar_actividad');
+Route::get('actividades/{idA}/editarT', 'ActividadesController@editarTrabajador')->name('editar_actividad_trabajador');
+Route::get('actividades/{idA}/editarC', 'ActividadesController@editarCliente')->name('editar_actividad_cliente');
+Route::put('actividades/{idA}', 'ActividadesController@actualizar')->name('actualizar_actividad');
+Route::delete('actividades/{idA}', 'ActividadesController@eliminar')->name('eliminar_actividad');
+Route::put('actividades/{idA}/cambiar-requerimiento', 'ActividadesController@cambiarRequerimiento')->name('cambio_requerimiento_actividad');
 Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->name('aprobar_horas_actividad');
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');

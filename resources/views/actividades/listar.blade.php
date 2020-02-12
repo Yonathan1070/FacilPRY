@@ -65,6 +65,7 @@ Crud Actividades
                                                         <th>Encargado</th>
                                                         <th>Fecha de Entrega</th>
                                                         <th>Estado</th>
+                                                        <th class="width70"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -76,10 +77,41 @@ Crud Actividades
                                                                     {{$actividad->ACT_Nombre_Actividad}}
                                                                 </a>
                                                             </td>
-                                                            <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
+                                                            <td>
+                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                    <select name="ACT_Requerimiento" id="ACT_Requerimiento" class="form-control show-tick" data-live-search="true"
+                                                                        required onchange="cambioActividad(this, {{$actividad->ID_Actividad}})">
+                                                                        <option value="">-- Seleccione una Actividad --</option>
+                                                                        @foreach ($requerimientos as $requerimiento)
+                                                                            <option value="{{$requerimiento->id}}" {{old("ACT_Requerimiento", $actividad->ID_Requerimiento) == $requerimiento->id ? 'selected' : '' }}>
+                                                                                {{$requerimiento->REQ_Nombre_Requerimiento}}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                @else
+                                                                    {{$actividad->REQ_Nombre_Requerimiento}}
+                                                                @endif
+                                                            </td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
                                                             <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y h:i A.')}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
+                                                            <td>
+                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                    <form class="form-eliminar" action="{{route('eliminar_actividad', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                        class="d-inline" method="POST">
+                                                                        <a href="{{route('editar_actividad_trabajador', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC" title="Editar esta tarea">
+                                                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                                        </a>
+                                                                        @csrf @method("delete")
+                                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
+                                                                            data-type="confirm" title="Eliminar esta tarea">
+                                                                            <i class="material-icons text-danger"
+                                                                                style="font-size: 17px;">delete_forever</i>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -110,9 +142,11 @@ Crud Actividades
                                                 <thead>
                                                     <tr>
                                                         <th>Tarea</th>
+                                                        <th>Actividad</th>
                                                         <th>Cliente</th>
                                                         <th>Fecha de Entrega</th>
                                                         <th>Estado</th>
+                                                        <th class="width70"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -124,9 +158,41 @@ Crud Actividades
                                                                     {{$actividad->ACT_Nombre_Actividad}}
                                                                 </a>
                                                             </td>
+                                                            <td>
+                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                    <select name="ACT_Requerimiento" id="ACT_Requerimiento" class="form-control show-tick" data-live-search="true"
+                                                                        required onchange="cambioActividad(this, {{$actividad->ID_Actividad}})">
+                                                                        <option value="">-- Seleccione una Actividad --</option>
+                                                                        @foreach ($requerimientos as $requerimiento)
+                                                                            <option value="{{$requerimiento->id}}" {{old("ACT_Requerimiento", $actividad->ID_Requerimiento) == $requerimiento->id ? 'selected' : '' }}>
+                                                                                {{$requerimiento->REQ_Nombre_Requerimiento}}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                @else
+                                                                    {{$actividad->REQ_Nombre_Requerimiento}}
+                                                                @endif
+                                                            </td>
                                                             <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
                                                             <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:i A.')}}</td>
                                                             <td>{{$actividad->EST_Nombre_Estado}}</td>
+                                                            <td>
+                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                    <form class="form-eliminar" action="{{route('eliminar_actividad', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                        class="d-inline" method="POST">
+                                                                        <a href="{{route('editar_actividad_cliente', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC" title="Editar esta tarea">
+                                                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
+                                                                        </a>
+                                                                        @csrf @method("delete")
+                                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
+                                                                            data-type="confirm" title="Eliminar esta tarea">
+                                                                            <i class="material-icons text-danger"
+                                                                                style="font-size: 17px;">delete_forever</i>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -218,5 +284,24 @@ Crud Actividades
 </div>
 @endsection
 @section('scripts')
+<script src="{{asset("assets/pages/scripts/Director/index.js")}}"></script>
 <script src="{{asset("assets/pages/scripts/PerfilOperacion/verDetalle.js")}}"></script>
+<script>
+    function cambioActividad(idR, idA) {
+        $.ajax({
+            dataType: "json",
+            method: "put",
+            url: "/actividades/" + idA +"/cambiar-requerimiento",
+            data: {"_token":"{{ csrf_token() }}", ACT_Requerimiento:idR.value},
+            success:function(respuesta){
+                if(respuesta.mensaje == "ok"){
+                    InkBrutalPRY.notificaciones('Tarea cambiada de requerimiento', 'InkBrutalPRY', 'success');
+                    location.reload();
+                }
+                if(respuesta.mensaje == "ng")
+                    InkBrutalPRY.notificaciones('Operación ha fallado', 'InkBrutalPRY', 'error');
+            }
+        });
+    }
+</script>
 @endsection
