@@ -74,9 +74,13 @@ class ActividadesController extends Controller
     public function guardarHoras(Request $request, $id)
     {
         $fecha = HorasActividad::findOrFail($id);
-        //$vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24;
+        $vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00');
         //dd(Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad)-24);
-        if (Carbon::now() > $fecha->HRS_ACT_Fecha_Actividad) {
+        if (Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') < Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y')) {
+            return response()->json(['msg' => 'errorF']);
+        }
+        if ((Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') == Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y') && Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <= 1)
+            || (Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') == Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y') && Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') < $request->HRS_ACT_Cantidad_Horas_Asignadas)) {
             return response()->json(['msg' => 'errorF']);
         }
         $horas = DB::table('TBL_Horas_Actividad as ha')

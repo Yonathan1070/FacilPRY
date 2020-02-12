@@ -474,14 +474,18 @@ class ActividadesController extends Controller
             ->where('a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id)
             ->where('ha.id', '<>', $idH)
             ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+        $horaModif = HorasActividad::findOrFail($idH);
         if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 && ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18) {
             HorasActividad::findOrFail($idH)->update([
                 'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
                 'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
             ]);
             return response()->json(['msg' => 'alerta']);
-        } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18)
+        } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18) {
             return response()->json(['msg' => 'error']);
+        } else if($horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 && $request->HRS_ACT_Cantidad_Horas_Asignadas == 0){
+            return response()->json(['msg' => 'cero']);
+        }
         HorasActividad::findOrFail($idH)->update([
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);

@@ -38,23 +38,23 @@ Crud Actividades
                             <thead>
                                 <tr>
                                     <th style="display: none">Id Hora</th>
-                                    <th>Actividad</th>
+                                    <th>Tarea</th>
                                     <th>Descripción</th>
-                                    <th>Requerimiento</th>
-                                    <th>Encargado</th>
+                                    <th>Fecha Vigente</th>
                                     <th>Horas</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($horasAprobar as $horas)
-                                    <tr>
-                                        <td style="display: none">{{$horas->Id_Horas}}</td>
-                                        <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
-                                        <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
-                                        <td class="uneditable">{{$horas->REQ_Nombre_Requerimiento}}</td>
-                                        <td class="uneditable">{{$horas->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
-                                        <td class="hora">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
-                                    </tr>
+                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->format('d/m/Y') >= \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y'))
+                                        <tr>
+                                            <td style="display: none">{{$horas->Id_Horas}}</td>
+                                            <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
+                                            <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
+                                            <td class="uneditable">{{$horas->HRS_ACT_Fecha_Actividad}}</td>
+                                            <td class="hora">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -89,6 +89,8 @@ Crud Actividades
                     InkBrutalPRY.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'InkBrutalPRY', 'warning');
                 if(data.msg == "error")
                     InkBrutalPRY.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'InkBrutalPRY', 'error');
+                if(data.msg == "cero")
+                    InkBrutalPRY.notificaciones('El trabajador ya asignó unas horas, no puede ser cero esta asignación', 'InkBrutalPRY', 'error');
                 if(data.msg == "exito")
                     InkBrutalPRY.notificaciones('Horas Asignadas', 'InkBrutalPRY', 'success');
             }
