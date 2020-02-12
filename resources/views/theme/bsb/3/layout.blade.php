@@ -138,11 +138,11 @@
                     <div class="modal-body">
                         <p>Cuentas con más de un rol en InkBrutalPRY, acontinuación seleccione con cual desea ingresar.</p>
                         @foreach (session()->get('roles') as $id => $rol)
-                            <li>
-                                <a href="#" class="asignar-rol" data-rolid="{{$rol['id']}}" data-rolnombre="{{$rol["RLS_Nombre_Rol"]}}" data-subrolid="{{$rol['RLS_Rol_Id']}}">
+                            <li style="list-style: none">
+                                <a href="#" class="asignar-rol btn btn-info waves-effect" data-rolid="{{$rol['id']}}" data-rolnombre="{{$rol["RLS_Nombre_Rol"]}}" data-subrolid="{{$rol['RLS_Rol_Id']}}">
                                     {{$rol['RLS_Nombre_Rol']}}
                                 </a>
-                            </li>
+                            </li><br />
                         @endforeach
                     </div>
                 </div>
