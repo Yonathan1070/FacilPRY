@@ -115,7 +115,7 @@ class RolesController extends Controller
         }else{
             if($request->ajax()){
                 $rol = Roles::findOrFail($id);
-                if($rol->RLS_Rol_Id != 4){
+                if($rol->RLS_Rol_Id != 4 || $rol->id == 4){
                     return response()->json(['mensaje' => 'rd']);
                 }else{
                     try{

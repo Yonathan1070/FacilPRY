@@ -285,6 +285,17 @@ class InicioController extends Controller
         return json_encode($notif);
     }
 
+    public function cambiarEstadoTodasNotificaciones($id)
+    {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', $id)->get();
+        foreach ($notificaciones as $notificacion) {
+            $notificacion->update([
+                'NTF_Estado' => 1
+            ]);
+        }
+        return response()->json(['mensaje' => 'ok']);
+    }
+
     public function proyectosPagarConsulta()
     {
         $proyectos = DB::table('TBL_Actividades as a')

@@ -65,6 +65,9 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="header">NOTIFICACIONES</li>
+                                <li class="footer">
+                                    <a onclick="notificacionTodas({{session()->get('Usuario_Id')}})">Marcar todo como leido</a>
+                                </li>
                                 <li class="body">
                                     <ul class="menu">
                                         @foreach ($notificaciones as $notificacion)
@@ -185,6 +188,19 @@
                     document.location.replace(notif.ruta);
             });
         }
+        function notificacionTodas(id){
+            $.ajax({
+                dataType: "json",
+                method: "get",
+                url: "/perfil-operacion/" + id + "/cambio-estado-todo"
+            }).done(function (mensaje) {
+                location.reload();
+                if(mensaje.mensaje == 'ok') {
+                    InkBrutalPRY.notificaciones('Notificaciones marcadas como leidas', 'InkBrutalPRY', 'success');
+                }
+            });
+        }
+    </script>
     </script>
     @yield('scripts')
 </body>

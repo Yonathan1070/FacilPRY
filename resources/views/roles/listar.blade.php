@@ -45,7 +45,7 @@ Crud Roles
                                         <tr>
                                             <td>
                                                 {{$rol->RLS_Nombre_Rol}}
-                                                @if ($rol->RLS_Rol_Id != 4)
+                                                @if ($rol->RLS_Rol_Id != 4 || $rol->id == 4)
                                                     <label style="color: red">(*)</label>
                                                 @endif
                                             </td>

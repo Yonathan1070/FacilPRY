@@ -94,7 +94,7 @@ class DirectorProyectosController extends Controller
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
-        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad', 'roles', 'rolUsuario'));
+        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad'));
     }
 
     /**
