@@ -16,7 +16,7 @@ class MenuUsuario extends Model
 
     public static function asignarMenuDirector($id)
     {
-        MenuUsuario::asignarInicioDirector($id);
+        //MenuUsuario::asignarInicioDirector($id);
         MenuUsuario::asignarPerfilOperacion($id);
         MenuUsuario::asignarDecisiones($id);
         MenuUsuario::asignarEmpresas($id);
@@ -26,15 +26,15 @@ class MenuUsuario extends Model
 
     public static function asignarMenuPerfilOperacion($id)
     {
-        MenuUsuario::asignarInicioPerfilOperacion($id);
-        MenuUsuario::asignarActividades($id);
+        //MenuUsuario::asignarInicioPerfilOperacion($id);
+        //MenuUsuario::asignarActividades($id);
         MenuUsuario::asignarEmpresas($id);
     }
 
     public static function asignarMenuCliente($id)
     {
-        MenuUsuario::asignarInicioCliente($id);
-        MenuUsuario::asignarAprobarActividades($id);
+        //MenuUsuario::asignarInicioCliente($id);
+        //MenuUsuario::asignarAprobarActividades($id);
     }
 
     public static function asignarInicioAdministrador($id)
