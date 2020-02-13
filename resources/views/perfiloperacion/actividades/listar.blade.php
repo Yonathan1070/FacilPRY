@@ -24,21 +24,19 @@ Actividades
                         </li>
                     </ul>
                 </div>
-                <div class="body table-responsive">
+                <div class="body">
                     <div class="row clearfix">
                         <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
-                            <div class="panel-group" id="accordion_19" role="tablist" aria-multiselectable="true">
+                            <div class="panel-group" id="accordion_17" role="tablist" aria-multiselectable="true">
                                 <div class="panel panel-col-cyan">
-                                    <div class="panel-heading" role="tab" id="headingTwo_19">
+                                    <div class="panel-heading" role="tab" id="headingOne_17">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse"
-                                                href="#collapseTwo_19" aria-expanded="false"
-                                                aria-controls="collapseTwo_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_17" href="#collapseOne_17" aria-expanded="false" aria-controls="collapseOne_17">
                                                 <i class="material-icons">mood</i> EN PROCESO
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseTwo_19" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_19">
+                                    <div id="collapseOne_17" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_17">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesProceso)<=0) 
                                                 <div class="alert alert-info">
@@ -53,12 +51,7 @@ Actividades
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha de Entrega</th>
-                                                            @foreach ($actividadesProceso as $actividad)
-                                                                @if ($actividad->Horas != 0)
-                                                                    <th>Horas Asignadas</th>
-                                                                @endif
-                                                                @break
-                                                            @endforeach
+                                                            <th>Horas Asignadas</th>
                                                             <th class="width70"></th>
                                                         </tr>
                                                     </thead>
@@ -73,7 +66,7 @@ Actividades
                                                                 @if ($actividad->Horas != 0)
                                                                     <td>{{$actividad->Horas}}</td>
                                                                 @else
-                                                                    <td></td>
+                                                                    <td>No asignadas</td>
                                                                 @endif
                                                                 <td class="width70">
                                                                     @if ($actividad->Horas != 0 && $actividad->HorasR!=null)
@@ -84,7 +77,7 @@ Actividades
                                                                                 style="font-size: 17px;">done_all</i>
                                                                         </a>
                                                                     @endif
-                                                                    @if($actividad->Horas == 0)
+                                                                    @if ($actividad->Horas == 0)
                                                                         <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
                                                                             class="btn-accion-tabla tooltipsC" title="Asignar Horas">
                                                                             <i class="material-icons text-info"
@@ -109,17 +102,14 @@ Actividades
                                     </div>
                                 </div>
                                 <div class="panel panel-col-red">
-                                    <div class="panel-heading" role="tab" id="headingThree_19">
+                                    <div class="panel-heading" role="tab" id="headingTwo_17">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse"
-                                                href="#collapseThree_19" aria-expanded="false"
-                                                aria-controls="collapseThree_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_17" href="#collapseTwo_17" aria-expanded="false" aria-controls="collapseTwo_17">
                                                 <i class="material-icons">mood_bad</i> ATRASADAS
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseThree_19" class="panel-collapse collapse" role="tabpanel"
-                                        aria-labelledby="headingThree_19">
+                                    <div id="collapseTwo_17" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_17">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesAtrasadas)<=0) 
                                                 <div class="alert alert-info">
@@ -161,16 +151,14 @@ Actividades
                                     </div>
                                 </div>
                                 <div class="panel panel-col-green">
-                                    <div class="panel-heading" role="tab" id="headingFour_19">
+                                    <div class="panel-heading" role="tab" id="headingThree_17">
                                         <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapseFour_19"
-                                                aria-expanded="false" aria-controls="collapseFour_19">
+                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_17" href="#collapseThree_17" aria-expanded="false" aria-controls="collapseThree_17">
                                                 <i class="material-icons">done_all</i> FINALIZADAS
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseFour_19" class="panel-collapse collapse" role="tabpanel"
-                                        aria-labelledby="headingFour_19">
+                                    <div id="collapseThree_17" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_17">
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesFinalizadas)<=0) 
                                                 <div class="alert alert-info">
@@ -277,7 +265,7 @@ Actividades
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="text" class="datetimepicker form-control" name="Hora_Solicitud" id="Hora_Solicitud"
+                                        <input type="text" class="form-control datetimepicker" name="Hora_Solicitud" id="Hora_Solicitud" placeholder="YYYY-MM-DD HH:mm"
                                             value="{{old('Hora_Solicitud' ?? '')}}" required>
                                     </div>
                                     <div class="help-info">Hora de Entrega</div>
