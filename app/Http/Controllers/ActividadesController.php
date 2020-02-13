@@ -15,6 +15,7 @@ use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\SolicitudTiempo;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -461,6 +462,77 @@ class ActividadesController extends Controller
         }
         return view('actividades.aprobar', compact('horasAprobar', 'notificaciones', 'cantidad', 'datos'));
         //dd($horasAprobar);
+    }
+
+    public function solicitudTiempo($idA){
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'st.SOL_TMP_Actividad_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('a.id', '=', $idA)
+            ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
+            ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
+            ->first();
+        if($solicitud)
+            return view('actividades.solicitud', compact('solicitud', 'notificaciones', 'cantidad', 'datos'));
+        
+        return redirect()->back()->withErrors('La solicitud ya ha sido atendida.');
+    }
+
+    public function aprobarSolicitud($idS){
+        $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'st.SOL_TMP_Actividad_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('st.id', '=', $idS)
+            ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
+            ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
+            ->first();
+        
+        Actividades::findOrFail($solicitud->Id_Actividad)->update([
+            'ACT_Estado_Id' => 1,
+            'ACT_Fecha_Fin_Actividad' => $solicitud->SOL_TMP_Fecha_Solicitada
+        ]);
+        $rangos = $this->obtenerFechasRango($solicitud->ACT_Fecha_Inicio_Actividad, $solicitud->SOL_TMP_Fecha_Solicitada);
+        HorasActividad::where('HRS_ACT_Actividad_Id', '=', $solicitud->Id_Actividad)->delete();
+        foreach ($rangos as $fecha) {
+            HorasActividad::create([
+                'HRS_ACT_Actividad_Id' => $solicitud->Id_Actividad,
+                'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
+            ]);
+        }
+        HistorialEstados::create([
+            'HST_EST_Fecha' => Carbon::now(),
+            'HST_EST_Estado' => 1,
+            'HST_EST_Actividad' => $solicitud->Id_Actividad
+        ]);
+
+        SolicitudTiempo::findOrFail($idS)->update(['SOL_TMP_Estado_Solicitud' => 1]);
+
+        $para = Usuarios::findOrFail($solicitud->ACT_Trabajador_Id);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        Notificaciones::crearNotificacion(
+            'Solicitud aprobada, ya puede reasignar sus horas de trabajo',
+            $de->id,
+            $para->id,
+            'actividades_perfil_operacion',
+            null,
+            null,
+            'add_to_photos'
+        );
+        
+        Mail::send('general.correo.informacion', [
+            'titulo' => 'Solicitud aprobada',
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' ha aprobado su solicitud de tiempo, asigna tus horas de trabajo'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Solicitud de tiempo aprobada');
+        });
+        return redirect()->route('actividades', ['idR' => $solicitud->ACT_Requerimiento_Id])->with('mensaje', 'Solicitud aprobada.');
     }
 
     public function actualizarHoras(Request $request, $idH)

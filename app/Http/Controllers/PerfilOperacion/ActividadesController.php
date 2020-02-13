@@ -18,6 +18,7 @@ use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
+use App\Models\Tablas\SolicitudTiempo;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -238,16 +239,44 @@ class ActividadesController extends Controller
         return json_encode($actividad);
     }
 
+    public function enviarSolicitud(Request $request, $id){
+        SolicitudTiempo::create([
+            'SOL_TMP_Actividad_Id' => $id,
+            'SOL_TMP_Fecha_Solicitada' => Carbon::parse($request->Hora_Solicitud)->format('Y-m-d H:m')
+        ]);
+        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $para = Usuarios::findOrFail($de->USR_Supervisor_Id);
+        Notificaciones::crearNotificacion(
+            $de->USR_Nombres_Usuario . ' ' . $de->USR_Apellidos_Usuario . ' solicita tiempo adicional para entregar una tarea.',
+            $de->id,
+            $para->id,
+            'solicitud_tiempo_actividades',
+            'idA',
+            $id,
+            'alarm'
+        );
+        Mail::send('general.correo.informacion', [
+            'titulo' => $de->USR_Nombres_Usuario . ' ' . $de->USR_Apellidos_Usuario . ' solicita tiempo adicional para entregar una tarea.',
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' solicita tiempo adicional para entregar una tarea.'
+        ], function($message) use ($para){
+            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+                ->subject('Solicitud de tiempo');
+        });
+        return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Solicitud enviada');
+    }
 
     public function actividadesProceso()
     {
         $actividadesProceso = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
             ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'ds.*', 'p.*', 'ha.*', 'e.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->select('a.id AS ID_Actividad', 'a.*', 'ds.*', 'p.*', 'ha.*', 'e.*', 'em.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
             ->where('a.ACT_Estado_Id', '=', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('p.PRY_Estado_Proyecto', '=', 1)
@@ -262,9 +291,10 @@ class ActividadesController extends Controller
         $actividadesAtrasadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
             ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'af.*', 'p.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
+            ->select('a.id AS ID_Actividad', 'a.*', 'af.*', 'p.*', 'em.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
             ->where('a.ACT_Estado_Id', '=', 2)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('p.PRY_Estado_Proyecto', '=', 1)
@@ -280,9 +310,10 @@ class ActividadesController extends Controller
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
             ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'af.*', 'e.*')
+            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'af.*', 'e.*', 'em.*')
             ->where('a.ACT_Estado_Id', '<>', 1)
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('p.PRY_Estado_Proyecto', '=', 1)

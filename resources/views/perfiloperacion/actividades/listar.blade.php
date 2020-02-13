@@ -2,6 +2,10 @@
 @section('titulo')
 Actividades
 @endsection
+@section('styles')
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="{{asset('assets/bsb/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css')}}" rel="stylesheet" />
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <!-- Multiple Items To Be Open -->
@@ -44,6 +48,7 @@ Actividades
                                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                     <thead>
                                                         <tr>
+                                                            <th>Empresa</th>
                                                             <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
@@ -60,6 +65,7 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesProceso as $actividad)
                                                             <tr>
+                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
@@ -71,13 +77,6 @@ Actividades
                                                                 @endif
                                                                 <td class="width70">
                                                                     @if ($actividad->Horas != 0 && $actividad->HorasR!=null)
-                                                                        @if (\Carbon\Carbon::now()->diffInHours($actividad->ACT_Fecha_Fin_Actividad) <= 24)
-                                                                            <a href="#" class="btn-accion-tabla tooltipsC"
-                                                                                title="Solicitar más tiempo">
-                                                                                <i class="material-icons text-info"
-                                                                                    style="font-size: 17px;">alarm_add</i>
-                                                                            </a>
-                                                                        @endif
                                                                         <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}"
                                                                             class="btn-accion-tabla tooltipsC"
                                                                             title="Finalizar Tarea">
@@ -130,6 +129,7 @@ Actividades
                                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                     <thead>
                                                         <tr>
+                                                            <th>Empresa</th>
                                                             <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
@@ -140,6 +140,7 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesAtrasadas as $actividad)
                                                             <tr>
+                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
@@ -180,6 +181,7 @@ Actividades
                                                     id="tabla-data">
                                                     <thead>
                                                         <tr>
+                                                            <th>Empresa</th>
                                                             <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
@@ -190,6 +192,7 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesFinalizadas as $actividad)
                                                             <tr>
+                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
                                                                 <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
                                                                 <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
@@ -214,9 +217,10 @@ Actividades
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="defaultModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="defaultModalLabel">Solicitud de Tiempo</h4>
                 </div>
-                <form class="form-horizontal" action="">
+                <form class="form_validation" action="" id="formularioSolicitud" method="POST">
+                    @csrf
                     <div class="modal-body">
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
@@ -237,7 +241,7 @@ Actividades
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" id="descripcionActividad" class="form-control" readonly="true">
+                                        <input type="text" id="descripcionActividad" name="descripcionActividad" class="form-control" readonly="true">
                                     </div>
                                 </div>
                             </div>
@@ -249,7 +253,7 @@ Actividades
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" id="fechaInicioActividad" class="form-control" readonly="true">
+                                        <input type="text" id="fechaInicioActividad" name="fechaInicioActividad" class="form-control" readonly="true">
                                     </div>
                                 </div>
                             </div>
@@ -261,7 +265,7 @@ Actividades
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" id="fechaFinActividad" class="form-control" readonly="true">
+                                        <input type="text" id="fechaFinActividad" name="fechaFinActividad" class="form-control" readonly="true">
                                     </div>
                                 </div>
                             </div>
@@ -271,10 +275,12 @@ Actividades
                                 <label for="tiempo">Tiempo</label>
                             </div>
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
-                                <div class="form-group">
+                                <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="number" id="tiempo" class="form-control" placeholder="Digite la cantidad de tiempo a solicitar (En Horas)">
+                                        <input type="text" class="datetimepicker form-control" name="Hora_Solicitud" id="Hora_Solicitud"
+                                            value="{{old('Hora_Solicitud' ?? '')}}" required>
                                     </div>
+                                    <div class="help-info">Hora de Entrega</div>
                                 </div>
                             </div>
                         </div>
@@ -290,5 +296,15 @@ Actividades
 </div>
 @endsection
 @section('scripts')
-<script src="{{asset("assets/pages/scripts/PerfilOperacion/solicitudTiempo.js")}}"></script>
+    <script src="{{asset("assets/pages/scripts/PerfilOperacion/solicitudTiempo.js")}}"></script>
+
+    <!-- Bootstrap Material Datetime Picker Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js")}}"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js")}}"></script>
+    <!-- Input Mask Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/jquery-inputmask/jquery.inputmask.bundle.js")}}"></script>
+    
+    <script src="{{asset("assets/bsb/js/pages/forms/basic-form-elements.js")}}"></script>
 @endsection

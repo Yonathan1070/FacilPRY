@@ -88,6 +88,7 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
         Route::get('{id}/finalizar', 'ActividadesController@finalizar')->name('actividades_finalizar_perfil_operacion');
         Route::post('finalizar', 'ActividadesController@guardarFinalizar')->name('actividades_guardar_finalizar_perfil_operacion');
         Route::get('{id}', 'ActividadesController@solicitarTiempo')->name('actividades_solicitar_tiempo_perfil_operacion');
+        Route::post('{id}/solicitud', 'ActividadesController@enviarSolicitud')->name('actividades_enviar_solicitud_tiempo_perfil_operacion');
     });
     //Enrutamiento Metricas
     Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general_perfil_operacion');
@@ -205,6 +206,8 @@ Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->n
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
 Route::get('actividades/{id}/detalle', 'ActividadesController@detalleActividadModal')->name('detalle_actividades');
+Route::get('actividades/{idA}/solicitud-tiempo', 'ActividadesController@solicitudTiempo')->name('solicitud_tiempo_actividades');
+Route::get('actividades/{idS}/aprobar-solicitud', 'ActividadesController@aprobarSolicitud')->name('aprobar_solicitud_tiempo_actividades');
 
 //Rutas Validador
 Route::get('validador', 'ValidadorController@index')->name('inicio_validador');
