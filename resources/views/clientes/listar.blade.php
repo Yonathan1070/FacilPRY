@@ -65,9 +65,9 @@
                                                         @endif    
                                                         @if ($permisos['eliminar']==true)
                                                             @csrf @method("delete")
-                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
+                                                            <!--<button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
                                                                 <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
-                                                            </button>
+                                                            </button>-->
                                                         @endif
                                                     </form>
                                                 </td>

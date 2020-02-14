@@ -6,7 +6,7 @@
             <input type="text" name="ACT_FIN_Titulo" id="ACT_FIN_Titulo" cols="30" rows="5"
                 class="form-control no-resize" maxlength="1000"
                 required>
-            <label class="form-label">Titulo para la entrega de la Actividad</label>
+            <label class="form-label">Titulo para la entrega de la Tarea</label>
         </div>
     </div>
     <div class="form-group form-float">
@@ -14,7 +14,7 @@
             <textarea name="ACT_FIN_Descripcion" id="ACT_FIN_Descripcion" cols="30" rows="5"
                 class="form-control no-resize"
                 required>{{old('ACT_FIN_Descripcion', $rol->RLS_Descripcion ?? '')}}</textarea>
-            <label class="form-label">Descripción para la entrega de la Actividad</label>
+            <label class="form-label">Descripción para la entrega de la Tarea</label>
         </div>
     </div>
     <div class="form-group form-float">
@@ -29,7 +29,7 @@
         <div class="form-line focused">
             <input type="file" class="form-control " name="ACT_Documento_Evidencia_Actividad[]"
                 id="ACT_Documento_Evidencia_Actividad" accept=".txt,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.ai" multiple>
-            <label class="form-label">Documento Soporte de Actividad Terminada</label>
+            <label class="form-label">Documento Soporte de la Tarea Terminada</label>
         </div>
         <div class="help-info">Tamaño máximo del archivo: 10 Mb</div>
     </div>

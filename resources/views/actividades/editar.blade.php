@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Requerimientos
+Crud Tareas
 @endsection
 @section('styles')
     <!-- Bootstrap Material Datetime Picker Css -->

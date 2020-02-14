@@ -61,8 +61,10 @@ class ValidadorController extends Controller
             ->where('af.Id', '=', $id)
             ->orderByDesc('af.created_at')
             ->first();
-        $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
+        $documentosSoporte = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->where('af.id', '=', $id)
             ->get();
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
             ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')

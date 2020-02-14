@@ -58,11 +58,11 @@ Crud Director de Proyectos
                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                     </a>
                                     @csrf @method("delete")
-                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
+                                    <!--<button type="submit" class="btn-accion-tabla eliminar tooltipsC"
                                         data-type="confirm" title="Eliminar este registro">
                                         <i class="material-icons text-danger"
                                             style="font-size: 17px;">delete_forever</i>
-                                    </button>
+                                    </button>-->
                                 </form>
                             </td>
                         </tr>

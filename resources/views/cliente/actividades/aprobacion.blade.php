@@ -129,9 +129,9 @@ Inicio
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($respuestasAnteriores as $ra)
+                                    @foreach ($respuestasAnteriores as $id => $ra)
                                         <tr>
-                                            <td>{{$ra->id}}</td>
+                                            <td>{{++$id}}</td>
                                             <td>{{$ra->RTA_Titulo}}</td>
                                             <td>{{$ra->RTA_Respuesta}}</td>
                                             <td>{{$ra->USR_Nombres_Usuario." ".$ra->USR_Apellidos_Usuario}}</td>

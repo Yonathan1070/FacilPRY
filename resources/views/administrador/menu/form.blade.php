@@ -36,5 +36,5 @@
     Para ver todos los Iconos haz clic <a href="https://material.io/resources/icons/?style=baseline" target="_blank">Aquí</a>
 </div>
 <div class="col-lg-1">
-    <i id="mostrar-icono" class="material-icons">{{old('MN_Icono_Menu')}}</i>
+    <i id="mostrar-icono" class="material-icons">{{old('MN_Icono_Menu', $menu->MN_Icono_Menu ?? '')}}</i>
 </div>

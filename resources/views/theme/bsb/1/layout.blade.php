@@ -185,6 +185,12 @@
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
     <script src="{{asset("assets/bsb/js/pages/tables/jquery-datatable.js")}}"></script>
 
+    <!-- Autosize Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/autosize/autosize.js")}}"></script>
+    
+    <!-- Moment Plugin Js -->
+    <script src="{{asset("assets/bsb/plugins/momentjs/moment.js")}}"></script>
+
     <!-- Demo Js -->
     <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
     <script src="{{asset('assets/bsb/js/pages/ui/dialogs.js')}}"></script>
