@@ -181,7 +181,9 @@ Route::get('proyectos/crear/{id}', 'ProyectosController@crear')->name('crear_pro
 Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
 Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
-Route::get('proyectos/gantt/gantt', 'ProyectosController@gantt')->name('gantt');
+Route::get('proyectos/{id}/gantt', 'ProyectosController@gantt')->name('gantt');
+Route::get('proyectos/{id}/finalizar', 'ProyectosController@finalizar')->name('finalizar_proyecto');
+Route::get('proyectos/{id}/activar', 'ProyectosController@activar')->name('activar_proyecto');
 
 //Rutas CRUD Requerimientos
 Route::get('requerimientos/{idP}', 'RequerimientosController@index')->name('requerimientos');

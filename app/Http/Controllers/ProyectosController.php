@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionProyecto;
 use App\Models\Tablas\Empresas;
+use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use PDF;
 use stdClass;
@@ -28,13 +29,29 @@ class ProyectosController extends Controller
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id);
-        $proyectos = DB::table('TBL_Proyectos as p')
+        $proyectosNoFinalizados = DB::table('TBL_Proyectos as p')
+            ->leftjoin('TBL_Requerimientos as r', 'r.REQ_Proyecto_Id', '=', 'p.id')
+            ->leftjoin('TBL_Actividades as a', 'a.ACT_Requerimiento_Id', '=', 'r.id')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
             ->join('TBL_Empresas as e', 'e.id', '=', 'p.PRY_Empresa_Id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('u.*', 'p.*')
+            ->select('u.*', 'p.*', 'p.id as Proyecto_Id', DB::raw('COUNT(a.id) as Actividades_Totales'), DB::raw('COUNT(af.id) as Actividades_Finalizadas'))
             ->where('p.PRY_Empresa_Id', '=', $id)
+            ->where('p.PRY_Finalizado_Proyecto', '=', 0)
+            ->groupBy('p.id')
             ->get();
-        return view('proyectos.listar', compact('proyectos', 'empresa', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        $proyectosFinalizados = DB::table('TBL_Proyectos as p')
+            ->leftjoin('TBL_Requerimientos as r', 'r.REQ_Proyecto_Id', '=', 'p.id')
+            ->leftjoin('TBL_Actividades as a', 'a.ACT_Requerimiento_Id', '=', 'r.id')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->join('TBL_Empresas as e', 'e.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('u.*', 'p.*', 'p.id as Proyecto_Id', DB::raw('COUNT(a.id) as Actividades_Totales'), DB::raw('COUNT(af.id) as Actividades_Finalizadas'))
+            ->where('p.PRY_Empresa_Id', '=', $id)
+            ->where('p.PRY_Finalizado_Proyecto', '=', 1)
+            ->groupBy('p.id')
+            ->get();
+        return view('proyectos.listar', compact('proyectosNoFinalizados', 'proyectosFinalizados', 'empresa', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 
     /**
@@ -159,9 +176,34 @@ class ProyectosController extends Controller
         return json_encode($dato);
     }
 
-    public function gantt()
+    public function gantt($id)
     {
-        return view('proyectos.gantt');
+        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
+        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $proyecto = Proyectos::findOrFail($id);
+        $fechas = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->select('a.id as Actividad_Id', 'a.*', 'ha.*')
+            ->where('p.id', '=', $id)
+            ->orderBy('ha.HRS_ACT_Fecha_Actividad')
+            ->groupBy('ha.HRS_ACT_Fecha_Actividad')
+            ->get();
+        $actividades = DB::table('TBL_Actividades as a')
+            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->select('a.id as Actividad_Id', 'a.*')
+            ->where('p.id', '=', $id)
+            ->orderby('a.ACT_Fecha_Inicio_Actividad')
+            ->get();
+        //$pdf = PDF::loadView('proyectos.gantt', compact('actividades', 'fechas', 'proyecto', 'notificaciones', 'cantidad', 'datos'))->setPaper('a4', 'landscape');
+        //$fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
+        //return $pdf->download($fileName.'.pdf');
+        return view('proyectos.gantt', compact('actividades', 'fechas', 'proyecto', 'notificaciones', 'cantidad', 'datos'));
     }
 
     /**
@@ -170,8 +212,15 @@ class ProyectosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function eliminar($id)
+    public function finalizar($id)
     {
-        //
+        Proyectos::finalizarProyecto($id);
+        return redirect()->back()->with('mensaje', 'Proyecto finalizado');
+    }
+
+    public function activar($id)
+    {
+        Proyectos::activarProyecto($id);
+        return redirect()->back()->with('mensaje', 'Proyecto activado');
     }
 }

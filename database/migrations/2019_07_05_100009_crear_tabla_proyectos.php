@@ -23,6 +23,7 @@ class CrearTablaProyectos extends Migration
             $table->unsignedBigInteger('PRY_Empresa_Id');
             $table->foreign('PRY_Empresa_Id', 'FK_Proyectos_Empresas')->references('id')->on('TBL_Empresas')->onDelete('restrict')->onUpdate('restrict');
             $table->boolean('PRY_Estado_Proyecto')->default(1);
+            $table->boolean('PRY_Finalizado_Proyecto')->default(0);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Proyectos
+Lista Proyectos
 @endsection
 @section('styles')
     <style>
@@ -39,47 +39,107 @@ Crud Proyectos
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    @if (count($proyectos)<=0)
-                    <div class="alert alert-info">
-                        No hay datos que mostrar
-                        <a href="{{route('crear_proyecto', ['id'=>$empresa->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#no-finalizado" aria-controls="settings" role="tab" data-toggle="tab">No Finalizados</a></li>
+                            <li role="presentation"><a href="#finalizado" aria-controls="settings" role="tab" data-toggle="tab">Finalizados</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="no-finalizado">
+                                @if (count($proyectosNoFinalizados)<=0)
+                                    <div class="alert alert-info">
+                                        No hay datos que mostrar
+                                        <a href="{{route('crear_proyecto', ['id'=>$empresa->id])}}" class="alert-link">Clic aquí para agregar!</a>.
+                                    </div>
+                                @else
+                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Descripción</th>
+                                                <th>Cliente</th>
+                                                <th>Tareas (Finalizadas/Totales)</th>
+                                                <th class="width70"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($proyectosNoFinalizados as $proyecto)
+                                                <tr>
+                                                    <td>
+                                                        <a onclick="avance({{$proyecto->Proyecto_Id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
+                                                            {{$proyecto->PRY_Nombre_Proyecto}}
+                                                        </a>
+                                                        <div id="progressBar{{$proyecto->Proyecto_Id}}" style="display: none;"></div>
+                                                        </td>
+                                                    <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
+                                                    <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
+                                                    <td>{{$proyecto->Actividades_Finalizadas}} / {{$proyecto->Actividades_Totales}}</td>
+                                                    <td>
+                                                        @if ($permisos['listarR']==true)
+                                                            <a href="{{route('requerimientos', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
+                                                                <i class="material-icons text-info" style="font-size: 17px;">description</i>
+                                                            </a>
+                                                        @endif
+                                                        <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
+                                                            <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
+                                                        </a>
+                                                        @if ($proyecto->Actividades_Totales != 0 && ($proyecto->Actividades_Finalizadas == $proyecto->Actividades_Totales))
+                                                            <a href="{{route('finalizar_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Fianlizar Proyecto">
+                                                                <i class="material-icons text-success" style="font-size: 20px;">navigate_next</i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade in" id="finalizado">
+                                @if (count($proyectosFinalizados)<=0)
+                                    <div class="alert alert-info">
+                                        No hay proyectos finalizados.
+                                    </div>
+                                @else
+                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Descripción</th>
+                                                <th>Cliente</th>
+                                                <th>Tareas (Finalizadas/Totales)</th>
+                                                <th class="width70"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($proyectosFinalizados as $proyecto)
+                                                <tr>
+                                                    <td>
+                                                        <a onclick="avance({{$proyecto->Proyecto_Id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
+                                                            {{$proyecto->PRY_Nombre_Proyecto}}
+                                                        </a>
+                                                        <div id="progressBar{{$proyecto->Proyecto_Id}}" style="display: none;"></div>
+                                                        </td>
+                                                    <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
+                                                    <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
+                                                    <td>{{$proyecto->Actividades_Finalizadas}} / {{$proyecto->Actividades_Totales}}</td>
+                                                    <td>
+                                                        <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
+                                                            <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
+                                                        </a>
+                                                        <a href="{{route('activar_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Activar proyecto">
+                                                            <i class="material-icons text-info" style="font-size: 17px;">navigate_before</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                    @else
-                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th>Cliente</th>
-                                    <th class="width70"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($proyectos as $proyecto)
-                                    <tr>
-                                        <td>
-                                            <a onclick="avance({{$proyecto->id}})" class="btn-accion-tabla tooltipsC" title="Ver Progreso">
-                                                {{$proyecto->PRY_Nombre_Proyecto}}
-                                            </a>
-                                            <div id="progressBar{{$proyecto->id}}" style="display: none;"></div>
-                                            </td>
-                                        <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
-                                        <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
-                                        <td>
-                                            @if ($permisos['listarR']==true)
-                                                <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
-                                                    <i class="material-icons text-info" style="font-size: 17px;">description</i>
-                                                </a>
-                                            @endif
-                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
-                                                <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
                 </div>
             </div>
         </div>
