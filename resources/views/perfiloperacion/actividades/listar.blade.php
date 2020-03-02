@@ -46,8 +46,6 @@ Actividades
                                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                     <thead>
                                                         <tr>
-                                                            <th>Empresa</th>
-                                                            <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha de Entrega</th>
@@ -58,9 +56,12 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesProceso as $actividad)
                                                             <tr>
-                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
-                                                                <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
-                                                                <td>{{$actividad->ACT_Nombre_Actividad}}</td>
+                                                                <td>
+                                                                    <a id="{{$actividad->ID_Actividad}}" onclick="detalleActividad(this)" class="btn-accion-tabla tooltipsC"
+                                                                        title="Ver detalles" data-toggle="modal" data-target="#modalDetalles">
+                                                                        {{$actividad->ACT_Nombre_Actividad}}
+                                                                    </a>
+                                                                </td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:s')}}</td>
                                                                 @if ($actividad->Horas != 0)
@@ -119,8 +120,6 @@ Actividades
                                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                                                     <thead>
                                                         <tr>
-                                                            <th>Empresa</th>
-                                                            <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha Limite de Entrega</th>
@@ -130,9 +129,12 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesAtrasadas as $actividad)
                                                             <tr>
-                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
-                                                                <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
-                                                                <td>{{$actividad->ACT_Nombre_Actividad}}</td>
+                                                                <td>
+                                                                    <a id="{{$actividad->ID_Actividad}}" onclick="detalleActividad(this)" class="btn-accion-tabla tooltipsC"
+                                                                        title="Ver detalles" data-toggle="modal" data-target="#modalDetalles">
+                                                                        {{$actividad->ACT_Nombre_Actividad}}
+                                                                    </a>
+                                                                </td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y H:s')}}</td>
                                                                 <td>
@@ -169,8 +171,6 @@ Actividades
                                                     id="tabla-data">
                                                     <thead>
                                                         <tr>
-                                                            <th>Empresa</th>
-                                                            <th>Proyecto</th>
                                                             <th>Tarea</th>
                                                             <th>Descripción</th>
                                                             <th>Fecha de Finalización</th>
@@ -180,9 +180,12 @@ Actividades
                                                     <tbody>
                                                         @foreach ($actividadesFinalizadas as $actividad)
                                                             <tr>
-                                                                <td>{{$actividad->EMP_Nombre_Empresa}}</td>
-                                                                <td>{{$actividad->PRY_Nombre_Proyecto}}</td>
-                                                                <td>{{$actividad->ACT_Nombre_Actividad}}</td>
+                                                                <td>
+                                                                    <a id="{{$actividad->ID_Actividad}}" onclick="detalleActividad(this)" class="btn-accion-tabla tooltipsC"
+                                                                        title="Ver detalles" data-toggle="modal" data-target="#modalDetalles">
+                                                                        {{$actividad->ACT_Nombre_Actividad}}
+                                                                    </a>
+                                                                </td>
                                                                 <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                                 <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_FIN_Fecha_Finalizacion)->format('d/m/Y H:s')}}</td>
                                                                 <td>{{$actividad->EST_Nombre_Estado}}</td>
@@ -281,10 +284,111 @@ Actividades
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalDetalles" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="defaultModalLabel">Detalles de la tarea</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="nombreEmpresaDetalle">Empresa</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="nombreEmpresaDetalle" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="nombreProyectoDetalle">Proyecto</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="nombreProyectoDetalle" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="nombreRequerimientoDetalle">Actividad</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="nombreRequerimientoDetalle" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="nombreActividadDetalle">Tarea</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="nombreActividadDetalle" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="descripcionActividadDetalle">Descripción</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <textarea name="descripcionActividadDetalle" id="descripcionActividadDetalle" class="form-control" readonly="true">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="fechaInicioActividadDetalle">Inicio</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="fechaInicioActividadDetalle" name="fechaInicioActividad" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="fechaFinActividadDetalle">Fin</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="fechaFinActividadDetalle" name="fechaFinActividad" class="form-control" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 @section('scripts')
     <script src="{{asset("assets/pages/scripts/PerfilOperacion/solicitudTiempo.js")}}"></script>
+
+    <script src="{{asset("assets/pages/scripts/PerfilOperacion/verDetalle.js")}}"></script>
 
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js")}}"></script>

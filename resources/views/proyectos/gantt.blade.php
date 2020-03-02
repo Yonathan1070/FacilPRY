@@ -22,9 +22,8 @@ Gantt Proyectos
                                 <td style="padding-right: 0px;">#</td>
                                 <td>Tareas</td>
                                 @foreach ($fechas as $fecha)
-                                    <td style="padding-right: 0px;">
-                                        {{\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('m')}}<br />
-                                        {{\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d')}}<br />
+                                    <td style="-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); height: 1px;">
+                                        {{\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('m-d')}}
                                     </td>
                                 @endforeach
                             </tr>

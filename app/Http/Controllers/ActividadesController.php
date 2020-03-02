@@ -601,6 +601,9 @@ class ActividadesController extends Controller
     public function detalleActividadModal($id)
     {
         $actividad = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Empresas as em', 'em.id', '=', 'p.PRY_Empresa_Id')
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('a.id', '=', $id)->first();
         return json_encode($actividad);

@@ -28,6 +28,8 @@ class CrearTablaActividades extends Migration
             $table->foreign('ACT_Requerimiento_Id', 'FK_Actividades_Requerimientos')->references('id')->on('TBL_Requerimientos')->onDelete('restrict')->onUpdate('restrict');
             $table->unsignedBigInteger('ACT_Trabajador_Id');
             $table->foreign('ACT_Trabajador_Id', 'FK_Actividades_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
+            $table->unsignedBigInteger('ACT_Encargado_Id');
+            $table->foreign('ACT_Encargado_Id', 'FK_Actividades_Usuarios')->references('id')->on('TBL_Usuarios')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
