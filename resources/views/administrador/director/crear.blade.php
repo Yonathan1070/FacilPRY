@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Director de Proyectos
+Crear Director de Proyectos
 @endsection
 @section('styles')
     <!-- Multi Select Css -->

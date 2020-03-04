@@ -4,6 +4,18 @@ namespace App\Models\Tablas;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo PermisoUsuario, donde se establecen los atributos de la tabla en la 
+ * Base de Datos y se realizan las distintas operaciones sobre la misma
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class PermisoUsuario extends Model
 {
     protected $table = "TBL_Permiso_Usuario";
@@ -13,7 +25,9 @@ class PermisoUsuario extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
 
-    public static function asignarPermisosDirector($id){
+    //Función que asigna los permisos al Director de proyectos
+    public static function asignarPermisosDirector($id)
+    {
         PermisoUsuario::asignarCrudDecisiones($id);
         PermisoUsuario::asignarCrudClientes($id);
         PermisoUsuario::asignarCRProyectos($id);
@@ -26,23 +40,31 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarCrudPerfilOperacion($id);
     }
 
-    public static function asignarPermisosPerfilOperacion($id){
+    //Funci´´on que asigna los permisos al Perfil de Operación
+    public static function asignarPermisosPerfilOperacion($id)
+    {
         PermisoUsuario::asignarListarEmpresas($id);
         PermisoUsuario::asignarListarProyectos($id);
         PermisoUsuario::asignarListarRequerimientos($id);
     }
 
-    public static function asignarPermisoPerfil($id){
+    //Funcion que asigna el permiso para editar perfil
+    public static function asignarPermisoPerfil($id)
+    {
         PermisoUsuario::asignarEditarPerfil($id);
     }
 
-    public static function asignarPermisosCliente($id){
+    //Funcion que asigna los permisos al cliente
+    public static function asignarPermisosCliente($id)
+    {
         PermisoUsuario::asignarListarRequerimientos($id);
         PermisoUsuario::asignarListarProyectos($id);
         PermisoUsuario::asignarListarActividades($id);
     }
 
-    public static function asignarCrudActividades($id){
+    //Funciones de asignación
+    public static function asignarCrudActividades($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 1
@@ -64,13 +86,15 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 5
         ]);
     }
-    public static function asignarListarActividades($id){
+    public static function asignarListarActividades($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 1
         ]);
     }
-    public static function asignarCrudClientes($id){
+    public static function asignarCrudClientes($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 6
@@ -88,7 +112,8 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 9
         ]);
     }
-    public static function asignarCrudEmpresas($id){
+    public static function asignarCrudEmpresas($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 26
@@ -106,19 +131,22 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 29
         ]);
     }
-    public static function asignarListarEmpresas($id){
+    public static function asignarListarEmpresas($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 26
         ]);
     }
-    public static function asignarListarCobros($id){
+    public static function asignarListarCobros($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 10
         ]);
     }
-    public static function asignarCrudDecisiones($id){
+    public static function asignarCrudDecisiones($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 11
@@ -136,13 +164,15 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 14
         ]);
     }
-    public static function asignarEditarPerfil($id){
+    public static function asignarEditarPerfil($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 15
         ]);
     }
-    public static function asignarCRProyectos($id){
+    public static function asignarCRProyectos($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 16
@@ -152,13 +182,15 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 17
         ]);
     }
-    public static function asignarListarProyectos($id){
+    public static function asignarListarProyectos($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 16
         ]);
     }
-    public static function asignarCrudRequerimientos($id){
+    public static function asignarCrudRequerimientos($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 18
@@ -176,13 +208,15 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 21
         ]);
     }
-    public static function asignarListarRequerimientos($id){
+    public static function asignarListarRequerimientos($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 18
         ]);
     }
-    public static function asignarCrudRoles($id){
+    public static function asignarCrudRoles($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 22
@@ -200,7 +234,8 @@ class PermisoUsuario extends Model
             'PRM_USR_Permiso_Id' => 25
         ]);
     }
-    public static function asignarCrudPerfilOperacion($id){
+    public static function asignarCrudPerfilOperacion($id)
+    {
         PermisoUsuario::create([
             'PRM_USR_Usuario_Id' => $id,
             'PRM_USR_Permiso_Id' => 31

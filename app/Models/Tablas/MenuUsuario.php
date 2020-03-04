@@ -4,6 +4,18 @@ namespace App\Models\Tablas;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo MenuUsuario, donde se establecen los atributos de la tabla en la 
+ * Base de Datos y se realizan las distintas operaciones sobre la misma
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class MenuUsuario extends Model
 {
     protected $table = "TBL_Menu_Usuario";
@@ -14,6 +26,7 @@ class MenuUsuario extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
 
+    //Función que asigna los items al director de proyectos
     public static function asignarMenuDirector($id)
     {
         //MenuUsuario::asignarInicioDirector($id);
@@ -24,6 +37,7 @@ class MenuUsuario extends Model
         MenuUsuario::asignarCobros($id);
     }
 
+    //Función que asigna los items al perfil de operación
     public static function asignarMenuPerfilOperacion($id)
     {
         //MenuUsuario::asignarInicioPerfilOperacion($id);
@@ -31,12 +45,14 @@ class MenuUsuario extends Model
         MenuUsuario::asignarEmpresas($id);
     }
 
+    //Función que asigna los items al cliente 
     public static function asignarMenuCliente($id)
     {
         //MenuUsuario::asignarInicioCliente($id);
         //MenuUsuario::asignarAprobarActividades($id);
     }
 
+    //Funciones de asignación de items
     public static function asignarInicioAdministrador($id)
     {
         MenuUsuario::create([

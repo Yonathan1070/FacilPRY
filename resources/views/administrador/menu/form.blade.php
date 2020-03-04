@@ -3,7 +3,7 @@
         <div class="form-line">
             <input type="text" class="form-control" name="MN_Nombre_Menu" id="MN_Nombre_Menu"
                 value="{{old('MN_Nombre_Menu', $menu->MN_Nombre_Menu ?? '')}}" maxlength="60" required>
-            <label class="form-label">Nombre Menú</label>
+            <label class="form-label">Nombre Item</label>
         </div>
     </div>
 </div>

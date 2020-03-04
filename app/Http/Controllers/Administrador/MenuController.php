@@ -9,40 +9,67 @@ use App\Models\Tablas\Menu;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Usuarios;
 
+/**
+ * Menu Controller, donde se harán las distintas operaciones de base de datos sobre la tabla Menu
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class MenuController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la lista de los item del menú actuales
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function inicio()
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $menus = Menu::getMenu();
-        return view('administrador.menu.listar', compact('notificaciones', 'cantidad', 'datos', 'menus'));
+        return view(
+            'administrador.menu.listar',
+            compact(
+                'notificaciones',
+                'cantidad',
+                'datos',
+                'menus'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear el item del menú
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista para crear el item
      */
     public function crear()
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        return view('administrador.menu.crear', compact('notificaciones', 'cantidad', 'datos'));
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        
+        return view(
+            'administrador.menu.crear',
+            compact(
+                'notificaciones',
+                'cantidad',
+                'datos'
+            )
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda en la base de datos la información del item de menú
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionMenu $request
+     * @return redirect()->back()->with()
      */
     public function guardar(ValidacionMenu $request)
     {
@@ -51,43 +78,52 @@ class MenuController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Actualiza el orden de la visualización del menú
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return return response()->json()
      */
     public function guardarOrden(Request $request)
     {
         if($request->ajax()){
             $menu = new Menu;
             $menu->guardarOrden($request->menu);
-            return reponse()->json(['mensaje' => 'ok']);
+            return response()->json(['mensaje' => 'ok']);
         }else{
             abort(404);
         }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulari para editar el item del menú
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista para editar el item
      */
     public function editar($id)
     {
         $menu = Menu::findOrFail($id);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        return view('administrador.menu.editar', compact('notificaciones', 'cantidad', 'datos', 'menu'));
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        
+        return view(
+            'administrador.menu.editar',
+            compact(
+                'notificaciones',
+                'cantidad',
+                'datos',
+                'menu'
+            )
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos del item en la base de datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionMenu $request
+     * @param  $id Identificador del item
+     * @return redirect()->back()->with()
      */
     public function actualizar(ValidacionMenu $request, $id)
     {
@@ -96,10 +132,10 @@ class MenuController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el item seleccionado
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $id identificador del item
+     * @return redirect()->route('named_route')->with()
      */
     public function eliminar($id)
     {

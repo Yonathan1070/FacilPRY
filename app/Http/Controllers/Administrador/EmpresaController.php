@@ -9,60 +9,45 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\Notificaciones;
 
+/**
+ * Empresa Controller, donde se operan los datos de la empresa.
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class EmpresaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra los datos de la empresa
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datos = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Empresas as e', 'u.USR_Empresa_Id', '=', 'e.id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))->first();
-        return view('administrador.empresa.editar', compact('datos', 'notificaciones', 'cantidad'));
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $datos = Empresas::obtenerDatosEmpresa();
+
+        return view(
+            'administrador.empresa.editar',
+            compact(
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Actualiza el logo de la empresa
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return response()->json()
      */
     public function actualizarLogo(Request $request)
     {
@@ -71,9 +56,7 @@ class EmpresaController extends Controller
         ]);
         
         if ($validator->passes()) {
-            $usuario = DB::table('TBL_Usuarios as u')
-                ->join('TBL_Empresas as e', 'u.USR_Empresa_Id', '=', 'e.id')
-                ->where('u.id', '=', session()->get('Usuario_Id'))->first();
+            $usuario = Empresas::obtenerDatosEmpresa();
             $empresa = Empresas::findOrFail($usuario->USR_Empresa_Id);
             if ($empresa->EMP_Logo_Empresa != null) {
                 $ruta = public_path("assets/bsb/images/Logos/".$empresa->EMP_Logo_Empresa);
@@ -89,26 +72,14 @@ class EmpresaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos de la empresa
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return response()->json()
      */
     public function actualizarDatos(Request $request)
     {
         Empresas::findOrFail($request->id)->update($request->all());
         return redirect()->back()->with('mensaje', 'Datos actualizados con exito');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

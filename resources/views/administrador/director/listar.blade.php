@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Director de Proyectos
+Listar Director de Proyectos
 @endsection
 @section("scripts")
 <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>

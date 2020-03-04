@@ -2,13 +2,24 @@
 
 namespace App\Models\Tablas;
 
-use App\Http\Requests\ValidacionUsuario;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 
+/**
+ * Usuarios, modelo donde encontramos los atributos de la tabla
+ * usuarios de la Base de Datos, adicional establece la sesión
+ * cuando un usuario se ha logueado
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class Usuarios extends Authenticatable
 {
     protected $remember_token = false;
@@ -29,11 +40,20 @@ class Usuarios extends Authenticatable
         'USR_Costo_Hora'];
     protected $guarded = ['id'];
     
-    public function roles(){
-        return $this->belongsToMany(Roles::class, 'TBL_Usuarios_Roles', 'USR_RLS_Usuario_Id', 'USR_RLS_Rol_Id')->withPivot('USR_RLS_Usuario_Id', 'USR_RLS_Rol_Id');
+    //Funcion que obtiene los roles del usuario
+    public function roles()
+    {
+        return $this->belongsToMany(
+            Roles::class,
+            'TBL_Usuarios_Roles',
+            'USR_RLS_Usuario_Id',
+            'USR_RLS_Rol_Id'
+        )->withPivot('USR_RLS_Usuario_Id', 'USR_RLS_Rol_Id');
     }
 
-    public function setSession($roles){
+    //Funcion que establece la variable de sesión del usuario autenticado
+    public function setSession($roles)
+    {
         Session::put([
             'Usuario_Id' => $this->id,
             'Empresa_Id' => $this->USR_Empresa_Id
@@ -52,11 +72,46 @@ class Usuarios extends Authenticatable
         }
     }
 
-    public static function crearUsuario($request){
-        if($request['USR_Costo_Hora'] == null){
+    //funcion que obtiene los usuarios con el rol de perfil de operación
+    public static function obtenerTrabajadores()
+    {
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
+            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
+            ->select('u.*')
+            ->get();
+        return $trabajadores;
+    }
+
+    //Función que obtiene los directores de proyectos
+    public static function obtenerDirectores()
+    {
+        $directores = DB::table('TBL_Usuarios')
+            ->join(
+                'TBL_Usuarios_Roles',
+                'TBL_Usuarios.id',
+                '=',
+                'TBL_Usuarios_Roles.USR_RLS_Usuario_Id'
+            )
+            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
+            ->select('TBL_Usuarios.*', 'TBL_Usuarios_Roles.*', 'TBL_Roles.*')
+            ->where('TBL_Roles.Id', '=', '2')
+            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
+            ->orderBy('TBL_Usuarios.id', 'ASC')
+            ->get();
+        return $directores;
+    }
+
+    //Funcion que guarda el nuevo usuario en la Base de Datos
+    public static function crearUsuario($request)
+    {
+        if($request['USR_Costo_Hora'] == null) {
             $request['USR_Costo_Hora'] = 0;
         }
-        if($request->id == null){
+        if($request->id == null) {
             $request->id = session()->get('Empresa_Id');
         }
         Usuarios::create([
@@ -65,7 +120,10 @@ class Usuarios extends Authenticatable
             'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
             'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
             'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario']." ".$request['USR_Ciudad_Residencia_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => 
+                $request['USR_Direccion_Residencia_Usuario'].
+                " ".
+                $request['USR_Ciudad_Residencia_Usuario'],
             'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
             'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
@@ -76,17 +134,22 @@ class Usuarios extends Authenticatable
         ]);
     }
 
-    public static function obtenerUsuario($documento){
+    //Funcion que obtiene un usuario en específico
+    public static function obtenerUsuario($documento)
+    {
         return Usuarios::where('USR_Documento_Usuario', '=', $documento)->first();
     }
 
-    public static function editarUsuario($request, $id){
+    //Funcion que actualiza los datos del usuario en la Base de Datos
+    public static function editarUsuario($request, $id)
+    {
         Usuarios::findOrFail($id)->update([
             'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
             'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
             'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
             'USR_Fecha_Nacimiento_Usuario' => $request['USR_Fecha_Nacimiento_Usuario'],
-            'USR_Direccion_Residencia_Usuario' => $request['USR_Direccion_Residencia_Usuario'],
+            'USR_Direccion_Residencia_Usuario' => 
+                $request['USR_Direccion_Residencia_Usuario'],
             'USR_Telefono_Usuario' => $request['USR_Telefono_Usuario'],
             'USR_Correo_Usuario' => $request['USR_Correo_Usuario'],
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
@@ -94,10 +157,15 @@ class Usuarios extends Authenticatable
         ]);
     }
 
-    public static function enviarcorreo($request, $mensaje, $asunto, $plantilla){
+    //Funcion que envía el correo al usuario
+    public static function enviarcorreo($request, $mensaje, $asunto, $plantilla)
+    {
         Mail::send($plantilla, [
-            'nombre' => $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
-            'username' => $request['USR_Nombre_Usuario']], function($message) use ($request, $mensaje, $asunto){
+            'nombre' =>
+                $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
+            'username' =>
+                $request['USR_Nombre_Usuario']],
+                function($message) use ($request, $mensaje, $asunto){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to($request['USR_Correo_Usuario'], $mensaje)
                 ->subject($asunto);

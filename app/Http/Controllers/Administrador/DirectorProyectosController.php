@@ -11,55 +11,74 @@ use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\UsuariosRoles;
-use App\Models\Utilitarios\Correo;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Mail;
 
+/**
+ * Director Controller, donde se visualizaran y realizaran cambios
+ * en la Base de Datos de los directores de protyectos
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class DirectorProyectosController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de directores de proyectos registrados
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        //$user = Usuarios::with('roles:USR_RLS_Usuario_Id,RLS_Nombre_Rol')->orderBy('id')->get();
-        $directores = DB::table('TBL_Usuarios')
-            ->join('TBL_Usuarios_Roles', 'TBL_Usuarios.id', '=', 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
-            ->select('TBL_Usuarios.*', 'TBL_Usuarios_Roles.*', 'TBL_Roles.*')
-            ->where('TBL_Roles.Id', '=', '2')
-            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
-            ->orderBy('TBL_Usuarios.id', 'ASC')
-            ->get();
-        return view('administrador.director.listar', compact('directores', 'datos', 'notificaciones', 'cantidad'));
+        
+        $directores = Usuarios::obtenerDirectores();
+
+        return view(
+            'administrador.director.listar',
+            compact(
+                'directores',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear un nuevo director de proyectos
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista crear director
      */
     public function crear()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '!=', 4)
-            ->where('RLS_Nombre_Rol', '<>', 'Cliente')->get();
-        return view('administrador.director.crear', compact('datos', 'notificaciones', 'cantidad', 'roles'));
+        $roles = Roles::obtenerRolesNoCliente();
+
+        return view(
+            'administrador.director.crear',
+            compact(
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'roles'
+            )
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda en la base de datos el nuevo director de proyectos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionUsuario $request
+     * @return redirect()->back()->with()
      */
     public function guardar(ValidacionUsuario $request)
     {
@@ -68,10 +87,22 @@ class DirectorProyectosController extends Controller
         UsuariosRoles::asignarRol(2, $director->id);
         MenuUsuario::asignarMenuDirector($director->id);
         PermisoUsuario::asignarPermisosDirector($director->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido(a) ' . $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'], 'general.correo.bienvenida');
+        Usuarios::enviarcorreo(
+            $request,
+            'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
+            'Bienvenido(a) '.
+                $request['USR_Nombres_Usuario'].
+                ' '.
+                $request['USR_Apellidos_Usuario'],
+            'general.correo.bienvenida'
+        );
 
         Notificaciones::crearNotificacion(
-            'Hola! ' . $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', Bienvenido(a) a InkBrutalPRY, verifique sus datos.',
+            'Hola! '.
+                $request->USR_Nombres_Usuario.
+                ' '.
+                $request->USR_Apellidos_Usuario.
+                ', Bienvenido(a) a InkBrutalPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
             $director->id,
             'perfil',
@@ -80,36 +111,57 @@ class DirectorProyectosController extends Controller
             'account_circle'
         );
 
-        return redirect()->back()->with('mensaje', 'Director de Proyectos agregado con exito, por favor que ' . $request['USR_Nombres_Usuario'] . ' ' . $request['USR_Apellidos_Usuario'] . ' revise su correo electrónico');
+        return redirect()
+            ->back()
+            ->with(
+                'mensaje',
+                'Director de Proyectos agregado con exito, por favor que '.
+                    $request['USR_Nombres_Usuario'].
+                    ' '.
+                    $request['USR_Apellidos_Usuario'].
+                    ' revise su correo electrónico'
+            );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar el director de proyectos
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $id Identificador del director de proyectos
+     * @return \Illuminate\View\View Vista para editar director de proyectos
      */
     public function editar($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
-        return view('administrador.director.editar', compact('director', 'datos', 'notificaciones', 'cantidad'));
+
+        return view(
+            'administrador.director.editar',
+            compact(
+                'director',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionUsuario  $request
+     * @param  $id Identifcador del director de proyectos
+     * @return redirect()->route()
      */
     public function actualizar(ValidacionUsuario $request, $id)
     {
         Usuarios::editarUsuario($request, $id);
         Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario . ' ' . $request->USR_Apellidos_Usuario . ', sus datos fueron actualizados',
+            $request->USR_Nombres_Usuario.
+                ' '.
+                $request->USR_Apellidos_Usuario.
+                ', sus datos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
             'perfil',
@@ -117,13 +169,17 @@ class DirectorProyectosController extends Controller
             null,
             'update'
         );
-        return redirect()->route('directores_administrador')->with('mensaje', 'Director de Proyectos actualizado con exito');
+
+        return redirect()
+            ->route('directores_administrador')
+            ->with('mensaje', 'Director de Proyectos actualizado con exito');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el director de proyectos seleccionado
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param $id Identificador del director de proyectos a eliminar
      * @return \Illuminate\Http\Response
      */
     public function eliminar(Request $request, $id)

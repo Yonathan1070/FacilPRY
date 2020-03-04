@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Sistema de Permisos
+Asignar Permisos
 @endsection
 @section('styles')
     

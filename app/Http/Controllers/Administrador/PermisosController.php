@@ -16,47 +16,62 @@ use App\Models\Tablas\Permiso;
 use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\UsuariosRoles;
 
+/**
+ * Permisos Controller, donde se habilitarán o dehabilitarán los permisos a los usuarios
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class PermisosController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de los usuarios actuales del sistema
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::orderBy('id')->where('id', '!=', 4)->pluck('RLS_Nombre_Rol', 'id')->toArray();
         $usuarios = Usuarios::with('roles')->get();
-        $users = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->select('r.*', 'u.*')
-            ->get();
-        return view('administrador.permisos.listar', compact('usuarios', 'datos', 'notificaciones', 'cantidad'));
+        
+        return view(
+            'administrador.permisos.listar',
+            compact(
+                'usuarios',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear permisos
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de crear permiso
      */
     public function crear()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         return view('administrador.permisos.crear', compact('datos', 'notificaciones', 'cantidad'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda los datos del permiso en la Base de Datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionPermiso  $request
+     * @return redirect()->back()->with()
      */
     public function guardar(ValidacionPermiso $request)
     {
@@ -64,71 +79,110 @@ class PermisosController extends Controller
         return redirect()->back()->with('mensaje', 'Permiso creado con exito');
     }
 
+    /**
+     * Muestra la vista de asignación de permisos
+     *
+     * @param  $id Identificador del usuario a asignar el permiso
+     * @return \Illuminate\View\View Vista para asignar permisos
+     */
     public function asignarMenu($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $menuAsignado = DB::table('TBL_Menu as m')
-            ->join('TBL_Menu_Usuario as mu', 'mu.MN_USR_Menu_Id', '=', 'm.id')
-            ->where('mu.MN_USR_Usuario_Id', '=', $id)
-            ->select('m.*')
-            ->get();
+
+        $menuAsignado = Menu::obtenerItemsAsignados($id);
         $menuNoAsignado = $this->menuNoAsignado($menuAsignado);
         
-        $permisoAsignado = DB::table('TBL_Permiso as p')
-            ->join('TBL_Permiso_Usuario as pu', 'pu.PRM_USR_Permiso_Id', '=', 'p.id')
-            ->where('pu.PRM_USR_Usuario_Id', '=', $id)
-            ->select('p.*')
-            ->get();
-        
+        $permisoAsignado = Permiso::obtenerPermisosAsignados($id);
         $permisoNoAsignado = $this->permisoNoAsignado($permisoAsignado);
 
-        $rolesAsignados = DB::table('TBL_Roles as r')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Rol_Id', '=', 'r.id')
-            ->where('ur.USR_RLS_Usuario_Id', '=', $id)
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->select('r.*')
-            ->get();
+        $rolesAsignados = Roles::obtenerRolesAsignados($id);
         $rolesNoAsignados = $this->rolesNoAsignados($rolesAsignados);
         
-        return view('administrador.permisos.asignar', compact('id', 'menuAsignado', 'menuNoAsignado', 'permisoAsignado', 'permisoNoAsignado', 'rolesAsignados', 'rolesNoAsignados', 'datos', 'id', 'notificaciones', 'cantidad'));
+        return view(
+            'administrador.permisos.asignar',
+            compact(
+                'id',
+                'menuAsignado',
+                'menuNoAsignado',
+                'permisoAsignado',
+                'permisoNoAsignado',
+                'rolesAsignados',
+                'rolesNoAsignados',
+                'datos',
+                'id',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
-    public function menuNoAsignado($menuAsignado){
+    /**
+     * Función que obtiene los items no asignados
+     *
+     * @param  $menuAsignado  Lista con los items asignados para hacer el filtro
+     * @return $disponibles  Items no asignados
+     */
+    public function menuNoAsignado($menuAsignado)
+    {
         $menus = Menu::get();
         $disponibles = [];
         foreach ($menus as $menu) {
-            if(!$menuAsignado->contains('id', $menu->id)){
+            if(!$menuAsignado->contains('id', $menu->id)) {
                 array_push($disponibles, $menu);
             }
         }
         return $disponibles;
     }
 
-    public function permisoNoAsignado($permisoAsignado){
+    /**
+     * Función que obtiene los permisos no asignados
+     *
+     * @param  $permisoAsignado  Lista con los permisos asignados para hacer el filtro
+     * @return $disponibles  Permisos no asignados
+     */
+    public function permisoNoAsignado($permisoAsignado)
+    {
         $permisos = Permiso::get();
         $disponibles = [];
         foreach ($permisos as $permiso) {
-            if(!$permisoAsignado->contains('id', $permiso->id)){
+            if(!$permisoAsignado->contains('id', $permiso->id)) {
                 array_push($disponibles, $permiso);
             }
         }
         return $disponibles;
     }
 
-    public function rolesNoAsignados($rolesAsignados){
+    /**
+     * Función que obtiene los roles no asignados
+     *
+     * @param  $rolesAsignado  Lista con los roles asignados para hacer el filtro
+     * @return $disponibles  Roles no asignados
+     */
+    public function rolesNoAsignados($rolesAsignados)
+    {
         $roles = Roles::where('id', '!=', 4)
-            ->where('RLS_Nombre_Rol', '<>', 'Cliente')->get();
+            ->where('RLS_Nombre_Rol', '<>', 'Cliente')
+            ->get();
         $disponibles = [];
         foreach ($roles as $rol) {
-            if(!$rolesAsignados->contains('id', $rol->id)){
+            if(!$rolesAsignados->contains('id', $rol->id)) {
                 array_push($disponibles, $rol);
             }
         }
         return $disponibles;
     }
 
+    /**
+     * Asigna el item del menú
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $menuId Identificador del item
+     * 
+     * @return response()->json()
+     */
     public function agregar(Request $request, $id, $menuId)
     {
         if ($request->ajax()) {
@@ -147,6 +201,15 @@ class PermisosController extends Controller
         }
     }
 
+    /**
+     * Des-asigna el item del menú
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $menuId Identificador del item
+     * 
+     * @return response()->json()
+     */
     public function quitar(Request $request, $id, $menuId)
     {
         if ($request->ajax()) {
@@ -162,6 +225,15 @@ class PermisosController extends Controller
         }
     }
 
+    /**
+     * Asigna el permiso
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $menuId Identificador del permiso
+     * 
+     * @return response()->json()
+     */
     public function agregarPermiso(Request $request, $id, $menuId)
     {
         if ($request->ajax()) {
@@ -180,6 +252,15 @@ class PermisosController extends Controller
         }
     }
 
+    /**
+     * Des-asigna el permiso
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $menuId Identificador del permiso
+     * 
+     * @return response()->json()
+     */
     public function quitarPermiso(Request $request, $id, $menuId)
     {
         if ($request->ajax()) {
@@ -195,6 +276,15 @@ class PermisosController extends Controller
         }
     }
 
+    /**
+     * Asigna el rol
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $rolId Identificador del rol
+     * 
+     * @return response()->json()
+     */
     public function agregarRol(Request $request, $id, $rolId)
     {
         if ($request->ajax()) {
@@ -214,6 +304,15 @@ class PermisosController extends Controller
         }
     }
 
+    /**
+     * Des-asigna el rol
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del usuario
+     * @param  $rolId Identificador del rol
+     * 
+     * @return response()->json()
+     */
     public function quitarRol(Request $request, $id, $rolId)
     {
         if ($request->ajax()) {

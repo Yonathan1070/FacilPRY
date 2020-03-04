@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Editar Menú
+    Editar Item Menú
 @endsection
 @section('styles')
     <!-- Bootstrap Select Css -->
@@ -15,7 +15,7 @@ Editar Menú
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>EDITAR MENÚ</h2>
+                    <h2>EDITAR ITEM MENÚ</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('menu')}}">

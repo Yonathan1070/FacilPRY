@@ -2,29 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Proyectos;
-use Carbon\Carbon;
+use App\Models\Tablas\Usuarios;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Metricas Controller, donde se obtienen los datos de las metricas del sistema
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class MetricasController extends Controller
 {
-    public function metricaEficaciaGeneral(){
+    /**
+     * Obtiene los datos del indicador de eficacia por proyectos
+     *
+     * @return json_encode Datos del indicador de eficacia por proyectos
+     * 
+     */
+    public function metricaEficaciaGeneral()
+    {
         $eficacia = [];
 
-        $proyectos = Proyectos::get();
+        $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);
-            try{
-                $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
-            }catch(Exception $ex){
+            try {
+                $eficaciaPorcentaje = (
+                    (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
+                );
+            } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$eficaciaPorcentaje];
         }
-        $pryEficaciaLlave = []; $pryEficaciaValor = []; $pryEficaciaColor = [];
+        $pryEficaciaLlave = [];
+        $pryEficaciaValor = [];
+        $pryEficaciaColor = [];
 
         foreach ($eficacia as $indEficacia) {
             array_push($pryEficaciaLlave, $indEficacia[0]);
@@ -43,9 +65,17 @@ class MetricasController extends Controller
         return json_encode($chartEficaciaPie);
     }
 
-    public function metricaEficienciaGeneral(){
+    /**
+     * Obtiene los datos del indicador de eficiencia por proyectos
+     *
+     * @return json_encode Datos del indicador de eficiencia por proyectos
+     * 
+     */
+    public function metricaEficienciaGeneral()
+    {
         $eficiencia = [];
-        $proyectos = Proyectos::get();
+        
+        $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);
@@ -60,14 +90,18 @@ class MetricasController extends Controller
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
-            try{
-                $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
-            }catch(Exception $ex){
+            try {
+                $variableReal = (count($actividadesFinalizadas) / $costoReal) * $horasReales;
+                $variableEstimada = (count($actividadesTotales) / $costoEstimado) * $horasEstimadas;
+                $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+            } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
         }
-        $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
+        $pryEficienciaLlave = [];
+        $pryEficienciaValor = [];
+        $pryEficienciaColor = [];
 
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
@@ -86,17 +120,26 @@ class MetricasController extends Controller
         return json_encode($chartEficienciaPie);
     }
 
-    public function metricaEfectividadGeneral(){
+    /**
+     * Obtiene los datos del indicador de efectividad por proyectos
+     *
+     * @return json_encode Datos del indicador de efectividad por proyectos
+     * 
+     */
+    public function metricaEfectividadGeneral()
+    {
         $efectividad = [];
 
-        $proyectos = Proyectos::get();
+        $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         foreach ($proyectos as $key => $proyecto) {
             //Obtenermos la Eficacia
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);
-            try{
-                $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
-            }catch(Exception $ex){
+            try {
+                $eficaciaPorcentaje = (
+                    (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
+                );
+            } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
 
@@ -112,18 +155,25 @@ class MetricasController extends Controller
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
-            try{
-                $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
-            }catch(Exception $ex){
+            try {
+                $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
+                $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
+                $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+            } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
 
             //Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
-            $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$efectividadPorcentaje];
+            $efectividad[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$efectividadPorcentaje
+            ];
         }
 
-        $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];
+        $pryEfectividadLlave = [];
+        $pryEfectividadValor = [];
+        $pryEfectividadColor = [];
 
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
@@ -142,8 +192,15 @@ class MetricasController extends Controller
         return json_encode($chartEficienciaPie);
     }
 
-    public function metricaProductividad(){
-        $proyectos = Proyectos::get();
+    /**
+     * Obtiene los datos del indicador de profuctividad por proyectos
+     *
+     * @return json_encode Datos del indicador de productividad por proyectos
+     * 
+     */
+    public function metricaProductividad()
+    {
+        $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         foreach ($proyectos as $key => $proyecto) {
             
             $actividades = $this->obtenerActividades($proyecto->id);
@@ -154,16 +211,21 @@ class MetricasController extends Controller
                 $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
                 $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
             }
-            try{
+            try {
                 $productividadPorcentaje = ($costoReal  / $costoEstimado) * 100;
-            }catch(Exception $ex){
+            } catch(Exception $ex) {
                 $productividadPorcentaje = 0;
             }
 
-            $productividad[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$productividadPorcentaje];
+            $productividad[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$productividadPorcentaje
+            ];
         }
 
-        $pryProductividadLlave = []; $pryProductividadValor = []; $pryProductividadColor = [];
+        $pryProductividadLlave = [];
+        $pryProductividadValor = [];
+        $pryProductividadColor = [];
 
         foreach ($productividad as $indProductividad) {
             array_push($pryProductividadLlave, $indProductividad[0]);
@@ -182,27 +244,35 @@ class MetricasController extends Controller
         return json_encode($chartProductividadPie);
     }
 
-    public function barrasEficaciaPorTrabajador(){
+    /**
+     * Obtiene los datos del indicador de eficacia por trabajadores
+     *
+     * @return json_encode Datos del indicador de eficacia por trabajadores
+     * 
+     */
+    public function barrasEficaciaPorTrabajador()
+    {
         $eficacia = [];
 
-        $trabajadores = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->select('u.*')->get();
+        $trabajadores = Usuarios::obtenerTrabajadores();
         foreach ($trabajadores as $key => $trabajador) {
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
             $actividadesTotales = $this->obtenerTotalesTrabajador($trabajador->id);
-            try{
-                $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
-            }catch(Exception $ex){
+            try {
+                $eficaciaPorcentaje = (
+                    (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
+                );
+            } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
-            $eficacia[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$eficaciaPorcentaje];
+            $eficacia[++$key] = [
+                $trabajador->USR_Nombres_Usuario,
+                (int)$eficaciaPorcentaje
+            ];
         }
-        $pryEficaciaLlave = []; $pryEficaciaValor = []; $pryEficaciaColor = [];
+        $pryEficaciaLlave = [];
+        $pryEficaciaValor = [];
+        $pryEficaciaColor = [];
 
         foreach ($eficacia as $indEficacia) {
             array_push($pryEficaciaLlave, $indEficacia[0]);
@@ -221,15 +291,17 @@ class MetricasController extends Controller
         return json_encode($chartEficaciaBar);
     }
 
-    public function barrasEficienciaPorTrabajador(){
+    /**
+     * Obtiene los datos del indicador de eficiencia por trabajadores
+     *
+     * @return json_encode Datos del indicador de eficiencia por trabajadores
+     * 
+     */
+    public function barrasEficienciaPorTrabajador()
+    {
         $eficiencia = [];
-        $trabajadores = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->select('u.*')->get();
+
+        $trabajadores = Usuarios::obtenerTrabajadores();
         foreach ($trabajadores as $key => $trabajador) {
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
             $actividadesTotales = $this->obtenerTotalesTrabajador($trabajador->id);
@@ -244,14 +316,21 @@ class MetricasController extends Controller
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
-            try{
-                $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
-            }catch(Exception $ex){
+            try {
+                $variableEstimada = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
+                $variableReal = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
+                $eficienciaPorcentaje = $variableEstimada / $variableReal * 100;
+            } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
-            $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$eficienciaPorcentaje];
+            $eficiencia[++$key] = [
+                $trabajador->USR_Nombres_Usuario,
+                (int)$eficienciaPorcentaje
+            ];
         }
-        $pryEficienciaLlave = []; $pryEficienciaValor = []; $pryEficienciaColor = [];
+        $pryEficienciaLlave = []; 
+        $pryEficienciaValor = []; 
+        $pryEficienciaColor = [];
 
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
@@ -270,21 +349,24 @@ class MetricasController extends Controller
         return json_encode($chartEficienciaBar);
     }
 
-    public function barrasEfectividadPorTrabajador(){
-        $trabajadores = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->select('u.*')->get();
+    /**
+     * Obtiene los datos del indicador de efectividad por trabajadores
+     *
+     * @return json_encode Datos del indicador de efectividad por trabajadores
+     * 
+     */
+    public function barrasEfectividadPorTrabajador()
+    {
+        $trabajadores = Usuarios::obtenerTrabajadores();
         foreach ($trabajadores as $key => $trabajador) {
-            //Obtenermos la Eficacia
+            //Obtenemos la Eficacia
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
             $actividadesTotales = $this->obtenerTotalesTrabajador($trabajador->id);
-            try{
-                $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
-            }catch(Exception $ex){
+            try {
+                $eficaciaPorcentaje = (
+                    (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
+                );
+            } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
 
@@ -301,17 +383,24 @@ class MetricasController extends Controller
                 $horasReales = $horasReales + $actividad->HorasR;
             }
             try{
-                $eficienciaPorcentaje = ((count($actividadesFinalizadas) / $costoReal) * $horasReales) / ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas) * 100;
+                $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
+                $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
+                $eficienciaPorcentaje = $variableReal / $variableEstimada * 100;
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
 
             //Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
-            $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario, (int)$efectividadPorcentaje];
+            $efectividad[++$key] = [
+                $trabajador->USR_Nombres_Usuario,
+                (int)$efectividadPorcentaje
+            ];
         }
 
-        $pryEfectividadLlave = []; $pryEfectividadValor = []; $pryEfectividadColor = [];
+        $pryEfectividadLlave = [];
+        $pryEfectividadValor = [];
+        $pryEfectividadColor = [];
 
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
@@ -330,138 +419,74 @@ class MetricasController extends Controller
         return json_encode($chartEfectividadBar);
     }
 
+    /**
+     * Obtiene los datos de las actividades en estado finalizado
+     *
+     * @return $actividadesFinalizadas array de las actividades finalizadas
+     * 
+     */
     public function obtenerFinalizadas($id)
     {
-        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('e.id', '<>', 1)
-            ->where('e.id', '<>', 2)
-            ->where('r.id', '<>', 3)
-            ->where('p.id', '=', $id)
-            ->get();
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($id);
         return $actividadesFinalizadas;
     }
 
+    /**
+     * Obtiene los datos de todas las actividades
+     *
+     * @return $actividadesTotales array de todas las actividades
+     * 
+     */
     public function obtenerTotales($id)
     {
-        $actividadesTotales = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '<>', 3)
-            ->where('p.id', '=', $id)
-            ->get();
-            
+        $actividadesTotales = Actividades::obtenerActividadesTotales($id);
         return $actividadesTotales;
     }
 
+    /**
+     * Obtiene los datos de las actividades en estado finalizado por cada trabajador
+     *
+     * @return $actividadesFinalizadas array de las actividades finalizadas por trabajador
+     * 
+     */
     public function obtenerFinalizadasTrabajador($id)
     {
-        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('e.id', '<>', 1)
-            ->where('e.id', '<>', 2)
-            ->where('r.id', '<>', 3)
-            ->where('uu.id', '=', $id)
-            ->get();
+        $actividadesFinalizadas = 
+            Actividades::obtenerActividadesFinalizadasTrabajador($id);
         return $actividadesFinalizadas;
     }
 
+    /**
+     * Obtiene los datos de todas las actividades de cada trabajador
+     *
+     * @return $actividadesTotales array de todas las actividades de los trabajadores
+     * 
+     */
     public function obtenerTotalesTrabajador($id)
     {
-        $actividadesTotales = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '<>', 3)
-            ->where('uu.id', '=', $id)
-            ->get();
+        $actividadesTotales = Actividades::obtenerActividadesTotalesTrabajador($id);
         return $actividadesTotales;
     }
 
+    /**
+     * Obtiene los datos de todas las actividades
+     *
+     * @return $actividades array de con todas las actividades
+     * 
+     */
     public function obtenerActividades($id){
-        $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->where('p.id', '=', $id)
-            ->groupBy('HRS_ACT_Actividad_Id')->get();
+        $actividades = Actividades::obtenerActividadesHoras($id);
         return $actividades;
     }
 
+    /**
+     * Obtiene los datos de las actividades con sus respectivas horas asignadas
+     *
+     * @return $actividades array con todas las actividades y horas de traajo asignadas
+     * 
+     */
     public function obtenerActividadesHorasTrabajador($id){
-        $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->where('uu.id', '=', $id)
-            ->groupBy('HRS_ACT_Actividad_Id')->get();
+        $actividades = Actividades::obtenerHorasActividadesTrabajador($id);
         return $actividades;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
