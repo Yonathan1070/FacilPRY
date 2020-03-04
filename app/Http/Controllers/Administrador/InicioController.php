@@ -186,8 +186,7 @@ class InicioController extends Controller
                 $notificacion->NTF_Route,
                 [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]
             );
-        }
-        else if($notificacion->NTF_Route != null) {
+        } else if($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
         }
         return json_encode($notif);
