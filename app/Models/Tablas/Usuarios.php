@@ -86,6 +86,20 @@ class Usuarios extends Authenticatable
         return $trabajadores;
     }
 
+    //Función que obtiene los perfil de operación
+    public static function obtenerPerfilOperacion()
+    {
+        $perfilesOperacion = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
+            ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol', 'u.id as Id_Perfil')
+            ->where('r.RLS_Rol_Id', '=', '4')
+            ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
+            ->get();
+        
+        return $perfilesOperacion;
+    }
+
     //Función que obtiene los directores de proyectos
     public static function obtenerDirectores()
     {

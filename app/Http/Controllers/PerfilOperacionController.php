@@ -13,49 +13,76 @@ use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
 
+/**
+ * Perfil Operacion Controller, donde se mostrarán las
+ * metricas del sistema para el administrador
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class PerfilOperacionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado del perfil de operación
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del listado de perfil de operación
      */
     public function index()
     {
         can('listar-perfil-operacion');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $perfilesOperacion = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol')
-            ->where('r.RLS_Rol_Id', '=', '4')
-            ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
-            ->get();
-        return view('director.perfiloperacion.listar', compact('perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+
+        return view(
+            'director.perfiloperacion.listar',
+            compact(
+                'perfilesOperacion',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear perfil de operación
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del formulario
      */
     public function crear()
     {
         can('crear-perfil-operacion');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '<>', '4')->where('RLS_Rol_Id', '=', 4)->orderBy('id')->get();
-        return view('director.perfiloperacion.crear', compact('roles', 'datos', 'notificaciones', 'cantidad'));
+        $roles = Roles::where('id', '<>', '4')
+            ->where('RLS_Rol_Id', '=', 4)
+            ->orderBy('id')
+            ->get();
+        
+        return view(
+            'director.perfiloperacion.crear',
+            compact(
+                'roles',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda el perfil de operación en la Base de Datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionUsuario  $request
+     * @return redirect()->back()->with()
      */
     public function guardar(ValidacionUsuario $request)
     {
@@ -65,18 +92,33 @@ class PerfilOperacionController extends Controller
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
         PermisoUsuario::asignarPermisoPerfil($perfil->id);
         PermisoUsuario::asignarPermisosPerfilOperacion($perfil->id);
-        Usuarios::enviarcorreo($request, 'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos', 'Bienvenido(a) '.$request['USR_Nombres_Usuario'], 'general.correo.bienvenida');
+        Usuarios::enviarcorreo(
+            $request,
+            'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
+            'Bienvenido(a) '.$request['USR_Nombres_Usuario'], 
+            'general.correo.bienvenida'
+        );
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha creado el usuario '.$request->USR_Nombres_Usuario,
+            $datos->USR_Nombres_Usuario.
+                ' '.
+                $datos->USR_Apellidos_Usuario.
+                ' ha creado el usuario '.
+                $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
             $datos->USR_Supervisor_Id,
             'perfil_operacion', null, null,
             'person_add'
         );
+
         Notificaciones::crearNotificacion(
-            'Hola! '.$request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', Bienvenido a InkBrutalPRY, verifique sus datos.',
+            'Hola! '.
+                $request->USR_Nombres_Usuario.
+                ' '.
+                $request->USR_Apellidos_Usuario.
+                ', Bienvenido a InkBrutalPRY, verifique sus datos.',
             session()->get('Usuario_Id'),
             $perfil->id,
             'perfil',
@@ -84,38 +126,38 @@ class PerfilOperacionController extends Controller
             'account_circle'
         );
 
-        return redirect()->back()->with('mensaje', 'Perfil de Operación agregado con exito');
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Perfil de Operación agregado con exito');
     }
 
     /**
-     * Display the specified resource.
+     * Muestra el formulario para editar el perfil de operación
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function mostrar($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $id  Identificador del perfil de operación
+     * @return \Illuminate\View\View Vista del formulario
      */
     public function editar($id)
     {
         can('editar-perfil-operacion');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfil = Usuarios::findOrFail($id);
-        return view('director.perfiloperacion.editar', compact('perfil', 'datos', 'notificaciones', 'cantidad'));
+
+        return view(
+            'director.perfiloperacion.editar',
+            compact(
+                'perfil',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos del perfil de operacion en la Base de Datos
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -125,7 +167,10 @@ class PerfilOperacionController extends Controller
     {
         Usuarios::editarUsuario($request, $id);
         Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.' '.$request->USR_Apellidos_Usuario.', sus datos fueron actualizados',
+            $request->USR_Nombres_Usuario.
+                ' '.
+                $request->USR_Apellidos_Usuario.
+                ', sus datos fueron actualizados',
             session()->get('Usuario_Id'),
             $id,
             'perfil',
@@ -133,14 +178,17 @@ class PerfilOperacionController extends Controller
             null,
             'update'
         );
-        return redirect()->route('perfil_operacion')->with('mensaje', 'Perfi de operación  actualizado con exito');
+        return redirect()
+            ->route('perfil_operacion')
+            ->with('mensaje', 'Perfi de operación  actualizado con exito');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deja inactivo el perfil de operación
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del perfil de operación
+     * @return response()->json()
      */
     public function eliminar(Request $request, $id)
     {
@@ -154,7 +202,11 @@ class PerfilOperacionController extends Controller
                 
                 UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
                 Notificaciones::crearNotificacion(
-                    $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha dejado inactivo al usuario '.$datosU->USR_Nombres_Usuario,
+                    $datos->USR_Nombres_Usuario.
+                        ' '.
+                        $datos->USR_Apellidos_Usuario.
+                        ' ha dejado inactivo al usuario '.
+                        $datosU->USR_Nombres_Usuario,
                     session()->get('Usuario_Id'),
                     $datos->USR_Supervisor_Id,
                     'perfil_operacion',
@@ -169,6 +221,12 @@ class PerfilOperacionController extends Controller
         }
     }
 
+    /**
+     * Activa el perfil de operación
+     *
+     * @param  $id Identificador del perfil de operación
+     * @return response()->json()
+     */
     public function agregar($id)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -178,9 +236,14 @@ class PerfilOperacionController extends Controller
             if($datos->USR_Supervisor_Id == 0)
                 $datos->USR_Supervisor_Id = 1;
             
-            UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+            UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)
+                ->update(['USR_RLS_Estado' => 1]);
             Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.' '.$datos->USR_Apellidos_Usuario.' ha dejado activo al usuario '.$datosU->USR_Nombres_Usuario,
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha dejado activo al usuario '.
+                    $datosU->USR_Nombres_Usuario,
                 session()->get('Usuario_Id'),
                 $datos->USR_Supervisor_Id,
                 'perfil_operacion',
@@ -189,6 +252,8 @@ class PerfilOperacionController extends Controller
                 'arrow_upward'
             );
         }
-        return redirect()->route('perfil_operacion')->with('mensaje', 'Perfil de operación reingresado con exito');
+        return redirect()
+            ->route('perfil_operacion')
+            ->with('mensaje', 'Perfil de operación reingresado con exito');
     }
 }
