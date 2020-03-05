@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Perfil de Operación
+    Editar Perfil de Operación {{$perfil->USR_Nombres_Usuario.' '.$perfil->USR_Apellidos_Usuario}}
 @endsection
 @section('contenido')
 <div class="container-fluid">

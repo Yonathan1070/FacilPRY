@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-    Crud Perfil de Operación
+    Listar Perfil de Operación
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -58,7 +58,7 @@
                                             </td>
                                             <td>
                                                 <form class="form-eliminar" action="{{route('eliminar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="d-inline" method="POST">
-                                                    <a href="{{route('editar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                    <a href="{{route('editar_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
                                                         <i class="material-icons text-info" style="font-size: 18px;">edit</i>
                                                     </a>
                                                     @if ($perfilOperacion->USR_RLS_Estado == 0)

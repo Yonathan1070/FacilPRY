@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-    Crud Perfil de Operación
+    Crear Perfil de Operación
 @endsection
 @section('contenido')
 <div class="container-fluid">
