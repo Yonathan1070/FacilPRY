@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Editar Empresa
+    Editar Empresa {{$empresa->EMP_Nombre_Empresa}}
 @endsection
 @section('contenido')
 <div class="container-fluid">

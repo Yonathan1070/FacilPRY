@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-    Crear Empresas
+    Crear Empresa
 @endsection
 @section('contenido')
 <div class="container-fluid">

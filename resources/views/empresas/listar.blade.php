@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-    Crud Empresas
+    Listar Empresas
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -125,16 +125,6 @@
                                                                 @if ($permisos['eliminar']==true)
                                                                     <a href="{{route('activar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Activar la empresa {{$empresa->EMP_Nombre_Empresa}}">
                                                                         <i class="material-icons text-success" style="font-size: 20px;">arrow_upward</i>
-                                                                    </a>
-                                                                @endif
-                                                                @if ($permisos['lUsuarios']==true)
-                                                                    <a href="{{route('clientes', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios">
-                                                                        <i class="material-icons text-info" style="font-size: 20px;">list</i>
-                                                                    </a>
-                                                                @endif
-                                                                @if ($permisos['lProyectos']==true)
-                                                                    <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
-                                                                        <i class="material-icons text-info" style="font-size: 20px;">notes</i>
                                                                     </a>
                                                                 @endif
                                                             @endif
