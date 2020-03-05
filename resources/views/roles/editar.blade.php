@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Roles
+Editar Rol {{$rol->RLS_Nombre_Rol}}
 @endsection
 @section('contenido')
 <div class="container-fluid">
