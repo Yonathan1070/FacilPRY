@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Requerimientos
+    Listar Actividades
 @endsection
 @section('styles')
     <style>
@@ -20,7 +20,7 @@ Crud Requerimientos
             <div class="card">
                 <div class="header">
                     <h2>
-                        ACTIVIDADES
+                        ACTIVIDADES - PROYECTO ({{strtoupper($proyecto->PRY_Nombre_Proyecto)}})
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">

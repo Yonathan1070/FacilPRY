@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Requerimientos
+    Crear Actividad
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -11,7 +11,7 @@ Crud Requerimientos
             @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    <h2>CREAR ACTIVIDAD PARA EL PROYECTO {{strtoupper($proyecto->PRY_Nombre_Proyecto)}}</h2>
+                    <h2>CREAR ACTIVIDAD - PROYECTO ({{strtoupper($proyecto->PRY_Nombre_Proyecto)}})</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('requerimientos', ['idP'=>$proyecto->id])}}">
