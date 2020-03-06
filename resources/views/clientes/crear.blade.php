@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-    Crud Clientes
+    Crear Cliente
 @endsection
 @section('contenido')
 <div class="container-fluid">

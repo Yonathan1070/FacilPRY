@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Clientes
+    Editar Cliente {{$cliente->USR_Nombres_Usuario.' '.$cliente->USR_Apellidos_Usuario}}
 @endsection
 @section('contenido')
 <div class="container-fluid">

@@ -119,6 +119,24 @@ class Usuarios extends Authenticatable
         return $directores;
     }
 
+    //Función para obtener el listado de clientes
+    public static function obtenerClientes($id)
+    {
+        $clientes = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'ud.id', '=', 'uu.USR_Supervisor_Id')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'uu.USR_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'ud.USR_Empresa_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'uu.id', '=', 'ur.USR_RLS_Usuario_Id')
+            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
+            ->select('uu.*', 'r.RLS_Nombre_Rol')
+            ->where('ur.USR_RLS_Rol_Id', '=', '3')
+            ->where('ur.USR_RLS_Estado', '=', '1')
+            ->where('eu.id', '=', $id)
+            ->get();
+        
+        return $clientes;
+    }
+
     //Funcion que guarda el nuevo usuario en la Base de Datos
     public static function crearUsuario($request)
     {
