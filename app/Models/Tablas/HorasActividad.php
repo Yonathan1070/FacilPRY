@@ -99,6 +99,28 @@ class HorasActividad extends Model
         return $horas;
     }
 
+    //Funcion para obtener cantidad de horas asignadas
+    public static function obtenerHorasAsignadasActividad($id)
+    {
+        $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
+            ->sum('HRS_ACT_Cantidad_Horas_Asignadas');
+        
+        return $horas;
+    }
+
+    //Funcion para obtener cantidad de horas asignadas sin la hora seleccionada
+    public static function obtenerHorasAsignadasNoSeleccionada($id, $fecha)
+    {
+        $horas = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('ha.id', '<>', $id)
+            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+        
+        return $horas;
+    }
+
     //Función para crear las Horas asignadas para las actividades
     public static function crearHorasActividad($idA, $fecha)
     {
@@ -119,6 +141,14 @@ class HorasActividad extends Model
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);*/
+    }
+
+    //Funcion para ajustar las horas asignadas de la actividad
+    public static function actualizarHorasAsignadas($id, $cantidadHoras)
+    {
+        HorasActividad::findOrFail($id)->update([
+            'HRS_ACT_Cantidad_Horas_Asignadas' => $cantidadHoras
+        ]);
     }
 
     //Funcion para ajustar las horas reales de la actividad
