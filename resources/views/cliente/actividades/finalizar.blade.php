@@ -11,7 +11,7 @@ Finalizar Actividad
                 @include('includes.form-exito')
             <div class="card">
                 <div class="header">
-                    <h2>FINALIZAR ACTIVIDAD</h2>
+                    <h2>FINALIZAR TAREA ({{strtoupper($actividades->ACT_Nombre_Actividad)}})</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('actividades_cliente')}}">

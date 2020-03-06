@@ -192,6 +192,18 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
+    //Funcion para obtener la actividad seleccionada
+    public static function obtenerActividad($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->select('a.*')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('a.id', '=', $id)
+            ->first();
+        
+        return $actividades;
+    }
+
     //Funcion para obtener las actividades finalizadas por proyecto
     public static function obtenerActividadesFinalizadas($id)
     {
@@ -349,5 +361,11 @@ class Actividades extends Model
             'ACT_Estado_Id' => 1,
             'ACT_Fecha_Fin_Actividad' => $solicitud->SOL_TMP_Fecha_Solicitada
         ]);
+    }
+
+    //Funcion para cambiar estado de la actividad
+    public static function actualizarEstadoActividad($id, $estado)
+    {
+        Actividades::findOrFail($id)->update(['ACT_Estado_Id' => $estado]);
     }
 }

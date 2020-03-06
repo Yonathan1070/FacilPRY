@@ -89,8 +89,19 @@ class HorasActividad extends Model
         return $horas;
     }
 
+    //Función para obtener las horas de la actividad seleccionada
+    public static function obtenerHorasActividad($id)
+    {
+        $horas = DB::table('TBL_Horas_Actividad')
+            ->where('HRS_ACT_Actividad_Id', '=', $id)
+            ->get();
+        
+        return $horas;
+    }
+
     //Función para crear las Horas asignadas para las actividades
-    public static function crearHorasActividad($idA, $fecha){
+    public static function crearHorasActividad($idA, $fecha)
+    {
         HorasActividad::create([
             'HRS_ACT_Actividad_Id' => $idA,
             'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
@@ -98,12 +109,16 @@ class HorasActividad extends Model
     }
 
     //Función para actualizar las horas de la actividad
-    public static function actualizarHoraActividad($request, $idH)
+    public static function actualizarHoraActividad($horasAsignadas, $horasReales, $idH)
     {
         HorasActividad::findOrFail($idH)->update([
+            'HRS_ACT_Cantidad_Horas_Asignadas' => $horasAsignadas,
+            'HRS_ACT_Cantidad_Horas_Reales' => $horasReales
+        ]);
+        /*HorasActividad::findOrFail($idH)->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
-        ]);
+        ]);*/
     }
 
     //Funcion para ajustar las horas reales de la actividad

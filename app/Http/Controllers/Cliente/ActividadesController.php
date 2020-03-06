@@ -16,103 +16,115 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * Requerimientos Controller, donde se visualizaran y realizaran cambios
+ * en la Base de Datos de los requerimientos de cada proyecto
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class ActividadesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de las actividades que el cliente tenga para entregar,
+     * pendientes para aprobación o que ya haya entregado.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
-            ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('re.RTA_Usuario_Id', '=', 0)
-            ->where('re.RTA_Estado_Id', '=', 12)
-            ->where('af.ACT_FIN_Revisado', '=', 1)
-            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->get();
-        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id as Id_Actividad', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->get();
-        $actividadesEntregar = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id as Id_Actividad', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 1)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->get();
-        return view('cliente.actividades.inicio', compact('actividadesPendientes', 'actividadesFinalizadas', 'actividadesEntregar', 'datos', 'notificaciones', 'cantidad'));
+        
+        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobar();
+        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasCliente();
+        $actividadesEntregar = ActividadesFinalizadas::obtenerActividadesProcesoCliente();
+        
+        return view(
+            'cliente.actividades.inicio',
+            compact(
+                'actividadesPendientes',
+                'actividadesFinalizadas',
+                'actividadesEntregar',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
+    /**
+     * Muestra el formulario para realizar la entrega de la actividad
+     *
+     * @return \Illuminate\View\View Vista del formulario de entrega
+     */
     public function finalizar($id){
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = DB::table('TBL_Actividades as a')
-            ->select('a.*')
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('a.id', '=', $id)
-            ->get();
+        $actividades = Actividades::obtenerActividad($id);
 
-        return view('cliente.actividades.finalizar', compact('id', 'datos', 'notificaciones', 'cantidad'));
+        return view(
+            'cliente.actividades.finalizar',
+            compact(
+                'id',
+                'actividades',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
-    public function guardarFinalizar(Request $request){
-        $horas = DB::table('TBL_Horas_Actividad')->where('HRS_ACT_Actividad_Id', '=', $request['Actividad_Id'])->get();
-        $hR = count($horas) - Carbon::now()->diffInDays($horas->first()->HRS_ACT_Fecha_Actividad);
-        HorasActividad::findOrFail($horas->first()->id)->update([
-            'HRS_ACT_Cantidad_Horas_Asignadas' => count($horas),
-            'HRS_ACT_Cantidad_Horas_Reales' => $hR
-        ]);
+    /**
+     * Guarda la entrega de la actividad la entrega de la actividad
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return redirect()->route()
+     */
+    public function guardarFinalizar(Request $request)
+    {
+        $horas = HorasActividad::obtenerHorasActividad($request['Actividad_Id']);
+        $hR = count($horas) - Carbon::now()->diffInDays(
+            $horas->first()->HRS_ACT_Fecha_Actividad
+        );
+        HorasActividad::actualizarHoraActividad(count($horas), $hR, $horas->first()->id);
+        
         if (!$request->hasFile('ACT_Documento_Evidencia_Actividad')) {
-            return redirect()->route('actividades_finalizar_cliente', [$request['Actividad_Id']])->withErrors('Debe cargar un documento que evidencie la actividad realizada.')->withInput();
+            return redirect()
+                ->route('actividades_finalizar_cliente', [$request['Actividad_Id']])
+                ->withErrors(
+                    'Debe cargar un documento que evidencie la actividad realizada.'
+                )->withInput();
         }
-        ActividadesFinalizadas::create([
-            'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
-            'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
-            'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
-            'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
-            'ACT_FIN_Revisado' => 1
-        ]);
+
+        ActividadesFinalizadas::crearActividadFinalizada($request);
+
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
+        
         foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
             $archivo = null;
             if ($documento->isValid()) {
                 $archivo = time() . '.' . $documento->getClientOriginalName();
                 $documento->move(public_path('documentos_soporte'), $archivo);
-                DocumentosEvidencias::create([
-                    'DOC_Actividad_Finalizada_Id' => $af->id,
-                    'ACT_Documento_Evidencia_Actividad' => $archivo
-                ]);
+                DocumentosEvidencias::crearDocumentosEvicendia($af->id, $archivo);
             }
         }
-        Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
+        Actividades::actualizarEstadoActividad($request['Actividad_Id'], 3);
         
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 3,
-            'HST_EST_Actividad' => $request['Actividad_Id']
-        ]);
+        HistorialEstados::crearHistorialEstado($request['Actividad_Id'], 3);
+        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' ha finalizado una Actividad.',
             session()->get('Usuario_Id'),
@@ -122,7 +134,10 @@ class ActividadesController extends Controller
             null,
             'find_in_page'
         );
-        return redirect()->route('actividades_cliente')->with('mensaje', 'Actividad finalizada');
+        
+        return redirect()
+            ->route('actividades_cliente')
+            ->with('mensaje', 'Actividad finalizada');
     }
 
     /**

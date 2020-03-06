@@ -38,4 +38,13 @@ class DocumentosEvidencias extends Model
         
         return $documentosEvidencia;
     }
+
+    //Funcion para crear los documentos de evidencia
+    public static function crearDocumentosEvicendia($idActividad, $archivo)
+    {
+        DocumentosEvidencias::create([
+            'DOC_Actividad_Finalizada_Id' => $idActividad,
+            'ACT_Documento_Evidencia_Actividad' => $archivo
+        ]);
+    }
 }
