@@ -72,7 +72,18 @@ class Usuarios extends Authenticatable
         }
     }
 
-    //funcion que obtiene los usuarios con el rol de perfil de operación
+    //Funcion para obtener el cliente por proyecto
+    public static function obtenerClienteProyecto($idP)
+    {
+        $datosU = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('p.id', '=', $idP)
+            ->first();
+        
+        return $datosU;
+    }
+
+    //Funcion que obtiene los usuarios con el rol de perfil de operación
     public static function obtenerTrabajadores()
     {
         $trabajadores = DB::table('TBL_Usuarios as u')

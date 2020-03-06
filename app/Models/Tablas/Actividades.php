@@ -155,6 +155,17 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
+    //Funcion para obtener las actividaades de cada requerimiento
+    public static function obtenerActividadesTotalesRequerimiento($id)
+    {
+        $actividadesTotales = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->where('r.id', '=', $id)
+            ->get();
+        
+        return $actividadesTotales;
+    }
+
     //Funcion para obtener las actividades finalizadas por proyecto
     public static function obtenerActividadesFinalizadas($id)
     {
@@ -187,6 +198,22 @@ class Actividades extends Model
             ->where('r.id', '<>', 3)
             ->where('uu.id', '=', $id)
             ->get();
+        return $actividadesFinalizadas;
+    }
+
+    //Función para obtener las actividades finalizadas por requerimiento
+    public static function obtenerActividadesFinalizadasRequerimiento($id)
+    {
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('e.EST_Nombre_Estado', '<>', 'En Proceso')
+            ->where('e.EST_Nombre_Estado', '<>', 'Atrasado')
+            ->where('e.EST_Nombre_Estado', '<>', 'Rechazado')
+            ->where('r.id', '=', $id)
+            ->get();
+        
         return $actividadesFinalizadas;
     }
 

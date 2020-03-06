@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ValidacionRequerimiento;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Requerimientos;
@@ -12,63 +13,105 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
+/**
+ * Requerimientos Controller, donde se visualizaran y realizaran cambios
+ * en la Base de Datos de los requerimientos de cada proyecto
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class RequerimientosController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de los requerimientos para el proyecto
+     * seleccionado.
      *
-     * @return \Illuminate\Http\Response
+     * @param  $idP Identificador del proyecto
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index($idP)
     {
         can('listar-requerimientos');
-        $permisos = ['crear'=> can2('crear-requerimientos'), 'editar'=>can2('editar-requerimientos'), 'eliminar'=>can2('eliminar-requerimientos'), 'listarA'=>can2('listar-actividades')];
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $permisos = [
+            'crear'=> can2('crear-requerimientos'),
+            'editar'=>can2('editar-requerimientos'),
+            'eliminar'=>can2('eliminar-requerimientos'),
+            'listarA'=>can2('listar-actividades')
+        ];
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $requerimientos = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Requerimientos as r', 'p.Id', '=', 'r.REQ_Proyecto_Id')
-            ->where('r.REQ_Proyecto_Id', '=', $idP)
-            ->orderBy('r.Id')
-            ->get();
+        
+        $requerimientos = Requerimientos::obtenerRequerimientos($idP);
         $proyecto = Proyectos::findOrFail($idP);
-        return view('requerimientos.listar', compact('requerimientos', 'proyecto', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        
+        return view(
+            'requerimientos.listar',
+            compact(
+                'requerimientos',
+                'proyecto',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'permisos'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear requerimientos
      *
-     * @return \Illuminate\Http\Response
+     * @param  $idP Identificador del proyecto
+     * @return \Illuminate\View\View Vista para crear requerimientos
      */
     public function crear($idP)
     {
         can('crear-requerimientos');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
-        return view('requerimientos.crear', compact('proyecto', 'datos', 'notificaciones', 'cantidad'));
+        
+        return view(
+            'requerimientos.crear',
+            compact(
+                'proyecto',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda los datos del requerimiento en la base de datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionRequerimiento  $request
+     * @return redirect()->route()->with()
      */
     public function guardar(ValidacionRequerimiento $request)
     {
-        $datosU = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $request->REQ_Proyecto_Id)
-            ->first();
-        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $request['REQ_Proyecto_Id'])->get();
+        $datosU = Usuarios::obtenerClienteProyecto($request->REQ_Proyecto_Id);
+        $requerimientos = Requerimientos::obtenerRequerimientos($request['REQ_Proyecto_Id']);
+        
         foreach ($requerimientos as $requerimiento) {
-            if ($requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']) {
-                return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
+            if (
+                $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
+            ) {
+                return redirect()
+                    ->back()
+                    ->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')
+                    ->withInput();
             }
         }
+        
         Requerimientos::create($request->all());
+        
         Notificaciones::crearNotificacion(
             'Se han agregado actividades al proyecto '.$datosU->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
@@ -78,65 +121,77 @@ class RequerimientosController extends Controller
             $request->REQ_Proyecto_Id,
             'library_add'
         );
-        return redirect()->route('crear_requerimiento', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento agregado con exito');
+
+        return redirect()
+            ->route(
+                'crear_requerimiento', [$request['REQ_Proyecto_Id']]
+            )->with('mensaje', 'Requerimiento agregado con exito');
     }
 
     /**
-     * Display the specified resource.
+     * Muestra el formulario para editar el requerimiento
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function mostrar($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $idP  Identificador del proyecto
+     * @param  $idR  Identificador del requerimiento
+     * @return \Illuminate\View\View Vista para editar requerimientos
      */
     public function editar($idP, $idR)
     {
         can('editar-requerimientos');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
         $requerimiento = Requerimientos::findOrFail($idR);
-        return view('requerimientos.editar', compact('proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad'));
+        
+        return view(
+            'requerimientos.editar',
+            compact(
+                'proyecto',
+                'requerimiento',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos del requerimiento
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionRequerimiento  $request
+     * @param  $idR Identificador del requerimiento
+     * @return redirect()->route()->with()
      */
     public function actualizar(ValidacionRequerimiento $request, $idR)
     {
-        $datosU = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $request->REQ_Proyecto_Id)
-            ->first();
-        $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $request['REQ_Proyecto_Id'])
-            ->where('id', '<>', $idR)->get();
+        $datosU = Usuarios::obtenerClienteProyecto($request->REQ_Proyecto_Id);
+        $requerimientos = Requerimientos::obtenerRequerimientosNoActual($request, $idR);
+        
         foreach ($requerimientos as $requerimiento) {
-            if ($requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']) {
-                return redirect()->back()->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')->withInput();
+            if (
+                $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
+            ) {
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'El requerimiento ya se encuentra registrado para este proyecto.'
+                    )->withInput();
             }
         }
-        return redirect()->route('requerimientos', [$request['REQ_Proyecto_Id']])->with('mensaje', 'Requerimiento actualizado con exito');
+        return redirect()
+            ->route(
+                'requerimientos', [$request['REQ_Proyecto_Id']]
+            )->with('mensaje', 'Requerimiento actualizado con exito');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el requerimiento de la base de datos
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $idP Identificador del proyecto
+     * @param  $idR Identificador del requerimiento
+     * @return response()->json()
      */
     public function eliminar(Request $request, $idP, $idR)
     {
@@ -145,11 +200,9 @@ class RequerimientosController extends Controller
         } else {
             if ($request->ajax()) {
                 try {
-                    $datosU = DB::table('TBL_Proyectos as p')
-                        ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-                        ->where('p.id', '=', $idP)
-                        ->first();
+                    $datosU = Usuarios::obtenerClienteProyecto($idP);
                     Requerimientos::destroy($idR);
+                    
                     Notificaciones::crearNotificacion(
                         'Se ha eliminado una actividad de su proyecto.',
                         session()->get('Usuario_Id'),
@@ -159,6 +212,7 @@ class RequerimientosController extends Controller
                         null,
                         'delete_forever'
                     );
+                    
                     return response()->json(['mensaje' => 'ok']);
                 } catch (QueryException $e) {
                     return response()->json(['mensaje' => 'ng']);
@@ -167,29 +221,27 @@ class RequerimientosController extends Controller
         }
     }
 
+    /**
+     * Obtiene el porcentaje de avance del requerimiento
+     *
+     * @param  $id  Identificador del requerimiento
+     * @return response()->json()
+     */
     public function obtenerPorcentaje($id)
     {
-        $actividadesTotales = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->where('r.id', '=', $id)
-            ->get();
-        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('e.EST_Nombre_Estado', '<>', 'En Proceso')
-            ->where('e.EST_Nombre_Estado', '<>', 'Atrasado')
-            ->where('e.EST_Nombre_Estado', '<>', 'Rechazado')
-            ->where('r.id', '=', $id)
-            ->get();
+        $actividadesTotales = Actividades::obtenerActividadesTotalesRequerimiento($id);
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasRequerimiento($id);
         
         if((double)count($actividadesTotales) == 0){
             $porcentaje = 0;
         }else {
-            $porcentaje = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales)*100;
+            $division = (double)count($actividadesFinalizadas)/(double)count($actividadesTotales);
+            $porcentaje = $division * 100;
         }
+        
         $dato = new stdClass();
         $dato->porcentaje = (int)$porcentaje;
+        
         return json_encode($dato);
     }
 }
