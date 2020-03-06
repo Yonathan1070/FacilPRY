@@ -137,10 +137,15 @@ class HorasActividad extends Model
             'HRS_ACT_Cantidad_Horas_Asignadas' => $horasAsignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $horasReales
         ]);
-        /*HorasActividad::findOrFail($idH)->update([
+    }
+
+    //Función para actualizar las horas de la actividad
+    public static function actualizarHoraRealActividad($request, $idH)
+    {
+        HorasActividad::findOrFail($idH)->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
-        ]);*/
+        ]);
     }
 
     //Funcion para ajustar las horas asignadas de la actividad

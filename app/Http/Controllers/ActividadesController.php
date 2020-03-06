@@ -679,11 +679,12 @@ class ActividadesController extends Controller
             ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 &&
             ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18
         ) {
-            HorasActividad::actualizarHoraActividad($request, $idH);
+            HorasActividad::actualizarHoraRealActividad($request, $idH);
+            
             return response()->json(['msg' => 'alerta']);
         } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18) {
             return response()->json(['msg' => 'error']);
-        } else if(
+        } else if (
             $horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 &&
             $request->HRS_ACT_Cantidad_Horas_Asignadas == 0
         ){

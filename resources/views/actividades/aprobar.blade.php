@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Actividades
+Aprobar Horas de Trabajo
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -12,7 +12,7 @@ Crud Actividades
                 <div class="header">
                     @foreach ($horasAprobar as $actividad)
                         <h2>
-                            APROBAR HORAS ASIGNADAS PARA LA ACTIVIDAD {{$actividad->ACT_Nombre_Actividad}}.
+                            APROBAR HORAS ASIGNADAS PARA LA TAREA {{$actividad->ACT_Nombre_Actividad}}.
                         </h2>
                         @break
                     @endforeach
