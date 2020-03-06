@@ -11,7 +11,7 @@
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <h2>Indicador de Eficacia General</h2>
+                    <h2>Indicador de Eficacia</h2>
                 </div>
                 <div class="body">
                     <canvas id="chartEficaciaBar" width="400" height="400"></canvas>
@@ -23,7 +23,7 @@
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <h2>Indicador de Eficiencia General</h2>
+                    <h2>Indicador de Eficiencia</h2>
                 </div>
                 <div class="body">
                     <canvas id="chartEficienciaBar" width="400" height="400"></canvas>
@@ -35,7 +35,7 @@
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <h2>Indicador de Efectividad General</h2>
+                    <h2>Indicador de Efectividad</h2>
                 </div>
                 <div class="body">
                     <canvas id="chartEfectividadBar" width="400" height="400"></canvas>

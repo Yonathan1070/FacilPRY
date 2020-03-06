@@ -5,24 +5,24 @@ namespace App\Http\Controllers\PerfilOperacion;
 use App\Charts\Efectividad;
 use App\Charts\Eficacia;
 use App\Charts\Eficiencia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InicioController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra las metricas de eficiencia, eficacia y efectividad para
+     * el usuario autenticado
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $metricas = $this->metricasGenerales();
@@ -31,7 +31,17 @@ class InicioController extends Controller
         $chartEficiencia=$metricas['eficiencia'];
         $chartEfectividad=$metricas['efectividad'];
 
-        return view('perfiloperacion.inicio', compact('datos', 'notificaciones', 'cantidad', 'chartEficacia', 'chartEficiencia', 'chartEfectividad'));
+        return view(
+            'perfiloperacion.inicio',
+            compact(
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'chartEficacia',
+                'chartEficiencia',
+                'chartEfectividad'
+            )
+        );
     }
 
     public function metricasGenerales(){
@@ -39,17 +49,14 @@ class InicioController extends Controller
         $eficiencia = [];
         $efectividad = [];
 
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->select('u.*', 'p.*')->get();
+        $proyectos = Proyectos::obtenerProyectosAsociados();
+        
         foreach ($proyectos as $key => $proyecto) {
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
             $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto];
         }
+
         $pryEficaciaLlave = [];
         $pryEficienciaLlave = [];
         $pryEfectividadLlave = [];
@@ -63,7 +70,7 @@ class InicioController extends Controller
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
         }
-        //dd(sprintf('#%06X', mt_rand(0, 0xFFFFFF)));
+        
         $chartEficacia = new Eficacia;
         $apiEficacia = route('eficacia_general_perfil_operacion');
         $chartEficacia->labels($pryEficaciaLlave)->load($apiEficacia);
@@ -80,88 +87,37 @@ class InicioController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Cambia el estado de la notificación y retorna la ruta a la que debe redireccionar
      *
-     * @return \Illuminate\Http\Response
+     * @param: $id Identificador de la notificación
+     * @return json_encode Datos de la ruta
+     * 
      */
     public function cambiarEstadoNotificacion($id)
     {
-        $notificacion = Notificaciones::findOrFail($id);
-        $notificacion->update([
-            'NTF_Estado' => 1
-        ]);
+        $notificacion = Notificaciones::cambiarEstadoNotificacion($id);
         $notif = new stdClass();
-        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null)
-            $notif->ruta = route($notificacion->NTF_Route, [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]);
-        else if($notificacion->NTF_Route != null)
+        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null) {
+            $notif->ruta = route(
+                $notificacion->NTF_Route,
+                [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]
+            );
+        } else if($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
+        }
         return json_encode($notif);
     }
 
+    /**
+     * Cambia el estado de todas las notificaciónest retorna mesaje de éxito
+     *
+     * @param: $id Identificador del usuario autenticado
+     * @return response()->json() Mensaje de exito
+     * 
+     */
     public function cambiarEstadoTodasNotificaciones($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', $id)->get();
-        foreach ($notificaciones as $notificacion) {
-            $notificacion->update([
-                'NTF_Estado' => 1
-            ]);
-        }
+        Notificaciones::cambiarEstadoTodas($id);
         return response()->json(['mensaje' => 'ok']);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

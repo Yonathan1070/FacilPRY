@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\PerfilOperacion;
 
-use App\Charts\Efectividad;
-use App\Charts\Eficacia;
-use App\Charts\Eficiencia;
 use App\Http\Controllers\Controller;
-use App\Models\Tablas\Proyectos;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
