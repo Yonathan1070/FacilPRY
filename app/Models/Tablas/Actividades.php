@@ -71,6 +71,18 @@ class Actividades extends Model
         return $horasActividades;
     }
 
+    //Función para obtener las actividades por proyecto
+    public static function obtenerActividadesProyecto($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->where('REQ_Proyecto_Id', '=', $id)
+            ->get();
+        
+        return $actividades;
+    }
+
     //Función que obtiene las actividades del usuario
     public static function obtenerActividades($idR, $cliente)
     {
@@ -91,6 +103,20 @@ class Actividades extends Model
             )
             ->orderBy('a.Id', 'ASC')
             ->get();
+        return $actividades;
+    }
+
+    //Funcion que obtiene las actividades excepto la que se esta editando
+    public static function obtenerActividadesNoActual($idP, $idA)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->where('REQ_Proyecto_Id', '=', $idP)
+            ->where('a.id', '<>', $idA)
+            ->select('a.id as Actividad_Id', 'a.*', 'r.*', 'p.*')
+            ->get();
+        
         return $actividades;
     }
 
@@ -239,6 +265,43 @@ class Actividades extends Model
         return $actividades;
     }
 
+    //Función para obtener las actividades pendientes
+    public static function obtenerActividadPendiente($id)
+    {
+        $actividadPendiente = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
+            ->where('af.Id', '=', $id)
+            ->orderByDesc('af.created_at')
+            ->first();
+        
+        return $actividadPendiente;
+    }
+
+    //Función para obtener los detalles de la actividad
+    public static function obtenerDetalleActividad($id)
+    {
+        $actividad = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Empresas as em', 'em.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('a.id', '=', $id)
+            ->first();
+        
+        return $actividad;
+    }
+
     //Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([
@@ -252,6 +315,39 @@ class Actividades extends Model
             'ACT_Requerimiento_Id' => $idR,
             'ACT_Trabajador_Id' => $idUsuario,
             'ACT_Encargado_Id' => session()->get('Usuario_Id')
+        ]);
+    }
+
+    //Función para actualizar los datos de la Actividad
+    public static function actualizarActividad($request, $idA, $idUsuario)
+    {
+        $actividad = Actividades::findOrFail($idA)->update([
+            'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
+            'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
+            'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
+            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'].
+                ' '.
+                $request['ACT_Hora_Entrega'],
+            'ACT_Costo_Estimado_Actividad' => 0,
+            'ACT_Trabajador_Id' => $idUsuario,
+        ]);
+
+        return $actividad;
+    }
+
+    //Funcion para actualizar el requerimiento de la actividad
+    public static function actualizarRequerimientoActividad($idA, $request)
+    {
+        Actividades::findOrFail($idA)
+            ->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
+    }
+
+    //Funcion para actualizar la fechaa de finalización de la actividad
+    public static function actualizarFechaFin($solicitud)
+    {
+        Actividades::findOrFail($solicitud->Id_Actividad)->update([
+            'ACT_Estado_Id' => 1,
+            'ACT_Fecha_Fin_Actividad' => $solicitud->SOL_TMP_Fecha_Solicitada
         ]);
     }
 }

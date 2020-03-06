@@ -105,6 +105,7 @@ class Usuarios extends Authenticatable
             ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
             ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol', 'u.id as Id_Perfil')
             ->where('r.RLS_Rol_Id', '=', '4')
+            ->where('ur.USR_RLS_Estado', '=', '1')
             ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
             ->get();
         
@@ -146,6 +147,19 @@ class Usuarios extends Authenticatable
             ->get();
         
         return $clientes;
+    }
+
+    //Función para obtener el perfil de operación por actividad
+    public static function obtenerPerfilOperacionActividad($id)
+    {
+        $perfil = DB::table('TBL_Usuarios as u')
+            ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where('a.id', '=', $id)
+            ->first();
+        
+        return $perfil;
     }
 
     //Funcion que guarda el nuevo usuario en la Base de Datos

@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Actividades
+    Listar Tareas
 @endsection
 @section('contenido')
 <div class="container-fluid">
@@ -12,7 +12,7 @@ Crud Actividades
         <div class="card">
             <div class="header">
                 <h2>
-                    TAREAS
+                    TAREAS - ACTIVIDAD ({{strtoupper($requerimiento->REQ_Nombre_Requerimiento)}})
                 </h2>
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">

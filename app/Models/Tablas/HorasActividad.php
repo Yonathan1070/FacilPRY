@@ -42,6 +42,21 @@ class HorasActividad extends Model
         return $fechas;
     }
 
+    //Función para obtener las horas para aprobar
+    public static function obtenerHorasAprobar($idA)
+    {
+        $horasAprobar = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->select('ha.id as Id_Horas', 'ha.*', 'r.*', 'u.*', 'a.*')
+            ->where('a.id', '=', $idA)
+            ->where('ha.HRS_ACT_Cantidad_Horas_Reales', '=', null)
+            ->get();
+        
+        return $horasAprobar;
+    }
+
     //Función que obtiene las actividades para el diagrama de Gantt
     public static function obtenerActividadesGantt($id)
     {
@@ -62,11 +77,40 @@ class HorasActividad extends Model
         return $actividades;
     }
 
+    //Funcion para obtener las horas asignadas
+    public static function obtenerHorasAsignadas($actividades, $fecha, $trabajador, $idH)
+    {
+        $horas = $actividades
+            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
+            ->where('a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id)
+            ->where('ha.id', '<>', $idH)
+            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+        
+        return $horas;
+    }
+
     //Función para crear las Horas asignadas para las actividades
-    public static function crearHorasActividad($actividad, $fecha){
+    public static function crearHorasActividad($idA, $fecha){
         HorasActividad::create([
-            'HRS_ACT_Actividad_Id' => $actividad->id,
+            'HRS_ACT_Actividad_Id' => $idA,
             'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
+        ]);
+    }
+
+    //Función para actualizar las horas de la actividad
+    public static function actualizarHoraActividad($request, $idH)
+    {
+        HorasActividad::findOrFail($idH)->update([
+            'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
+            'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
+        ]);
+    }
+
+    //Funcion para ajustar las horas reales de la actividad
+    public static function actualizarHorasReales($idH, $request)
+    {
+        HorasActividad::findOrFail($idH)->update([
+            'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
     }
 }

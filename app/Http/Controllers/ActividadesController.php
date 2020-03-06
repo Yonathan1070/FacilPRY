@@ -11,131 +11,186 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionActividad;
 use App\Models\Tablas\ActividadesFinalizadas;
+use App\Models\Tablas\DocumentosEvidencias;
 use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Respuesta;
 use App\Models\Tablas\SolicitudTiempo;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
 
+/**
+ * Actividades Controller, donde se visualizaran y realizaran cambios
+ * en la Base de Datos de las Actividades
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class ActividadesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de las Actividades por requerimiento
      *
-     * @return \Illuminate\Http\Response
+     * @param  $idR Identificador del requerimiento
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index($idR)
     {
         can('listar-actividades');
-        $permisos = ['crear' => can2('crear-actividades'), 'crearC' => can2('crear-actividades-cliente'), 'listarP' => can2('listar-proyectos')];
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $permisos = [
+            'crear' => can2('crear-actividades'),
+            'crearC' => can2('crear-actividades-cliente'),
+            'listarP' => can2('listar-proyectos')
+        ];
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $requerimiento = Requerimientos::findOrFail($idR);
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $requerimiento['REQ_Proyecto_Id'])->get();
+        
         if (count($requerimientos) <= 0) {
-            return redirect()->back()->withErrors('No se pueden asignar actividades si no hay requerimientos previamente registrados.');
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No se pueden asignar actividades si no hay requerimientos previamente'.
+                        ' registrados.'
+                );
         }
+        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cliente = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '=', $idR)
-            ->where('a.ACT_Trabajador_Id', '<>', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'r.id as ID_Requerimiento', 'a.*', 'u.*', 'e.*', 'r.*')
-            ->orderBy('a.Id', 'ASC')
-            ->get();
-        $actividadesCliente = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('r.id', '=', $idR)
-            ->where('a.ACT_Trabajador_Id', '=', $cliente->PRY_Cliente_Id)
-            ->select('a.id as ID_Actividad', 'r.id as ID_Requerimiento', 'a.*', 'u.*', 'e.*', 'r.*')
-            ->orderBy('a.Id', 'ASC')
-            ->get();
+        $actividades = Actividades::obtenerActividades($idR, $cliente);
+        $actividadesCliente = Actividades::obtenerActividadesCliente($idR, $cliente);
         $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
-        return view('actividades.listar', compact('actividades', 'actividadesCliente', 'proyecto', 'requerimiento', 'datos', 'notificaciones', 'cantidad', 'permisos', 'requerimientos'));
+        
+        return view(
+            'actividades.listar',
+            compact(
+                'actividades',
+                'actividadesCliente',
+                'proyecto',
+                'requerimiento',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'permisos',
+                'requerimientos'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear las actividades a un Perfil de Operación
      *
-     * @return \Illuminate\Http\Response
+     * @param  $idR Identificador del requerimiento
+     * @return \Illuminate\View\View Vista para crear actividad al Perfil de Operación
      */
     public function crearTrabajador($idR)
     {
         can('crear-actividades');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $requerimiento = Requerimientos::findOrFail($idR);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        $perfilesOperacion = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*')
-            ->where('r.RLS_Rol_Id', '=', '4')
-            ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellidos_Usuario')
-            ->get();
-        return view('actividades.crear', compact('proyecto', 'requerimiento', 'perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
-    }
-
-    public function crearCliente($idR)
-    {
-        can('crear-actividades-cliente');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $requerimiento = Requerimientos::findOrFail($idR);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        $perfilesOperacion = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*')
-            ->where('r.RLS_Rol_Id', '=', '4')
-            ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellidos_Usuario')
-            ->get();
-        return view('actividades.crear', compact('proyecto', 'requerimiento', 'perfilesOperacion', 'datos', 'notificaciones', 'cantidad'));
+        
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+        
+        return view(
+            'actividades.crear',
+            compact(
+                'proyecto',
+                'requerimiento',
+                'perfilesOperacion',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Muestra el formulario para crear las actividades al cliente
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  $idR Identificador del requerimiento
+     * @return \Illuminate\View\View Vista para crear actividad al Cliente
+     */
+    public function crearCliente($idR)
+    {
+        can('crear-actividades-cliente');
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $requerimiento = Requerimientos::findOrFail($idR);
+        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+
+        return view(
+            'actividades.crear',
+            compact(
+                'proyecto',
+                'requerimiento',
+                'perfilesOperacion',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
+    }
+
+    /**
+     * Guarda las actividades en la Base de datos
+     *
+     * @param  App\Http\Requests\ValidacionActividad  $request
+     * @param  $idR  Identificador del requerimiento
+     * @return redirect()->route()
      */
     public function guardar(ValidacionActividad $request, $idR)
     {
         $hoy = Carbon::now();
         $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
-        if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
-            return redirect()->route($request['ruta'], [$idR])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
-        }else if (($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
-                    ($diferencia < 60 || $diferencia > 600)) {
-            return redirect()->route($request['ruta'], [$idR])->withErrors('La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas')->withInput();
+        
+        if (
+            $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
+        ) {
+            return redirect()
+                ->route($request['ruta'], [$idR])
+                ->withErrors(
+                    'La fecha de inicio no puede ser superior a la fecha de finalización'
+                )->withInput();
+        } else if (
+            ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+            ($diferencia < 60 || $diferencia > 600)
+        ) {
+            return redirect()
+                ->route($request['ruta'], [$idR])
+                ->withErrors(
+                    'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
+                )->withInput();
         }
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->where('REQ_Proyecto_Id', '=', $request->ACT_Proyecto_Id)
-            ->get();
+        
+        $actividades = Actividades::obtenerActividadesProyecto(
+            $request->ACT_Proyecto_Id
+        );
 
         foreach ($actividades as $actividad) {
             if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad) {
-                return redirect()->route($request['ruta'], [$idR])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
+                return redirect()
+                    ->route($request['ruta'], [$idR])
+                    ->withErrors('Ya hay registrada una actividad con el mismo nombre.')
+                    ->withInput();
             }
         }
+
         $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
+        
         if ($request->ACT_Usuario_Id == null) {
             $idUsuario = $proyecto->PRY_Cliente_Id;
             $ruta = 'crear_actividad_cliente';
@@ -145,16 +200,9 @@ class ActividadesController extends Controller
             $ruta = 'crear_actividad_trabajador';
             $rutaNotificacion = 'actividades_perfil_operacion';
         }
-        Actividades::create([
-            'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
-            'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
-            'ACT_Estado_Id' => 1,
-            'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
-            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'],
-            'ACT_Costo_Estimado_Actividad' => 0,
-            'ACT_Requerimiento_Id' => $idR,
-            'ACT_Trabajador_Id' => $idUsuario,
-        ]);
+        
+        Actividades::crearActividad($request, $idR, $idUsuario);
+
         $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
 
         if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
@@ -163,28 +211,23 @@ class ActividadesController extends Controller
                 if ($documento->isValid()) {
                     $archivo = time() . '.' . $documento->getClientOriginalName();
                     $documento->move(public_path('documentos_soporte'), $archivo);
-                    DocumentosSoporte::create([
-                        'DOC_Actividad_Id' => $actividad->id,
-                        'ACT_Documento_Soporte_Actividad' => $archivo
-                    ]);
+                    DocumentosSoporte::crearDocumentoSoporte($actividad->id, $archivo);
                 } else {
                     $actividad->destroy();
                 }
             }
         }
 
-        $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']);
+        $rangos = $this->obtenerFechasRango(
+            $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
+        );
+
         foreach ($rangos as $fecha) {
-            HorasActividad::create([
-                'HRS_ACT_Actividad_Id' => $actividad->id,
-                'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
-            ]);
+            HorasActividad::crearHorasActividad($actividad->id, $fecha);
         }
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 1,
-            'HST_EST_Actividad' => $actividad->id
-        ]);
+
+        HistorialEstados::crearHistorialEstado($actividad->id, 1);
+        
         Notificaciones::crearNotificacion(
             'Nueva tarea asignada',
             session()->get('Usuario_Id'),
@@ -194,24 +237,36 @@ class ActividadesController extends Controller
             null,
             'add_to_photos'
         );
+
         $para = Usuarios::findOrFail($idUsuario);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         Mail::send('general.correo.informacion', [
             'titulo' => 'Nueva Tarea Asignada',
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' le ha asignado la tarea '.$request['ACT_Nombre_Actividad']
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' le ha asignado la tarea '.
+                $request['ACT_Nombre_Actividad']
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
+            $message->to(
+                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+            )
                 ->subject('Tarea Asignada');
         });
-        return redirect()->route($ruta, [$idR])->with('mensaje', 'Actividad agregada con exito');
+
+        return redirect()
+            ->route($ruta, [$idR])
+            ->with('mensaje', 'Actividad agregada con exito');
     }
 
+    //Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
     private function obtenerFechasRango($fechaInicio, $fechaFin)
     {
-        // cut hours, because not getting last day when hours of time to is less than hours of time_from 
-        // see while loop 
         $inicio = Carbon::createFromFormat('Y-m-d', substr($fechaInicio, 0, 10));
         $fin = Carbon::createFromFormat('Y-m-d', substr($fechaFin, 0, 10));
         $fechas = [];
@@ -219,116 +274,151 @@ class ActividadesController extends Controller
             $fechas[] = $inicio->copy()->format('Y-m-d');
             $inicio->addDay();
         }
+
         return $fechas;
     }
 
+    /**
+     * Guarda las actividades en la Base de datos
+     *
+     * @param  $id  Identificador de la actividad
+     * @return redirect()->route()
+     */
     public function detalleActividad($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
-            ->where('af.Id', '=', $id)
-            ->orderByDesc('af.created_at')
-            ->first();
-        $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
-            ->get();
-        $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
-            ->join('TBL_Actividades_Finalizadas as a', 'a.id', '=', 'd.DOC_Actividad_Finalizada_Id')
-            ->where('a.id', '=', $id)
-            ->get();
-        $perfil = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('a.id', '=', $actividadesPendientes->Id_Act)
-            ->first();
+        
+        $actividadesPendientes = Actividades::obtenerActividadPendiente($id);
+
+        $documentosSoporte = DocumentosSoporte::obtenerDocumentosSoporte($id);
+        $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia($id);
+
+        $perfil = Usuarios::obtenerPerfilOperacionActividad($actividadesPendientes->Id_Act);
         $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
-        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
-            ->select('r.*', 'u.*', 'af.*')
-            ->where('af.ACT_FIN_Actividad_Id', '=', $actividadFinalizada->ACT_FIN_Actividad_Id)
-            ->where('r.RTA_Titulo', '<>', null)->get();
-        return view('actividades.detalle', compact('actividadesPendientes', 'perfil', 'datos', 'documentosSoporte', 'documentosEvidencia', 'respuestasAnteriores', 'notificaciones', 'cantidad'));
+        $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($actividadFinalizada->ACT_FIN_Actividad_Id);
+        
+        return view(
+            'actividades.detalle',
+            compact(
+                'actividadesPendientes',
+                'perfil',
+                'datos',
+                'documentosSoporte',
+                'documentosEvidencia',
+                'respuestasAnteriores',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar la actividad del perfil de operación
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $idA  Identificador de la actividad
+     * @return \Illuminate\View\View Vista para editar actividad al Perfil de operación
      */
     public function editarTrabajador($idA)
     {
         can('editar-actividades');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividad = Actividades::findOrFail($idA);
         $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        $perfilesOperacion = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*')
-            ->where('r.RLS_Rol_Id', '=', '4')
-            ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellidos_Usuario')
-            ->get();
-        return view('actividades.editar', compact('actividad', 'datos', 'notificaciones', 'cantidad', 'perfilesOperacion', 'proyecto'));
-    }
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-    public function editarCliente($idA)
-    {
-        can('editar-actividades');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividad = Actividades::findOrFail($idA);
-        $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        return view('actividades.editar', compact('actividad', 'datos', 'notificaciones', 'cantidad', 'proyecto'));
+        return view(
+            'actividades.editar',
+            compact(
+                'actividad',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'perfilesOperacion',
+                'proyecto'
+            )
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Muestra el formulario para editar la actividad del cliente
+     *
+     * @param  $idA  Identificador de la actividad
+     * @return \Illuminate\View\View Vista para editar actividad al Cliente
+     */
+    public function editarCliente($idA)
+    {
+        can('editar-actividades');
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $actividad = Actividades::findOrFail($idA);
+        $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
+        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
+        
+        return view(
+            'actividades.editar',
+            compact(
+                'actividad',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'proyecto'
+            )
+        );
+    }
+
+    /**
+     * Actualza los datos de la actividad
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $idA  Identificador de la actividad
+     * @return redirect()->route()
      */
     public function actualizar(Request $request, $idA)
     {
         $hoy = Carbon::now();
         $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
+        
         if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
-            return redirect()->route($request['ruta'], [$idA])->withErrors('La fecha de inicio no puede ser superior a la fecha de finalización')->withInput();
-        }else if (($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
-                    ($diferencia < 60 || $diferencia > 600)) {
-            return redirect()->route($request['ruta'], [$idA])->withErrors('La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas')->withInput();
+            return redirect()
+                ->route($request['ruta'], [$idA])
+                ->withErrors(
+                    'La fecha de inicio no puede ser superior a la fecha de finalización'
+                )->withInput();
+        } else if (
+            ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+            ($diferencia < 60 || $diferencia > 600)
+        ) {
+            return redirect()
+                ->route($request['ruta'], [$idA])
+                ->withErrors(
+                    'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
+                )->withInput();
         }
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->where('REQ_Proyecto_Id', '=', $request->ACT_Proyecto_Id)
-            ->where('a.id', '<>', $idA)
-            ->select('a.id as Actividad_Id', 'a.*', 'r.*', 'p.*')
-            ->get();
+
+        $actividades = Actividades::obtenerActividadesNoActual(
+            $request->ACT_Proyecto_Id, $idA
+        );
+
         foreach ($actividades as $actividad) {
-            if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad && $actividad->Actividad_Id == $idA) {
-                return redirect()->route($request['ruta'], [$idA])->withErrors('Ya hay registrada una actividad con el mismo nombre.')->withInput();
+            if (
+                $actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad && 
+                    $actividad->Actividad_Id == $idA
+            ) {
+                return redirect()
+                ->route($request['ruta'], [$idA])
+                ->withErrors('Ya hay registrada una actividad con el mismo nombre.')
+                ->withInput();
             }
         }
+        
         $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
+        
         if ($request->ACT_Usuario_Id == null) {
             $idUsuario = $proyecto->PRY_Cliente_Id;
             $rutaNotificacion = 'actividades_cliente';
@@ -336,14 +426,8 @@ class ActividadesController extends Controller
             $idUsuario = $request['ACT_Usuario_Id'];
             $rutaNotificacion = 'actividades_perfil_operacion';
         }
-        $actividad = Actividades::findOrFail($idA)->update([
-            'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
-            'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
-            'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
-            'ACT_Fecha_Fin_Actividad' => $request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'],
-            'ACT_Costo_Estimado_Actividad' => 0,
-            'ACT_Trabajador_Id' => $idUsuario,
-        ]);
+        
+        $actividad = Actividades::actualizarActividad($request, $idA, $idUsuario);
 
         if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
             foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
@@ -352,15 +436,10 @@ class ActividadesController extends Controller
                     $archivo = time() . '.' . $documento->getClientOriginalName();
                     $documento->move(public_path('documentos_soporte'), $archivo);
                     $documentoBD = DocumentosSoporte::where('DOC_Actividad_Id', '=', $idA)->first();
-                    if($documentoBD == null){
-                        DocumentosSoporte::create([
-                            'DOC_Actividad_Id' => $idA,
-                            'ACT_Documento_Soporte_Actividad' => $archivo
-                        ]);
+                    if ($documentoBD == null) {
+                        DocumentosSoporte::crearDocumentoSoporte($idA, $archivo);
                     }else{
-                        $documentoBD->update([
-                            'ACT_Documento_Soporte_Actividad' => $archivo
-                        ]);
+                        DocumentosSoporte::actualizarDocumentoSoporte($documentoBD, $archivo);
                     }
                 } else {
                     $actividad->destroy();
@@ -369,18 +448,17 @@ class ActividadesController extends Controller
         }
 
         HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->delete();
-        $rangos = $this->obtenerFechasRango($request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']);
+        
+        $rangos = $this->obtenerFechasRango(
+            $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
+        );
+
         foreach ($rangos as $fecha) {
-            HorasActividad::create([
-                'HRS_ACT_Actividad_Id' => $idA,
-                'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
-            ]);
+            HorasActividad::crearHorasActividad($idA, $fecha);
         }
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 1,
-            'HST_EST_Actividad' => $idA
-        ]);
+
+        HistorialEstados::crearHistorialEstado($idA, 1);
+        
         Notificaciones::crearNotificacion(
             'Actividad Editada',
             session()->get('Usuario_Id'),
@@ -390,129 +468,161 @@ class ActividadesController extends Controller
             null,
             'add_to_photos'
         );
+        
         $para = Usuarios::findOrFail($idUsuario);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
             'titulo' => 'Tarea Editada',
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' le ha asignado una Tarea'
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' le ha asignado una Tarea'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Tarea Asignada');
+            $message->to(
+                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Tarea Asignada');
         });
+        
         $actividad = Actividades::findOrFail($idA);
-        return redirect()->route('actividades', [$actividad->ACT_Requerimiento_Id])->with('mensaje', 'Actividad editada con exito');
+        
+        return redirect()
+            ->route('actividades', [$actividad->ACT_Requerimiento_Id])
+            ->with('mensaje', 'Actividad editada con exito');
     }
 
+    /**
+     * Actualza los datos de la actividad
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $idA  Identificador de la actividad
+     * @return response()->json()
+     */
     public function cambiarRequerimiento(Request $request, $idA){
-        if($request->ajax()){
-            try{
-                Actividades::findOrFail($idA)->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
+        if ($request->ajax()) {
+            try {
+                Actividades::actualizarRequerimientoActividad($idA, $request);
                 return response()->json(['mensaje' => 'ok']);
-            }catch(QueryException $qe){
+            } catch(QueryException $qe) {
                 return response()->json(['mensaje' => 'ng']);
             }
-        }else{
+        } else {
             abort(404);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la actividad de la base de datos
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $idA  Identificador de la actividad
      * @return \Illuminate\Http\Response
      */
     public function eliminar(Request $request, $idA)
     {
-        if(!can('eliminar-actividades')){
+        if (!can('eliminar-actividades')) {
             return response()->json(['mensaje' => 'np']);
-        }else{
-            if($request->ajax()){
-                try{
+        } else {
+            if ($request->ajax()) {
+                try {
                     DocumentosSoporte::where('DOC_Actividad_Id', '=', $idA)->delete();
                     HistorialEstados::where('HST_EST_Actividad', '=', $idA)->delete();
                     HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->delete();
                     Actividades::destroy($idA);
+                    
                     return response()->json(['mensaje' => 'ok']);
-                }catch(QueryException $e){
+                } catch(QueryException $e) {
                     return response()->json(['mensaje' => 'ng']);
                 }
             }
         }
     }
 
+    /**
+     * Muestra la vista detallada para aprobar las horas de trabajo asignadas
+     *
+     * @param  $idH  Identificador de la actividad
+     * @return \Illuminate\View\View Vista para aprobar las Horas de Trabajo
+     */
     public function aprobarHoras($idH)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
-        $horasAprobar = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'r.*', 'u.*', 'a.*')
-            ->where('a.id', '=', $idH)
-            ->where('ha.HRS_ACT_Cantidad_Horas_Reales', '=', null)
-            ->get();
+        $horasAprobar = HorasActividad::obtenerHorasAprobar($idH);
+        
         if (count($horasAprobar) == 0) {
-            return redirect()->route('inicio_director')->with('mensaje', 'Las horas de trabajo ya han sido aprobadas.');
+            return redirect()
+                ->route('inicio_director')
+                ->with('mensaje', 'Las horas de trabajo ya han sido aprobadas.');
         }
-        return view('actividades.aprobar', compact('horasAprobar', 'notificaciones', 'cantidad', 'datos'));
-        //dd($horasAprobar);
+        return view(
+            'actividades.aprobar',
+            compact(
+                'horasAprobar',
+                'notificaciones',
+                'cantidad',
+                'datos'
+            )
+        );
     }
 
+    /**
+     * Muestra la vista con los detalles de la solicitud de tiempo
+     *
+     * @param  $idA  Identificador de la actividad
+     * @return \Illuminate\View\View Vista para aprobar la solicitud de tiempo
+     */
     public function solicitudTiempo($idA){
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'st.SOL_TMP_Actividad_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('a.id', '=', $idA)
-            ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
-            ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
-            ->first();
-        if($solicitud)
-            return view('actividades.solicitud', compact('solicitud', 'notificaciones', 'cantidad', 'datos'));
-        
+        $solicitud = SolicitudTiempo::obtenerSolicitudTiempoActividad($idA);
+        if ($solicitud) {
+            return view(
+                'actividades.solicitud',
+                compact(
+                    'solicitud',
+                    'notificaciones',
+                    'cantidad',
+                    'datos'
+                ));
+        }
         return redirect()->back()->withErrors('La solicitud ya ha sido atendida.');
     }
 
+    /**
+     * Aprueba la solicitud de tiempo para la actividad
+     *
+     * @param  $idS  Identificador de la solicitud
+     * @return redirect()->route()->with()
+     */
     public function aprobarSolicitud($idS){
-        $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'st.SOL_TMP_Actividad_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('st.id', '=', $idS)
-            ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
-            ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
-            ->first();
+        $solicitud = SolicitudTiempo::obtenerSolicitudTiempo($idS);
         
-        Actividades::findOrFail($solicitud->Id_Actividad)->update([
-            'ACT_Estado_Id' => 1,
-            'ACT_Fecha_Fin_Actividad' => $solicitud->SOL_TMP_Fecha_Solicitada
-        ]);
-        $rangos = $this->obtenerFechasRango($solicitud->ACT_Fecha_Inicio_Actividad, $solicitud->SOL_TMP_Fecha_Solicitada);
+        Actividades::actualizarFechaFin($solicitud);
+
+        $rangos = $this->obtenerFechasRango(
+            $solicitud->ACT_Fecha_Inicio_Actividad, $solicitud->SOL_TMP_Fecha_Solicitada
+        );
+
         HorasActividad::where('HRS_ACT_Actividad_Id', '=', $solicitud->Id_Actividad)->delete();
+        
         foreach ($rangos as $fecha) {
-            HorasActividad::create([
-                'HRS_ACT_Actividad_Id' => $solicitud->Id_Actividad,
-                'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
-            ]);
+            HorasActividad::crearHorasActividad($solicitud->Id_Actividad, $fecha);
         }
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 1,
-            'HST_EST_Actividad' => $solicitud->Id_Actividad
-        ]);
+        HistorialEstados::crearHistorialEstado($solicitud->Id_Actividad, 1);
 
         SolicitudTiempo::findOrFail($idS)->update(['SOL_TMP_Estado_Solicitud' => 1]);
 
         $para = Usuarios::findOrFail($solicitud->ACT_Trabajador_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         Notificaciones::crearNotificacion(
             'Solicitud aprobada, ya puede reasignar sus horas de trabajo',
             $de->id,
@@ -526,48 +636,79 @@ class ActividadesController extends Controller
         Mail::send('general.correo.informacion', [
             'titulo' => 'Solicitud aprobada',
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' ha aprobado su solicitud de tiempo, asigna tus horas de trabajo'
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' ha aprobado su solicitud de tiempo, asigna tus horas de trabajo'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Solicitud de tiempo aprobada');
+            $message->to(
+                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Solicitud de tiempo aprobada');
         });
-        return redirect()->route('actividades', ['idR' => $solicitud->ACT_Requerimiento_Id])->with('mensaje', 'Solicitud aprobada.');
+        
+        return redirect()
+            ->route('actividades', ['idR' => $solicitud->ACT_Requerimiento_Id])
+            ->with('mensaje', 'Solicitud aprobada.');
     }
 
+    /**
+     * Actualiza las horas de trabajo
+     *
+     * @param  $idH  Identificador de la fecha para actualizar la hora asignada
+     * @return response()->json()
+     */
     public function actualizarHoras(Request $request, $idH)
     {
         $fecha = HorasActividad::findOrFail($idH);
         $actividades = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id');
         $trabajador = $actividades->where('ha.id', '=', $idH)->first();
-        $horas = $actividades
-            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
-            ->where('a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id)
-            ->where('ha.id', '<>', $idH)
-            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+        $horas = HorasActividad::obtenerHorasAsignadas(
+            $actividades,
+            $fecha,
+            $trabajador,
+            $idH
+        );
+        
         $horaModif = HorasActividad::findOrFail($idH);
-        if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 && ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18) {
-            HorasActividad::findOrFail($idH)->update([
-                'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
-                'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
-            ]);
+        
+        if (
+            ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 &&
+            ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18
+        ) {
+            HorasActividad::actualizarHoraActividad($request, $idH);
             return response()->json(['msg' => 'alerta']);
         } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18) {
             return response()->json(['msg' => 'error']);
-        } else if($horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 && $request->HRS_ACT_Cantidad_Horas_Asignadas == 0){
+        } else if(
+            $horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 &&
+            $request->HRS_ACT_Cantidad_Horas_Asignadas == 0
+        ){
             return response()->json(['msg' => 'cero']);
         }
-        HorasActividad::findOrFail($idH)->update([
-            'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
-        ]);
+
+        HorasActividad::actualizarHorasReales($idH, $request);
+        
         return response()->json(['msg' => 'exito']);
     }
 
+    /**
+     * Finalizar la aprobación de las horas de trabajo
+     *
+     * @param  $idA  Identificador de la actividad
+     * @return response()->json()
+     */
     public function finalizarAprobacion($idA)
     {
-        $horasActividades = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->get();
-        $trabajador = Actividades::findOrFail($horasActividades->first()->HRS_ACT_Actividad_Id);
+        $horasActividades = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)
+            ->get();
+        $trabajador = Actividades::findOrFail(
+            $horasActividades->first()->HRS_ACT_Actividad_Id
+        );
+        
         foreach ($horasActividades as $actividad) {
             if ($actividad->HRS_ACT_Cantidad_Horas_Reales == null) {
                 $actividad->update([
@@ -575,6 +716,7 @@ class ActividadesController extends Controller
                 ]);
             }
         }
+        
         Notificaciones::crearNotificacion(
             'Horas de trabajo Aprobadas',
             session()->get('Usuario_Id'),
@@ -584,28 +726,38 @@ class ActividadesController extends Controller
             null,
             'done_all'
         );
+        
         $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
             'titulo' => 'Horas de trabajo Aprobadas',
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a aprobado tus horas de trabajo, ya tienes acceso  a la entrega de la tarea.'
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' a aprobado tus horas de trabajo, ya tienes acceso  a la entrega de la tarea.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Horas de trabajo aprobadas');
+            $message->to(
+                $para['USR_Correo_Usuario'],
+                'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Horas de trabajo aprobadas');
         });
         return response()->json(['msg' => 'exito']);
     }
 
+    /**
+     * Obtiene los detalles de la actividad para visualizarlos en un modal
+     *
+     * @param  $id  Identificador de la actividad
+     * @return response()->json()
+     */
     public function detalleActividadModal($id)
     {
-        $actividad = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Empresas as em', 'em.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('a.id', '=', $id)->first();
+        $actividad = Actividades::obtenerDetalleActividad($id);
+
         return json_encode($actividad);
     }
 }

@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Tareas
+    Editar Tarea {{$actividad->ACT_Nombre_Actividad}}
 @endsection
 @section('styles')
     <!-- Bootstrap Material Datetime Picker Css -->

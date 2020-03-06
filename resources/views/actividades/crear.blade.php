@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Actividades
+Crear Tarea
 @endsection
 @section('styles')
     <!-- Bootstrap Material Datetime Picker Css -->
@@ -17,7 +17,7 @@ Crud Actividades
             @include('includes.form-error')
             <div class="card">
                 <div class="header">
-                    <h2>CREAR TAREA</h2>
+                    <h2>CREAR TAREA - ACTIVIDAD ({{strtoupper($requerimiento->REQ_Nombre_Requerimiento)}})</h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idR'=>$requerimiento->id])}}">
