@@ -1,6 +1,6 @@
 @extends('theme.bsb.administrador.layout')
 @section('titulo')
-Crud Roles
+    Editar Proyecto {{$proyecto->PRY_Nombre_Proyecto}}
 @endsection
 @section('contenido')
 <div class="container-fluid">

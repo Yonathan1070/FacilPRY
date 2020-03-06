@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Proyectos
+    Crear Proyecto
 @endsection
 @section('contenido')
 <div class="container-fluid">

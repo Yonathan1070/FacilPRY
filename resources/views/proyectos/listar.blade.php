@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Lista Proyectos
+    Listar Proyectos
 @endsection
 @section('styles')
     <style>
@@ -81,9 +81,11 @@ Lista Proyectos
                                                                 <i class="material-icons text-info" style="font-size: 17px;">description</i>
                                                             </a>
                                                         @endif
-                                                        <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
-                                                            <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
-                                                        </a>
+                                                        @if ($proyecto->Actividades_Totales != 0)
+                                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
+                                                                <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
+                                                            </a>
+                                                        @endif
                                                         @if ($proyecto->Actividades_Totales != 0 && ($proyecto->Actividades_Finalizadas == $proyecto->Actividades_Totales))
                                                             <a href="{{route('finalizar_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Fianlizar Proyecto">
                                                                 <i class="material-icons text-success" style="font-size: 20px;">navigate_next</i>
