@@ -261,31 +261,54 @@ class ActividadesController extends Controller
         return response()->download(public_path() . '/documentos_soporte/' . $actividad->ACT_Documento_Soporte_Actividad);
     }
 
+    /**
+     * Vista de la entrega de la actividad
+     *
+     * @param  $id  Identificador de la actividad
+     * @return \Illuminate\View\View Vista de la entrega de la actividad
+     */
     public function finalizar($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = $this->obtenerActividades($id);
 
-        return view('perfiloperacion.actividades.finalizar', compact('id', 'datos', 'notificaciones', 'cantidad'));
+        return view(
+            'perfiloperacion.actividades.finalizar',
+            compact(
+                'id',
+                'actividades',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
+    /**
+     * Guarda la actividad finalizada en la base de datos
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return redirect()->route()
+     */
     public function guardarFinalizar(Request $request)
     {
-        if (!$request->hasFile('ACT_Documento_Evidencia_Actividad') && !$request['ACT_FIN_Link']) {
-            return redirect()->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])->withErrors('Debe cargar un documento o agregar un link que evidencie la actividad realizada.')->withInput();
+        if (
+            !$request->hasFile('ACT_Documento_Evidencia_Actividad') &&
+                !$request['ACT_FIN_Link']
+        ) {
+            return redirect()
+                ->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])
+                ->withErrors(
+                    'Debe cargar un documento o agregar un link que evidencie la actividad realizada.'
+                )->withInput();
         }
-        ActividadesFinalizadas::create([
-            'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
-            'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
-            'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
-            'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
-            'ACT_FIN_Link' => $request['ACT_FIN_Link']
-        ]);
+        ActividadesFinalizadas::crearActividadFinalizadaTrabajador($request);
+
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
         if ($request->hasFile('ACT_Documento_Evidencia_Actividad')) {
             foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
@@ -293,40 +316,42 @@ class ActividadesController extends Controller
                 if ($documento->isValid()) {
                     $archivo = time() . '.' . $documento->getClientOriginalName();
                     $documento->move(public_path('documentos_soporte'), $archivo);
-                    DocumentosEvidencias::create([
-                        'DOC_Actividad_Finalizada_Id' => $af->id,
-                        'ACT_Documento_Evidencia_Actividad' => $archivo
-                    ]);
+                    DocumentosEvidencias::crearDocumentosEvicendia($af->id, $archivo);
                 }
             }
         }
-        Respuesta::create([
-            'RTA_Actividad_Finalizada_Id' => $af->id,
-            'RTA_Estado_Id' => 4
-        ]);
-        Actividades::findOrFail($request['Actividad_Id'])->update(['ACT_Estado_Id' => 3]);
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 4,
-            'HST_EST_Actividad' => $request['Actividad_Id']
-        ]);
+        Respuesta::crearRespuesta($af->id, 4);
+        
+        Actividades::actualizarEstadoActividad($request['Actividad_Id'], 3);
+        
+        HistorialEstados::crearHistorialEstado($request['Actividad_Id'], 4);
+        
         $para = DB::table('TBL_Permiso as p')
             ->join('TBL_Permiso_Usuario as pu', 'pu.PRM_USR_Permiso_Id', '=', 'p.id')
             ->join('TBL_Usuarios as u', 'u.id', '=', 'pu.PRM_USR_Usuario_Id')
             ->where('p.PRM_Nombre_Permiso', '=', 'validador')
-            ->select('u.*')->first();
+            ->select('u.*')
+            ->first();
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
             'titulo' => 'Tarea finalizada y entregada',
-            'nombre' => $para->USR_Nombres_Usuario.' '.$para->USR_Apellidos_Usuario,
-            'contenido' => $para->USR_Nombres_Usuario.', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' a realizado la entrega de una tarea y está esperando a ser aprobada.'
+            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' a realizado la entrega de una tarea y está esperando a ser aprobada.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para->USR_Correo_Usuario, 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Tarea finalizada y entregada');
+            $message->to(
+                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Tarea finalizada y entregada');
         });
         
-        return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Actividad finalizada');
+        return redirect()
+            ->route('actividades_perfil_operacion')
+            ->with('mensaje', 'Actividad finalizada');
     }
 
     public function solicitarTiempo($id)
@@ -426,7 +451,7 @@ class ActividadesController extends Controller
             ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
             ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
             ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
-            ->get();
+            ->first();
         return $actividades;
     }
 }

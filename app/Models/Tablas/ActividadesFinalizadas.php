@@ -80,7 +80,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesEntregar;
     }
 
-    //Funcion para crear las actividades finalizadas
+    //Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {
         ActividadesFinalizadas::create([
@@ -89,6 +89,18 @@ class ActividadesFinalizadas extends Model
             'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
             'ACT_FIN_Revisado' => 1
+        ]);
+    }
+
+    //Funcion para guardar la entrega de la actividad del perfil de operación
+    public static function crearActividadFinalizadaTrabajador($request)
+    {
+        ActividadesFinalizadas::create([
+            'ACT_FIN_Titulo' => $request['ACT_FIN_Titulo'],
+            'ACT_FIN_Descripcion' => $request['ACT_FIN_Descripcion'],
+            'ACT_FIN_Actividad_Id' => $request['Actividad_Id'],
+            'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
+            'ACT_FIN_Link' => $request['ACT_FIN_Link']
         ]);
     }
 }

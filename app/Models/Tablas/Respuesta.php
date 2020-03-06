@@ -46,4 +46,13 @@ class Respuesta extends Model
 
         return $respuestasAnteriores;
     }
+
+    //Funcion para crear el historial de respuestas
+    public static function crearRespuesta($id, $estado)
+    {
+        Respuesta::create([
+            'RTA_Actividad_Finalizada_Id' => $id,
+            'RTA_Estado_Id' => $estado
+        ]);
+    }
 }
