@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cliente;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\DB;
@@ -15,86 +14,112 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * Inicio Controller, donde se visualizaran los proyectos y las facturas
+ * para el cliente autenticado
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class InicioController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de proyectos y de las facturas
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $permisos = ['listarA'=>can2('listar-actividades')];
 
         $proyectos = $this->proyectos();
         $proyectosPagar = $this->proyectosPagarConsulta();
 
-        return view('cliente.inicio', compact('proyectos', 'proyectosPagar', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        return view(
+            'cliente.inicio',
+            compact(
+                'proyectos',
+                'proyectosPagar',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'permisos'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para pagar las actividades pendientes
      *
-     * @return \Illuminate\Http\Response
+     * @param  $id  Identificador del proyecto
+     * @return \Illuminate\View\View Vista para realizar el pago
      */
     public function pagar($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $proyecto = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $id)
-            ->first();
+        
+        $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = $this->informacionFacturacion($id);
-        $id_empresa = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
-            ->where('ud.id', '=', session()->get('Usuario_Id'))
-            ->select('uu.USR_Empresa_Id')
-            ->first();
+        $id_empresa = Empresas::obtenerIdEmpresa();
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = $this->totalCosto($id);
+        
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
-        $datosU = ['proyecto'=>$proyecto, 
+        
+        $datosU = [
+            'proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa];
-        return view('cliente.pagar', compact('datos', 'datosU', 'notificaciones', 'cantidad'));
+            'empresa'=>$empresa
+        ];
+
+        return view(
+            'cliente.pagar',
+            compact(
+                'datos',
+                'datosU',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
+    /**
+     * Genera el PDF de las actividades del proyecto
+     *
+     * @param  $id  Identificador del proyecto
+     * @return PDF->download()
+     */
     public function generarPdf($id)
     {
         $proyecto = Proyectos::findOrFail($id);
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select('a.*', 'es.*', 'us.USR_Nombres_Usuario as NombreT', 'us.USR_Apellidos_Usuario as ApellidoT', 'p.*', 'p.*', 'u.*', 'e.*')
-            ->where('p.id', '=', $id)
-            ->where('r.id', '<>', 5)
-            ->get();
-        $id_empresa = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
-            ->where('ud.id', '=', session()->get('Usuario_Id'))
-            ->select('uu.USR_Empresa_Id')
-            ->first();
+        $actividades = Actividades::obtenerActividadesPDF($id);
+        if (count($actividades) == 0) {
+            return redirect()->back()->withErrors('No es posible generar el archivo sin que el proyecto tenga actividades');
+        }
+        $id_empresa = Empresas::obtenerIdEmpresa();
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
-        $pdf = PDF::loadView('includes.pdf.proyecto.actividades', compact('actividades', 'empresa'));
+        $pdf = PDF::loadView(
+            'includes.pdf.proyecto.actividades',
+            compact('actividades', 'empresa')
+        );
 
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
-        return $pdf->download($fileName);
+        return $pdf->download($fileName.'.pdf');
     }
 
     /**

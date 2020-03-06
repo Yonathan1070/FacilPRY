@@ -59,7 +59,7 @@ Mis Proyectos
                                                                     <td>{{$proyecto->PRY_Descripcion_Proyecto}}</td>
                                                                     <td class="width70">
                                                                         @if ($permisos['listarA']==true)
-                                                                            <a href="{{route('actividades', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Tareas">
+                                                                            <a href="{{route('requerimientos', ['idP'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Listar Tareas">
                                                                                 <i class="material-icons text-info" style="font-size: 17px;">assignment</i>
                                                                             </a>
                                                                         @endif

@@ -65,6 +65,18 @@ class Empresas extends Model
         return $datos;
     }
 
+    //Funcion para obtener id de la empresa
+    public static function obtenerIdEmpresa()
+    {
+        $id_empresa = DB::table('TBL_Usuarios as uu')
+            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
+            ->where('ud.id', '=', session()->get('Usuario_Id'))
+            ->select('uu.USR_Empresa_Id')
+            ->first();
+        
+        return $id_empresa;
+    }
+
     //Función que crea la empresa
     public static function crearEmpresa($request)
     {

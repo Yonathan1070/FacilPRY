@@ -64,6 +64,17 @@ class Proyectos extends Model
         return $proyectosFinalizados;
     }
 
+    //Funcion para obtener datos del proyecto
+    public static function obtenerProyecto($id)
+    {
+        $proyecto = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('p.id', '=', $id)
+            ->first();
+        
+        return $proyecto;
+    }
+
     //Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {
