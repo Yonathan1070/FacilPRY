@@ -2,6 +2,7 @@
 
 namespace App\Models\Tablas;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -54,5 +55,20 @@ class Respuesta extends Model
             'RTA_Actividad_Finalizada_Id' => $id,
             'RTA_Estado_Id' => $estado
         ]);
+    }
+
+    //Funcion para actualizar los datos de la respuesta
+    public static function actualizarRespuesta($request)
+    {
+        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Titulo', '=', null)
+            ->first()
+            ->update([
+                'RTA_Titulo'=>$request->RTA_Titulo,
+                'RTA_Respuesta' => $request->RTA_Respuesta,
+                'RTA_Estado_Id' => 6,
+                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
     }
 }

@@ -83,6 +83,17 @@ class Usuarios extends Authenticatable
         return $datosU;
     }
 
+    //Funcion para obtener el trabajador asociado a la actividad
+    public static function obtenerPerfilAsociado($id)
+    {
+        $trabajador = DB::table('TBL_Actividades as a')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('a.id', '=', $id)
+            ->first();
+        
+        return $trabajador;
+    }
+
     //Funcion que obtiene los usuarios con el rol de perfil de operación
     public static function obtenerTrabajadores()
     {
