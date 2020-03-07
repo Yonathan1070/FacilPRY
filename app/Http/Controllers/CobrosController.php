@@ -12,33 +12,35 @@ use Illuminate\Support\Carbon;
 use PDF;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
+use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
 
+/**
+ * Cobros Controller, donde se mostrarán las actividades por cobrar
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class CobrosController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de actividades pendientes de cobro
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del listado de actividades para cobrar
      */
     public function index()
     {
         can('listar-cobros');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $cobros = DB::table('TBL_Actividades as a')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_Fin_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 're.RTA_Estado_Id')
-            ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
-            ->where('e.id', '=', 7)
-            ->orderBy('p.id')
-            ->get();
+        $cobros = Actividades::obtenerActividadesCobrar();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -55,38 +57,39 @@ class CobrosController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Agrega las actividades a la factura del cliente
      *
-     * @return \Illuminate\Http\Response
+     * @param  $idA  Identificador de la Actividad
+     * @param  $idA  Identificador del cliente
+     * @return redirect()->back()->with()
      */
     public function agregarFactura($idA, $idC)
     {
 
         $cliente = Usuarios::findOrFail($idC);
-        Actividades::findOrFail($idA)->update(['ACT_Estado_Id' => 8]);
-        $rta = DB::table('TBL_Respuesta as re')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'RTA_Actividad_Finalizada_Id')
-            ->where('af.ACT_FIN_Actividad_Id', '=', $idA)
-            ->select('re.id as Id_Rta')->get();
-        Respuesta::findOrFail($rta->last()->Id_Rta)->update(['RTA_Estado_Id' => 8]);
-        FacturasCobro::create([
-            'FACT_Actividad_Id' => $idA,
-            'FACT_Cliente_Id' => $idC,
-            'FACT_Fecha_Cobro' => Carbon::now()
-        ]);
+        Actividades::actualizarEstadoActividad($idA, 8);
+        $rta = Respuesta::obtenerUltimaRespuesta($idA);
+        Respuesta::actualizarEstado($rta->last()->Id_Rta, 8);
+        FacturasCobro::crearFactura($idA, $idC);
         $actividad = Actividades::findOrFail($idA);
         $trabajador = Usuarios::findOrFail($actividad->ACT_Trabajador_Id);
-        $horas = DB::table('TBL_Horas_Actividad as ha')
-            ->select(DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
-            ->where('ha.HRS_ACT_Actividad_Id', '=', $idA)
-            ->first();
-        Actividades::findOrFail($idA)->update(['ACT_Costo_Estimado_Actividad' => ((int)$horas->HorasR * $trabajador->USR_Costo_Hora)]);
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 8,
-            'HST_EST_Actividad' => $idA
-        ]);
-        return redirect()->back()->with('mensaje', 'Actividad agregada a la factura del cliente '.$cliente->USR_Nombres_Usuario.' '.$cliente->USR_Apellidos_Usuario);
+        $horas = HorasActividad::obtenerHorasAprobadasActividad($idA);
+        Actividades::actualizarCostoEstimado(
+            $idA,
+            (int)$horas->HorasR,
+            $trabajador->USR_Costo_Hora
+        );
+        HistorialEstados::crearHistorialEstado($idA, 8);
+        
+        return redirect()
+            ->back()
+            ->with(
+                'mensaje',
+                'Actividad agregada a la factura del cliente '.
+                    $cliente->USR_Nombres_Usuario.
+                    ' '.
+                    $cliente->USR_Apellidos_Usuario
+            );
     }
 
     /**

@@ -58,6 +58,22 @@ class Respuesta extends Model
         return $rtaValidador;
     }
 
+    //Funcion para obtener la ultima respuesta de la actividad entregada
+    public static function obtenerUltimaRespuesta($idA)
+    {
+        $ultimaRta = DB::table('TBL_Respuesta as re')
+            ->join(
+                'TBL_Actividades_Finalizadas as af',
+                'af.id',
+                '=',
+                'RTA_Actividad_Finalizada_Id'
+            )->where('af.ACT_FIN_Actividad_Id', '=', $idA)
+            ->select('re.id as Id_Rta')
+            ->get();
+        
+        return $ultimaRta;
+    }
+
     //Funcion para crear el historial de respuestas
     public static function crearRespuesta($id, $estado)
     {
@@ -95,5 +111,12 @@ class Respuesta extends Model
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);
+    }
+
+    //Funcion para actualizar el estado de la respuesta
+    public static function actualizarEstado($id, $estado)
+    {
+        Respuesta::findOrFail($id)
+            ->update(['RTA_Estado_Id' => $estado]);
     }
 }

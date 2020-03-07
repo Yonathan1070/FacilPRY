@@ -314,6 +314,53 @@ class Actividades extends Model
         return $actividad;
     }
 
+    //Función para obtener las actividades pendientes de cobro
+    public static function obtenerActividadesCobrar()
+    {
+        $cobros = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_Fin_Actividad_Id',
+                '=',
+                'a.id'
+            )->join(
+                'TBL_Respuesta as re',
+                're.RTA_Actividad_Finalizada_Id',
+                '=',
+                'af.id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                're.RTA_Estado_Id'
+            )->select(
+                'a.id as Id_Actividad',
+                'u.id as Id_Cliente',
+                'a.*',
+                'u.*',
+                'p.*'
+            )->where('e.id', '=', 7)
+            ->orderBy('p.id')
+            ->get();
+        
+        return $cobros;
+    }
+
     //Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([
@@ -367,5 +414,14 @@ class Actividades extends Model
     public static function actualizarEstadoActividad($id, $estado)
     {
         Actividades::findOrFail($id)->update(['ACT_Estado_Id' => $estado]);
+    }
+
+    //Función para actualizar el costo estimado de la actividad
+    public static function actualizarCostoEstimado($idA, $horas, $costoHora)
+    {
+        Actividades::findOrFail($idA)
+            ->update([
+                'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
+            ]);
     }
 }

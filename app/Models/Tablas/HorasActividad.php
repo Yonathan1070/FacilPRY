@@ -108,6 +108,17 @@ class HorasActividad extends Model
         return $horas;
     }
 
+    //Funcion para obtener cantidad de horas aprobadas
+    public static function obtenerHorasAprobadasActividad($idA)
+    {
+        $horas = DB::table('TBL_Horas_Actividad as ha')
+            ->select(DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->where('ha.HRS_ACT_Actividad_Id', '=', $idA)
+            ->first();
+        
+        return $horas;
+    }
+
     //Funcion para obtener cantidad de horas asignadas sin la hora seleccionada
     public static function obtenerHorasAsignadasNoSeleccionada($id, $fecha)
     {
