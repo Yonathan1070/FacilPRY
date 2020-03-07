@@ -14,6 +14,7 @@ use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Respuesta;
 
 /**
@@ -93,100 +94,40 @@ class CobrosController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Generar PDF de la factura 
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  $id  Identificador del proyecto
      * @return \Illuminate\Http\Response
      */
     public function generarFactura($id)
     {
-        $proyecto = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $id)
-            ->first();
-        $informacion = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*', 'a.*', 'u.*', 'r.*', 'fc.*')
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->where('p.id', '=', $id)
-            ->get();
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturasCobro::obtenerDetalleFactura($id);
         $idEmpresa = DB::table('TBL_Proyectos as p')
             ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
             ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
             ->select('ed.id')
             ->first()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
-        $total = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Real_Actividad) as Costo'))
-            ->groupBy('r.REQ_Proyecto_Id')
-            ->where('p.id', '=', $id)
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->first();
+        $total = FacturasCobro::obtenerTotalFactura($id);
+        
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
-        $datos = ['proyecto'=>$proyecto, 
+        
+        $datos = [
+            'proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa];
+            'empresa'=>$empresa
+        ];
+
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
 
         $fileName = 'FacturaINK-'.$factura;
-        return $pdf->download($fileName);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        
+        return $pdf->download($fileName.'.pdf');
     }
 }
