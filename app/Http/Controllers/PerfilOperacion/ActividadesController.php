@@ -277,11 +277,19 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = $this->obtenerActividades($id);
 
+        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
+            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
+            ->select('u.*', 'af.*', 'r.*')
+            ->where('af.ACT_FIN_Actividad_Id', '=', $id)
+            ->where('r.RTA_Titulo', '<>', null)->get();
+
         return view(
             'perfiloperacion.actividades.finalizar',
             compact(
                 'id',
                 'actividades',
+                'respuestasAnteriores',
                 'datos',
                 'notificaciones',
                 'cantidad'
@@ -335,8 +343,8 @@ class ActividadesController extends Controller
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
             'titulo' => 'Tarea finalizada y entregada',
-            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].
+            'nombre' => $para->USR_Nombres_Usuario.' '.$para->USR_Apellidos_Usuario,
+            'contenido' => $para->USR_Nombres_Usuario.
                 ', revisa la plataforma InkBrutalPry, '.
                 $de['USR_Nombres_Usuario'].
                 ' '.
@@ -345,7 +353,7 @@ class ActividadesController extends Controller
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(
-                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+                $para->USR_Correo_Usuario, 'InkBrutalPRY, Software de Gestión de Proyectos'
             )->subject('Tarea finalizada y entregada');
         });
         

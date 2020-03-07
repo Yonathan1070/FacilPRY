@@ -32,6 +32,41 @@ Finalizar Actividad
         </div>
     </div>
     <!-- #END# Basic Validation -->
+    @if (count($respuestasAnteriores) != 0)
+        <!-- Basic Validation -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>RESPUESTAS ANTERIORES</h2>
+                    </div>
+                    <div class="body table-responsive">
+                        <table class="table table-striped table-bordered table-hover dataTable" id="tabla-data">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Titulo</th>
+                                    <th>Respuesta</th>
+                                    <th>Respondió</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($respuestasAnteriores as $key => $ra)
+                                    <tr>
+                                        <td>{{++$key}}</td>
+                                        <td>{{$ra->RTA_Titulo}}</td>
+                                        <td>{{$ra->RTA_Respuesta}}</td>
+                                        <td>{{$ra->USR_Nombres_Usuario." ".$ra->USR_Apellidos_Usuario}}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- #END# Basic Validation -->
+    @endif
 </div>
 @endsection
 
