@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Cobros
+Finanzas
 @endsection
 @section("scripts")
     <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -14,7 +14,7 @@ Cobros
             <div class="card">
                 <div class="header">
                     <h2>
-                        COBROS PENDIENTES
+                        ASIGNAR COSTOS
                     </h2>
                 </div>
                 <div class="body table-responsive">

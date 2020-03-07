@@ -89,6 +89,24 @@ class Proyectos extends Model
         return $proyectos;
     }
 
+    //Funcion que obtiene los proyectos con facturas pendientes
+    public static function obtenerProyectosConFacturas()
+    {
+        $proyectos = DB::table('TBL_Facturas_Cobro as fc')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
+            ->where('a.ACT_Estado_Id', '=', 9)
+            ->groupBy('fc.FACT_Cliente_Id')
+            ->get();
+        
+        return $proyectos;
+    }
+
     //Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {

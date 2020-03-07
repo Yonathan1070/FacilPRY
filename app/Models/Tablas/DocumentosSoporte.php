@@ -47,6 +47,17 @@ class DocumentosSoporte extends Model
         return $documentosSoporte;
     }
 
+    //Funcion para obtener actividad a cobrar
+    public static function obtenerDocumentosActividadCobrar($id)
+    {
+        $documentosSoporte = DB::table('TBL_Actividades as a')
+            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->where('a.id', '=', $id)
+            ->get();
+
+        return $documentosSoporte;
+    }
+
     //Función que crea el documento soporte de la actividad
     public static function crearDocumentoSoporte($idA, $archivo)
     {

@@ -124,6 +124,34 @@ class ActividadesFinalizadas extends Model
         return $actividadesEntregar;
     }
 
+    //Funcion para obtener los detalles de la actividad finalizada
+    public static function obtenerActividadFinalizadaDetalle($id)
+    {
+        $actividades = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
+            ->join('TBL_Usuarios_Roles as urs', 'urs.USR_RLS_Usuario_Id', '=', 'us.id')
+            ->join('TBL_Roles as ros', 'ros.id', '=', 'urs.USR_RLS_Rol_Id')
+            ->select(
+                'af.*',
+                'a.*',
+                'p.*',
+                'u.*',
+                'ro.*',
+                'us.USR_Nombres_Usuario as NombreT',
+                'us.USR_Apellidos_Usuario as ApellidoT',
+                'ros.RLS_Nombre_Rol as RolT'
+            )->where('a.id', '=', $id)
+            ->first();
+
+        return $actividades;
+    }
+
     //Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {

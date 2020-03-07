@@ -361,6 +361,23 @@ class Actividades extends Model
         return $cobros;
     }
 
+    //Funcion para obtener actividades pendientes por asignar costos
+    public static function obtenerActividadesAsignarCosto()
+    {
+        $cobros = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->select('a.id as Id_Actividad', 'u.id as Id_Cliente', 'a.*', 'u.*', 'p.*')
+            ->where('e.id', '=', 8)
+            ->where('a.ACT_Costo_Estimado_Actividad', '<>', 0)
+            ->orderBy('p.id')
+            ->get();
+        
+        return $cobros;
+    }
+
     //Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([
@@ -423,5 +440,14 @@ class Actividades extends Model
             ->update([
                 'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
             ]);
+    }
+
+    //Funcion para actualizar el estado y costo real de la actividad
+    public static function actualizarCostoReal($id, $estado, $costo)
+    {
+        Actividades::findOrFail($id)->update([
+            'ACT_Estado_Id' => $estado,
+            'ACT_Costo_Real_Actividad' => $costo
+        ]);
     }
 }
