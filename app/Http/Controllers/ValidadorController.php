@@ -111,7 +111,7 @@ class ValidadorController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
-        Respuesta::actualizarRespuesta($request);
+        Respuesta::actualizarRespuesta($request, 6);
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
         $actividad = $this->actividad($request->id);
         HistorialEstados::crearHistorialEstado($actividad->id, 6);
@@ -155,38 +155,20 @@ class ValidadorController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Guarda la respuesta aprobado de la actividad
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return redirect()->route()
      */
     public function respuestaAprobado(Request $request)
     {
-        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
-            ->where('RTA_Titulo', '=', null)
-            ->first()
-            ->update([
-                'RTA_Titulo'=>$request->RTA_Titulo,
-                'RTA_Respuesta' => $request->RTA_Respuesta,
-                'RTA_Estado_Id' => 5,
-                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
-                'RTA_Fecha_Respuesta' => Carbon::now()
-            ]);
-        ActividadesFinalizadas::findOrFail($request->id)->update([
-            'ACT_FIN_Revisado' => 1
-        ]);
-        Respuesta::create([
-            'RTA_Actividad_Finalizada_Id' => $request->id,
-            'RTA_Estado_Id' => 12
-        ]);
+        Respuesta::actualizarRespuesta($request, 5);
+        ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
+        Respuesta::crearRespuesta($request->id, 12);
         $idActFin = ActividadesFinalizadas::orderByDesc('created_at')->first()->id;
         $actividad = $this->actividad($request->id);
-        HistorialEstados::create([
-            'HST_EST_Fecha' => Carbon::now(),
-            'HST_EST_Estado' => 5,
-            'HST_EST_Actividad' => $actividad->id
-        ]);
-        Actividades::findOrFail($actividad->id)->update(['ACT_Estado_Id'=>3]);
+        HistorialEstados::crearHistorialEstado($actividad->id, 5);
+        Actividades::actualizarEstadoActividad($actividad->id, 3);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $trabajador = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -194,6 +176,7 @@ class ValidadorController extends Controller
             ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
             ->where('a.id', '=', $actividad->id)
             ->first();
+        
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' ha aprobado la entrega de la Actividad.',
             session()->get('Usuario_Id'),
@@ -203,6 +186,7 @@ class ValidadorController extends Controller
             null,
             'done_all'
         );
+        
         Notificaciones::crearNotificacion(
             'Se ha finalizado una actividad del proyecto '.$trabajador->PRY_Nombre_Proyecto,
             session()->get('Usuario_Id'),
@@ -212,27 +196,32 @@ class ValidadorController extends Controller
             $idActFin,
             'info'
         );
+        
         $para = Usuarios::findOrFail($trabajador->PRY_Cliente_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
-            'titulo' => 'Se ha finalizado una actividad del proyecto '.$trabajador->PRY_Nombre_Proyecto,
+            'titulo' => 'Se ha finalizado una actividad del proyecto '.
+                $trabajador->PRY_Nombre_Proyecto,
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' está en espera de su aprobado en tarea entregada.'
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' está en espera de su aprobado en tarea entregada.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Tarea finalizada, pendiente de aprobación');
+            $message->to(
+                $para['USR_Correo_Usuario'],
+                'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Tarea finalizada, pendiente de aprobación');
         });
-        return redirect()->route('inicio_validador')->with('mensaje', 'Respuesta envíada');
+        
+        return redirect()
+            ->route('inicio_validador')
+            ->with('mensaje', 'Respuesta envíada');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function actividad($id)
     {
         $actividad = DB::table('TBL_Actividades_Finalizadas as af')
@@ -242,16 +231,5 @@ class ValidadorController extends Controller
             ->first();
 
         return $actividad;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

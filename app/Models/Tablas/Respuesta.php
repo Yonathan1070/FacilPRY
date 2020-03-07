@@ -58,7 +58,7 @@ class Respuesta extends Model
     }
 
     //Funcion para actualizar los datos de la respuesta
-    public static function actualizarRespuesta($request)
+    public static function actualizarRespuesta($request, $estado)
     {
         Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
             ->where('RTA_Titulo', '=', null)
@@ -66,7 +66,7 @@ class Respuesta extends Model
             ->update([
                 'RTA_Titulo'=>$request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
-                'RTA_Estado_Id' => 6,
+                'RTA_Estado_Id' => $estado,
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);

@@ -126,16 +126,16 @@ Inicio
                             <table class="table table-striped table-bordered table-hover dataTable" id="tabla-data">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>#</th>
                                         <th>Titulo</th>
                                         <th>Respuesta</th>
                                         <th>Respondió</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($respuestasAnteriores as $ra)
+                                    @foreach ($respuestasAnteriores as $key => $ra)
                                         <tr>
-                                            <td>{{$ra->id}}</td>
+                                            <td>{{++$key}}</td>
                                             <td>{{$ra->RTA_Titulo}}</td>
                                             <td>{{$ra->RTA_Respuesta}}</td>
                                             <td>{{$ra->USR_Nombres_Usuario." ".$ra->USR_Apellidos_Usuario}}</td>
