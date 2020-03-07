@@ -48,6 +48,16 @@ class Respuesta extends Model
         return $respuestasAnteriores;
     }
 
+    //Funcion para obtener la respuesta del validador
+    public static function obtenerRespuestaValidador($id)
+    {
+        $rtaValidador = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $id)
+            ->where('RTA_Usuario_Id', '<>', 0)
+            ->first();
+
+        return $rtaValidador;
+    }
+
     //Funcion para crear el historial de respuestas
     public static function crearRespuesta($id, $estado)
     {
@@ -65,6 +75,21 @@ class Respuesta extends Model
             ->first()
             ->update([
                 'RTA_Titulo'=>$request->RTA_Titulo,
+                'RTA_Respuesta' => $request->RTA_Respuesta,
+                'RTA_Estado_Id' => $estado,
+                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Fecha_Respuesta' => Carbon::now()
+            ]);
+    }
+
+    //Funcion para actualizar la respuesta cliente
+    public static function actualizarRespuestaCliente($request, $estado)
+    {
+        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Usuario_Id', '=', 0)
+            ->first()
+            ->update([
+                'RTA_Titulo' => $request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
                 'RTA_Estado_Id' => $estado,
                 'RTA_Usuario_Id' => session()->get('Usuario_Id'),

@@ -78,8 +78,16 @@ class ActividadesFinalizadas extends Model
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
-            ->where('af.Id', '=', $id)
+            ->select(
+                'af.id as Id_Act_Fin',
+                'a.id as Id_Act',
+                'af.*',
+                'a.*',
+                'p.*',
+                're.*',
+                'u.*',
+                'ro.*'
+            )->where('af.Id', '=', $id)
             ->orderByDesc('af.created_at')
             ->first();
         
