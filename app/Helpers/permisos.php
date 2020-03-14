@@ -1,8 +1,19 @@
 <?php
 
-use App\Models\Tablas\Permiso;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Helper permisos, encargado de validar si tiene acceso al permiso por medio del
+ * slug del permiso.
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 if (!function_exists('canUser')) {
     function can($permiso, $redirect = true)
     {
@@ -20,7 +31,10 @@ if (!function_exists('canUser')) {
             if ($permisos == null) {
                 if ($redirect) {
                     if (!request()->ajax())
-                        return redirect()->back()->with('mensaje', 'No tiene permisos para entrar en este modulo')->send();
+                        return redirect()
+                            ->back()
+                            ->with('mensaje', 'No tiene permisos para entrar en este modulo')
+                            ->send();
                     return false;
                 } else {
                     return false;
