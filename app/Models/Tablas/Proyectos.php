@@ -107,6 +107,36 @@ class Proyectos extends Model
         return $proyectos;
     }
 
+    //Función que obtiene los proyectos que tiene pendientes para realizar pago
+    public static function obtenerProyectosPagar()
+    {
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
+            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
+            ->select('a.*', 'p.*', 'a.id as Id_Actividad')
+            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
+            ->where('es.id', '=', 9)
+            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
+            ->groupBy('p.id')
+            ->get();
+        
+        return $proyectos;
+    }
+
+    //Función que obtiene los proyectos asociados al cliente autenticado
+    public static function obtenerProyectosCliente($id)
+    {
+        $proyectos = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->select('p.*')
+            ->where('p.PRY_Cliente_Id', '=', $id)
+            ->get();
+        return $proyectos;
+    }
+
     //Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {

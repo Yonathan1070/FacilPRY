@@ -11,6 +11,7 @@ use App\Models\Tablas\Empresas;
 use Illuminate\Support\Carbon;
 use stdClass;
 use App\Models\Tablas\Actividades;
+use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Facades\Mail;
 
@@ -40,8 +41,8 @@ class InicioController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $permisos = ['listarA'=>can2('listar-actividades')];
 
-        $proyectos = $this->proyectos();
-        $proyectosPagar = $this->proyectosPagarConsulta();
+        $proyectos = Proyectos::obtenerProyectosCliente(session()->get('Usuario_Id'));
+        $proyectosPagar = Proyectos::obtenerProyectosPagar();
 
         return view(
             'cliente.inicio',
@@ -69,10 +70,10 @@ class InicioController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $proyecto = Proyectos::obtenerProyecto($id);
-        $informacion = $this->informacionFacturacion($id);
+        $informacion = FacturasCobro::obtenerDetalleFactura($id);
         $id_empresa = Empresas::obtenerIdEmpresa();
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
-        $total = $this->totalCosto($id);
+        $total = FacturasCobro::obtenerTotalFactura($id);
         
         foreach ($informacion as $info) {
             $factura = $info->id;
@@ -123,68 +124,71 @@ class InicioController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Generar factura actividades
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $id  Identificador del proyecto
+     * @return PDF->download()
      */
     public function generarFactura($id)
     {
-        $proyecto = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $id)
-            ->first();
-        $informacion = $this->informacionFacturacion($id);
-        $id_empresa = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
-            ->where('ud.id', '=', session()->get('Usuario_Id'))
-            ->select('uu.USR_Empresa_Id')
-            ->first();
-        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
-        $total = $this->totalCosto($id);
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturasCobro::obtenerDetalleFactura($id);
+        $idEmpresa = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
+            ->select('ed.id')
+            ->first()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
+        $total = FacturasCobro::obtenerTotalFactura($id);
+        
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
-        $datos = ['proyecto'=>$proyecto, 
+        
+        $datos = [
+            'proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa];
+            'empresa'=>$empresa
+        ];
+        
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
-        $fileName = 'FacturaINK-'.$factura;
-        return $pdf->download($fileName);
+        $fileName = 'FacturaINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
+        
+        return $pdf->download($fileName.'.pdf');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra la factura y el botón para realizar el pago
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  $id
+     * @return json_encode()
      */
     public function informacionPago($id)
     {
-        $proyecto = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $id)
-            ->first();
-        $informacion = $this->informacionFacturacion($id);
-        $id_empresa = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
-            ->where('ud.id', '=', session()->get('Usuario_Id'))
-            ->select('uu.USR_Empresa_Id')
-            ->first();
-        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
-        $total = $this->totalCosto($id);
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturasCobro::obtenerDetalleFactura($id);
+        $idEmpresa = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
+            ->select('ed.id')
+            ->first()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
+        $total = FacturasCobro::obtenerTotalFactura($id);
+        
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
-        $datos = ['proyecto'=>$proyecto, 
+        $datos = [
+            'proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa];
+            'empresa'=>$empresa
+        ];
 
         $infoPago = $this->informacionPayu($datos);
 
@@ -192,11 +196,10 @@ class InicioController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Metodo que obtiene la respuesta del pago realizado en la pasarela de pagos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 
+     * @return redirect()->route()
      */
     public function respuestaPago()
     {
@@ -206,31 +209,48 @@ class InicioController extends Controller
 
         if ($estadoTx == "Transacción aprobada") {
             $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
-            $actividades = $this->consultaActividades($usuario->id);
+            $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 10, $fechaPago);
+                Actividades::actualizarEstadoPago($actividad->id, 10, $fechaPago);
             }
-            return redirect()->route('inicio_cliente')->with('mensaje', 'Pago exitoso.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago exitoso.');
         }
         else if ($estadoTx == "Transacción rechazada") {
-            return redirect()->route('inicio_cliente')->withErrors('Transacción Rechazada.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Transacción Rechazada.');
         }
         else if ($estadoTx == "Error") {
-            return redirect()->route('inicio_cliente')->withErrors('Error al pagar.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Error al pagar.');
         }
         else if ($estadoTx == "Transacción pendiente" ) {
             $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
-            $actividades = $this->consultaActividades($usuario->id);
+            $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 14, $fechaPago);
+                Actividades::actualizarEstadoPago($actividad->id, 14, $fechaPago);
             }
-            return redirect()->route('inicio_cliente')->with('mensaje', 'Pago Pendiente.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago Pendiente.');
         }
         else {
-            return redirect()->route('inicio_cliente')->withErrors('Otro.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Otro.');
         }
     }
 
+    /**
+     * Metodo que obtiene la respuesta de confirmación del pago realizado 
+     * en la pasarela de pagos.
+     *
+     * 
+     * @return redirect()->route()
+     */
     public function confirmacionPago(){
         $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
 		$merchant_id =  $_REQUEST['merchant_id'];
@@ -255,10 +275,10 @@ class InicioController extends Controller
         $phone=$_REQUEST['phone'];
         
         $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
-        $actividades = $this->consultaActividadesPendientes($usuario->id);
+        $actividades = Actividades::obtenerTransaccionPendiente($usuario->id);
         if($state_pol==4){
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 10, $transaction_date);
+                Actividades::actualizarEstadoPago($actividad->id, 10, $transaction_date);
             }
             Mail::send('general.correo.respuesta', [
                 'estado' => '',
@@ -270,14 +290,18 @@ class InicioController extends Controller
                 'valor' => $New_value
             ], function($message){
                 $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to('soporte@inkdigital.co', 'InkBrutalPRY, Software de Gestión de Proyectos')
-                    ->subject('Pago Actividad');
+                $message->to(
+                    'soporte@inkdigital.co',
+                    'InkBrutalPRY, Software de Gestión de Proyectos'
+                )->subject('Pago Actividad');
             });
-            return redirect()->route('inicio_cliente')->with('mensaje', 'Pago exitoso.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago exitoso.');
         }
         else{
             foreach ($actividades as $actividad) {
-                $this->actualizarEstado($actividad->id, 9, $transaction_date);
+                Actividades::actualizarEstadoPago($actividad->id, 9, $transaction_date);
             }
             Mail::send('general.correo.respuesta', [
                 'estado' => 'PERO NO HA SIDO EXITOSA',
@@ -289,95 +313,53 @@ class InicioController extends Controller
                 'valor' => $New_value
             ], function($message){
                 $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to('soporte@inkdigital.co', 'InkBrutalPRY, Software de Gestión de Proyectos')
-                    ->subject('Pago Actividad');
+                $message->to(
+                    'soporte@inkdigital.co',
+                    'InkBrutalPRY, Software de Gestión de Proyectos'
+                )->subject('Pago Actividad');
             });
-            return redirect()->route('inicio_cliente')->withErrors('Transacción Rechazada o Expirada.');
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Transacción Rechazada o Expirada.');
         }
     }
 
+    /**
+     * Cambia el estado de la notificación y retorna la ruta a la que debe redireccionar
+     *
+     * @param: $id Identificador de la notificación
+     * @return json_encode Datos de la ruta
+     * 
+     */
     public function cambiarEstadoNotificacion($id)
     {
-        $notificacion = Notificaciones::findOrFail($id);
-        $notificacion->update([
-            'NTF_Estado' => 1
-        ]);
+        $notificacion = Notificaciones::cambiarEstadoNotificacion($id);
         $notif = new stdClass();
-        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null)
-            $notif->ruta = route($notificacion->NTF_Route, [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]);
-        else if($notificacion->NTF_Route != null)
+        if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null) {
+            $notif->ruta = route(
+                $notificacion->NTF_Route,
+                [$notificacion->NTF_Parametro => $notificacion->NTF_Valor_Parametro]
+            );
+        } else if($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
+        }
         return json_encode($notif);
     }
 
+    /**
+     * Cambia el estado de todas las notificaciónest retorna mesaje de éxito
+     *
+     * @param: $id Identificador del usuario autenticado
+     * @return response()->json() Mensaje de exito
+     * 
+     */
     public function cambiarEstadoTodasNotificaciones($id)
     {
-        $notificaciones = Notificaciones::where('NTF_Para', '=', $id)->get();
-        foreach ($notificaciones as $notificacion) {
-            $notificacion->update([
-                'NTF_Estado' => 1
-            ]);
-        }
+        Notificaciones::cambiarEstadoTodas($id);
         return response()->json(['mensaje' => 'ok']);
     }
 
-    public function proyectosPagarConsulta()
-    {
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.*', 'p.*', 'a.id as Id_Actividad')
-            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->where('es.id', '=', 9)
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->groupBy('p.id')
-            ->get();
-        
-        return $proyectos;
-    }
-
-    public function proyectos(){
-        $proyectos = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*')
-            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->get();
-        return $proyectos;
-    }
-
-    public function informacionFacturacion($id){
-        $informacion = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*', 'r.*', 'a.*', 'u.*', 'fc.*')
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->where('p.id', '=', $id)
-            ->get();
-
-        return $informacion;
-    }
-
-    public function totalCosto($id){
-        $total = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->select('a.*', DB::raw('SUM(a.ACT_Costo_Real_Actividad) as Costo'))
-            ->groupBy('r.REQ_Proyecto_Id')
-            ->where('p.id', '=', $id)
-            ->first();
-
-        return $total;
-    }
-
+    //Metodo que obtiene los datos de la api de PayU
     public function informacionPayu($datos){
         $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
@@ -401,6 +383,7 @@ class InicioController extends Controller
         return $infoPago;
     }
 
+    //Metodo que obtiene los datos de la página de respuesta de PayU
     public function datosRespuesta(){
         $ApiKey = "4Vj8eK4rloUd272L48hsrarnUA";
         $merchant_id = $_REQUEST['merchantId'];
@@ -435,38 +418,5 @@ class InicioController extends Controller
             $estadoTx="Otro";
         }
         return $estadoTx;
-    }
-
-    public function consultaActividades($id){
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->where('u.id', '=', $id)
-            ->select('a.id')
-            ->get();
-
-        return $actividades;
-    }
-
-    public function consultaActividadesPendientes($id){
-        $actividades = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('a.ACT_Estado_Id', '=', 14)
-            ->where('u.id', '=', $id)
-            ->select('a.id')
-            ->get();
-
-        return $actividades;
-    }
-
-    public function actualizarEstado($id, $estado, $fecha){
-        Actividades::findOrFail($id)->update([
-            'ACT_Estado_Id' => $estado,
-            'ACT_Fecha_Pago' => $fecha
-        ]);
     }
 }

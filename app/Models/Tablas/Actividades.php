@@ -287,8 +287,16 @@ class Actividades extends Model
             ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
             ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select('af.id as Id_Act_Fin', 'a.id as Id_Act', 'af.*', 'a.*', 'p.*', 're.*', 'u.*', 'ro.*')
-            ->where('af.Id', '=', $id)
+            ->select(
+                'af.id as Id_Act_Fin',
+                'a.id as Id_Act',
+                'af.*',
+                'a.*',
+                'p.*',
+                're.*',
+                'u.*',
+                'ro.*'
+            )->where('af.Id', '=', $id)
             ->orderByDesc('af.created_at')
             ->first();
         
@@ -378,6 +386,36 @@ class Actividades extends Model
         return $cobros;
     }
 
+    //Función para obtener las actividades pendientes de pago
+    public static function obtenerActividadesPendientesPago($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('a.ACT_Estado_Id', '=', 9)
+            ->where('u.id', '=', $id)
+            ->select('a.id')
+            ->get();
+
+        return $actividades;
+    }
+
+    //Funcion para obtener las actividades en transaccion pendiente
+    public static function obtenerTransaccionPendiente($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
+            ->where('a.ACT_Estado_Id', '=', 14)
+            ->where('u.id', '=', $id)
+            ->select('a.id')
+            ->get();
+
+        return $actividades;
+    }
+
     //Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([
@@ -431,6 +469,15 @@ class Actividades extends Model
     public static function actualizarEstadoActividad($id, $estado)
     {
         Actividades::findOrFail($id)->update(['ACT_Estado_Id' => $estado]);
+    }
+
+    //Funcion que actualiza el estado de la actividad a pagado y en que fecha se efectuó
+    public static function actualizarEstadoPago($id, $estado, $fecha)
+    {
+        Actividades::findOrFail($id)->update([
+            'ACT_Estado_Id' => $estado,
+            'ACT_Fecha_Pago' => $fecha
+        ]);
     }
 
     //Función para actualizar el costo estimado de la actividad
