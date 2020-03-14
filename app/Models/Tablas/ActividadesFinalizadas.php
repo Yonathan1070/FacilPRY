@@ -152,6 +152,18 @@ class ActividadesFinalizadas extends Model
         return $actividades;
     }
 
+    //Función para obtener la actividad finalizaa por medio del id
+    public static function obtenerActividadFinalizadaSola($id)
+    {
+        $actividad = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->select('a.id')
+            ->where('af.id', '=', $id)
+            ->first();
+
+        return $actividad;
+    }
+
     //Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {

@@ -209,7 +209,7 @@ class ActividadesController extends Controller
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );
-            $actividad = $this->actividad($request->id);
+            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola($request->id);
             HistorialEstados::crearHistorialEstado($actividad->id, 6);
             Actividades::actualizarEstadoActividad($actividad->id, 1);
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -269,7 +269,7 @@ class ActividadesController extends Controller
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );
-            $actividad = $this->actividad($request->id);
+            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola($request->id);
             HistorialEstados::crearHistorialEstado($actividad->id, 7);
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
             $trabajador = Usuarios::obtenerPerfilAsociado($actividad->id);
@@ -321,16 +321,5 @@ class ActividadesController extends Controller
         return redirect()
             ->route('actividades_cliente')
             ->with('mensaje', 'Respuesta envíada');
-    }
-
-    public function actividad($id)
-    {
-        $actividad = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->select('a.id')
-            ->where('af.id', '=', $id)
-            ->first();
-
-        return $actividad;
     }
 }
