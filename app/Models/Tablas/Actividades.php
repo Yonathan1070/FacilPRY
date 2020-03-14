@@ -216,7 +216,7 @@ class Actividades extends Model
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('e.id', '<>', 1)
             ->where('e.id', '<>', 2)
-            ->where('r.id', '<>', 6)
+            ->where('r.id', '<>', 3)
             ->where('p.id', '=', $id)
             ->get();
         return $actividadesFinalizadas;
