@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\DocumentosEvidencias;
@@ -100,7 +99,9 @@ class FinanzasController extends Controller
             $request->ACT_Costo_Actividad
         );
         
-        return redirect()->route('inicio_finanzas')->with('mensaje', 'Costo agregado.');
+        return redirect()
+            ->route('inicio_finanzas')
+            ->with('mensaje', 'Costo agregado.');
     }
 
     /**
@@ -130,6 +131,7 @@ class FinanzasController extends Controller
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
 
         $fileName = 'FacturaINK-'.$factura;
+        
         return $pdf->download($fileName.'.pdf');
     }
 }

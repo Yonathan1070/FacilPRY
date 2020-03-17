@@ -99,7 +99,9 @@ class RolesController extends Controller
             'RLS_Empresa_Id' => session()->get('Empresa_Id')
         ]);
         
-        return redirect()->back()->with('mensaje', 'Rol creado con exito');
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Rol creado con exito');
     }
 
     /**
@@ -120,6 +122,7 @@ class RolesController extends Controller
                 ->back()
                 ->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         }
+
         return view(
             'roles.editar',
             compact(
@@ -152,6 +155,7 @@ class RolesController extends Controller
             }
         }
         Roles::findOrFail($id)->update($request->all());
+        
         return redirect()
             ->route('roles')
             ->with('mensaje', 'Rol actualizado con exito');

@@ -6,7 +6,6 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
 use Exception;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Metricas Controller, donde se obtienen los datos de las metricas del sistema
@@ -117,6 +116,7 @@ class MetricasController extends Controller
             'type' => 'pie',
             'labels' => $pryEficienciaLlave
         ];
+
         return json_encode($chartEficienciaPie);
     }
 
@@ -189,6 +189,7 @@ class MetricasController extends Controller
             'type' => 'pie',
             'labels' => $pryEfectividadLlave
         ];
+
         return json_encode($chartEficienciaPie);
     }
 
@@ -241,6 +242,7 @@ class MetricasController extends Controller
             'type' => 'pie',
             'labels' => $pryProductividadLlave
         ];
+
         return json_encode($chartProductividadPie);
     }
 
@@ -288,6 +290,7 @@ class MetricasController extends Controller
             'type' => 'bar',
             'labels' => $pryEficaciaLlave
         ];
+
         return json_encode($chartEficaciaBar);
     }
 
@@ -346,6 +349,7 @@ class MetricasController extends Controller
             'type' => 'bar',
             'labels' => $pryEficienciaLlave
         ];
+
         return json_encode($chartEficienciaBar);
     }
 
@@ -416,6 +420,7 @@ class MetricasController extends Controller
             'type' => 'bar',
             'labels' => $pryEfectividadLlave
         ];
+        
         return json_encode($chartEfectividadBar);
     }
 

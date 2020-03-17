@@ -10,7 +10,6 @@ use App\Models\Tablas\Requerimientos;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 /**

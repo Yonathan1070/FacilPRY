@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\UsuariosRoles;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionUsuario;
@@ -178,6 +177,7 @@ class PerfilOperacionController extends Controller
             null,
             'update'
         );
+
         return redirect()
             ->route('perfil_operacion')
             ->with('mensaje', 'Perfi de operación  actualizado con exito');
@@ -214,6 +214,7 @@ class PerfilOperacionController extends Controller
                     null,
                     'arrow_downward'
                 );
+
                 return response()->json(['mensaje' => 'ok']);
             }else{
                 return response()->json(['mensaje' => 'ng']);
@@ -252,6 +253,7 @@ class PerfilOperacionController extends Controller
                 'arrow_upward'
             );
         }
+        
         return redirect()
             ->route('perfil_operacion')
             ->with('mensaje', 'Perfil de operación reingresado con exito');

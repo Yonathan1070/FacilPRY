@@ -10,7 +10,6 @@ use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
 use App\Models\Tablas\Usuarios;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -100,6 +99,7 @@ class ValidadorController extends Controller
     public function descargarArchivo($ruta)
     {
         $ruta = public_path().'/documentos_soporte/'.$ruta;
+        
         return response()->download($ruta);
     }
 

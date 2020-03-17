@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;

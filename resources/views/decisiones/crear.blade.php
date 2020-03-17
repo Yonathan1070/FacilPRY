@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Crud Decisiones
+Crear Decisiones
 @endsection
 @section('scripts')
     <script src="{{asset('assets/pages/scripts/Administrador/progressBar.js')}}"></script>

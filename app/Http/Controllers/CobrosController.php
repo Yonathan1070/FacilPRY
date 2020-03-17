@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Actividades;
 use Illuminate\Support\Facades\DB;
@@ -54,7 +53,17 @@ class CobrosController extends Controller
             ->orWhere('e.id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
-        return view('cobros.listar', compact('cobros', 'proyectos', 'datos', 'notificaciones', 'cantidad'));
+        
+        return view(
+            'cobros.listar',
+            compact(
+                'cobros',
+                'proyectos',
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**

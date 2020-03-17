@@ -19,7 +19,7 @@ class TablaEmpresasSeeder extends Seeder
             'EMP_Telefono_Empresa'  => '2889617',
             'EMP_Direccion_Empresa' => 'Cra 69 # 7-95',
             'EMP_Correo_Empresa' => 'gestion@inkdigital.co',
-            'EMP_Logo_Empresa' => '1574183841.png',
+            'EMP_Logo_Empresa' => 'LOGO INK.png',
         ]);
     }
 }

@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Proyectos;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Usuarios;
 use App\Http\Requests\ValidacionProyecto;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
-use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use PDF;
 use stdClass;
 
@@ -189,6 +187,7 @@ class ProyectosController extends Controller
 
         $dato = new stdClass();
         $dato->porcentaje = (int)$porcentaje;
+
         return json_encode($dato);
     }
 
@@ -233,7 +232,10 @@ class ProyectosController extends Controller
     public function finalizar($id)
     {
         Proyectos::finalizarProyecto($id);
-        return redirect()->back()->with('mensaje', 'Proyecto finalizado');
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Proyecto finalizado');
     }
 
     /**
@@ -245,6 +247,9 @@ class ProyectosController extends Controller
     public function activar($id)
     {
         Proyectos::activarProyecto($id);
-        return redirect()->back()->with('mensaje', 'Proyecto activado');
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Proyecto activado');
     }
 }
