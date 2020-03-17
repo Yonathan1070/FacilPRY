@@ -2,6 +2,7 @@
 
 namespace App\Models\Tablas;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -50,5 +51,14 @@ class SolicitudTiempo extends Model
             ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
             ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
             ->first();
+    }
+
+    //Función para crear la solicitud de tiempo para la actividad
+    public static function crearSolicitud($id, $request)
+    {
+        SolicitudTiempo::create([
+            'SOL_TMP_Actividad_Id' => $id,
+            'SOL_TMP_Fecha_Solicitada' => Carbon::parse($request->Hora_Solicitud)->format('Y-m-d H:m')
+        ]);
     }
 }
