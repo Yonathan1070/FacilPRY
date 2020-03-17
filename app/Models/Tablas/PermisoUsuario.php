@@ -25,7 +25,7 @@ class PermisoUsuario extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
 
-    //Función que asigna los permisos al Director de proyectos
+    #Función que asigna los permisos al Director de proyectos
     public static function asignarPermisosDirector($id)
     {
         PermisoUsuario::asignarCrudDecisiones($id);
@@ -40,7 +40,7 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarCrudPerfilOperacion($id);
     }
 
-    //Funci´´on que asigna los permisos al Perfil de Operación
+    #Función que asigna los permisos al Perfil de Operación
     public static function asignarPermisosPerfilOperacion($id)
     {
         PermisoUsuario::asignarListarEmpresas($id);
@@ -48,13 +48,13 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarListarRequerimientos($id);
     }
 
-    //Funcion que asigna el permiso para editar perfil
+    #Funcion que asigna el permiso para editar perfil
     public static function asignarPermisoPerfil($id)
     {
         PermisoUsuario::asignarEditarPerfil($id);
     }
 
-    //Funcion que asigna los permisos al cliente
+    #Funcion que asigna los permisos al cliente
     public static function asignarPermisosCliente($id)
     {
         PermisoUsuario::asignarListarRequerimientos($id);
@@ -62,7 +62,7 @@ class PermisoUsuario extends Model
         PermisoUsuario::asignarListarActividades($id);
     }
 
-    //Funciones de asignación
+    #Funciones de asignación
     public static function asignarCrudActividades($id)
     {
         PermisoUsuario::create([

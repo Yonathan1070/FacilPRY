@@ -12,7 +12,7 @@ class TablaPermisoSeeder extends Seeder
      */
     public function run()
     {
-        //Agregar Permisos Iniciales
+        #Agregar Permisos Iniciales
         DB::table('TBL_Permiso')->insert([
             'PRM_Nombre_Permiso' => 'Listar Actividades',
             'PRM_Slug_Permiso' => 'listar-actividades'

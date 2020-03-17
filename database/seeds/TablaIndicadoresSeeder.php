@@ -12,7 +12,7 @@ class TablaIndicadoresSeeder extends Seeder
      */
     public function run()
     {
-        //Agregar Indicadores
+        #Agregar Indicadores
         DB::table('TBL_Indicadores')->insert([
             'INDC_Nombre_Indicador' => 'Eficiencia',
             'INDC_Descripcion_Indicador' => 'Capacidad para realizar o cumplir adecuadamente una función.',

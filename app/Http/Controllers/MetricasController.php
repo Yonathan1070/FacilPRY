@@ -132,7 +132,7 @@ class MetricasController extends Controller
 
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         foreach ($proyectos as $key => $proyecto) {
-            //Obtenermos la Eficacia
+            #Obtenermos la Eficacia
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);
             try {
@@ -143,7 +143,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = 0;
             }
 
-            //Obtenemos la Eficiencia
+            #Obtenemos la Eficiencia
             $actividades = $this->obtenerActividades($proyecto->id);
             $costoEstimado = 0;
             $costoReal = 0;
@@ -163,7 +163,7 @@ class MetricasController extends Controller
                 $eficienciaPorcentaje = 0;
             }
 
-            //Obtenemos la Efectividad
+            #Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
             $efectividad[++$key] = [
                 $proyecto->PRY_Nombre_Proyecto,
@@ -363,7 +363,7 @@ class MetricasController extends Controller
     {
         $trabajadores = Usuarios::obtenerTrabajadores();
         foreach ($trabajadores as $key => $trabajador) {
-            //Obtenemos la Eficacia
+            #Obtenemos la Eficacia
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
             $actividadesTotales = $this->obtenerTotalesTrabajador($trabajador->id);
             try {
@@ -374,7 +374,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = 0;
             }
 
-            //Obtenemos la Eficiencia
+            #Obtenemos la Eficiencia
             $actividades = $this->obtenerActividadesHorasTrabajador($trabajador->id);
             $costoEstimado = 0;
             $costoReal = 0;
@@ -394,7 +394,7 @@ class MetricasController extends Controller
                 $eficienciaPorcentaje = 0;
             }
 
-            //Obtenemos la Efectividad
+            #Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
             $efectividad[++$key] = [
                 $trabajador->USR_Nombres_Usuario,

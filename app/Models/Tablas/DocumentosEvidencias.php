@@ -24,7 +24,7 @@ class DocumentosEvidencias extends Model
         'ACT_Documento_Evidencia_Actividad'];
     protected $guarded = ['id'];
 
-    //Funcion para obtener los documentos evidencia de la actividad
+    #Funcion para obtener los documentos evidencia de la actividad
     public static function obtenerDocumentosEvidencia($id)
     {
         $documentosEvidencia = DB::table('TBL_Documentos_Evidencias as d')
@@ -39,7 +39,7 @@ class DocumentosEvidencias extends Model
         return $documentosEvidencia;
     }
 
-    //Funcion para crear los documentos de evidencia
+    #Funcion para crear los documentos de evidencia
     public static function crearDocumentosEvicendia($idActividad, $archivo)
     {
         DocumentosEvidencias::create([
@@ -48,7 +48,7 @@ class DocumentosEvidencias extends Model
         ]);
     }
 
-    //Funcion para obtener actividad a cobrar
+    #Funcion para obtener actividad a cobrar
     public static function obtenerDocumentosActividadCobrar($id)
     {
         $documentosEvidencias = DB::table('TBL_Actividades_Finalizadas as af')

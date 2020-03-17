@@ -26,7 +26,7 @@ class MenuUsuario extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
 
-    //Función que asigna los items al director de proyectos
+    #Función que asigna los items al director de proyectos
     public static function asignarMenuDirector($id)
     {
         //MenuUsuario::asignarInicioDirector($id);
@@ -37,7 +37,7 @@ class MenuUsuario extends Model
         MenuUsuario::asignarCobros($id);
     }
 
-    //Función que asigna los items al perfil de operación
+    #Función que asigna los items al perfil de operación
     public static function asignarMenuPerfilOperacion($id)
     {
         //MenuUsuario::asignarInicioPerfilOperacion($id);
@@ -45,14 +45,14 @@ class MenuUsuario extends Model
         MenuUsuario::asignarEmpresas($id);
     }
 
-    //Función que asigna los items al cliente 
+    #Función que asigna los items al cliente 
     public static function asignarMenuCliente($id)
     {
         //MenuUsuario::asignarInicioCliente($id);
         //MenuUsuario::asignarAprobarActividades($id);
     }
 
-    //Funciones de asignación de items
+    #Funciones de asignación de items
     public static function asignarInicioAdministrador($id)
     {
         MenuUsuario::create([

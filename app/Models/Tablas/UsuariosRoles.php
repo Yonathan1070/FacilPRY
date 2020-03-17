@@ -24,7 +24,7 @@ class UsuariosRoles extends Model
         'USR_RLS_Estado'];
     public $timestamps = false;
 
-    //Funcion donde se asigna el rol
+    #Funcion donde se asigna el rol
     public static function asignarRol($rolId, $usuarioId){
         UsuariosRoles::create([
             'USR_RLS_Rol_Id' => $rolId,

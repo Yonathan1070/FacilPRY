@@ -32,7 +32,7 @@ class Actividades extends Model
         'ACT_Encargado_Id'];
     protected $guarded = ['id'];
 
-    //Función para obtener las actividades y las horas estimadas de cada una
+    #Función para obtener las actividades y las horas estimadas de cada una
     public static function obtenerActividadesHoras($id)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
@@ -50,7 +50,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Función para otener las horas de trabajo asignadas para cada actividad por trabajador
+    #Función para otener las horas de trabajo asignadas para cada actividad por trabajador
     public static function obtenerHorasActividadesTrabajador($id)
     {
         $horasActividades = DB::table('TBL_Horas_Actividad as ha')
@@ -71,7 +71,7 @@ class Actividades extends Model
         return $horasActividades;
     }
 
-    //Función para obtener las actividades por proyecto
+    #Función para obtener las actividades por proyecto
     public static function obtenerActividadesProyecto($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -83,7 +83,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Función que obtiene las actividades del usuario
+    #Función que obtiene las actividades del usuario
     public static function obtenerActividades($idR, $cliente)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -106,7 +106,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Funcion que obtiene las actividades excepto la que se esta editando
+    #Funcion que obtiene las actividades excepto la que se esta editando
     public static function obtenerActividadesNoActual($idP, $idA)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -120,7 +120,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Función que obtiene las actividades para generar el PDF
+    #Función que obtiene las actividades para generar el PDF
     public static function obtenerActividadesPDF($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -149,7 +149,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Función para obtener las actividades por proyecto
+    #Función para obtener las actividades por proyecto
     public static function obtenerActividadesTotales($id)
     {
         $actividadesTotales = DB::table('TBL_Actividades as a')
@@ -165,7 +165,7 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
-    //Función para obtener las actividades de cada trabajador
+    #Función para obtener las actividades de cada trabajador
     public static function obtenerActividadesTotalesTrabajador($id)
     {
         $actividadesTotales = DB::table('TBL_Actividades as a')
@@ -181,7 +181,7 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
-    //Funcion para obtener las actividaades de cada requerimiento
+    #Funcion para obtener las actividaades de cada requerimiento
     public static function obtenerActividadesTotalesRequerimiento($id)
     {
         $actividadesTotales = DB::table('TBL_Actividades as a')
@@ -192,7 +192,7 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
-    //Funcion para obtener la actividad seleccionada
+    #Funcion para obtener la actividad seleccionada
     public static function obtenerActividad($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -204,7 +204,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Funcion para obtener las actividades finalizadas por proyecto
+    #Funcion para obtener las actividades finalizadas por proyecto
     public static function obtenerActividadesFinalizadas($id)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -222,7 +222,7 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
-    //Funcion para obtener las actividades finalizadas por trabajador
+    #Funcion para obtener las actividades finalizadas por trabajador
     public static function obtenerActividadesFinalizadasTrabajador($id)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -240,7 +240,7 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
-    //Función para obtener las actividades finalizadas por requerimiento
+    #Función para obtener las actividades finalizadas por requerimiento
     public static function obtenerActividadesFinalizadasRequerimiento($id)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -256,7 +256,7 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
-    //Funcion para obtener las actividades del cliente
+    #Funcion para obtener las actividades del cliente
     public static function obtenerActividadesCliente($idR, $cliente){
         $actividades = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
@@ -278,7 +278,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Función para obtener las actividades pendientes
+    #Función para obtener las actividades pendientes
     public static function obtenerActividadPendiente($id)
     {
         $actividadPendiente = DB::table('TBL_Actividades_Finalizadas as af')
@@ -304,7 +304,7 @@ class Actividades extends Model
         return $actividadPendiente;
     }
 
-    //Función para obtener los detalles de la actividad
+    #Función para obtener los detalles de la actividad
     public static function obtenerDetalleActividad($id)
     {
         $actividad = DB::table('TBL_Actividades as a')
@@ -323,7 +323,7 @@ class Actividades extends Model
         return $actividad;
     }
 
-    //Función para obtener las actividades pendientes de cobro
+    #Función para obtener las actividades pendientes de cobro
     public static function obtenerActividadesCobrar()
     {
         $cobros = DB::table('TBL_Actividades as a')
@@ -370,7 +370,7 @@ class Actividades extends Model
         return $cobros;
     }
 
-    //Funcion para obtener actividades pendientes por asignar costos
+    #Funcion para obtener actividades pendientes por asignar costos
     public static function obtenerActividadesAsignarCosto()
     {
         $cobros = DB::table('TBL_Actividades as a')
@@ -387,7 +387,7 @@ class Actividades extends Model
         return $cobros;
     }
 
-    //Función para obtener las actividades pendientes de pago
+    #Función para obtener las actividades pendientes de pago
     public static function obtenerActividadesPendientesPago($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -402,7 +402,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Funcion para obtener las actividades en transaccion pendiente
+    #Funcion para obtener las actividades en transaccion pendiente
     public static function obtenerTransaccionPendiente($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -417,7 +417,7 @@ class Actividades extends Model
         return $actividades;
     }
 
-    //Funcion para obtener las actividades en proceso del perfil de operación
+    #Funcion para obtener las actividades en proceso del perfil de operación
     public static function obtenerActividadesProcesoPerfil()
     {
         $actividadesProceso = DB::table('TBL_Actividades as a')
@@ -438,7 +438,7 @@ class Actividades extends Model
         return $actividadesProceso;
     }
 
-    //Función para obtener las actividades atrasadas del perfil de operación
+    #Función para obtener las actividades atrasadas del perfil de operación
     public static function obtenerActividadesAtrasadasPerfil()
     {
         $actividadesAtrasadas = DB::table('TBL_Actividades as a')
@@ -458,7 +458,7 @@ class Actividades extends Model
         return $actividadesAtrasadas;
     }
 
-    //Función para obtener las actividades finalizadas del perfil de operación
+    #Función para obtener las actividades finalizadas del perfil de operación
     public static function obtenerActividadesFinalizadasPerfil()
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -478,7 +478,7 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
-    //Función para obtener todas las actividades por proyecto del usuario autenticado
+    #Función para obtener todas las actividades por proyecto del usuario autenticado
     public static function obtenerActividadesProyectoUsuario($id)
     {
         $actividadesTotales = DB::table('TBL_Actividades as a')
@@ -492,7 +492,7 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
-    //Función para guardar la actividad en la Base de Datos
+    #Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
@@ -508,7 +508,7 @@ class Actividades extends Model
         ]);
     }
 
-    //Función para actualizar los datos de la Actividad
+    #Función para actualizar los datos de la Actividad
     public static function actualizarActividad($request, $idA, $idUsuario)
     {
         $actividad = Actividades::findOrFail($idA)->update([
@@ -525,14 +525,14 @@ class Actividades extends Model
         return $actividad;
     }
 
-    //Funcion para actualizar el requerimiento de la actividad
+    #Funcion para actualizar el requerimiento de la actividad
     public static function actualizarRequerimientoActividad($idA, $request)
     {
         Actividades::findOrFail($idA)
             ->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
     }
 
-    //Funcion para actualizar la fechaa de finalización de la actividad
+    #Funcion para actualizar la fechaa de finalización de la actividad
     public static function actualizarFechaFin($solicitud)
     {
         Actividades::findOrFail($solicitud->Id_Actividad)->update([
@@ -541,13 +541,13 @@ class Actividades extends Model
         ]);
     }
 
-    //Funcion para cambiar estado de la actividad
+    #Funcion para cambiar estado de la actividad
     public static function actualizarEstadoActividad($id, $estado)
     {
         Actividades::findOrFail($id)->update(['ACT_Estado_Id' => $estado]);
     }
 
-    //Funcion que actualiza el estado de la actividad a pagado y en que fecha se efectuó
+    #Funcion que actualiza el estado de la actividad a pagado y en que fecha se efectuó
     public static function actualizarEstadoPago($id, $estado, $fecha)
     {
         Actividades::findOrFail($id)->update([
@@ -556,7 +556,7 @@ class Actividades extends Model
         ]);
     }
 
-    //Función para actualizar el costo estimado de la actividad
+    #Función para actualizar el costo estimado de la actividad
     public static function actualizarCostoEstimado($idA, $horas, $costoHora)
     {
         Actividades::findOrFail($idA)
@@ -565,7 +565,7 @@ class Actividades extends Model
             ]);
     }
 
-    //Funcion para actualizar el estado y costo real de la actividad
+    #Funcion para actualizar el estado y costo real de la actividad
     public static function actualizarCostoReal($id, $estado, $costo)
     {
         Actividades::findOrFail($id)->update([

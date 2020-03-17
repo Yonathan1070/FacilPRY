@@ -28,7 +28,7 @@ class Proyectos extends Model
         'PRY_Finalizado_Proyecto'];
     protected $guarded = ['id'];
 
-    //Función para obtener los proyectos no finalizados
+    #Función para obtener los proyectos no finalizados
     public static function obtenerNoFinalizados($id)
     {
         $proyectosNoFinalizados = DB::table('TBL_Proyectos as p')
@@ -46,7 +46,7 @@ class Proyectos extends Model
         return $proyectosNoFinalizados;
     }
 
-    //Función para obtener los proyectos finalizados
+    #Función para obtener los proyectos finalizados
     public static function obtenerFinalizados($id)
     {
         $proyectosFinalizados = DB::table('TBL_Proyectos as p')
@@ -64,7 +64,7 @@ class Proyectos extends Model
         return $proyectosFinalizados;
     }
 
-    //Funcion para obtener datos del proyecto
+    #Funcion para obtener datos del proyecto
     public static function obtenerProyecto($id)
     {
         $proyecto = DB::table('TBL_Proyectos as p')
@@ -75,7 +75,7 @@ class Proyectos extends Model
         return $proyecto;
     }
 
-    //Función para obtener los proyectos asociados al usuario
+    #Función para obtener los proyectos asociados al usuario
     public static function obtenerProyectosAsociados()
     {
         $proyectos = DB::table('TBL_Actividades as a')
@@ -89,7 +89,7 @@ class Proyectos extends Model
         return $proyectos;
     }
 
-    //Funcion que obtiene los proyectos con facturas pendientes
+    #Funcion que obtiene los proyectos con facturas pendientes
     public static function obtenerProyectosConFacturas()
     {
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
@@ -107,7 +107,7 @@ class Proyectos extends Model
         return $proyectos;
     }
 
-    //Función que obtiene los proyectos que tiene pendientes para realizar pago
+    #Función que obtiene los proyectos que tiene pendientes para realizar pago
     public static function obtenerProyectosPagar()
     {
         $proyectos = DB::table('TBL_Actividades as a')
@@ -126,7 +126,7 @@ class Proyectos extends Model
         return $proyectos;
     }
 
-    //Función que obtiene los proyectos asociados al cliente autenticado
+    #Función que obtiene los proyectos asociados al cliente autenticado
     public static function obtenerProyectosCliente($id)
     {
         $proyectos = DB::table('TBL_Proyectos as p')
@@ -137,7 +137,7 @@ class Proyectos extends Model
         return $proyectos;
     }
 
-    //Función que cambia el estado del proyecto
+    #Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {
         Proyectos::where('PRY_Empresa_Id', '=', $id)
@@ -146,7 +146,7 @@ class Proyectos extends Model
             ]);
     }
 
-    //Función que cambia el estado a activo el proyecto
+    #Función que cambia el estado a activo el proyecto
     public static function cambiarEstadoActivado($id)
     {
         Proyectos::where('PRY_Empresa_Id', '=', $id)
@@ -155,7 +155,7 @@ class Proyectos extends Model
             ]);
     }
 
-    //Funcion que cambia el estado del proyecto a finalizado
+    #Funcion que cambia el estado del proyecto a finalizado
     public static function finalizarProyecto($id)
     {
         Proyectos::where('id', '=', $id)
@@ -164,7 +164,7 @@ class Proyectos extends Model
             ]);
     }
 
-    //Funcion que reactiva el proyecto
+    #Funcion que reactiva el proyecto
     public static function activarProyecto($id)
     {
         Proyectos::where('id', '=', $id)

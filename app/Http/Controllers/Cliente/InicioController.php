@@ -368,7 +368,7 @@ class InicioController extends Controller
             ->json(['mensaje' => 'ok']);
     }
 
-    //Metodo que obtiene los datos de la api de PayU
+    #Metodo que obtiene los datos de la api de PayU
     public function informacionPayu($datos){
         $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
@@ -392,7 +392,7 @@ class InicioController extends Controller
         return $infoPago;
     }
 
-    //Metodo que obtiene los datos de la página de respuesta de PayU
+    #Metodo que obtiene los datos de la página de respuesta de PayU
     public function datosRespuesta(){
         $ApiKey = "4Vj8eK4rloUd272L48hsrarnUA";
         $merchant_id = $_REQUEST['merchantId'];

@@ -29,7 +29,7 @@ class DecisionesController extends Controller
         $decisiones = DB::table('TBL_Indicadores as i')
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
-        //$decisiones = Decisiones::orderBy('id')->get();
+        #$decisiones = Decisiones::orderBy('id')->get();
         return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos'));
     }
 

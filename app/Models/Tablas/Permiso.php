@@ -35,7 +35,7 @@ class Permiso extends Model
         );
     }
 
-    //Función que obtiene los permisos asignados
+    #Función que obtiene los permisos asignados
     public static function obtenerPermisosAsignados($id)
     {
         $permisoAsignado = DB::table('TBL_Permiso as p')

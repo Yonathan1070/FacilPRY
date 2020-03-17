@@ -32,7 +32,7 @@ class InicioController extends Controller
      */
     public function index()
     {
-        // Datos de las notificaciones y del usuario
+        # Datos de las notificaciones y del usuario
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));

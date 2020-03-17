@@ -24,7 +24,7 @@ class DocumentosSoporte extends Model
         'ACT_Documento_Soporte_Actividad'];
     protected $guarded = ['id'];
 
-    //Función que obtiene los documentos soporte de la actividad
+    #Función que obtiene los documentos soporte de la actividad
     public static function obtenerDocumentosSoporte($id)
     {
         $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
@@ -35,7 +35,7 @@ class DocumentosSoporte extends Model
         return $documentosSoporte;
     }
 
-    //Funcion para obtener el documento soporte de la actividad finalizada
+    #Funcion para obtener el documento soporte de la actividad finalizada
     public static function obtenerDocumentoSoporteFinalizada($id)
     {
         $documentosSoporte = DB::table('TBL_Actividades_Finalizadas as af')
@@ -47,7 +47,7 @@ class DocumentosSoporte extends Model
         return $documentosSoporte;
     }
 
-    //Funcion para obtener actividad a cobrar
+    #Funcion para obtener actividad a cobrar
     public static function obtenerDocumentosActividadCobrar($id)
     {
         $documentosSoporte = DB::table('TBL_Actividades as a')
@@ -58,7 +58,7 @@ class DocumentosSoporte extends Model
         return $documentosSoporte;
     }
 
-    //Función que crea el documento soporte de la actividad
+    #Función que crea el documento soporte de la actividad
     public static function crearDocumentoSoporte($idA, $archivo)
     {
         DocumentosSoporte::create([
@@ -67,7 +67,7 @@ class DocumentosSoporte extends Model
         ]);
     }
 
-    //Funcion para actualizar el documento soporte
+    #Funcion para actualizar el documento soporte
     public static function actualizarDocumentoSoporte($documento, $archivo)
     {
         $documento->update([

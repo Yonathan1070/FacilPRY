@@ -264,7 +264,7 @@ class ActividadesController extends Controller
             ->with('mensaje', 'Actividad agregada con exito');
     }
 
-    //Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
+    #Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
     private function obtenerFechasRango($fechaInicio, $fechaFin)
     {
         $inicio = Carbon::createFromFormat('Y-m-d', substr($fechaInicio, 0, 10));

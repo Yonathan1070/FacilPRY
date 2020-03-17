@@ -12,7 +12,7 @@ class TablaMenuUsuarioSeeder extends Seeder
      */
     public function run()
     {
-        //Asignar Menú Administrador
+        #Asignar Menú Administrador
         
         DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 1,
@@ -23,12 +23,12 @@ class TablaMenuUsuarioSeeder extends Seeder
             'MN_USR_Menu_Id' => 4
         ]);
         
-        //Asignar Menú Financiero
+        #Asignar Menú Financiero
         /*DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 2,
             'MN_USR_Menu_Id' => 16
         ]);*/
-        //Asignar Menú Validador
+        #Asignar Menú Validador
         /*DB::table('TBL_Menu_Usuario')->insert([
             'MN_USR_Usuario_Id' => 3,
             'MN_USR_Menu_Id' => 13

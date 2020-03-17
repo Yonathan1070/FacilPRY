@@ -32,7 +32,7 @@ class Empresas extends Model
     ];
     protected $guarded = ['id'];
 
-    //Función que obtiene las empresas activas
+    #Función que obtiene las empresas activas
     public static function obtenerEmpresasActivas()
     {
         $empresas = DB::table('TBL_Empresas')
@@ -43,7 +43,7 @@ class Empresas extends Model
         return $empresas;
     }
 
-    //Función que obtiene las empresas inactivas
+    #Función que obtiene las empresas inactivas
     public static function obtenerEmpresasInactivas()
     {
         $empresas = DB::table('TBL_Empresas')
@@ -54,7 +54,7 @@ class Empresas extends Model
         return $empresas;
     }
     
-    //Funcion que obtiene los datos de la empresa
+    #Funcion que obtiene los datos de la empresa
     public static function obtenerDatosEmpresa()
     {
         $datos = DB::table('TBL_Usuarios as u')
@@ -65,7 +65,7 @@ class Empresas extends Model
         return $datos;
     }
 
-    //Funcion para obtener id de la empresa
+    #Funcion para obtener id de la empresa
     public static function obtenerIdEmpresa()
     {
         $id_empresa = DB::table('TBL_Usuarios as uu')
@@ -77,7 +77,7 @@ class Empresas extends Model
         return $id_empresa;
     }
 
-    //Función que crea la empresa
+    #Función que crea la empresa
     public static function crearEmpresa($request)
     {
         Empresas::create([
@@ -91,7 +91,7 @@ class Empresas extends Model
         ]);
     }
 
-    //Función que actualiza los datos de la empresa
+    #Función que actualiza los datos de la empresa
     public static function editarEmpresa($request, $id)
     {
         Empresas::findOrFail($id)
@@ -104,7 +104,7 @@ class Empresas extends Model
             ]);
     }
 
-    //Función que cambia el estado de la empresa
+    #Función que cambia el estado de la empresa
     public static function cambiarEstado($id)
     {
         Empresas::findOrFail($id)
@@ -113,7 +113,7 @@ class Empresas extends Model
             ]);
     }
 
-    //Función que cambia el estado a activo de la empresa
+    #Función que cambia el estado a activo de la empresa
     public static function cambiarEstadoActivado($id)
     {
         Empresas::findOrFail($id)

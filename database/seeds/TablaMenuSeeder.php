@@ -12,7 +12,7 @@ class TablaMenuSeeder extends Seeder
      */
     public function run()
     {
-        //Agregar Menús Iniciales
+        #Agregar Menús Iniciales
         DB::table('TBL_Menu')->insert([
             'MN_Nombre_Menu' => 'Metricas',
             'MN_Nombre_Ruta_Menu' => 'inicio_administrador',

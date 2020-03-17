@@ -30,7 +30,7 @@ class ActividadesFinalizadas extends Model
         'ACT_FIN_Revisado'];
     protected $guarded = ['id'];
 
-    //Funcion para obtener las actividades pendientes para aprobar el cliente
+    #Funcion para obtener las actividades pendientes para aprobar el cliente
     public static function obtenerActividadesAprobar()
     {
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
@@ -50,7 +50,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesPendientes;
     }
 
-    //Funcion para obtener actividades pendientes de aprobación por parte del validador
+    #Funcion para obtener actividades pendientes de aprobación por parte del validador
     public static function obtenerActividadesAprobarValidador()
     {
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
@@ -68,7 +68,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesPendientes;
     }
 
-    //Funcion para obtener actividad finalizada
+    #Funcion para obtener actividad finalizada
     public static function obtenerActividadFinalizada($id)
     {
         $actividadFinalizada = DB::table('TBL_Actividades_Finalizadas as af')
@@ -94,7 +94,7 @@ class ActividadesFinalizadas extends Model
         return $actividadFinalizada;
     }
 
-    //Funcion para obtener las actividades finalizadas del cliente
+    #Funcion para obtener las actividades finalizadas del cliente
     public static function obtenerActividadesFinalizadasCliente()
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -109,7 +109,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesFinalizadas;
     }
 
-    //Funcion para obtener las actividades en proceso del cliente
+    #Funcion para obtener las actividades en proceso del cliente
     public static function obtenerActividadesProcesoCliente()
     {
         $actividadesEntregar = DB::table('TBL_Actividades as a')
@@ -124,7 +124,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesEntregar;
     }
 
-    //Funcion para obtener los detalles de la actividad finalizada
+    #Funcion para obtener los detalles de la actividad finalizada
     public static function obtenerActividadFinalizadaDetalle($id)
     {
         $actividades = DB::table('TBL_Actividades_Finalizadas as af')
@@ -152,7 +152,7 @@ class ActividadesFinalizadas extends Model
         return $actividades;
     }
 
-    //Función para obtener la actividad finalizaa por medio del id
+    #Función para obtener la actividad finalizaa por medio del id
     public static function obtenerActividadFinalizadaSola($id)
     {
         $actividad = DB::table('TBL_Actividades_Finalizadas as af')
@@ -164,7 +164,7 @@ class ActividadesFinalizadas extends Model
         return $actividad;
     }
 
-    //Función para obtener las actividades finalizadas por perfil de operación
+    #Función para obtener las actividades finalizadas por perfil de operación
     public static function obtenerActividadesFinalizadasPerfil($id)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
@@ -180,7 +180,7 @@ class ActividadesFinalizadas extends Model
         return $actividadesFinalizadas;
     }
 
-    //Funcion para crear las actividades finalizadas del cliente
+    #Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {
         ActividadesFinalizadas::create([
@@ -192,7 +192,7 @@ class ActividadesFinalizadas extends Model
         ]);
     }
 
-    //Funcion para guardar la entrega de la actividad del perfil de operación
+    #Funcion para guardar la entrega de la actividad del perfil de operación
     public static function crearActividadFinalizadaTrabajador($request)
     {
         ActividadesFinalizadas::create([
@@ -204,7 +204,7 @@ class ActividadesFinalizadas extends Model
         ]);
     }
 
-    //Funcion para actualizar el revisado de la actividad entregada
+    #Funcion para actualizar el revisado de la actividad entregada
     public static function actualizarRevisadoActividad($id)
     {
         ActividadesFinalizadas::findOrFail($id)->update([

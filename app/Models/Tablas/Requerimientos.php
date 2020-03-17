@@ -26,7 +26,7 @@ class Requerimientos extends Model
         'REQ_Proyecto_Id'];
     protected $guarded = ['id'];
 
-    //Función para obtener los requerimientos del proyecto seleccionado
+    #Función para obtener los requerimientos del proyecto seleccionado
     public static function obtenerRequerimientos($idP)
     {
         $requerimientos = DB::table('TBL_Proyectos as p')
@@ -38,7 +38,7 @@ class Requerimientos extends Model
         return $requerimientos;
     }
 
-    //Funcion para obtener los requerimientos de un proyecto, excepto el requerimiento actual
+    #Funcion para obtener los requerimientos de un proyecto, excepto el requerimiento actual
     public static function obtenerRequerimientosNoActual($request, $idR)
     {
         $requerimientos = Requerimientos::where(

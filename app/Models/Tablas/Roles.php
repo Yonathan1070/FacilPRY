@@ -26,7 +26,7 @@ class Roles extends Model
         'RLS_Empresa_Id'];
     protected $guarded = ['id'];
 
-    //Función para obtener los roles a excepción de Cliente
+    #Función para obtener los roles a excepción de Cliente
     public static function obtenerRolesNoCliente()
     {
         $roles = Roles::where('id', '!=', 4)
@@ -35,7 +35,7 @@ class Roles extends Model
         return $roles;
     }
 
-    //Función que obtiene los roles asignados
+    #Función que obtiene los roles asignados
     public static function obtenerRolesAsignados($id){
         $rolesAsignados = DB::table('TBL_Roles as r')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Rol_Id', '=', 'r.id')

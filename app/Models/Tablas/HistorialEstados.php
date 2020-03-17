@@ -26,7 +26,7 @@ class HistorialEstados extends Model
         'HST_EST_Actividad'];
     protected $guarded = ['id'];
 
-    //Funcion para crear el historico de los estados de la actividad
+    #Funcion para crear el historico de los estados de la actividad
     public static function crearHistorialEstado($idA, $estado){
         HistorialEstados::create([
             'HST_EST_Fecha' => Carbon::now(),

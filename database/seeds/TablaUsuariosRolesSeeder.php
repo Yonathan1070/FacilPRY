@@ -12,19 +12,19 @@ class TablaUsuariosRolesSeeder extends Seeder
      */
     public function run()
     {
-        //Asignar Rol Administrador
+        #Asignar Rol Administrador
         DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 1,
             'USR_RLS_Usuario_Id' => 1,
             'USR_RLS_Estado' => 1
         ]);
-        //Asignar Rol Finanzas
+        #Asignar Rol Finanzas
         /*DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 3,
             'USR_RLS_Usuario_Id' => 2,
             'USR_RLS_Estado' => 1
         ]);*/
-        //Asignar Rol Validador
+        #Asignar Rol Validador
         /*DB::table('TBL_Usuarios_Roles')->insert([
             'USR_RLS_Rol_Id' => 4,
             'USR_RLS_Usuario_Id' => 3,

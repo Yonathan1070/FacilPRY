@@ -26,7 +26,7 @@ class FacturasCobro extends Model
         'FACT_Fecha_Cobro'];
     protected $guarded = ['id'];
 
-    //Funcion para crear las facturas de cobro
+    #Funcion para crear las facturas de cobro
     public static function crearFactura($idA, $idC)
     {
         FacturasCobro::create([
@@ -36,7 +36,7 @@ class FacturasCobro extends Model
         ]);
     }
 
-    //Funcion para obtener la información de la factura
+    #Funcion para obtener la información de la factura
     public static function obtenerDetalleFactura($id)
     {
         $informacion = DB::table('TBL_Facturas_Cobro as fc')
@@ -53,7 +53,7 @@ class FacturasCobro extends Model
         return $informacion;
     }
 
-    //Funcion para obtener el total de la factura
+    #Funcion para obtener el total de la factura
     public static function obtenerTotalFactura($id)
     {
         $total = DB::table('TBL_Facturas_Cobro as fc')

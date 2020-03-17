@@ -29,7 +29,7 @@ class Respuesta extends Model
         'RTA_Fecha_Respuesta'];
     protected $guarded = ['id'];
 
-    //Funcion para obtener el historial de respuestas
+    #Funcion para obtener el historial de respuestas
     public static function obtenerHistoricoRespuestas($id)
     {
         $respuestasAnteriores = DB::table('TBL_Respuesta as r')
@@ -48,7 +48,7 @@ class Respuesta extends Model
         return $respuestasAnteriores;
     }
 
-    //Funcion para obtener la respuesta del validador
+    #Funcion para obtener la respuesta del validador
     public static function obtenerRespuestaValidador($id)
     {
         $rtaValidador = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $id)
@@ -58,7 +58,7 @@ class Respuesta extends Model
         return $rtaValidador;
     }
 
-    //Funcion para obtener la ultima respuesta de la actividad entregada
+    #Funcion para obtener la ultima respuesta de la actividad entregada
     public static function obtenerUltimaRespuesta($idA)
     {
         $ultimaRta = DB::table('TBL_Respuesta as re')
@@ -74,7 +74,7 @@ class Respuesta extends Model
         return $ultimaRta;
     }
 
-    //Funcion para crear el historial de respuestas
+    #Funcion para crear el historial de respuestas
     public static function crearRespuesta($id, $estado)
     {
         Respuesta::create([
@@ -83,7 +83,7 @@ class Respuesta extends Model
         ]);
     }
 
-    //Funcion para actualizar los datos de la respuesta
+    #Funcion para actualizar los datos de la respuesta
     public static function actualizarRespuesta($request, $estado)
     {
         Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
@@ -98,7 +98,7 @@ class Respuesta extends Model
             ]);
     }
 
-    //Funcion para actualizar la respuesta cliente
+    #Funcion para actualizar la respuesta cliente
     public static function actualizarRespuestaCliente($request, $estado)
     {
         Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
@@ -113,7 +113,7 @@ class Respuesta extends Model
             ]);
     }
 
-    //Funcion para actualizar el estado de la respuesta
+    #Funcion para actualizar el estado de la respuesta
     public static function actualizarEstado($id, $estado)
     {
         Respuesta::findOrFail($id)

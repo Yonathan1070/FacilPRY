@@ -26,7 +26,7 @@ class HorasActividad extends Model
         'HRS_ACT_Cantidad_Horas_Reales'];
     protected $guarded = ['id'];
 
-    //Función que obtiene las fechas para el diagrama de Gantt
+    #Función que obtiene las fechas para el diagrama de Gantt
     public static function obtenerFechas($id)
     {
         $fechas = DB::table('TBL_Horas_Actividad as ha')
@@ -42,7 +42,7 @@ class HorasActividad extends Model
         return $fechas;
     }
 
-    //Función para obtener las horas para aprobar
+    #Función para obtener las horas para aprobar
     public static function obtenerHorasAprobar($idA)
     {
         $horasAprobar = DB::table('TBL_Horas_Actividad as ha')
@@ -57,7 +57,7 @@ class HorasActividad extends Model
         return $horasAprobar;
     }
 
-    //Función que obtiene las actividades para el diagrama de Gantt
+    #Función que obtiene las actividades para el diagrama de Gantt
     public static function obtenerActividadesGantt($id)
     {
         $actividades = DB::table('TBL_Actividades as a')
@@ -77,7 +77,7 @@ class HorasActividad extends Model
         return $actividades;
     }
 
-    //Funcion para obtener las horas asignadas
+    #Funcion para obtener las horas asignadas
     public static function obtenerHorasAsignadas($actividades, $fecha, $trabajador, $idH)
     {
         $horas = $actividades
@@ -89,7 +89,7 @@ class HorasActividad extends Model
         return $horas;
     }
 
-    //Función para obtener las horas de la actividad seleccionada
+    #Función para obtener las horas de la actividad seleccionada
     public static function obtenerHorasActividad($id)
     {
         $horas = DB::table('TBL_Horas_Actividad')
@@ -99,7 +99,7 @@ class HorasActividad extends Model
         return $horas;
     }
 
-    //Funcion para obtener cantidad de horas asignadas
+    #Funcion para obtener cantidad de horas asignadas
     public static function obtenerHorasAsignadasActividad($id)
     {
         $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $id)
@@ -108,7 +108,7 @@ class HorasActividad extends Model
         return $horas;
     }
 
-    //Funcion para obtener cantidad de horas aprobadas
+    #Funcion para obtener cantidad de horas aprobadas
     public static function obtenerHorasAprobadasActividad($idA)
     {
         $horas = DB::table('TBL_Horas_Actividad as ha')
@@ -119,7 +119,7 @@ class HorasActividad extends Model
         return $horas;
     }
 
-    //Funcion para obtener cantidad de horas asignadas sin la hora seleccionada
+    #Funcion para obtener cantidad de horas asignadas sin la hora seleccionada
     public static function obtenerHorasAsignadasNoSeleccionada($id, $fecha)
     {
         $horas = DB::table('TBL_Horas_Actividad as ha')
@@ -132,7 +132,7 @@ class HorasActividad extends Model
         return $horas;
     }
 
-    //Función para obtener la actividad con las horas de trabajo
+    #Función para obtener la actividad con las horas de trabajo
     public static function obtenerActividad($id)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
@@ -145,7 +145,7 @@ class HorasActividad extends Model
         return $actividades;
     }
 
-    //Función para obtener las actividades finalizadas agrupadas por horas
+    #Función para obtener las actividades finalizadas agrupadas por horas
     public static function obtenerActividadesFinalizadas($id)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
@@ -166,7 +166,7 @@ class HorasActividad extends Model
         return $actividades;
     }
 
-    //Función para crear las Horas asignadas para las actividades
+    #Función para crear las Horas asignadas para las actividades
     public static function crearHorasActividad($idA, $fecha)
     {
         HorasActividad::create([
@@ -175,7 +175,7 @@ class HorasActividad extends Model
         ]);
     }
 
-    //Función para actualizar las horas de la actividad
+    #Función para actualizar las horas de la actividad
     public static function actualizarHoraActividad($horasAsignadas, $horasReales, $idH)
     {
         HorasActividad::findOrFail($idH)->update([
@@ -184,7 +184,7 @@ class HorasActividad extends Model
         ]);
     }
 
-    //Función para actualizar las horas de la actividad
+    #Función para actualizar las horas de la actividad
     public static function actualizarHoraRealActividad($request, $idH)
     {
         HorasActividad::findOrFail($idH)->update([
@@ -193,7 +193,7 @@ class HorasActividad extends Model
         ]);
     }
 
-    //Funcion para ajustar las horas asignadas de la actividad
+    #Funcion para ajustar las horas asignadas de la actividad
     public static function actualizarHorasAsignadas($id, $cantidadHoras)
     {
         HorasActividad::findOrFail($id)->update([
@@ -201,7 +201,7 @@ class HorasActividad extends Model
         ]);
     }
 
-    //Funcion para ajustar las horas reales de la actividad
+    #Funcion para ajustar las horas reales de la actividad
     public static function actualizarHorasReales($idH, $request)
     {
         HorasActividad::findOrFail($idH)->update([

@@ -126,7 +126,7 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosAsociados();
 	
         foreach ($proyectos as $key => $proyecto) {
-            //Obtenemos la Eficacia
+            #Obtenemos la Eficacia
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
                 $proyecto->id
             );
@@ -139,7 +139,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = 0;
             }
 
-            //Obtenemos la Eficiencia
+            #Obtenemos la Eficiencia
             $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id);
             $costoEstimado = 0;
             $costoReal = 0;
@@ -159,7 +159,7 @@ class MetricasController extends Controller
                 $eficienciaPorcentaje = 0;
             }
 
-            //Obtenemos la Efectividad
+            #Obtenemos la Efectividad
             $efectividadPorcentaje = (($eficienciaPorcentaje + $eficaciaPorcentaje) / 2);
             $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$efectividadPorcentaje];
         }

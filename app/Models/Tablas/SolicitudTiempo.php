@@ -27,7 +27,7 @@ class SolicitudTiempo extends Model
     public $timestamps = false;
     protected $guarded = ['id'];
 
-    //Funcion que obtiene la actividad de la solicitud de tiempo
+    #Funcion que obtiene la actividad de la solicitud de tiempo
     public static function obtenerSolicitudTiempoActividad($idA)
     {
         $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
@@ -41,7 +41,7 @@ class SolicitudTiempo extends Model
         return $solicitud;
     }
 
-    //Funcion que obtiene la solicitud de tiempo
+    #Funcion que obtiene la solicitud de tiempo
     public static function obtenerSolicitudTiempo($idS)
     {
         $solicitud = DB::table('TBL_Solicitud_Tiempo as st')
@@ -53,7 +53,7 @@ class SolicitudTiempo extends Model
             ->first();
     }
 
-    //Función para crear la solicitud de tiempo para la actividad
+    #Función para crear la solicitud de tiempo para la actividad
     public static function crearSolicitud($id, $request)
     {
         SolicitudTiempo::create([

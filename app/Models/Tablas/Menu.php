@@ -37,7 +37,7 @@ class Menu extends Model
         );
     }
 
-    //Funcion que obtiene los items hijos
+    #Funcion que obtiene los items hijos
     public function getHijos($padres, $line){
         $children = [];
         foreach($padres as $line1){
@@ -51,7 +51,7 @@ class Menu extends Model
         return $children;
     }
 
-    //Función que obtiene los items padres
+    #Función que obtiene los items padres
     public function getPadres($front)
     {
         if($front) {
@@ -70,7 +70,7 @@ class Menu extends Model
         }
     }
 
-    //Función que crea y ordena el menú con respecto a los items
+    #Función que crea y ordena el menú con respecto a los items
     public static function getMenu($front =false)
     {
         $menus = new Menu();
@@ -85,7 +85,7 @@ class Menu extends Model
         return $menuAll;
     }
 
-    //Función que guarda el orden en que se debe mostrar el menú
+    #Función que guarda el orden en que se debe mostrar el menú
     public function guardarOrden($menu)
     {
         $menus=json_decode($menu);
@@ -95,7 +95,7 @@ class Menu extends Model
         }
     }
 
-    //Función que obtiene los items asignados
+    #Función que obtiene los items asignados
     public static function obtenerItemsAsignados($id)
     {
         $menuAsignado = DB::table('TBL_Menu as m')

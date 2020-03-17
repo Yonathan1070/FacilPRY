@@ -31,7 +31,7 @@ class Notificaciones extends Model
         'NTF_Icono'];
     protected $guarded = ['id'];
 
-    //Funcion donde se guardan las notificaciones en la Base de Datos
+    #Funcion donde se guardan las notificaciones en la Base de Datos
     public static function crearNotificacion(
         $titulo, $de, $para, $ruta, $parametro, $valor, $icono
     )
@@ -49,7 +49,7 @@ class Notificaciones extends Model
         ]);
     }
 
-    //Funcion donde obtenemos el listado de las notificaciones de cada usuario
+    #Funcion donde obtenemos el listado de las notificaciones de cada usuario
     public static function obtenerNotificaciones()
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))
@@ -59,7 +59,7 @@ class Notificaciones extends Model
         return $notificaciones;
     }
 
-    //Función donde obtenemos la cantidad de notificaciones sin abrir de cada usuario
+    #Función donde obtenemos la cantidad de notificaciones sin abrir de cada usuario
     public static function obtenerCantidadNotificaciones()
     {
         $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))
@@ -69,7 +69,7 @@ class Notificaciones extends Model
         return $cantidad;
     }
 
-    //Funcion que vambia el estado de la notificación a visto
+    #Funcion que vambia el estado de la notificación a visto
     public static function cambiarEstadoNotificacion($id)
     {
         $notificacion = Notificaciones::findOrFail($id);
@@ -79,7 +79,7 @@ class Notificaciones extends Model
         return $notificacion;
     }
 
-    //Funcion que cambia el estado de todas las notificaciones a vistas
+    #Funcion que cambia el estado de todas las notificaciones a vistas
     public static function cambiarEstadoTodas($id)
     {
         $notificaciones = Notificaciones::where('NTF_Para', '=', $id)->get();

@@ -40,7 +40,7 @@ class Usuarios extends Authenticatable
         'USR_Costo_Hora'];
     protected $guarded = ['id'];
     
-    //Funcion que obtiene los roles del usuario
+    #Funcion que obtiene los roles del usuario
     public function roles()
     {
         return $this->belongsToMany(
@@ -51,7 +51,7 @@ class Usuarios extends Authenticatable
         )->withPivot('USR_RLS_Usuario_Id', 'USR_RLS_Rol_Id');
     }
 
-    //Funcion que establece la variable de sesión del usuario autenticado
+    #Funcion que establece la variable de sesión del usuario autenticado
     public function setSession($roles)
     {
         Session::put([
@@ -72,7 +72,7 @@ class Usuarios extends Authenticatable
         }
     }
 
-    //Funcion para obtener el cliente por proyecto
+    #Funcion para obtener el cliente por proyecto
     public static function obtenerClienteProyecto($idP)
     {
         $datosU = DB::table('TBL_Proyectos as p')
@@ -83,7 +83,7 @@ class Usuarios extends Authenticatable
         return $datosU;
     }
 
-    //Funcion para obtener el trabajador asociado a la actividad
+    #Funcion para obtener el trabajador asociado a la actividad
     public static function obtenerPerfilAsociado($id)
     {
         $trabajador = DB::table('TBL_Actividades as a')
@@ -94,7 +94,7 @@ class Usuarios extends Authenticatable
         return $trabajador;
     }
 
-    //Funcion que obtiene los usuarios con el rol de perfil de operación
+    #Funcion que obtiene los usuarios con el rol de perfil de operación
     public static function obtenerTrabajadores()
     {
         $trabajadores = DB::table('TBL_Usuarios as u')
@@ -108,7 +108,7 @@ class Usuarios extends Authenticatable
         return $trabajadores;
     }
 
-    //Función que obtiene los perfil de operación
+    #Función que obtiene los perfil de operación
     public static function obtenerPerfilOperacion()
     {
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
@@ -123,7 +123,7 @@ class Usuarios extends Authenticatable
         return $perfilesOperacion;
     }
 
-    //Función que obtiene los directores de proyectos
+    #Función que obtiene los directores de proyectos
     public static function obtenerDirectores()
     {
         $directores = DB::table('TBL_Usuarios')
@@ -142,7 +142,7 @@ class Usuarios extends Authenticatable
         return $directores;
     }
 
-    //Función para obtener el listado de clientes
+    #Función para obtener el listado de clientes
     public static function obtenerClientes($id)
     {
         $clientes = DB::table('TBL_Usuarios as uu')
@@ -160,7 +160,7 @@ class Usuarios extends Authenticatable
         return $clientes;
     }
 
-    //Función para obtener el perfil de operación por actividad
+    #Función para obtener el perfil de operación por actividad
     public static function obtenerPerfilOperacionActividad($id)
     {
         $perfil = DB::table('TBL_Usuarios as u')
@@ -173,7 +173,7 @@ class Usuarios extends Authenticatable
         return $perfil;
     }
 
-    //Funcion que guarda el nuevo usuario en la Base de Datos
+    #Funcion que guarda el nuevo usuario en la Base de Datos
     public static function crearUsuario($request)
     {
         if($request['USR_Costo_Hora'] == null) {
@@ -202,13 +202,13 @@ class Usuarios extends Authenticatable
         ]);
     }
 
-    //Funcion que obtiene un usuario en específico
+    #Funcion que obtiene un usuario en específico
     public static function obtenerUsuario($documento)
     {
         return Usuarios::where('USR_Documento_Usuario', '=', $documento)->first();
     }
 
-    //Funcion que actualiza los datos del usuario en la Base de Datos
+    #Funcion que actualiza los datos del usuario en la Base de Datos
     public static function editarUsuario($request, $id)
     {
         Usuarios::findOrFail($id)->update([
@@ -225,7 +225,7 @@ class Usuarios extends Authenticatable
         ]);
     }
 
-    //Funcion que envía el correo al usuario
+    #Funcion que envía el correo al usuario
     public static function enviarcorreo($request, $mensaje, $asunto, $plantilla)
     {
         Mail::send($plantilla, [

@@ -12,7 +12,7 @@ class TablaRolesSeeder extends Seeder
      */
     public function run()
     {
-        //Crear Roles Iniciales
+        #Crear Roles Iniciales
         DB::table('TBL_Roles')->insert([
             'RLS_Rol_Id' => 1,
             'RLS_Nombre_Rol' => 'Administrador',

@@ -12,7 +12,7 @@ class TablaEstadosSeeder extends Seeder
      */
     public function run()
     {
-        //Agregar Estados
+        #Agregar Estados
         DB::table('TBL_Estados')->insert([
             'EST_Nombre_Estado' => 'En Proceso'
         ]);

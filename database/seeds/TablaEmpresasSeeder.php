@@ -12,7 +12,7 @@ class TablaEmpresasSeeder extends Seeder
      */
     public function run()
     {
-        //Agregar Empresa
+        #Agregar Empresa
         DB::table('TBL_Empresas')->insert([
             'EMP_Nombre_Empresa' => 'INK Agencia Digital',
             'EMP_NIT_Empresa' => '900681523-6',
