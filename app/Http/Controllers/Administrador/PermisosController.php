@@ -62,7 +62,14 @@ class PermisosController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        return view('administrador.permisos.crear', compact('datos', 'notificaciones', 'cantidad'));
+        return view(
+            'administrador.permisos.crear',
+            compact(
+                'datos',
+                'notificaciones',
+                'cantidad'
+            )
+        );
     }
 
     /**
@@ -74,7 +81,10 @@ class PermisosController extends Controller
     public function guardar(ValidacionPermiso $request)
     {
         Permiso::create($request->all());
-        return redirect()->back()->with('mensaje', 'Permiso creado con exito');
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Permiso creado con exito');
     }
 
     /**
@@ -149,6 +159,7 @@ class PermisosController extends Controller
                 array_push($disponibles, $permiso);
             }
         }
+
         return $disponibles;
     }
 
@@ -169,6 +180,7 @@ class PermisosController extends Controller
                 array_push($disponibles, $rol);
             }
         }
+
         return $disponibles;
     }
 
@@ -192,9 +204,12 @@ class PermisosController extends Controller
                     'MN_USR_Usuario_Id' => $request->id,
                     'MN_USR_Menu_Id' => $request->menuId
                 ]);
-                return response()->json(['mensaje' => 'okMA']);
+
+                return response()
+                    ->json(['mensaje' => 'okMA']);
             } else {
-                return response()->json(['mensaje' => 'ngMA']);
+                return response()
+                    ->json(['mensaje' => 'ngMA']);
             }
         }
     }
@@ -215,10 +230,13 @@ class PermisosController extends Controller
                 ->where('MN_USR_Menu_Id', '=', $menuId)
                 ->first();
             if (!$asignado) {
-                return response()->json(['mensaje' => 'ngMD']);
+                return response()
+                    ->json(['mensaje' => 'ngMD']);
             } else {
                 $asignado->delete();
-                return response()->json(['mensaje' => 'okMD']);
+
+                return response()
+                    ->json(['mensaje' => 'okMD']);
             }
         }
     }
@@ -243,9 +261,12 @@ class PermisosController extends Controller
                     'PRM_USR_Usuario_Id' => $id,
                     'PRM_USR_Permiso_Id' => $menuId
                 ]);
-                return response()->json(['mensaje' => 'okPA']);
+
+                return response()
+                    ->json(['mensaje' => 'okPA']);
             } else {
-                return response()->json(['mensaje' => 'ngPA']);
+                return response()
+                    ->json(['mensaje' => 'ngPA']);
             }
         }
     }
@@ -266,10 +287,13 @@ class PermisosController extends Controller
                 ->where('PRM_USR_Permiso_Id', '=', $menuId)
                 ->first();
             if (!$asignado) {
-                return response()->json(['mensaje' => 'ngPD']);
+                return response()
+                    ->json(['mensaje' => 'ngPD']);
             } else {
                 $asignado->delete();
-                return response()->json(['mensaje' => 'okPD']);
+
+                return response()
+                    ->json(['mensaje' => 'okPD']);
             }
         }
     }
@@ -295,9 +319,12 @@ class PermisosController extends Controller
                     'USR_RLS_Rol_Id' => $rolId,
                     'USR_RLS_Estado' => 1
                 ]);
-                return response()->json(['mensaje' => 'okRA']);
+
+                return response()
+                    ->json(['mensaje' => 'okRA']);
             } else {
-                return response()->json(['mensaje' => 'ngRA']);
+                return response()
+                    ->json(['mensaje' => 'ngRA']);
             }
         }
     }
@@ -318,10 +345,13 @@ class PermisosController extends Controller
                 ->where('USR_RLS_Rol_Id', '=', $rolId)
                 ->first();
             if (!$asignado) {
-                return response()->json(['mensaje' => 'ngRD']);
+                return response()
+                    ->json(['mensaje' => 'ngRD']);
             } else {
                 $asignado->delete();
-                return response()->json(['mensaje' => 'okRD']);
+
+                return response()
+                    ->json(['mensaje' => 'okRD']);
             }
         }
     }

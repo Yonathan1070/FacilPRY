@@ -67,7 +67,8 @@ class EmpresaController extends Controller
             Empresas::findOrFail($usuario->USR_Empresa_Id)->update(['EMP_Logo_Empresa' => $nombreArchivo]);
             return response()->json(['success' => 'Logo Actualizado']);
         }
-        return response()->json(['error' => $validator->errors()->all()]);
+        return response()
+            ->json(['error' => $validator->errors()->all()]);
     }
 
     /**
@@ -79,6 +80,9 @@ class EmpresaController extends Controller
     public function actualizarDatos(Request $request)
     {
         Empresas::findOrFail($request->id)->update($request->all());
-        return redirect()->back()->with('mensaje', 'Datos actualizados con exito');
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Datos actualizados con exito');
     }
 }

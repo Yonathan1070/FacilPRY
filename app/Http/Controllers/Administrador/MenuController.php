@@ -74,7 +74,10 @@ class MenuController extends Controller
     public function guardar(ValidacionMenu $request)
     {
         Menu::create($request->all());
-        return redirect()->back()->with('mensaje', 'Menú creado con exito');
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Menú creado con exito');
     }
 
     /**
@@ -88,7 +91,9 @@ class MenuController extends Controller
         if($request->ajax()){
             $menu = new Menu;
             $menu->guardarOrden($request->menu);
-            return response()->json(['mensaje' => 'ok']);
+            
+            return response()
+                ->json(['mensaje' => 'ok']);
         }else{
             abort(404);
         }
@@ -128,7 +133,10 @@ class MenuController extends Controller
     public function actualizar(ValidacionMenu $request, $id)
     {
         Menu::findOrFail($id)->update($request->all());
-        return redirect()->route('menu')->with('mensaje', 'El Menú ha sido actualizado');
+        
+        return redirect()
+            ->route('menu')
+            ->with('mensaje', 'El Menú ha sido actualizado');
     }
 
     /**
@@ -140,6 +148,9 @@ class MenuController extends Controller
     public function eliminar($id)
     {
         Menu::findOrFail($id)->delete();
-        return redirect()->route('menu')->with('mensaje', 'El Menú ha sido eliminado');
+        
+        return redirect()
+            ->route('menu')
+            ->with('mensaje', 'El Menú ha sido eliminado');
     }
 }
