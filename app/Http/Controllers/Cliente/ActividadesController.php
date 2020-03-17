@@ -14,7 +14,6 @@ use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Respuesta;
 use App\Models\Tablas\Usuarios;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -191,7 +190,9 @@ class ActividadesController extends Controller
     public function descargarArchivo($ruta)
     {
         $ruta = public_path().'/documentos_soporte/'.$ruta;
-        return response()->download($ruta);
+        
+        return response()
+            ->download($ruta);
     }
 
     /**

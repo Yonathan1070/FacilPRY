@@ -110,7 +110,11 @@ class InicioController extends Controller
         $proyecto = Proyectos::findOrFail($id);
         $actividades = Actividades::obtenerActividadesPDF($id);
         if (count($actividades) == 0) {
-            return redirect()->back()->withErrors('No es posible generar el archivo sin que el proyecto tenga actividades');
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No es posible generar el archivo sin que el proyecto tenga actividades'
+                );
         }
         $id_empresa = Empresas::obtenerIdEmpresa();
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
@@ -120,6 +124,7 @@ class InicioController extends Controller
         );
 
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
+        
         return $pdf->download($fileName.'.pdf');
     }
 
@@ -318,6 +323,7 @@ class InicioController extends Controller
                     'InkBrutalPRY, Software de Gestión de Proyectos'
                 )->subject('Pago Actividad');
             });
+
             return redirect()
                 ->route('inicio_cliente')
                 ->withErrors('Transacción Rechazada o Expirada.');
@@ -343,6 +349,7 @@ class InicioController extends Controller
         } else if($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
         }
+
         return json_encode($notif);
     }
 
@@ -356,7 +363,9 @@ class InicioController extends Controller
     public function cambiarEstadoTodasNotificaciones($id)
     {
         Notificaciones::cambiarEstadoTodas($id);
-        return response()->json(['mensaje' => 'ok']);
+        
+        return response()
+            ->json(['mensaje' => 'ok']);
     }
 
     //Metodo que obtiene los datos de la api de PayU
@@ -417,6 +426,7 @@ class InicioController extends Controller
         else {
             $estadoTx="Otro";
         }
+        
         return $estadoTx;
     }
 }
