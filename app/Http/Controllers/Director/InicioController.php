@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Director;
 use App\Charts\Efectividad;
 use App\Charts\Eficacia;
 use App\Charts\Eficiencia;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 /**
@@ -116,6 +114,7 @@ class InicioController extends Controller
             'eficiencia'=>$chartEficiencia,
             'efectividad'=>$chartEfectividad
         ];
+
         return $datos;
     }
 
@@ -167,6 +166,7 @@ class InicioController extends Controller
             'barrEficiencia'=>$chartbarrEficiencia,
             'barrEfectividad'=>$chartbarrEfectividad
         ];
+
         return $datos;
     }
 
@@ -189,6 +189,7 @@ class InicioController extends Controller
         } else if ($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
         }
+
         return json_encode($notif);
     }
 
@@ -202,6 +203,8 @@ class InicioController extends Controller
     public function cambiarEstadoTodasNotificaciones($id)
     {
         Notificaciones::cambiarEstadoTodas($id);
-        return response()->json(['mensaje' => 'ok']);
+        
+        return response()
+            ->json(['mensaje' => 'ok']);
     }
 }
