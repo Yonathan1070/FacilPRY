@@ -223,7 +223,8 @@ class Actividades extends Model
     }
 
     //Funcion para obtener las actividades finalizadas por trabajador
-    public static function obtenerActividadesFinalizadasTrabajador($id){
+    public static function obtenerActividadesFinalizadasTrabajador($id)
+    {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
             ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
@@ -475,6 +476,20 @@ class Actividades extends Model
             ->get();
         
         return $actividadesFinalizadas;
+    }
+
+    //Función para obtener todas las actividades por proyecto del usuario autenticado
+    public static function obtenerActividadesProyectoUsuario($id)
+    {
+        $actividadesTotales = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
+            ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('p.id', '=', $id)
+            ->get();
+        
+        return $actividadesTotales;
     }
 
     //Función para guardar la actividad en la Base de Datos

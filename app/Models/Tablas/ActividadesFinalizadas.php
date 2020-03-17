@@ -164,6 +164,22 @@ class ActividadesFinalizadas extends Model
         return $actividad;
     }
 
+    //Función para obtener las actividades finalizadas por perfil de operación
+    public static function obtenerActividadesFinalizadasPerfil($id)
+    {
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
+            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('e.id', '<>', 1)
+            ->where('e.id', '<>', 2)
+            ->where('uu.id', '=', session()->get('Usuario_Id'))
+            ->where('p.id', '=', $id)
+            ->get();
+        return $actividadesFinalizadas;
+    }
+
     //Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {

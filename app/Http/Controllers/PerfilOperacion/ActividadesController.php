@@ -126,7 +126,8 @@ class ActividadesController extends Controller
             Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') <
                 Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y')
         ) {
-            return response()->json(['msg' => 'errorF']);
+            return response()
+                ->json(['msg' => 'errorF']);
         }
         if (
             (Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') ==
@@ -137,7 +138,8 @@ class ActividadesController extends Controller
                 Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <
                 $request->HRS_ACT_Cantidad_Horas_Asignadas)
         ) {
-            return response()->json(['msg' => 'errorF']);
+            return response()
+                ->json(['msg' => 'errorF']);
         }
 
         $horas = HorasActividad::obtenerHorasAsignadasNoSeleccionada($id, $fecha);
@@ -150,15 +152,18 @@ class ActividadesController extends Controller
                 $id, $request->HRS_ACT_Cantidad_Horas_Asignadas
             );
             
-            return response()->json(['msg' => 'alerta']);
+            return response()
+                ->json(['msg' => 'alerta']);
         } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 14) {
-            return response()->json(['msg' => 'error']);
+            return response()
+                ->json(['msg' => 'error']);
         } else {
             HorasActividad::actualizarHorasAsignadas(
                 $id, $request->HRS_ACT_Cantidad_Horas_Asignadas
             );
             
-            return response()->json(['msg' => 'exito'], 200);
+            return response()
+                ->json(['msg' => 'exito'], 200);
         }
     }
 
@@ -209,7 +214,8 @@ class ActividadesController extends Controller
             });
         }
         
-        return response()->json(['msg' => 'exito'], 200);
+        return response()
+            ->json(['msg' => 'exito'], 200);
     }
 
     /**
@@ -239,6 +245,7 @@ class ActividadesController extends Controller
         );
 
         $fileName = 'Actividades' . session()->get('Usuario_Nombre');
+        
         return $pdf->download($fileName.'.pdf');
     }
 
@@ -256,9 +263,16 @@ class ActividadesController extends Controller
             ->where('a.id', '=', $id)
             ->first();
         if(!$actividad){
-            return redirect()->back()->withErrors('No hay documento disponible para descargar');
+            return redirect()
+                ->back()
+                ->withErrors('No hay documento disponible para descargar');
         }
-        return response()->download(public_path() . '/documentos_soporte/' . $actividad->ACT_Documento_Soporte_Actividad);
+        return response()
+            ->download(
+                public_path().
+                    '/documentos_soporte/'.
+                    $actividad->ACT_Documento_Soporte_Actividad
+            );
     }
 
     /**
@@ -366,6 +380,7 @@ class ActividadesController extends Controller
     public function solicitarTiempo($id)
     {
         $actividad = Actividades::findOrFail($id);
+        
         return json_encode($actividad);
     }
 

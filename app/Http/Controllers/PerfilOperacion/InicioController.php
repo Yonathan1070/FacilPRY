@@ -82,7 +82,12 @@ class InicioController extends Controller
         $chartEfectividad = new Efectividad;
         $apiEfectividad = route('efectividad_general_perfil_operacion');
         $chartEfectividad->labels($pryEfectividadLlave)->load($apiEfectividad);
-        $datos = ['eficacia'=> $chartEficacia, 'eficiencia'=>$chartEficiencia, 'efectividad'=>$chartEfectividad];
+        $datos = [
+            'eficacia'=> $chartEficacia,
+            'eficiencia'=>$chartEficiencia,
+            'efectividad'=>$chartEfectividad
+        ];
+        
         return $datos;
     }
 
@@ -118,6 +123,8 @@ class InicioController extends Controller
     public function cambiarEstadoTodasNotificaciones($id)
     {
         Notificaciones::cambiarEstadoTodas($id);
-        return response()->json(['mensaje' => 'ok']);
+        
+        return response()
+            ->json(['mensaje' => 'ok']);
     }
 }
