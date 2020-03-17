@@ -132,6 +132,19 @@ class HorasActividad extends Model
         return $horas;
     }
 
+    //Función para obtener la actividad con las horas de trabajo
+    public static function obtenerActividad($id)
+    {
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
+            ->first();
+        
+        return $actividades;
+    }
+
     //Función para crear las Horas asignadas para las actividades
     public static function crearHorasActividad($idA, $fecha)
     {

@@ -45,18 +45,18 @@ class ActividadesController extends Controller
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesProceso = $this->actividadesProceso();
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil();
         
         foreach ($actividadesProceso as $actividad) {
             if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
                 Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
                 HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
-                $actividadesProceso = $this->actividadesProceso();
+                $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil();
             }
         }
 
-        $actividadesAtrasadas = $this->actividadesAtrasadas();
-        $actividadesFinalizadas = $this->actividadesFinalizadas();
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil();
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil();
         
         return view(
             'perfiloperacion.actividades.listar',
@@ -81,7 +81,7 @@ class ActividadesController extends Controller
     {
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
-        $actividades = $this->obtenerActividades($id);
+        $actividades = HorasActividad::obtenerActividad($id);
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
         
         if (count($actividades) == 0){
@@ -224,9 +224,9 @@ class ActividadesController extends Controller
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($datos->USR_Empresa_Id);
-        $actividadesProceso = $this->actividadesProceso($hoy);
-        $actividadesAtrasadas = $this->actividadesAtrasadas($hoy);
-        $actividadesFinalizadas = $this->actividadesFinalizadas();
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil($hoy);
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil($hoy);
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil();
 
         $pdf = PDF::loadView(
             'includes.pdf.actividades',
@@ -275,14 +275,9 @@ class ActividadesController extends Controller
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = $this->obtenerActividades($id);
+        $actividades = HorasActividad::obtenerActividad($id);
 
-        $respuestasAnteriores = DB::table('TBL_Respuesta as r')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.id', '=', 'r.RTA_Actividad_Finalizada_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
-            ->select('u.*', 'af.*', 'r.*')
-            ->where('af.ACT_FIN_Actividad_Id', '=', $id)
-            ->where('r.RTA_Titulo', '<>', null)->get();
+        $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($id);
 
         return view(
             'perfiloperacion.actividades.finalizar',
@@ -362,21 +357,36 @@ class ActividadesController extends Controller
             ->with('mensaje', 'Actividad finalizada');
     }
 
+    /**
+     * Obtiene los datos de la actividad a solicitar tiempo
+     *
+     * @param  $id  Identificador de la actividad
+     * @return json_encode()
+     */
     public function solicitarTiempo($id)
     {
         $actividad = Actividades::findOrFail($id);
         return json_encode($actividad);
     }
 
+    /**
+     * Guarda y envía la solicitud de tiempo para la actividad
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id  Identificador de la actividad
+     * @return redirect()->route()
+     */
     public function enviarSolicitud(Request $request, $id){
-        SolicitudTiempo::create([
-            'SOL_TMP_Actividad_Id' => $id,
-            'SOL_TMP_Fecha_Solicitada' => Carbon::parse($request->Hora_Solicitud)->format('Y-m-d H:m')
-        ]);
+        SolicitudTiempo::crearSolicitud($id, $request);
+
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $para = Usuarios::findOrFail($de->USR_Supervisor_Id);
+        
         Notificaciones::crearNotificacion(
-            $de->USR_Nombres_Usuario . ' ' . $de->USR_Apellidos_Usuario . ' solicita tiempo adicional para entregar una tarea.',
+            $de->USR_Nombres_Usuario.
+                ' '.
+                $de->USR_Apellidos_Usuario.
+                ' solicita tiempo adicional para entregar una tarea.',
             $de->id,
             $para->id,
             'solicitud_tiempo_actividades',
@@ -385,81 +395,27 @@ class ActividadesController extends Controller
             'alarm'
         );
         Mail::send('general.correo.informacion', [
-            'titulo' => $de->USR_Nombres_Usuario . ' ' . $de->USR_Apellidos_Usuario . ' solicita tiempo adicional para entregar una tarea.',
+            'titulo' => $de->USR_Nombres_Usuario.
+                ' '.
+                $de->USR_Apellidos_Usuario.
+                ' solicita tiempo adicional para entregar una tarea.',
             'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].', revisa la plataforma InkBrutalPry, '.$de['USR_Nombres_Usuario'].' '.$de['USR_Apellidos_Usuario'].' solicita tiempo adicional para entregar una tarea.'
+            'contenido' => $para['USR_Nombres_Usuario'].
+                ', revisa la plataforma InkBrutalPry, '.
+                $de['USR_Nombres_Usuario'].
+                ' '.
+                $de['USR_Apellidos_Usuario'].
+                ' solicita tiempo adicional para entregar una tarea.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos')
-                ->subject('Solicitud de tiempo');
+            $message->to(
+                $para['USR_Correo_Usuario'],
+                'InkBrutalPRY, Software de Gestión de Proyectos'
+            )->subject('Solicitud de tiempo');
         });
-        return redirect()->route('actividades_perfil_operacion')->with('mensaje', 'Solicitud enviada');
-    }
-
-    public function actividadesProceso()
-    {
-        $actividadesProceso = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
-            ->leftjoin('TBL_Horas_Actividad as ha', 'ha.HRS_ACT_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->leftJoin('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'ds.*', 'p.*', 'ha.*', 'e.*', 'em.*', DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'), DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
-            ->where('a.ACT_Estado_Id', '=', 1)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('p.PRY_Estado_Proyecto', '=', 1)
-            ->orderBy('a.id', 'ASC')
-            ->groupBy('a.id')
-            ->get();
-        return $actividadesProceso;
-    }
-
-    public function actividadesAtrasadas()
-    {
-        $actividadesAtrasadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
-            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'af.*', 'p.*', 'em.*', DB::raw('count(af.ACT_FIN_Actividad_Id) as fila'))
-            ->where('a.ACT_Estado_Id', '=', 2)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('p.PRY_Estado_Proyecto', '=', 1)
-            ->orderBy('a.id')
-            ->groupBy('a.id')
-            ->get();
-
-        return $actividadesAtrasadas;
-    }
-
-    public function actividadesFinalizadas()
-    {
-        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Empresas as em', 'em.id', '=', 'PRY_Empresa_Id')
-            ->join('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id AS ID_Actividad', 'a.*', 'p.*', 'af.*', 'e.*', 'em.*')
-            ->where('a.ACT_Estado_Id', '<>', 1)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('p.PRY_Estado_Proyecto', '=', 1)
-            ->orderBy('a.id')
-            ->groupBy('a.id')
-            ->get();
-        return $actividadesFinalizadas;
-    }
-
-    public function obtenerActividades($id)
-    {
-        $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
-            ->first();
-        return $actividades;
+        
+        return redirect()
+            ->route('actividades_perfil_operacion')
+            ->with('mensaje', 'Solicitud enviada');
     }
 }
