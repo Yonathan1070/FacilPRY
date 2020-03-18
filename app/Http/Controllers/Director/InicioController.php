@@ -52,7 +52,6 @@ class InicioController extends Controller
             'director.inicio',
             compact(
                 'datos',
-                'proyectos',
                 'trabajadores',
                 'notificaciones',
                 'cantidad',
