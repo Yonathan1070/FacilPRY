@@ -8,5 +8,5 @@
 @endsection
 @section('mensaje')
     <h2>Error de Servidor</h2>
-    <h3>Las cosas están un poco inestable aquí. Intentelo de nuevo más tarde.</h3>
+    <h3>Las cosas están un poco inestables aquí. Intentalo de nuevo más tarde.</h3>
 @endsection
