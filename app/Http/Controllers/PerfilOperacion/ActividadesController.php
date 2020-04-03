@@ -81,10 +81,10 @@ class ActividadesController extends Controller
     {
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
-        $actividades = HorasActividad::obtenerActividad($id);
+        $actividades = HorasActividad::obtenerActividadesHorasAsignacion($id);
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
-        
-        if (count($actividades) == 0){
+
+        if ($actividades == null){
             return redirect()
                 ->route('actividades_perfil_operacion')
                 ->withErrors('La actividad no existe.');
