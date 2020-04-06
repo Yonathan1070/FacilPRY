@@ -22,6 +22,10 @@ Listar Desiciones
                                 <a class="btn btn-success waves-effect" href="{{route('crear_decision')}}"><i
                                     class="material-icons" style="color:white;">add</i> Nueva Desición</a>
                             @endif
+                            @if ($permisos['listar']==true)
+                                <a class="btn bg-light-green btn-circle-lg waves-effect waves-circle waves-float tooltipsC" title="Ver Calificación Trabajadores" href="{{route('calificacion_trabajadores')}}"><i
+                                    class="material-icons" style="color:white;">equalizer</i></a>
+                            @endif
                         </li>
                     </ul>
                 </div>

@@ -14,7 +14,7 @@
         <label class="form-label">Descripción De La Decisión</label>
     </div>
 </div>
-<div class="form-group form-float">
+<!--<div class="form-group form-float">
     <div class="form-line">
         <select name="DSC_Indicador_Id" id="DSC_Indicador_Id" class="form-control" data-live-search="true" data-show-subtext="true" onchange="mostrarBarra(this)" required>
             <option value="">--Seleccione un Indicador--</option>
@@ -26,7 +26,7 @@
         </select>
     </div>
 </div>
-<div id="progressBar"></div>
+<div id="progressBar"></div>-->
 <div class="row clearfix">
     <div class="col-lg-6">
         <div class="form-group form-float">

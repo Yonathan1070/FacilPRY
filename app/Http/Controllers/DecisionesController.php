@@ -9,6 +9,7 @@ use App\Http\Requests\ValidacionDecision;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Indicadores;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -22,9 +23,9 @@ class DecisionesController extends Controller
     public function index()
     {
         can('listar-decisiones');
-        $permisos = ['crear'=> can2('crear-decisiones'), 'editar'=>can2('editar-decisiones'), 'eliminar'=>can2('eliminar-decisiones')];
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $permisos = ['crear'=> can2('crear-decisiones'), 'editar'=>can2('editar-decisiones'), 'eliminar'=>can2('eliminar-decisiones'), 'listar'=>can2('listar-calificaciones')];
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = DB::table('TBL_Indicadores as i')
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
@@ -41,8 +42,8 @@ class DecisionesController extends Controller
     public function crear()
     {
         can('crear-decisiones');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
         return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
@@ -78,7 +79,7 @@ class DecisionesController extends Controller
         }
         $diferencia = DB::table('TBL_Decisiones')
             ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
-            ->where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)
+            ->where('DSC_Indicador_Id', '=', 2)
             ->groupBy('id')
             ->get();
         $total = 0;
@@ -88,11 +89,13 @@ class DecisionesController extends Controller
         if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
             return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
         }
-        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')->get();
+        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', 2)
+            ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')
+            ->get();
         foreach ($decisiones as $decision) {
             if (
                 $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
-                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision
+                $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
             }
@@ -106,7 +109,7 @@ class DecisionesController extends Controller
                 return redirect()->back()->withErrors('La desición ya está registrada en el sistema')->withInput();
             }
         }
-        Decisiones::create($request->all());
+        Decisiones::crearDecision($request, 2);
         return redirect()->back()->with('mensaje', 'Decisión creada con exito');
     }
 
@@ -119,8 +122,8 @@ class DecisionesController extends Controller
     public function editar($id)
     {
         can('editar-decisiones');
-        $notificaciones = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->orderByDesc('created_at')->get();
-        $cantidad = Notificaciones::where('NTF_Para', '=', session()->get('Usuario_Id'))->where('NTF_Estado', '=', 0)->count();
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $indicadores = Indicadores::orderBy('id')->get();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
@@ -141,7 +144,7 @@ class DecisionesController extends Controller
         }
         $diferencia = DB::table('TBL_Decisiones')
             ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
-            ->where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)
+            ->where('DSC_Indicador_Id', '=', 2)
             ->where('id', '<>', $id)
             ->groupBy('id')
             ->get();
@@ -152,13 +155,14 @@ class DecisionesController extends Controller
         if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
             return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
         }
-        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $request->DSC_Indicador_Id)
+        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', 2)
             ->where('id', '<>', $id)
-            ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision')->get();
+            ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')
+            ->get();
         foreach ($decisiones as $decision) {
             if (
-                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
-                $request->DCS_Rango_Inicio_Decision < $decision->DCS_Rango_Fin_Decision
+                $decision->DCS_Rango_Inicio_Decision <= $request->DCS_Rango_Inicio_Decision &&
+                $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
             }
