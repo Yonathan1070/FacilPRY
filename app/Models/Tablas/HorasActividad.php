@@ -72,6 +72,7 @@ class HorasActividad extends Model
             ->select('a.id as Actividad_Id', 'a.*')
             ->where('p.id', '=', $id)
             ->orderby('a.ACT_Fecha_Inicio_Actividad')
+            ->groupBy('a.id')
             ->get();
         
         return $actividades;

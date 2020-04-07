@@ -206,11 +206,11 @@ class ProyectosController extends Controller
         
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
-        //$pdf = PDF::loadView('proyectos.gantt', compact('actividades', 'fechas', 'proyecto', 'notificaciones', 'cantidad', 'datos'))->setPaper('a4', 'landscape');
-        //$fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
-        //return $pdf->download($fileName.'.pdf');
+        $pdf = PDF::loadView('proyectos.ganttdos', compact('actividades', 'fechas', 'proyecto'))->setPaper('a2', 'landscape');
+        $fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
+        return $pdf->download($fileName.'.pdf');
         
-        return view(
+        /*return view(
             'proyectos.gantt',
             compact(
                 'actividades',
@@ -220,7 +220,7 @@ class ProyectosController extends Controller
                 'cantidad',
                 'datos'
             )
-        );
+        );*/
     }
 
     /**
