@@ -51,6 +51,8 @@ class SolicitudTiempo extends Model
             ->where('st.SOL_TMP_Estado_Solicitud', '=', 0)
             ->select('a.id as Id_Actividad', 'st.id as Id_Solicitud', 'st.*', 'a.*', 'u.*')
             ->first();
+
+        return $solicitud;
     }
 
     #Función para crear la solicitud de tiempo para la actividad
