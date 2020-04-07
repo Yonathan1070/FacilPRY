@@ -88,10 +88,13 @@ Inicio
                     <div class="profile-footer">
                         <ul>
                             <li>
+                                @if ($actividadesPendientes->ACT_FIN_Link != null)
+                                    <a href="{{$actividadesPendientes->ACT_FIN_Link}}" target="_blank">Ir a la evidencia</a>
+                                @endif
                                 @foreach ($documentosEvidencia as $documento)
                                     <span>Evidencias</span>
                                     <span>
-                                        <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
+                                        <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Evidencia_Actividad])}}"
                                             class="btn bg-cyan btn-block btn-xs waves-effect">
                                             <i class="material-icons"
                                                 style="font-size: 17px;">file_download</i>

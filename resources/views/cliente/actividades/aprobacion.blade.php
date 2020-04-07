@@ -87,6 +87,9 @@ Inicio
                     <div class="profile-footer">
                         <ul>
                             <li>
+                                @if ($actividadesPendientes->ACT_FIN_Link != null)
+                                    <a href="{{$actividadesPendientes->ACT_FIN_Link}}" target="_blank">Ir a la evidencia</a>
+                                @endif
                                 @foreach ($documentosEvidencia as $documento)
                                     <span>Evidencias</span>
                                     <span>
