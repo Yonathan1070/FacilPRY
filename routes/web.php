@@ -135,6 +135,11 @@ Route::get('decisiones/{id}/editar', 'DecisionesController@editar')->name('edita
 Route::put('decisiones/{id}', 'DecisionesController@actualizar')->name('actualizar_decision');
 Route::delete('decisiones/{id}', 'DecisionesController@eliminar')->name('eliminar_decision');
 
+//Ruta para calificar trabajadores
+Route::get('calificacion', 'CalificarController@index')->name('calificacion_trabajadores');
+Route::get('calificar', 'CalificarController@calificar')->name('calificar_trabajadores');
+Route::get('calificaciones/{id}', 'CalificarController@obtener')->name('obtener_calificacion');
+
 //Rutas Roles
 Route::get('roles', 'RolesController@index')->name('roles');
 Route::get('roles/crear-rol', 'RolesController@crear')->name('crear_rol');

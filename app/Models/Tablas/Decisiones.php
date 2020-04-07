@@ -15,6 +15,15 @@ class Decisiones extends Model
         'DSC_Empresa_Id'];
     protected $guarded = ['id'];
 
+    #Función para obtener la decisión por medio de la calificación obtenida
+    public static function obtenerDecisionPorRango($calificacion)
+    {
+        $decision = Decisiones::where('DCS_Rango_Inicio_Decision', '<=', $calificacion)
+            ->where('DCS_Rango_Fin_Decision', '>=', $calificacion)
+            ->first();
+        return $decision;
+    }
+
     public static function crearDecision($request, $decision)
     {
         Decisiones::create([

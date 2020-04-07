@@ -111,7 +111,7 @@ class ActividadesController extends Controller
     }
 
     /**
-     * Guarda la cantidad de horas asignada&
+     * Guarda la cantidad de horas asignada
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  $id  Identificador de la hora asignada

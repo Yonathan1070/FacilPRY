@@ -180,6 +180,20 @@ class ActividadesFinalizadas extends Model
         return $actividadesFinalizadas;
     }
 
+    #Función para obtener actividades finalizadas entre rango de fechas
+    public static function obtenerActividadesRango($fechaInicio, $fechaFin, $id)
+    {
+        #dd($fechaInicio->format('M d Y').' - '.$fechaFin->format('M d Y'));
+        $actividadesFinalizadas = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
+            ->where('a.ACT_Trabajador_Id', '=', $id)
+            ->where('af.ACT_FIN_Fecha_Finalizacion', '>=', $fechaInicio)
+            ->where('af.ACT_FIN_Fecha_Finalizacion', '<=', $fechaFin)
+            ->groupBy('af.ACT_FIN_Actividad_Id')
+            ->get();
+        return $actividadesFinalizadas;
+    }
+
     #Funcion para crear las actividades finalizadas del cliente
     public static function crearActividadFinalizada($request)
     {

@@ -492,6 +492,18 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
+    #Función para obtener actividades entre rango de fechas
+    public static function obtenerActividadesRango($fechaInicio, $fechaFin, $id)
+    {
+        #dd($fechaInicio->format('M d Y').' - '.$fechaFin->format('M d Y'));
+        $actividades = DB::table('TBL_Actividades as a')
+            ->where('a.ACT_Trabajador_Id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '>=', $fechaInicio)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', $fechaFin)
+            ->get();
+        return $actividades;
+    }
+
     #Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([

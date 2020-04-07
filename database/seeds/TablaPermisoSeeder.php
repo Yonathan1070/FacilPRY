@@ -153,5 +153,13 @@ class TablaPermisoSeeder extends Seeder
             'PRM_Nombre_Permiso' => 'Finanzas',
             'PRM_Slug_Permiso' => 'finanzas'
         ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Listar Calificaciones',
+            'PRM_Slug_Permiso' => 'listar-calificaciones'
+        ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Calificar Trabajadores',
+            'PRM_Slug_Permiso' => 'calificar-trabajadores'
+        ]);
     }
 }
