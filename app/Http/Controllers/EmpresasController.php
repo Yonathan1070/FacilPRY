@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tablas\Actividades;
 use Illuminate\Http\Request;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\Usuarios;
@@ -42,6 +43,7 @@ class EmpresasController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresasActivas = Empresas::obtenerEmpresasActivas();
         $empresasInActivas = Empresas::obtenerEmpresasInactivas();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
 
         return view(
             'empresas.listar',
@@ -51,7 +53,8 @@ class EmpresasController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'permisos'
+                'permisos',
+                'asignadas'
             )
         );
     }
@@ -67,13 +70,16 @@ class EmpresasController extends Controller
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'empresas.crear',
             compact(
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -124,6 +130,8 @@ class EmpresasController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'empresas.editar',
@@ -131,7 +139,8 @@ class EmpresasController extends Controller
                 'empresa',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

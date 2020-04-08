@@ -44,6 +44,8 @@ class FinanzasController extends Controller
         $cobros = Actividades::obtenerActividadesAsignarCosto();
         $proyectos = Proyectos::obtenerProyectosConFacturas();
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'finanzas.inicio',
             compact(
@@ -51,7 +53,8 @@ class FinanzasController extends Controller
                 'proyectos',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -70,6 +73,8 @@ class FinanzasController extends Controller
         $actividades = ActividadesFinalizadas::obtenerActividadFinalizadaDetalle($id);
         $documentosEvidencias = DocumentosEvidencias::obtenerDocumentosActividadCobrar($id);
         $documentosSoporte = DocumentosSoporte::obtenerDocumentosActividadCobrar($id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'finanzas.cobro',
@@ -80,7 +85,8 @@ class FinanzasController extends Controller
                 'documentosSoporte',
                 'id',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

@@ -6,9 +6,12 @@ use App\Charts\Efectividad;
 use App\Charts\Eficacia;
 use App\Charts\Eficiencia;
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InicioController extends Controller
@@ -24,7 +27,9 @@ class InicioController extends Controller
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-
+        
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        
         $metricas = $this->metricasGenerales();
         
         $chartEficacia=$metricas['eficacia'];
@@ -37,6 +42,7 @@ class InicioController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
+                'asignadas',
                 'chartEficacia',
                 'chartEficiencia',
                 'chartEfectividad'

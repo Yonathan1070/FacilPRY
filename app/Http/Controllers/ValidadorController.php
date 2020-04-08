@@ -40,6 +40,8 @@ class ValidadorController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobarValidador();
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'tester.inicio',
@@ -47,7 +49,8 @@ class ValidadorController extends Controller
                 'actividadesPendientes',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -75,6 +78,8 @@ class ValidadorController extends Controller
             $actividadFinalizada->ACT_FIN_Actividad_Id
         );
         
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'tester.aprobacion',
             compact(
@@ -85,7 +90,8 @@ class ValidadorController extends Controller
                 'documentosEvidencia',
                 'respuestasAnteriores',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

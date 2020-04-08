@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Decisiones;
 use App\Http\Requests\ValidacionDecision;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Indicadores;
 use App\Models\Tablas\Notificaciones;
@@ -31,7 +32,8 @@ class DecisionesController extends Controller
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
         #$decisiones = Decisiones::orderBy('id')->get();
-        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos'));
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos', 'asignadas'));
     }
 
     /**
@@ -46,7 +48,9 @@ class DecisionesController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
-        return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad', 'asignadas'));
     }
 
     public function totalIndicador($id)
@@ -127,7 +131,9 @@ class DecisionesController extends Controller
         $indicadores = Indicadores::orderBy('id')->get();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
-        return view('decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        return view('decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad', 'asignadas'));
     }
 
     /**

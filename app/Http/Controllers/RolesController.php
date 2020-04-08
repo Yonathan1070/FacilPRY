@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ValidacionRol;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\Usuarios;
@@ -41,6 +42,8 @@ class RolesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'roles.listar',
             compact(
@@ -48,7 +51,8 @@ class RolesController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'permisos'
+                'permisos',
+                'asignadas'
             )
         );
     }
@@ -64,13 +68,16 @@ class RolesController extends Controller
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'roles.crear',
             compact(
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -123,13 +130,16 @@ class RolesController extends Controller
                 ->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         }
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'roles.editar',
             compact(
                 'rol',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

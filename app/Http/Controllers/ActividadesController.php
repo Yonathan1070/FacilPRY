@@ -69,6 +69,8 @@ class ActividadesController extends Controller
         $actividades = Actividades::obtenerActividades($idR, $cliente);
         $actividadesCliente = Actividades::obtenerActividadesCliente($idR, $cliente);
         $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'actividades.listar',
@@ -81,7 +83,8 @@ class ActividadesController extends Controller
                 'notificaciones',
                 'cantidad',
                 'permisos',
-                'requerimientos'
+                'requerimientos',
+                'asignadas'
             )
         );
     }
@@ -102,6 +105,8 @@ class ActividadesController extends Controller
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'actividades.crear',
@@ -111,7 +116,8 @@ class ActividadesController extends Controller
                 'perfilesOperacion',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -131,6 +137,8 @@ class ActividadesController extends Controller
         $requerimiento = Requerimientos::findOrFail($idR);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+        
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
 
         return view(
             'actividades.crear',
@@ -140,7 +148,8 @@ class ActividadesController extends Controller
                 'perfilesOperacion',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -298,6 +307,8 @@ class ActividadesController extends Controller
         $perfil = Usuarios::obtenerPerfilOperacionActividad($actividadesPendientes->Id_Act);
         $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($actividadFinalizada->ACT_FIN_Actividad_Id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'actividades.detalle',
@@ -309,7 +320,8 @@ class ActividadesController extends Controller
                 'documentosEvidencia',
                 'respuestasAnteriores',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -331,6 +343,8 @@ class ActividadesController extends Controller
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'actividades.editar',
             compact(
@@ -339,7 +353,8 @@ class ActividadesController extends Controller
                 'notificaciones',
                 'cantidad',
                 'perfilesOperacion',
-                'proyecto'
+                'proyecto',
+                'asignadas'
             )
         );
     }
@@ -359,6 +374,8 @@ class ActividadesController extends Controller
         $actividad = Actividades::findOrFail($idA);
         $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'actividades.editar',
@@ -367,7 +384,8 @@ class ActividadesController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'proyecto'
+                'proyecto',
+                'asignadas'
             )
         );
     }
@@ -554,6 +572,8 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $horasAprobar = HorasActividad::obtenerHorasAprobar($idH);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         if (count($horasAprobar) == 0) {
             return redirect()
@@ -566,7 +586,8 @@ class ActividadesController extends Controller
                 'horasAprobar',
                 'notificaciones',
                 'cantidad',
-                'datos'
+                'datos',
+                'asignadas'
             )
         );
     }
@@ -581,6 +602,8 @@ class ActividadesController extends Controller
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         $solicitud = SolicitudTiempo::obtenerSolicitudTiempoActividad($idA);
         if ($solicitud) {
@@ -590,7 +613,8 @@ class ActividadesController extends Controller
                     'solicitud',
                     'notificaciones',
                     'cantidad',
-                    'datos'
+                    'datos',
+                    'asignadas'
                 ));
         }
         return redirect()->back()->withErrors('La solicitud ya ha sido atendida.');

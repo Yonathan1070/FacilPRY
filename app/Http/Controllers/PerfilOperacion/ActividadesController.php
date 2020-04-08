@@ -46,6 +46,8 @@ class ActividadesController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil();
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         foreach ($actividadesProceso as $actividad) {
             if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
@@ -66,7 +68,8 @@ class ActividadesController extends Controller
                 'actividadesFinalizadas',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -83,6 +86,8 @@ class ActividadesController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $actividades = HorasActividad::obtenerActividadesHorasAsignacion($id);
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
 
         if ($actividades == null){
             return redirect()
@@ -105,7 +110,8 @@ class ActividadesController extends Controller
                 'actividades',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -291,6 +297,8 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = HorasActividad::obtenerActividad($id);
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($id);
 
         return view(
@@ -301,7 +309,8 @@ class ActividadesController extends Controller
                 'respuestasAnteriores',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

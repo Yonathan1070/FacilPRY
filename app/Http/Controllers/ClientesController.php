@@ -7,6 +7,7 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
@@ -48,6 +49,8 @@ class ClientesController extends Controller
         $clientes = Usuarios::obtenerClientes($id);
         $empresa = Empresas::findOrFail($id);
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'clientes.listar',
             compact(
@@ -56,7 +59,8 @@ class ClientesController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'permisos'
+                'permisos',
+                'asignadas'
             )
         );
     }
@@ -74,6 +78,8 @@ class ClientesController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'clientes.crear',
@@ -81,7 +87,8 @@ class ClientesController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'empresa'
+                'empresa',
+                'asignadas'
             )
         );
     }
@@ -162,6 +169,8 @@ class ClientesController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cliente = Usuarios::findOrFail($idC);
         $empresa = Empresas::findOrFail($idE);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'clientes.editar',
@@ -170,7 +179,8 @@ class ClientesController extends Controller
                 'empresa',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

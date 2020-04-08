@@ -48,6 +48,7 @@ class RequerimientosController extends Controller
         
         $requerimientos = Requerimientos::obtenerRequerimientos($idP);
         $proyecto = Proyectos::findOrFail($idP);
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'requerimientos.listar',
@@ -57,7 +58,8 @@ class RequerimientosController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'permisos'
+                'permisos',
+                'asignadas'
             )
         );
     }
@@ -75,6 +77,8 @@ class RequerimientosController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'requerimientos.crear',
@@ -82,7 +86,8 @@ class RequerimientosController extends Controller
                 'proyecto',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -142,6 +147,8 @@ class RequerimientosController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
         $requerimiento = Requerimientos::findOrFail($idR);
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'requerimientos.editar',
@@ -150,7 +157,8 @@ class RequerimientosController extends Controller
                 'requerimiento',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

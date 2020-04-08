@@ -57,6 +57,60 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Notifications -->
                     <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                            <i class="material-icons">assignment</i>
+                            @if (count($asignadas) != 0)
+                                <span class="label-count">{{count($asignadas)}}</span>
+                            @endif
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">CARGA DE TRABAJO</li>
+                            <li class="body">
+                                <ul class="menu">
+                                    @foreach ($asignadas as $actividad)
+                                        <li>
+                                            @if ($actividad->Horas != 0 && $actividad->HorasR!=null)
+                                                <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}">
+                                                    <div class="icon-circle bg-cyan">
+                                                        <i class="material-icons">trending_flat</i>
+                                                    </div>
+                                                    <div class="menu-info">
+                                                        <h4>{{$actividad->ACT_Nombre_Actividad}}</h4>
+                                                        @if ($actividad->HRS_ACT_Cantidad_Horas_Reales != null)
+                                                            <p>{{$actividad->HRS_ACT_Cantidad_Horas_Reales.' Horas Asignadas'}}</p>
+                                                        @else
+                                                            <p>{{$actividad->HRS_ACT_Cantidad_Horas_Asignadas.' Horas Asignadas'}}</p>
+                                                        @endif
+                                                    </div>
+                                                </a>
+                                            @elseif ($actividad->Horas != 0 && $actividad->HorasR==null)
+                                                <a>
+                                                    <div class="icon-circle bg-cyan">
+                                                        <i class="material-icons">hourglass_full</i>
+                                                    </div>
+                                                    <div class="menu-info">
+                                                        <h4>{{$actividad->ACT_Nombre_Actividad}}</h4>
+                                                        <p>Esperando aprobación de horas de trabajo</p>
+                                                    </div>
+                                                </a>
+                                            @else
+                                                <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->ID_Actividad])}}">
+                                                    <div class="icon-circle bg-cyan">
+                                                        <i class="material-icons">add_alarm</i>
+                                                    </div>
+                                                    <div class="menu-info">
+                                                        <h4>{{$actividad->ACT_Nombre_Actividad}}</h4>
+                                                        <p>Asignar Horas de Trabajo</p>
+                                                    </div>
+                                                </a>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                        <li class="dropdown">
                             <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
                                 <i class="material-icons">notifications</i>
                                 @if ($cantidad != 0)

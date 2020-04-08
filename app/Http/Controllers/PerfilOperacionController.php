@@ -8,6 +8,7 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use App\Models\Tablas\Roles;
 use App\Http\Requests\ValidacionUsuario;
+use App\Models\Tablas\Actividades;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
@@ -39,13 +40,16 @@ class PerfilOperacionController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'director.perfiloperacion.listar',
             compact(
                 'perfilesOperacion',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -66,13 +70,16 @@ class PerfilOperacionController extends Controller
             ->orderBy('id')
             ->get();
         
+            $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        
         return view(
             'director.perfiloperacion.crear',
             compact(
                 'roles',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
@@ -144,13 +151,16 @@ class PerfilOperacionController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfil = Usuarios::findOrFail($id);
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'director.perfiloperacion.editar',
             compact(
                 'perfil',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

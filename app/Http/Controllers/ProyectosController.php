@@ -47,6 +47,7 @@ class ProyectosController extends Controller
         $empresa = Empresas::findOrFail($id);
         $proyectosNoFinalizados = Proyectos::obtenerNoFinalizados($id);
         $proyectosFinalizados = Proyectos::obtenerFinalizados($id);
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
 
         return view(
             'proyectos.listar',
@@ -57,7 +58,8 @@ class ProyectosController extends Controller
                 'datos',
                 'notificaciones',
                 'cantidad',
-                'permisos'
+                'permisos',
+                'asignadas'
             )
         );
     }
@@ -76,6 +78,8 @@ class ProyectosController extends Controller
         $empresa = Empresas::findOrFail($id);
         $clientes = Usuarios::obtenerClientes($id);
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
         return view(
             'proyectos.crear',
             compact(
@@ -83,7 +87,8 @@ class ProyectosController extends Controller
                 'empresa',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }

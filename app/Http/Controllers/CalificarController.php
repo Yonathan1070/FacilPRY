@@ -30,7 +30,9 @@ class CalificarController extends Controller
 
         $calificaciones = Calificaciones::obtenerCalificaciones();
 
-        return view('calificaciones.listar', compact('datos', 'notificaciones', 'cantidad', 'permisos', 'calificaciones'));
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
+        return view('calificaciones.listar', compact('datos', 'notificaciones', 'cantidad', 'permisos', 'calificaciones', 'asignadas'));
     }
 
     /**
@@ -84,8 +86,10 @@ class CalificarController extends Controller
             Calificaciones::guardarCalificacion($eficaciaPorcentaje, $po->id, $decision->id);
         }
         $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
-        return view('calificaciones.calificar', compact('datos', 'notificaciones', 'cantidad', 'calificaciones'));
+        return view('calificaciones.calificar', compact('datos', 'notificaciones', 'cantidad', 'calificaciones', 'asignadas'));
     }
 
     /**

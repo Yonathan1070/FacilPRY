@@ -53,6 +53,8 @@ class CobrosController extends Controller
             ->orWhere('e.id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
         
         return view(
             'cobros.listar',
@@ -61,7 +63,8 @@ class CobrosController extends Controller
                 'proyectos',
                 'datos',
                 'notificaciones',
-                'cantidad'
+                'cantidad',
+                'asignadas'
             )
         );
     }
