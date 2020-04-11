@@ -45,6 +45,12 @@
                     <span>Tareas</span>
                 </a>
             </li>
+            <li>
+                <a href="{{route('perfil_operacion_carga')}}">
+                    <i class="material-icons">find_in_page</i>
+                    <span>Carga de Trabajo</span>
+                </a>
+            </li>
             @include("theme.bsb.menu")
         </ul>
     </div>

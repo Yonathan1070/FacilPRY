@@ -514,6 +514,33 @@ class Actividades extends Model
         return $actividades;
     }
 
+    #Función para obtener las actividades generales por perfil de operación
+    public static function obtenerGenerales()
+    {
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
+            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
+            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
+            ->where('e.id', '=', 1)
+            ->orWhere('e.id', '=', 2)
+            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
+            ->select('a.*', 'r.*', DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
+            ->groupBy('a.id')
+            ->get();
+        
+        return $actividades;
+    }
+
+    #Función para obtener las actividades generales por perfil de operación
+    public static function obtenerTodasPerfilOperacion()
+    {
+        $actividades = Actividades::where(
+            'ACT_Trabajador_Id', '=', session()->get('Usuario_Id')
+        )->get();
+        
+        return $actividades;
+    }
+
     #Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario){
         Actividades::create([

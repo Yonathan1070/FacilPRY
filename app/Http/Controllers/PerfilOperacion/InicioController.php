@@ -133,4 +133,43 @@ class InicioController extends Controller
         return response()
             ->json(['mensaje' => 'ok']);
     }
+
+    /**
+     * Vista de la carga de trabajo del Perfil de operación
+     *
+     * @return \Illuminate\View\View Vista de la carga de trabajo
+     */
+    public function cargaTrabajo()
+    {
+        $notificaciones = Notificaciones::obtenerNotificaciones();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+
+        $actividades = Actividades::obtenerGenerales();
+
+        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion());
+        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil());
+        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil());
+        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil());
+        
+        $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
+        $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
+        $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
+
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        return view(
+            'perfiloperacion.carga.actividades',
+            compact(
+                'actividades',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'asignadas',
+                'porcentajeFinalizado',
+                'porcentajeAtrasado',
+                'porcentajeProceso'
+            )
+        );
+    }
 }
