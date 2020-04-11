@@ -11,18 +11,29 @@ Gantt Proyectos
             <div class="card">
                 <div class="header">
                     <h2>
-                        CRONOGRAMA DE ACTIVIDADES PROYECTO {{strtoupper($proyecto->PRY_Nombre_Proyecto)}}
+                        CRONOGRAMA DE TAREAS PROYECTO {{strtoupper($proyecto->PRY_Nombre_Proyecto)}}
                     </h2>
+                    <ul class="header-dropdown" style="top:10px;">
+                        <li class="dropdown">
+                            <a class="btn btn-success waves-effect" href="{{route('gantt_descargar', ['id'=>$proyecto->id])}}"><i
+                                class="material-icons" style="color:white;">file_download</i> Descargar Cronograma</a>
+                            @if ($permisos['listarE']==true)
+                                <a class="btn btn-danger waves-effect" href="{{route('empresas')}}">
+                                    <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Empresas
+                                </a>
+                            @endif
+                        </li>
+                    </ul>
                 </div>
                 <div class="body table-responsive">
                     {{$proyecto->PRY_Nombre_Proyecto}}<br /><br /><br />
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <td style="padding-right: 0px;">#</td>
-                                <td>Tareas</td>
+                                <td style="width: 1px;">#</td>
+                                <td style="width: 30px;">Tareas</td>
                                 @foreach ($fechas as $fecha)
-                                    <td style="-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); height: 1px;">
+                                    <td style="width: 1px;">
                                         {{\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('m-d')}}
                                     </td>
                                 @endforeach
@@ -31,17 +42,17 @@ Gantt Proyectos
                         <tbody>
                             @foreach ($actividades as $item => $actividad)
                                 <tr>
-                                    <td>{{++$item}}</td>
-                                    <td>{{$actividad->ACT_Nombre_Actividad}}</td>
+                                    <td style="width: 1px;">{{++$item}}</td>
+                                    <td style="width: 30px;">{{$actividad->ACT_Nombre_Actividad}}</td>
                                     @foreach ($fechas as $fecha)
                                         @if (\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') >= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Inicio_Actividad)->format('Y-m-d') &&
                                             \Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') <= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Fin_Actividad)->format('Y-m-d'))
                                             @if ($actividad->ACT_Estado_Id == 1)
-                                                <td style="background-color: aqua"></td>
+                                                <td style="background-color: aqua; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id == 2 || $actividad->ACT_Estado_Id == 6)
-                                                <td style="background-color: red"></td>
+                                                <td style="background-color: red; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id != 1 || $actividad->ACT_Estado_Id != 2 || $actividad->ACT_Estado_Id != 6)
-                                                <td style="background-color: green"></td>
+                                                <td style="background-color: green; width: 1px;"></td>
                                             @else
                                                 <td></td>
                                             @endif

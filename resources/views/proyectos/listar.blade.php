@@ -85,7 +85,7 @@
                                                             <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
                                                                 <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                                             </a>
-                                                            <a href="{{route('gantt', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Cronograma de Tareas">
+                                                            <a href="{{route('gantt', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Ver Cronograma de Tareas">
                                                                 <i class="material-icons text-info" style="font-size: 20px;">view_quilt</i>
                                                             </a>
                                                         @endif

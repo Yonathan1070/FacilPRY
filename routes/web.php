@@ -187,6 +187,7 @@ Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_pro
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
 Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
 Route::get('proyectos/{id}/gantt', 'ProyectosController@gantt')->name('gantt');
+Route::get('proyectos/{id}/gantt/descargar', 'ProyectosController@ganttDescargar')->name('gantt_descargar');
 Route::get('proyectos/{id}/finalizar', 'ProyectosController@finalizar')->name('finalizar_proyecto');
 Route::get('proyectos/{id}/activar', 'ProyectosController@activar')->name('activar_proyecto');
 

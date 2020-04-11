@@ -203,6 +203,10 @@ class ProyectosController extends Controller
      */
     public function gantt($id)
     {
+        $permisos = [
+            'listarE'=>can2('listar-empresas')
+        ];
+
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -211,21 +215,39 @@ class ProyectosController extends Controller
         
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
-        $pdf = PDF::loadView('proyectos.ganttdos', compact('actividades', 'fechas', 'proyecto'))->setPaper('a2', 'landscape');
-        $fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
-        return $pdf->download($fileName.'.pdf');
         
-        /*return view(
+        return view(
             'proyectos.gantt',
             compact(
                 'actividades',
                 'fechas',
                 'proyecto',
+                'permisos',
                 'notificaciones',
                 'cantidad',
                 'datos'
             )
-        );*/
+        );
+    }
+
+    /**
+     * Obtiene los datos para descargar el Diagrama de Gantt en formato PDF
+     *
+     * @param  $id  Identificador del proyecto
+     */
+    public function ganttDescargar($id)
+    {
+
+        $proyecto = Proyectos::findOrFail($id);
+        
+        $fechas = HorasActividad::obtenerFechas($id);
+        $actividades = HorasActividad::obtenerActividadesGantt($id);
+        
+        $pdf = PDF::loadView('proyectos.ganttdos', compact('actividades', 'fechas', 'proyecto'))->setPaper('a2', 'landscape');
+        $fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
+        
+        return $pdf->download($fileName.'.pdf');
+
     }
 
     /**
