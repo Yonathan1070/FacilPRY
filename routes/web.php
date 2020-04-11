@@ -77,7 +77,7 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
     Route::get('', 'InicioController@index')->name('inicio_perfil_operacion');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_perfil_operacion');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_perfil_operacion');
-    //Enrutamiento CRUD Actividades
+    //Enrutamiento Actividades
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_perfil_operacion');
         Route::get('{id}/asignacion-horas', 'ActividadesController@asignarHoras')->name('actividades_asignar_horas_perfil_operacion');
@@ -94,12 +94,8 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
     Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general_perfil_operacion');
     Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general_perfil_operacion');
     Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general_perfil_operacion');
-});
-
-//Enrutamiento Tester
-Route::group(['prefix' => 'tester', 'namespace' => 'Tester', 'middleware' => ['auth', 'tester']], function () {
-
-    Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_tester');
+    //Carga de trabajo
+    Route::get('carga', 'InicioController@cargaTrabajo')->name('perfil_operacion_carga');
 });
 
 //Enrutamiento Cliente
