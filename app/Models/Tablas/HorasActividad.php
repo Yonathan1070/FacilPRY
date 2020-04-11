@@ -2,6 +2,7 @@
 
 namespace App\Models\Tablas;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -176,6 +177,7 @@ class HorasActividad extends Model
             ->where('e.id', '<>', 2)
             ->where('uu.id', '=', session()->get('Usuario_Id'))
             ->where('p.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->groupBy('HRS_ACT_Actividad_Id')->get();
         
         return $actividades;

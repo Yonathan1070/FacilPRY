@@ -2,6 +2,7 @@
 
 namespace App\Models\Tablas;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -46,6 +47,7 @@ class Actividades extends Model
                 'a.*'
             )
             ->where('p.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->groupBy('HRS_ACT_Actividad_Id')->get();
         return $actividades;
     }
@@ -67,6 +69,7 @@ class Actividades extends Model
                 'a.*'
             )
             ->where('uu.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->groupBy('HRS_ACT_Actividad_Id')->get();
         return $horasActividades;
     }
@@ -165,6 +168,7 @@ class Actividades extends Model
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('r.id', '<>', 3)
             ->where('p.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->get();
         return $actividadesTotales;
     }
@@ -181,6 +185,7 @@ class Actividades extends Model
             ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
             ->where('r.id', '<>', 3)
             ->where('uu.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->get();
         return $actividadesTotales;
     }
@@ -491,6 +496,7 @@ class Actividades extends Model
             ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
             ->where('uu.id', '=', session()->get('Usuario_Id'))
             ->where('p.id', '=', $id)
+            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
             ->get();
         
         return $actividadesTotales;
