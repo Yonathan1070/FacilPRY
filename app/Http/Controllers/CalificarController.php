@@ -40,7 +40,7 @@ class CalificarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function calificar()
+    public function calificar(Request $request)
     {
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
@@ -56,25 +56,20 @@ class CalificarController extends Controller
                     'Ya se ha realizado la respectiva calificacion, revisa el historico de calificaciones'
                 );
         }
-        $hoy1 = Carbon::now();
-        $hoy2 = Carbon::now();
-        if($hoy1->format('d') != '1' || $hoy1->format('d') != '16') {
+        if(
+            $request->Fecha_Inicio_Rango >= Carbon::now()->format('yy-m-d') ||
+            $request->Fecha_Fin_Rango >= Carbon::now()->format('yy-m-d')
+        ) {
             return redirect()
                 ->back()
                 ->withErrors(
-                    'Las fechas disponibles para calificar son los 1 o 16 de cada mes.'
+                    'Las fechas seleccionadas no pueden ser iguales o superiores a la fecha actual.'
                 );
         }
-        $fechaFin = $hoy1->subDays(1);
-        $fechaInicio = $hoy2->subDays(15);
-        if($fechaFin->format('d') == '31') {
-            $fechaInicio = $hoy2->subDays(1);
-        }
         $perfilOperacion = Usuarios::obtenerPerfilOperacion();
-
         foreach ($perfilOperacion as $key => $po) {
-            $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango($fechaInicio, $fechaFin, $po->id);
-            $actividadesTotales = Actividades::obtenerActividadesRango($fechaInicio, $fechaFin, $po->id);
+            $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $po->id);
+            $actividadesTotales = Actividades::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $po->id);
             try {
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100

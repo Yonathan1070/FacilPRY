@@ -20,8 +20,14 @@ Listar Calificaciones
                                     class="material-icons" style="color:white;">arrow_back</i> Volver a Desiciones</a>
                             @endif
                             @if ($permisos['calificar']==true)
-                                <a class="btn bg-light-green btn-circle-lg waves-effect waves-circle waves-float tooltipsC" title="Calificar Trabajadores" href="{{route('calificar_trabajadores')}}"><i
-                                    class="material-icons" style="color:white;">equalizer</i></a>
+                                <a
+                                    class="btn bg-light-green btn-circle-lg waves-effect waves-circle waves-float tooltipsC"
+                                    title="Calificar Trabajadores"
+                                    data-toggle="modal"
+                                    data-target="#modalFechas"
+                                >
+                                    <i class="material-icons" style="color:white;">equalizer</i>
+                                </a>
                             @endif
                         </li>
                     </ul>
@@ -128,6 +134,54 @@ Listar Calificaciones
                         <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalFechas" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="defaultModalLabel">Elija un rango de fechas para calificar</h4>
+                </div>
+                <form class="form_validation" action="{{route('calificar_trabajadores')}}" id="formularioCalificar" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="perfilOperacion">Fecha Inicio</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input type="date" class="form-control" name="Fecha_Inicio_Rango"
+                                            id="Fecha_Inicio_Rango"
+                                            required>
+                                    </div>
+                                    <div class="help-info">Fecha de Inicio</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                                <label for="decisionTomada">Fecha Fin</label>
+                            </div>
+                            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <input type="date" class="form-control" name="Fecha_Fin_Rango" id="Fecha_Fin_Rango"
+                                            required>
+                                    </div>
+                                    <div class="help-info">Fecha Fin</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-link waves-effect">CALIFICAR</button>
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

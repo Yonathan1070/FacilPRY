@@ -137,7 +137,7 @@ Route::delete('decisiones/{id}', 'DecisionesController@eliminar')->name('elimina
 
 //Ruta para calificar trabajadores
 Route::get('calificacion', 'CalificarController@index')->name('calificacion_trabajadores');
-Route::get('calificar', 'CalificarController@calificar')->name('calificar_trabajadores');
+Route::post('calificar', 'CalificarController@calificar')->name('calificar_trabajadores');
 Route::get('calificaciones/{id}', 'CalificarController@obtener')->name('obtener_calificacion');
 
 //Rutas Roles
