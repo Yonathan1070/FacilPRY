@@ -109,6 +109,10 @@
                                                                             <i class="material-icons text-danger"
                                                                                 style="font-size: 17px;">delete_forever</i>
                                                                         </button>
+                                                                        <a href="{{route('aprobar_horas_actividad', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                            class="btn-accion-tabla tooltipsC" title="Aprobar horas de trabajo">
+                                                                            <i class="material-icons text-success" style="font-size: 17px;">alarm_on</i>
+                                                                        </a>
                                                                     </form>
                                                                 @endif
                                                             </td>
