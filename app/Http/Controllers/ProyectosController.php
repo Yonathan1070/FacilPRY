@@ -212,7 +212,6 @@ class ProyectosController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $proyecto = Proyectos::findOrFail($id);
-        
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
         

@@ -60,7 +60,8 @@ class HorasActividad extends Model
     #Función que obtiene las actividades para el diagrama de Gantt
     public static function obtenerActividadesGantt($id)
     {
-        $actividades = DB::table('TBL_Actividades as a')
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
             ->leftjoin(
                 'TBL_Actividades_Finalizadas as af',
                 'af.ACT_FIN_Actividad_Id',
@@ -69,7 +70,7 @@ class HorasActividad extends Model
             )
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->select('a.id as Actividad_Id', 'a.*')
+            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'a.id as Actividad_Id', 'a.*')
             ->where('p.id', '=', $id)
             ->orderby('a.ACT_Fecha_Inicio_Actividad')
             ->groupBy('a.id')

@@ -18,15 +18,14 @@ Gantt Proyectos
                             <a class="btn btn-success waves-effect" href="{{route('gantt_descargar', ['id'=>$proyecto->id])}}"><i
                                 class="material-icons" style="color:white;">file_download</i> Descargar Cronograma</a>
                             @if ($permisos['listarE']==true)
-                                <a class="btn btn-danger waves-effect" href="{{route('empresas')}}">
-                                    <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Empresas
+                                <a class="btn btn-danger waves-effect" href="{{route('proyectos', ['id'=>$proyecto->PRY_Empresa_Id])}}">
+                                    <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a Proyectos
                                 </a>
                             @endif
                         </li>
                     </ul>
                 </div>
                 <div class="body table-responsive">
-                    {{$proyecto->PRY_Nombre_Proyecto}}<br /><br /><br />
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -47,12 +46,16 @@ Gantt Proyectos
                                     @foreach ($fechas as $fecha)
                                         @if (\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') >= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Inicio_Actividad)->format('Y-m-d') &&
                                             \Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') <= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Fin_Actividad)->format('Y-m-d'))
-                                            @if ($actividad->ACT_Estado_Id == 1)
-                                                <td style="background-color: aqua; width: 1px;"></td>
+                                            @if ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE != null && $actividad->HorasR != null)
+                                                <td style="background-color: #00BCD4; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id == 2 || $actividad->ACT_Estado_Id == 6)
-                                                <td style="background-color: red; width: 1px;"></td>
+                                                <td style="background-color: #F44336; width: 1px;"></td>
+                                            @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE == null && $actividad->HorasR == null)
+                                                <td style="background-color: #FFEB3B; width: 1px;"></td>
+                                            @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE != null && $actividad->HorasR == null)
+                                                <td style="background-color: #FF9800; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id != 1 || $actividad->ACT_Estado_Id != 2 || $actividad->ACT_Estado_Id != 6)
-                                                <td style="background-color: green; width: 1px;"></td>
+                                                <td style="background-color: #4CAF50; width: 1px;"></td>
                                             @else
                                                 <td></td>
                                             @endif
@@ -64,6 +67,58 @@ Gantt Proyectos
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="info-box bg-yellow hover-zoom-effect">
+                <div class="icon">
+                    <i class="material-icons">alarm_add</i>
+                </div>
+                <div class="content">
+                    <div class="text">Asignar Horas de Trabajo</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="info-box bg-orange hover-zoom-effect">
+                <div class="icon">
+                    <i class="material-icons">alarm_on</i>
+                </div>
+                <div class="content">
+                    <div class="text">Aprobar Horas de Trabajo</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="info-box bg-cyan hover-zoom-effect">
+                <div class="icon">
+                    <i class="material-icons">done</i>
+                </div>
+                <div class="content">
+                    <div class="text">En Proceso</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="info-box bg-red hover-zoom-effect">
+                <div class="icon">
+                    <i class="material-icons">warning</i>
+                </div>
+                <div class="content">
+                    <div class="text">Atrasada</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="info-box bg-green hover-zoom-effect">
+                <div class="icon">
+                    <i class="material-icons">done_all</i>
+                </div>
+                <div class="content">
+                    <div class="text">Finalizado</div>
                 </div>
             </div>
         </div>

@@ -364,12 +364,16 @@
                             @foreach ($fechas as $fecha)
                                 @if (\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') >= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Inicio_Actividad)->format('Y-m-d') &&
                                     \Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') <= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Fin_Actividad)->format('Y-m-d'))
-                                    @if ($actividad->ACT_Estado_Id == 1)
-                                        <td style="background-color: aqua; width: 1px;"></td>
+                                    @if ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE != null && $actividad->HorasR != null)
+                                        <td style="background-color: #00BCD4; width: 1px;"></td>
                                     @elseif ($actividad->ACT_Estado_Id == 2 || $actividad->ACT_Estado_Id == 6)
-                                        <td style="background-color: red; width: 1px;"></td>
+                                        <td style="background-color: #F44336; width: 1px;"></td>
+                                    @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE == null && $actividad->HorasR == null)
+                                        <td style="background-color: #FFEB3B; width: 1px;"></td>
+                                    @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE != null && $actividad->HorasR == null)
+                                        <td style="background-color: #FF9800; width: 1px;"></td>
                                     @elseif ($actividad->ACT_Estado_Id != 1 || $actividad->ACT_Estado_Id != 2 || $actividad->ACT_Estado_Id != 6)
-                                        <td style="background-color: green; width: 1px;"></td>
+                                        <td style="background-color: #4CAF50; width: 1px;"></td>
                                     @else
                                         <td></td>
                                     @endif
@@ -383,9 +387,11 @@
             </table>
         </fieldset>
         <fieldset>
-            <li></li><h3 style="color: cyan">En Proceso</h3>
-            <li></li><h3 style="color: green">Finalizada</h3>
-            <li></li><h3 style="color: red">Atrasada</h3>
+            <li></li><h3 style="color: #FFEB3B">Asignar Horas de Trabajo</h3>
+            <li></li><h3 style="color: #FF9800">Aprobar Horas de Trabajo</h3>
+            <li></li><h3 style="color: #00BCD4">En Proceso</h3>
+            <li></li><h3 style="color: #F44336">Atrasada</h3>
+            <li></li><h3 style="color: #4CAF50">Finalizada</h3>
         </fieldset>
     </div>
 </body>
