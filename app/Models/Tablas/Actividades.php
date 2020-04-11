@@ -86,7 +86,8 @@ class Actividades extends Model
     #Función que obtiene las actividades del usuario
     public static function obtenerActividades($idR, $cliente)
     {
-        $actividades = DB::table('TBL_Actividades as a')
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
             ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
             ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
             ->join('TBL_Usuarios as u', 'u.Id', 'a.ACT_Trabajador_Id')
@@ -94,6 +95,8 @@ class Actividades extends Model
             ->where('r.id', '=', $idR)
             ->where('a.ACT_Trabajador_Id', '<>', $cliente->PRY_Cliente_Id)
             ->select(
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
                 'a.id as ID_Actividad',
                 'r.id as ID_Requerimiento',
                 'a.*',
@@ -102,6 +105,7 @@ class Actividades extends Model
                 'r.*'
             )
             ->orderBy('a.Id', 'ASC')
+            ->groupBy('a.Id')
             ->get();
         return $actividades;
     }
