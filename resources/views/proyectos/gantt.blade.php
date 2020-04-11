@@ -50,7 +50,7 @@ Gantt Proyectos
                                                 <td style="background-color: #00BCD4; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id == 2 || $actividad->ACT_Estado_Id == 6)
                                                 <td style="background-color: #F44336; width: 1px;"></td>
-                                            @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE == null && $actividad->HorasR == null)
+                                            @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE == 0 && $actividad->HorasR == null)
                                                 <td style="background-color: #FFEB3B; width: 1px;"></td>
                                             @elseif ($actividad->ACT_Estado_Id == 1 && $actividad->HorasE != null && $actividad->HorasR == null)
                                                 <td style="background-color: #FF9800; width: 1px;"></td>
