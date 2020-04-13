@@ -11,6 +11,7 @@ use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -28,7 +29,7 @@ class InicioController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         $metricas = $this->metricasGenerales();
         
@@ -143,18 +144,31 @@ class InicioController extends Controller
     {
         $notificaciones = Notificaciones::obtenerNotificaciones();
         $cantidad = Notificaciones::obtenerCantidadNotificaciones();
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
-        $actividades = Actividades::obtenerGenerales();
+        $actividades = Actividades::obtenerGenerales(session()->get('Usuario_Id'));
 
-        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion());
-        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil());
-        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil());
-        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil());
+        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion(session()->get('Usuario_Id')));
+        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id')));
+        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id')));
+        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id')));
+
+        try {
+            $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeFinalizado = 0;
+        }
+        try {
+            $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeAtrasado = 0;
+        }
+        try {
+            $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeProceso = 0;
+        }
         
-        $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
-        $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
-        $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
