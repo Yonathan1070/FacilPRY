@@ -1036,11 +1036,11 @@ class Actividades extends Model
                 DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
                 'a.id as Id_Actividad'
             )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->where(
                 'e.id', '=', 1
             )->orWhere(
                 'e.id', '=', 2
-            )->where(
-                'a.ACT_Trabajador_Id', '=', $id
             )->groupBy(
                 'a.id'
             )->get();
