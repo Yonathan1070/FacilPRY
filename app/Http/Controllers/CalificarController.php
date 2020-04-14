@@ -24,13 +24,13 @@ class CalificarController extends Controller
         can('listar-calificaciones');
 
         $permisos = ['listar'=> can2('listar-decisiones'), 'calificar'=> can2('calificar-trabajadores')];
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $calificaciones = Calificaciones::obtenerCalificaciones();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view('calificaciones.listar', compact('datos', 'notificaciones', 'cantidad', 'permisos', 'calificaciones', 'asignadas'));
     }
@@ -42,8 +42,8 @@ class CalificarController extends Controller
      */
     public function calificar(Request $request)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
@@ -82,7 +82,7 @@ class CalificarController extends Controller
         }
         $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view('calificaciones.calificar', compact('datos', 'notificaciones', 'cantidad', 'calificaciones', 'asignadas'));
     }

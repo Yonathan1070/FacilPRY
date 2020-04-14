@@ -34,11 +34,11 @@ class PerfilUsuarioController extends Controller
     {
         can('editar-perfil');
 
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'perfil.editar',

@@ -36,9 +36,11 @@ class Empresas extends Model
     public static function obtenerEmpresasActivas()
     {
         $empresas = DB::table('TBL_Empresas')
-            ->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
-            ->where('EMP_Estado_Empresa', '=', 1)
-            ->get();
+            ->where(
+                'EMP_Empresa_Id', '=', session()->get('Empresa_Id')
+            )->where(
+                'EMP_Estado_Empresa', '=', 1
+            )->get();
         
         return $empresas;
     }
@@ -47,32 +49,45 @@ class Empresas extends Model
     public static function obtenerEmpresasInactivas()
     {
         $empresas = DB::table('TBL_Empresas')
-            ->where('EMP_Empresa_Id', '=', session()->get('Empresa_Id'))
-            ->where('EMP_Estado_Empresa', '=', 0)
-            ->get();
+            ->where(
+                'EMP_Empresa_Id', '=', session()->get('Empresa_Id')
+            )->where(
+                'EMP_Estado_Empresa', '=', 0
+            )->get();
         
         return $empresas;
     }
     
     #Funcion que obtiene los datos de la empresa
-    public static function obtenerDatosEmpresa()
+    public static function obtenerDatosEmpresa($id)
     {
         $datos = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Empresas as e', 'u.USR_Empresa_Id', '=', 'e.id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->first();
+            ->join(
+                'TBL_Empresas as e',
+                'u.USR_Empresa_Id',
+                '=',
+                'e.id'
+            )->where(
+                'u.id', '=', $id
+            )->first();
         
         return $datos;
     }
 
     #Funcion para obtener id de la empresa
-    public static function obtenerIdEmpresa()
+    public static function obtenerIdEmpresa($id)
     {
         $id_empresa = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'uu.id', '=', 'ud.USR_Supervisor_Id')
-            ->where('ud.id', '=', session()->get('Usuario_Id'))
-            ->select('uu.USR_Empresa_Id')
-            ->first();
+            ->join(
+                'TBL_Usuarios as ud',
+                'uu.id',
+                '=',
+                'ud.USR_Supervisor_Id'
+            )->select(
+                'uu.USR_Empresa_Id'
+            )->where(
+                'ud.id', '=', $id
+            )->first();
         
         return $id_empresa;
     }

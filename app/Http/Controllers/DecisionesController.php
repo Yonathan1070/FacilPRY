@@ -25,14 +25,14 @@ class DecisionesController extends Controller
     {
         can('listar-decisiones');
         $permisos = ['crear'=> can2('crear-decisiones'), 'editar'=>can2('editar-decisiones'), 'eliminar'=>can2('eliminar-decisiones'), 'listar'=>can2('listar-calificaciones')];
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decisiones = DB::table('TBL_Indicadores as i')
             ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
             ->get();
         #$decisiones = Decisiones::orderBy('id')->get();
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos', 'asignadas'));
     }
 
@@ -44,12 +44,12 @@ class DecisionesController extends Controller
     public function crear()
     {
         can('crear-decisiones');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad', 'asignadas'));
     }
 
@@ -126,13 +126,13 @@ class DecisionesController extends Controller
     public function editar($id)
     {
         can('editar-decisiones');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $indicadores = Indicadores::orderBy('id')->get();
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         return view('decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad', 'asignadas'));
     }
 

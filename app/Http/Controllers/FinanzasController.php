@@ -38,13 +38,13 @@ class FinanzasController extends Controller
     public function index()
     {
         can('finanzas');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $cobros = Actividades::obtenerActividadesAsignarCosto();
         $proyectos = Proyectos::obtenerProyectosConFacturas();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'finanzas.inicio',
@@ -67,14 +67,14 @@ class FinanzasController extends Controller
      */
     public function agregarCosto($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividades = ActividadesFinalizadas::obtenerActividadFinalizadaDetalle($id);
         $documentosEvidencias = DocumentosEvidencias::obtenerDocumentosActividadCobrar($id);
         $documentosSoporte = DocumentosSoporte::obtenerDocumentosActividadCobrar($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'finanzas.cobro',

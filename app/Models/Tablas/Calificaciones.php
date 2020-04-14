@@ -6,6 +6,19 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Modelo Calificaciones, realiza las distintas consultas
+ * que tenga que ver con la tabla Calificaciones en la
+ * Base de Datos.
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class Calificaciones extends Model
 {
     protected $table = "TBL_Calificaciones";
@@ -19,10 +32,22 @@ class Calificaciones extends Model
     public static function obtenerCalificaciones()
     {
         $calificaciones = DB::table('TBL_Calificaciones as c')
-            ->join('TBL_Decisiones as d', 'd.id', '=', 'c.CALIF_Decision_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'c.CALIF_Trabajador_Id')
-            ->select('c.*', 'd.*', 'u.*', 'c.id as Id_Calificacion')
-            ->get();
+            ->join(
+                'TBL_Decisiones as d',
+                'd.id',
+                '=',
+                'c.CALIF_Decision_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'c.CALIF_Trabajador_Id'
+            )->select(
+                'c.*',
+                'd.*',
+                'u.*',
+                'c.id as Id_Calificacion'
+            )->get();
         
         return $calificaciones;
     }
@@ -31,11 +56,24 @@ class Calificaciones extends Model
     public static function obtenerCalificacionesFecha($fechaActual)
     {
         $calificaciones = DB::table('TBL_Calificaciones as c')
-            ->join('TBL_Decisiones as d', 'd.id', '=', 'c.CALIF_Decision_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'c.CALIF_Trabajador_Id')
-            ->where('c.CALIF_Fecha_Calificacion', '=', $fechaActual)
-            ->select('c.*', 'd.*', 'u.*', 'c.id as Id_Calificacion')
-            ->get();
+            ->join(
+                'TBL_Decisiones as d',
+                'd.id',
+                '=',
+                'c.CALIF_Decision_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'c.CALIF_Trabajador_Id'
+            )->select(
+                'c.*',
+                'd.*',
+                'u.*',
+                'c.id as Id_Calificacion'
+            )->where(
+                'c.CALIF_Fecha_Calificacion', '=', $fechaActual
+            )->get();
         
         return $calificaciones;
     }
@@ -44,11 +82,24 @@ class Calificaciones extends Model
     public static function obtenerCalificacionId($id)
     {
         $calificaciones = DB::table('TBL_Calificaciones as c')
-            ->join('TBL_Decisiones as d', 'd.id', '=', 'c.CALIF_Decision_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'c.CALIF_Trabajador_Id')
-            ->where('c.id', '=', $id)
-            ->select('c.*', 'd.*', 'u.*')
-            ->first();
+            ->join(
+                'TBL_Decisiones as d',
+                'd.id',
+                '=',
+                'c.CALIF_Decision_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'c.CALIF_Trabajador_Id'
+            )->select(
+                'c.*',
+                'd.*',
+                'u.*'
+            )->where(
+                'c.id', '=', $id
+            )->first();
+        
         return $calificaciones;
     }
 

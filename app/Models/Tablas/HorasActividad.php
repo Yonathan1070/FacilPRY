@@ -31,14 +31,32 @@ class HorasActividad extends Model
     public static function obtenerFechas($id)
     {
         $fechas = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->select('a.id as Actividad_Id', 'a.*', 'ha.*')
-            ->where('p.id', '=', $id)
-            ->orderBy('ha.HRS_ACT_Fecha_Actividad')
-            ->groupBy('ha.HRS_ACT_Fecha_Actividad')
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->select(
+                'a.id as Actividad_Id',
+                'a.*',
+                'ha.*'
+            )->where(
+                'p.id', '=', $id
+            )->orderBy(
+                'ha.HRS_ACT_Fecha_Actividad'
+            )->groupBy(
+                'ha.HRS_ACT_Fecha_Actividad'
+            )->get();
         
         return $fechas;
     }
@@ -47,13 +65,32 @@ class HorasActividad extends Model
     public static function obtenerHorasAprobar($idA)
     {
         $horasAprobar = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'r.*', 'u.*', 'a.*')
-            ->where('a.id', '=', $idA)
-            ->where('ha.HRS_ACT_Cantidad_Horas_Reales', '=', null)
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->select(
+                'ha.id as Id_Horas',
+                'ha.*',
+                'r.*',
+                'u.*',
+                'a.*'
+            )->where(
+                'a.id', '=', $idA
+            )->where(
+                'ha.HRS_ACT_Cantidad_Horas_Reales', '=', null
+            )->get();
         
         return $horasAprobar;
     }
@@ -62,20 +99,38 @@ class HorasActividad extends Model
     public static function obtenerActividadesGantt($id)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->leftjoin(
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->leftjoin(
                 'TBL_Actividades_Finalizadas as af',
                 'af.ACT_FIN_Actividad_Id',
                 '=',
                 'a.id'
-            )
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'a.id as Actividad_Id', 'a.*')
-            ->where('p.id', '=', $id)
-            ->orderby('a.ACT_Fecha_Inicio_Actividad')
-            ->groupBy('a.id')
-            ->get();
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->select(
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
+                'a.id as Actividad_Id',
+                'a.*'
+            )->where(
+                'p.id', '=', $id
+            )->orderby(
+                'a.ACT_Fecha_Inicio_Actividad'
+            )->groupBy(
+                'a.id'
+            )->get();
         
         return $actividades;
     }
@@ -84,10 +139,13 @@ class HorasActividad extends Model
     public static function obtenerHorasAsignadas($actividades, $fecha, $trabajador, $idH)
     {
         $horas = $actividades
-            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
-            ->where('a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id)
-            ->where('ha.id', '<>', $idH)
-            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+            ->where(
+                'ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $trabajador->ACT_Trabajador_Id
+            )->where(
+                'ha.id', '<>', $idH
+            )->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
         
         return $horas;
     }
@@ -96,8 +154,9 @@ class HorasActividad extends Model
     public static function obtenerHorasActividad($id)
     {
         $horas = DB::table('TBL_Horas_Actividad')
-            ->where('HRS_ACT_Actividad_Id', '=', $id)
-            ->get();
+            ->where(
+                'HRS_ACT_Actividad_Id', '=', $id
+            )->get();
         
         return $horas;
     }
@@ -115,9 +174,11 @@ class HorasActividad extends Model
     public static function obtenerHorasAprobadasActividad($idA)
     {
         $horas = DB::table('TBL_Horas_Actividad as ha')
-            ->select(DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR'))
-            ->where('ha.HRS_ACT_Actividad_Id', '=', $idA)
-            ->first();
+            ->select(
+                DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR')
+            )->where(
+                'ha.HRS_ACT_Actividad_Id', '=', $idA
+            )->first();
         
         return $horas;
     }
@@ -126,59 +187,121 @@ class HorasActividad extends Model
     public static function obtenerHorasAsignadasNoSeleccionada($id, $fecha)
     {
         $horas = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->where('ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('ha.id', '<>', $id)
-            ->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->where(
+                'ha.HRS_ACT_Fecha_Actividad', '=', $fecha->HRS_ACT_Fecha_Actividad
+            )->where(
+                'a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id')
+            )->where(
+                'ha.id', '<>', $id
+            )->sum('ha.HRS_ACT_Cantidad_Horas_Asignadas');
         
         return $horas;
     }
 
     #Función para obtener la actividad con las horas de trabajo
-    public static function obtenerActividad($id)
+    public static function obtenerActividad($id, $idTrabajador)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
-            ->first();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->select(
+                'ha.id as Id_Horas', 'ha.*', 'a.*'
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $idTrabajador
+            )->where(
+                'ha.HRS_ACT_Actividad_Id', '=', $id
+            )->first();
         
         return $actividades;
     }
 
     #Función para obtener la actividad con las horas de trabajo
-    public static function obtenerActividadesHorasAsignacion($id)
+    public static function obtenerActividadesHorasAsignacion($id, $idTrabajador)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->select('ha.id as Id_Horas', 'ha.*', 'a.*')
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->where('ha.HRS_ACT_Actividad_Id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->select(
+                'ha.id as Id_Horas',
+                'ha.*',
+                'a.*'
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $idTrabajador
+            )->where(
+                'ha.HRS_ACT_Actividad_Id', '=', $id
+            )->get();
         
         return $actividades;
     }
 
     #Función para obtener las actividades finalizadas agrupadas por horas
-    public static function obtenerActividadesFinalizadas($id)
+    public static function obtenerActividadesFinalizadas($id, $idUsuario)
     {
         $actividades = DB::table('TBL_Horas_Actividad as ha')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'uu.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select(DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'), DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'), 'ha.*', 'a.*')
-            ->where('e.id', '<>', 1)
-            ->where('e.id', '<>', 2)
-            ->where('uu.id', '=', session()->get('Usuario_Id'))
-            ->where('p.id', '=', $id)
-            ->where('a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s'))
-            ->groupBy('HRS_ACT_Actividad_Id')->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->join(
+                'TBL_Usuarios as uu',
+                'uu.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'uu.id'
+            )->join(
+                'TBL_Roles as r',
+                'r.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->select(
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
+                'ha.*',
+                'a.*'
+            )->where(
+                'e.id', '<>', 1
+            )->where(
+                'e.id', '<>', 2
+            )->where(
+                'uu.id', '=', $idUsuario
+            )->where(
+                'p.id', '=', $id
+            )->where(
+                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+            )->groupBy(
+                'HRS_ACT_Actividad_Id'
+            )->get();
         
         return $actividades;
     }

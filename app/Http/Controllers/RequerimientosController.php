@@ -42,13 +42,13 @@ class RequerimientosController extends Controller
             'eliminar'=>can2('eliminar-requerimientos'),
             'listarA'=>can2('listar-actividades')
         ];
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $requerimientos = Requerimientos::obtenerRequerimientos($idP);
         $proyecto = Proyectos::findOrFail($idP);
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'requerimientos.listar',
@@ -73,12 +73,12 @@ class RequerimientosController extends Controller
     public function crear($idP)
     {
         can('crear-requerimientos');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'requerimientos.crear',
@@ -142,13 +142,13 @@ class RequerimientosController extends Controller
     public function editar($idP, $idR)
     {
         can('editar-requerimientos');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $proyecto = Proyectos::findOrFail($idP);
         $requerimiento = Requerimientos::findOrFail($idR);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'requerimientos.editar',

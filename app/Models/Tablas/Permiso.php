@@ -39,10 +39,16 @@ class Permiso extends Model
     public static function obtenerPermisosAsignados($id)
     {
         $permisoAsignado = DB::table('TBL_Permiso as p')
-            ->join('TBL_Permiso_Usuario as pu', 'pu.PRM_USR_Permiso_Id', '=', 'p.id')
-            ->where('pu.PRM_USR_Usuario_Id', '=', $id)
-            ->select('p.*')
-            ->get();
+            ->join(
+                'TBL_Permiso_Usuario as pu',
+                'pu.PRM_USR_Permiso_Id',
+                '=',
+                'p.id'
+            )->select(
+                'p.*'
+            )->where(
+                'pu.PRM_USR_Usuario_Id', '=', $id
+            )->get();
         
         return $permisoAsignado;
     }

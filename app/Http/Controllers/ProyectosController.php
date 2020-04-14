@@ -41,13 +41,13 @@ class ProyectosController extends Controller
             'listarR'=>can2('listar-requerimientos'),
             'listarE'=>can2('listar-empresas')
         ];
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id);
         $proyectosNoFinalizados = Proyectos::obtenerNoFinalizados($id);
         $proyectosFinalizados = Proyectos::obtenerFinalizados($id);
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'proyectos.listar',
@@ -72,13 +72,13 @@ class ProyectosController extends Controller
     public function crear($id)
     {
         can('crear-proyectos');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id);
         $clientes = Usuarios::obtenerClientes($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'proyectos.crear',
@@ -207,8 +207,8 @@ class ProyectosController extends Controller
             'listarE'=>can2('listar-empresas')
         ];
 
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $proyecto = Proyectos::findOrFail($id);

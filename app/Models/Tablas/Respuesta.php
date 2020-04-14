@@ -26,7 +26,8 @@ class Respuesta extends Model
         'RTA_Actividad_Finalizada_Id',
         'RTA_Estado_Id',
         'RTA_Usuario_Id',
-        'RTA_Fecha_Respuesta'];
+        'RTA_Fecha_Respuesta'
+    ];
     protected $guarded = ['id'];
 
     #Funcion para obtener el historial de respuestas
@@ -39,11 +40,20 @@ class Respuesta extends Model
                 '=',
                 'r.RTA_Actividad_Finalizada_Id'
             )
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'r.RTA_Usuario_Id')
-            ->select('r.*', 'u.*', 'af.*')
-            ->where('af.ACT_FIN_Actividad_Id', '=', $id)
-            ->where('r.RTA_Titulo', '<>', null)
-            ->get();
+            ->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'r.RTA_Usuario_Id'
+            )->select(
+                'r.*',
+                'u.*',
+                'af.*'
+            )->where(
+                'af.ACT_FIN_Actividad_Id', '=', $id
+            )->where(
+                'r.RTA_Titulo', '<>', null
+            )->get();
 
         return $respuestasAnteriores;
     }
@@ -51,9 +61,11 @@ class Respuesta extends Model
     #Funcion para obtener la respuesta del validador
     public static function obtenerRespuestaValidador($id)
     {
-        $rtaValidador = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $id)
-            ->where('RTA_Usuario_Id', '<>', 0)
-            ->first();
+        $rtaValidador = Respuesta::where(
+            'RTA_Actividad_Finalizada_Id', '=', $id
+        )->where(
+            'RTA_Usuario_Id', '<>', 0
+        )->first();
 
         return $rtaValidador;
     }
@@ -67,9 +79,11 @@ class Respuesta extends Model
                 'af.id',
                 '=',
                 'RTA_Actividad_Finalizada_Id'
-            )->where('af.ACT_FIN_Actividad_Id', '=', $idA)
-            ->select('re.id as Id_Rta')
-            ->get();
+            )->select(
+                're.id as Id_Rta'
+            )->where(
+                'af.ACT_FIN_Actividad_Id', '=', $idA
+            )->get();
         
         return $ultimaRta;
     }
@@ -84,7 +98,7 @@ class Respuesta extends Model
     }
 
     #Funcion para actualizar los datos de la respuesta
-    public static function actualizarRespuesta($request, $estado)
+    public static function actualizarRespuesta($request, $estado, $idUsuario)
     {
         Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
             ->where('RTA_Titulo', '=', null)
@@ -93,13 +107,13 @@ class Respuesta extends Model
                 'RTA_Titulo'=>$request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
                 'RTA_Estado_Id' => $estado,
-                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Usuario_Id' => $idUsuario,
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);
     }
 
     #Funcion para actualizar la respuesta cliente
-    public static function actualizarRespuestaCliente($request, $estado)
+    public static function actualizarRespuestaCliente($request, $estado, $idUsuario)
     {
         Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
             ->where('RTA_Usuario_Id', '=', 0)
@@ -108,7 +122,7 @@ class Respuesta extends Model
                 'RTA_Titulo' => $request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
                 'RTA_Estado_Id' => $estado,
-                'RTA_Usuario_Id' => session()->get('Usuario_Id'),
+                'RTA_Usuario_Id' => $idUsuario,
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);
     }

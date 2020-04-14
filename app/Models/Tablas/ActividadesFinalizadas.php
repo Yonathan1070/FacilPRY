@@ -31,21 +31,52 @@ class ActividadesFinalizadas extends Model
     protected $guarded = ['id'];
 
     #Funcion para obtener las actividades pendientes para aprobar el cliente
-    public static function obtenerActividadesAprobar()
+    public static function obtenerActividadesAprobar($id)
     {
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
-            ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('re.RTA_Usuario_Id', '=', 0)
-            ->where('re.RTA_Estado_Id', '=', 12)
-            ->where('af.ACT_FIN_Revisado', '=', 1)
-            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Estados as ea',
+                'ea.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->join(
+                'TBL_Respuesta as re',
+                're.RTA_Actividad_Finalizada_Id',
+                '=',
+                'af.id'
+            )->select(
+                'af.id as Id_Act_Fin',
+                'af.*',
+                'a.*',
+                'p.*',
+                'r.*',
+                'ea.*'
+            )->where(
+                'a.ACT_Estado_Id', '=', 3
+            )->where(
+                're.RTA_Usuario_Id', '=', 0
+            )->where(
+                're.RTA_Estado_Id', '=', 12
+            )->where(
+                'af.ACT_FIN_Revisado', '=', 1
+            )->where(
+                'p.PRY_Cliente_Id', '=', $id
+            )->get();
         
         return $actividadesPendientes;
     }
@@ -54,16 +85,45 @@ class ActividadesFinalizadas extends Model
     public static function obtenerActividadesAprobarValidador()
     {
         $actividadesPendientes = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->join('TBL_Respuesta as re', 're.RTA_Actividad_Finalizada_Id', '=', 'af.id')
-            ->select('af.id as Id_Act_Fin', 'af.*', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('re.RTA_Titulo', '=', null)
-            ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('re.RTA_Estado_Id', '=', 4)
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Estados as ea',
+                'ea.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->join(
+                'TBL_Respuesta as re',
+                're.RTA_Actividad_Finalizada_Id',
+                '=',
+                'af.id'
+            )->select(
+                'af.id as Id_Act_Fin',
+                'af.*',
+                'a.*',
+                'p.*',
+                'r.*',
+                'ea.*'
+            )->where(
+                're.RTA_Titulo', '=', null
+            )->where(
+                'a.ACT_Estado_Id', '=', 3
+            )->where(
+                're.RTA_Estado_Id', '=', 4
+            )->get();
         
         return $actividadesPendientes;
     }
@@ -72,13 +132,37 @@ class ActividadesFinalizadas extends Model
     public static function obtenerActividadFinalizada($id)
     {
         $actividadFinalizada = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->select(
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->select(
                 'af.id as Id_Act_Fin',
                 'a.id as Id_Act',
                 'af.*',
@@ -87,39 +171,79 @@ class ActividadesFinalizadas extends Model
                 're.*',
                 'u.*',
                 'ro.*'
-            )->where('af.Id', '=', $id)
-            ->orderByDesc('af.created_at')
-            ->first();
+            )->where(
+                'af.Id', '=', $id
+            )->orderByDesc(
+                'af.created_at'
+            )->first();
         
         return $actividadFinalizada;
     }
 
     #Funcion para obtener las actividades finalizadas del cliente
-    public static function obtenerActividadesFinalizadasCliente()
+    public static function obtenerActividadesFinalizadasCliente($id)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id as Id_Actividad', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 3)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->get();
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Estados as ea',
+                'ea.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'a.id as Id_Actividad',
+                'a.*',
+                'p.*',
+                'r.*',
+                'ea.*'
+            )->where(
+                'a.ACT_Estado_Id','=', 3
+            )->where(
+                'a.ACT_Trabajador_Id','=', $id
+            )->get();
         
         return $actividadesFinalizadas;
     }
 
     #Funcion para obtener las actividades en proceso del cliente
-    public static function obtenerActividadesProcesoCliente()
+    public static function obtenerActividadesProcesoCliente($id)
     {
         $actividadesEntregar = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Estados as ea', 'ea.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.id as Id_Actividad', 'a.*', 'p.*', 'r.*', 'ea.*')
-            ->where('a.ACT_Estado_Id', '=', 1)
-            ->where('a.ACT_Trabajador_Id', '=', session()->get('Usuario_Id'))
-            ->get();
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Estados as ea',
+                'ea.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'a.id as Id_Actividad',
+                'a.*',
+                'p.*',
+                'r.*',
+                'ea.*'
+            )->where(
+                'a.ACT_Estado_Id', '=', 1
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->get();
         
         return $actividadesEntregar;
     }
@@ -128,16 +252,52 @@ class ActividadesFinalizadas extends Model
     public static function obtenerActividadFinalizadaDetalle($id)
     {
         $actividades = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.Id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->join('TBL_Usuarios as us', 'us.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Usuarios_Roles as urs', 'urs.USR_RLS_Usuario_Id', '=', 'us.id')
-            ->join('TBL_Roles as ros', 'ros.id', '=', 'urs.USR_RLS_Rol_Id')
-            ->select(
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.Id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->join(
+                'TBL_Usuarios as us',
+                'us.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as urs',
+                'urs.USR_RLS_Usuario_Id',
+                '=',
+                'us.id'
+            )->join(
+                'TBL_Roles as ros',
+                'ros.id',
+                '=',
+                'urs.USR_RLS_Rol_Id'
+            )->select(
                 'af.*',
                 'a.*',
                 'p.*',
@@ -146,8 +306,9 @@ class ActividadesFinalizadas extends Model
                 'us.USR_Nombres_Usuario as NombreT',
                 'us.USR_Apellidos_Usuario as ApellidoT',
                 'ros.RLS_Nombre_Rol as RolT'
-            )->where('a.id', '=', $id)
-            ->first();
+            )->where(
+                'a.id', '=', $id
+            )->first();
 
         return $actividades;
     }
@@ -156,27 +317,54 @@ class ActividadesFinalizadas extends Model
     public static function obtenerActividadFinalizadaSola($id)
     {
         $actividad = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->select('a.id')
-            ->where('af.id', '=', $id)
-            ->first();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->select(
+                'a.id'
+            )->where(
+                'af.id', '=', $id
+            )->first();
 
         return $actividad;
     }
 
     #Función para obtener las actividades finalizadas por perfil de operación
-    public static function obtenerActividadesFinalizadasPerfil($id)
+    public static function obtenerActividadesFinalizadasPerfil($id, $idUsuario)
     {
         $actividadesFinalizadas = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as re', 're.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 're.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as uu', 'uu.id', '=', 'a.ACT_Trabajador_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->where('e.id', '<>', 1)
-            ->where('e.id', '<>', 2)
-            ->where('uu.id', '=', session()->get('Usuario_Id'))
-            ->where('p.id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as uu',
+                'uu.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->where(
+                'e.id', '<>', 1
+            )->where(
+                'e.id', '<>', 2
+            )->where(
+                'uu.id', '=', $idUsuario
+            )->where(
+                'p.id', '=', $id
+            )->get();
+        
         return $actividadesFinalizadas;
     }
 
@@ -185,12 +373,21 @@ class ActividadesFinalizadas extends Model
     {
         #dd($fechaInicio->format('M d Y').' - '.$fechaFin->format('M d Y'));
         $actividadesFinalizadas = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->where('a.ACT_Trabajador_Id', '=', $id)
-            ->where('af.ACT_FIN_Fecha_Finalizacion', '>=', $fechaInicio)
-            ->where('af.ACT_FIN_Fecha_Finalizacion', '<=', $fechaFin)
-            ->groupBy('af.ACT_FIN_Actividad_Id')
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->where(
+                'af.ACT_FIN_Fecha_Finalizacion', '>=', $fechaInicio
+            )->where(
+                'af.ACT_FIN_Fecha_Finalizacion', '<=', $fechaFin
+            )->groupBy(
+                'af.ACT_FIN_Actividad_Id'
+            )->get();
+        
         return $actividadesFinalizadas;
     }
 

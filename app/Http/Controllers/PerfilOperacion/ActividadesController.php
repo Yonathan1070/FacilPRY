@@ -42,23 +42,23 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil();
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         foreach ($actividadesProceso as $actividad) {
             if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
                 Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
                 HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
-                $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil();
+                $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
             }
         }
 
-        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil();
-        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil();
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id'));
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id'));
         
         return view(
             'perfiloperacion.actividades.listar',
@@ -82,12 +82,12 @@ class ActividadesController extends Controller
      */
     public function asignarHoras($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
-        $actividades = HorasActividad::obtenerActividadesHorasAsignacion($id);
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $actividades = HorasActividad::obtenerActividadesHorasAsignacion($id, session()->get('Usuario_Id'));
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         if ($actividades == null){
             return redirect()
@@ -236,9 +236,9 @@ class ActividadesController extends Controller
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($datos->USR_Empresa_Id);
-        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil($hoy);
-        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil($hoy);
-        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil();
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id'));
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id'));
 
         $pdf = PDF::loadView(
             'includes.pdf.actividades',
@@ -289,15 +289,15 @@ class ActividadesController extends Controller
      */
     public function finalizar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = HorasActividad::obtenerActividad($id);
+        $actividades = HorasActividad::obtenerActividad($id, session()->get('Usuario_Id'));
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($id);
 

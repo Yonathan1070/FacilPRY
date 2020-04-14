@@ -23,17 +23,24 @@ class Requerimientos extends Model
     protected $table = "TBL_Requerimientos";
     protected $fillable = ['REQ_Nombre_Requerimiento',
         'REQ_Descripcion_Requerimiento',
-        'REQ_Proyecto_Id'];
+        'REQ_Proyecto_Id'
+    ];
     protected $guarded = ['id'];
 
     #Función para obtener los requerimientos del proyecto seleccionado
     public static function obtenerRequerimientos($idP)
     {
         $requerimientos = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Requerimientos as r', 'p.Id', '=', 'r.REQ_Proyecto_Id')
-            ->where('r.REQ_Proyecto_Id', '=', $idP)
-            ->orderBy('r.Id')
-            ->get();
+            ->join(
+                'TBL_Requerimientos as r',
+                'p.Id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->where(
+                'r.REQ_Proyecto_Id', '=', $idP
+            )->orderBy(
+                'r.Id'
+            )->get();
         
         return $requerimientos;
     }
@@ -43,9 +50,9 @@ class Requerimientos extends Model
     {
         $requerimientos = Requerimientos::where(
             'REQ_Proyecto_Id', '=', $request['REQ_Proyecto_Id']
-        )
-            ->where('id', '<>', $idR)
-            ->get();
+        )->where(
+            'id', '<>', $idR
+        )->get();
         
         return $requerimientos;
     }

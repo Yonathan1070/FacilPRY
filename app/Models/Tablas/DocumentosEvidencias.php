@@ -33,10 +33,32 @@ class DocumentosEvidencias extends Model
                 'a.id',
                 '=',
                 'd.DOC_Actividad_Finalizada_Id'
-            )->where('a.id', '=', $id)
-            ->get();
+            )->where(
+                'a.id', '=', $id
+            )->get();
         
         return $documentosEvidencia;
+    }
+
+    #Funcion para obtener actividad a cobrar
+    public static function obtenerDocumentosActividadCobrar($id)
+    {
+        $documentosEvidencias = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Documentos_Evidencias as de',
+                'de.DOC_Actividad_Finalizada_Id',
+                '=',
+                'af.id'
+            )->where(
+                'a.id', '=', $id
+            )->get();
+
+        return $documentosEvidencias;
     }
 
     #Funcion para crear los documentos de evidencia
@@ -46,21 +68,5 @@ class DocumentosEvidencias extends Model
             'DOC_Actividad_Finalizada_Id' => $idActividad,
             'ACT_Documento_Evidencia_Actividad' => $archivo
         ]);
-    }
-
-    #Funcion para obtener actividad a cobrar
-    public static function obtenerDocumentosActividadCobrar($id)
-    {
-        $documentosEvidencias = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join(
-                'TBL_Documentos_Evidencias as de',
-                'de.DOC_Actividad_Finalizada_Id',
-                '=',
-                'af.id'
-            )->where('a.id', '=', $id)
-            ->get();
-
-        return $documentosEvidencias;
     }
 }

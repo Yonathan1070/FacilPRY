@@ -21,7 +21,8 @@ class UsuariosRoles extends Model
     protected $table = "TBL_Usuarios_Roles";
     protected $fillable = ['USR_RLS_Rol_Id',
         'USR_RLS_Usuario_Id',
-        'USR_RLS_Estado'];
+        'USR_RLS_Estado'
+    ];
     public $timestamps = false;
 
     #Funcion donde se asigna el rol

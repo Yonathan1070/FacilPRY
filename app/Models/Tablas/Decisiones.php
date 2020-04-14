@@ -4,6 +4,19 @@ namespace App\Models\Tablas;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modelo Decisiones, realiza las distintas consultas
+ * que tenga que ver con la tabla Decisiones en la
+ * Base de Datos.
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class Decisiones extends Model
 {
     protected $table = "TBL_Decisiones";
@@ -19,8 +32,10 @@ class Decisiones extends Model
     public static function obtenerDecisionPorRango($calificacion)
     {
         $decision = Decisiones::where('DCS_Rango_Inicio_Decision', '<=', $calificacion)
-            ->where('DCS_Rango_Fin_Decision', '>=', $calificacion)
-            ->first();
+            ->where(
+                'DCS_Rango_Fin_Decision','>=', $calificacion
+            )->first();
+        
         return $decision;
     }
 

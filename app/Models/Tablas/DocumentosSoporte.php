@@ -28,9 +28,14 @@ class DocumentosSoporte extends Model
     public static function obtenerDocumentosSoporte($id)
     {
         $documentosSoporte = DB::table('TBL_Documentos_Soporte as d')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'd.DOC_Actividad_Id')
-            ->where('d.DOC_Actividad_Id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'd.DOC_Actividad_Id'
+            )->where(
+                'd.DOC_Actividad_Id', '=', $id
+            )->get();
         
         return $documentosSoporte;
     }
@@ -39,10 +44,19 @@ class DocumentosSoporte extends Model
     public static function obtenerDocumentoSoporteFinalizada($id)
     {
         $documentosSoporte = DB::table('TBL_Actividades_Finalizadas as af')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->where('af.id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Documentos_Soporte as ds',
+                'ds.DOC_Actividad_Id',
+                '=',
+                'a.id'
+            )->where(
+                'af.id', '=', $id
+            )->get();
         
         return $documentosSoporte;
     }
@@ -51,9 +65,14 @@ class DocumentosSoporte extends Model
     public static function obtenerDocumentosActividadCobrar($id)
     {
         $documentosSoporte = DB::table('TBL_Actividades as a')
-            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->where('a.id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Documentos_Soporte as ds',
+                'ds.DOC_Actividad_Id',
+                '=',
+                'a.id'
+            )->where(
+                'a.id', '=', $id
+            )->get();
 
         return $documentosSoporte;
     }

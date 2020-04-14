@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\HorasActividad;
-use App\Models\Tablas\Proyectos;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,9 +32,10 @@ class MetricasController extends Controller
         
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
-                $proyecto->id
+                $proyecto->id,
+                session()->get('Usuario_Id')
             );
-            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id);
+            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id, session()->get('Usuario_Id'));
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
             }catch(Exception $ex){
@@ -84,9 +84,12 @@ class MetricasController extends Controller
             ->get();
 
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id);
-            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id);
+            $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
+                $proyecto->id,
+                session()->get('Usuario_Id')
+            );
+            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id, session()->get('Usuario_Id'));
+            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id, session()->get('Usuario_Id'));
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
@@ -149,10 +152,12 @@ class MetricasController extends Controller
         foreach ($proyectos as $key => $proyecto) {
             #Obtenemos la Eficacia
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
-                $proyecto->id
+                $proyecto->id,
+                session()->get('Usuario_Id')
             );
             $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario(
-                $proyecto->id
+                $proyecto->id,
+                session()->get('Usuario_Id')
             );
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
@@ -161,7 +166,7 @@ class MetricasController extends Controller
             }
 
             #Obtenemos la Eficiencia
-            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id);
+            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id, session()->get('Usuario_Id'));
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;

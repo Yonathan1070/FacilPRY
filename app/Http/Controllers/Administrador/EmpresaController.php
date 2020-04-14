@@ -28,9 +28,9 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
-        $datos = Empresas::obtenerDatosEmpresa();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $datos = Empresas::obtenerDatosEmpresa(session()->get('Usuario_Id'));
 
         return view(
             'administrador.empresa.editar',

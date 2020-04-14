@@ -25,8 +25,8 @@ class InicioController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
@@ -56,7 +56,7 @@ class InicioController extends Controller
         $eficiencia = [];
         $efectividad = [];
 
-        $proyectos = Proyectos::obtenerProyectosAsociados();
+        $proyectos = Proyectos::obtenerProyectosAsociados(session()->get('Usuario_Id'));
         
         foreach ($proyectos as $key => $proyecto) {
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
@@ -142,8 +142,8 @@ class InicioController extends Controller
      */
     public function cargaTrabajo()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         $actividades = Actividades::obtenerGenerales(session()->get('Usuario_Id'));

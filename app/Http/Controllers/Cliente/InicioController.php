@@ -36,13 +36,13 @@ class InicioController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $permisos = ['listarA'=>can2('listar-actividades')];
 
         $proyectos = Proyectos::obtenerProyectosCliente(session()->get('Usuario_Id'));
-        $proyectosPagar = Proyectos::obtenerProyectosPagar();
+        $proyectosPagar = Proyectos::obtenerProyectosPagar(session()->get('Usuario_Id'));
 
         return view(
             'cliente.inicio',
@@ -65,13 +65,13 @@ class InicioController extends Controller
      */
     public function pagar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $id_empresa = Empresas::obtenerIdEmpresa();
+        $id_empresa = Empresas::obtenerIdEmpresa(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
@@ -116,7 +116,7 @@ class InicioController extends Controller
                     'No es posible generar el archivo sin que el proyecto tenga actividades'
                 );
         }
-        $id_empresa = Empresas::obtenerIdEmpresa();
+        $id_empresa = Empresas::obtenerIdEmpresa(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $pdf = PDF::loadView(
             'includes.pdf.proyecto.actividades',

@@ -38,13 +38,13 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobar();
-        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasCliente();
-        $actividadesEntregar = ActividadesFinalizadas::obtenerActividadesProcesoCliente();
+        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobar(session()->get('Usuario_Id'));
+        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasCliente(session()->get('Usuario_Id'));
+        $actividadesEntregar = ActividadesFinalizadas::obtenerActividadesProcesoCliente(session()->get('Usuario_Id'));
         
         return view(
             'cliente.actividades.inicio',
@@ -65,13 +65,13 @@ class ActividadesController extends Controller
      * @return \Illuminate\View\View Vista del formulario de entrega
      */
     public function finalizar($id){
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $hoy = Carbon::now();
         $hoy->format('Y-m-d H:i:s');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = Actividades::obtenerActividad($id);
+        $actividades = Actividades::obtenerActividad($id, session()->get('Usuario_Id'));
 
         return view(
             'cliente.actividades.finalizar',
@@ -148,8 +148,8 @@ class ActividadesController extends Controller
      */
     public function aprobarActividad($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $actividadesPendientes = ActividadesFinalizadas::obtenerActividadFinalizada($id);
@@ -206,7 +206,7 @@ class ActividadesController extends Controller
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
         
         if ($rtaTest!=null) {
-            Respuesta::actualizarRespuestaCliente($request, 6);
+            Respuesta::actualizarRespuestaCliente($request, 6, session()->get('Usuario_Id'));
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );
@@ -266,7 +266,7 @@ class ActividadesController extends Controller
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
         
         if ($rtaTest!=null) {
-            Respuesta::actualizarRespuestaCliente($request, 7);
+            Respuesta::actualizarRespuestaCliente($request, 7, session()->get('Usuario_Id'));
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );

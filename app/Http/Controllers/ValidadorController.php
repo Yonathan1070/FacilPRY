@@ -36,12 +36,12 @@ class ValidadorController extends Controller
     public function index()
     {
         can('validador');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobarValidador();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'tester.inicio',
@@ -63,8 +63,8 @@ class ValidadorController extends Controller
      */
     public function aprobacionActividad($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $actividadesPendientes = ActividadesFinalizadas::obtenerActividadFinalizada($id);
@@ -78,7 +78,7 @@ class ValidadorController extends Controller
             $actividadFinalizada->ACT_FIN_Actividad_Id
         );
         
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'tester.aprobacion',
@@ -117,7 +117,7 @@ class ValidadorController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
-        Respuesta::actualizarRespuesta($request, 6);
+        Respuesta::actualizarRespuesta($request, 6, session()->get('Usuario_Id'));
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
         $actividad = $this->actividad($request->id);
         HistorialEstados::crearHistorialEstado($actividad->id, 6);
@@ -168,7 +168,7 @@ class ValidadorController extends Controller
      */
     public function respuestaAprobado(Request $request)
     {
-        Respuesta::actualizarRespuesta($request, 5);
+        Respuesta::actualizarRespuesta($request, 5, session()->get('Usuario_Id'));
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
         Respuesta::crearRespuesta($request->id, 12);
         $idActFin = ActividadesFinalizadas::orderByDesc('created_at')->first()->id;

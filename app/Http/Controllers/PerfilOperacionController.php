@@ -35,12 +35,12 @@ class PerfilOperacionController extends Controller
     public function index()
     {
         can('listar-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'director.perfiloperacion.listar',
@@ -62,15 +62,15 @@ class PerfilOperacionController extends Controller
     public function crear()
     {
         can('crear-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::where('id', '<>', '4')
             ->where('RLS_Rol_Id', '=', 4)
             ->orderBy('id')
             ->get();
         
-            $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+            $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'director.perfiloperacion.crear',
@@ -146,12 +146,12 @@ class PerfilOperacionController extends Controller
     public function editar($id)
     {
         can('editar-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $perfil = Usuarios::findOrFail($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'director.perfiloperacion.editar',

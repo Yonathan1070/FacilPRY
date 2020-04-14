@@ -25,23 +25,52 @@ class Proyectos extends Model
         'PRY_Cliente_Id',
         'PRY_Empresa_Id',
         'PRY_Estado_Proyecto',
-        'PRY_Finalizado_Proyecto'];
+        'PRY_Finalizado_Proyecto'
+    ];
     protected $guarded = ['id'];
 
     #Función para obtener los proyectos no finalizados
     public static function obtenerNoFinalizados($id)
     {
         $proyectosNoFinalizados = DB::table('TBL_Proyectos as p')
-            ->leftjoin('TBL_Requerimientos as r', 'r.REQ_Proyecto_Id', '=', 'p.id')
-            ->leftjoin('TBL_Actividades as a', 'a.ACT_Requerimiento_Id', '=', 'r.id')
-            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('u.*', 'p.*', 'p.id as Proyecto_Id', DB::raw('COUNT(a.id) as Actividades_Totales'), DB::raw('COUNT(af.id) as Actividades_Finalizadas'))
-            ->where('p.PRY_Empresa_Id', '=', $id)
-            ->where('p.PRY_Finalizado_Proyecto', '=', 0)
-            ->groupBy('p.id')
-            ->get();
+            ->leftjoin(
+                'TBL_Requerimientos as r',
+                'r.REQ_Proyecto_Id',
+                '=',
+                'p.id'
+            )->leftjoin(
+                'TBL_Actividades as a',
+                'a.ACT_Requerimiento_Id',
+                '=',
+                'r.id'
+            )->leftjoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
+            )->join(
+                'TBL_Empresas as e',
+                'e.id',
+                '=',
+                'p.PRY_Empresa_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->select(
+                'u.*',
+                'p.*',
+                'p.id as Proyecto_Id',
+                DB::raw('COUNT(a.id) as Actividades_Totales'),
+                DB::raw('COUNT(af.id) as Actividades_Finalizadas')
+            )->where(
+                'p.PRY_Empresa_Id', '=', $id
+            )->where(
+                'p.PRY_Finalizado_Proyecto', '=', 0
+            )->groupBy(
+                'p.id'
+            )->get();
         
         return $proyectosNoFinalizados;
     }
@@ -50,16 +79,44 @@ class Proyectos extends Model
     public static function obtenerFinalizados($id)
     {
         $proyectosFinalizados = DB::table('TBL_Proyectos as p')
-            ->leftjoin('TBL_Requerimientos as r', 'r.REQ_Proyecto_Id', '=', 'p.id')
-            ->leftjoin('TBL_Actividades as a', 'a.ACT_Requerimiento_Id', '=', 'r.id')
-            ->leftjoin('TBL_Actividades_Finalizadas as af', 'af.ACT_FIN_Actividad_Id', '=', 'a.id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('u.*', 'p.*', 'p.id as Proyecto_Id', DB::raw('COUNT(a.id) as Actividades_Totales'), DB::raw('COUNT(af.id) as Actividades_Finalizadas'))
-            ->where('p.PRY_Empresa_Id', '=', $id)
-            ->where('p.PRY_Finalizado_Proyecto', '=', 1)
-            ->groupBy('p.id')
-            ->get();
+            ->leftjoin(
+                'TBL_Requerimientos as r',
+                'r.REQ_Proyecto_Id',
+                '=',
+                'p.id'
+            )->leftjoin(
+                'TBL_Actividades as a',
+                'a.ACT_Requerimiento_Id',
+                '=',
+                'r.id'
+            )->leftjoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
+            )->join(
+                'TBL_Empresas as e',
+                'e.id',
+                '=',
+                'p.PRY_Empresa_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->select(
+                'u.*',
+                'p.*',
+                'p.id as Proyecto_Id',
+                DB::raw('COUNT(a.id) as Actividades_Totales'),
+                DB::raw('COUNT(af.id) as Actividades_Finalizadas')
+            )->where(
+                'p.PRY_Empresa_Id', '=', $id
+            )->where(
+                'p.PRY_Finalizado_Proyecto', '=', 1
+            )->groupBy(
+                'p.id'
+            )->get();
         
         return $proyectosFinalizados;
     }
@@ -68,23 +125,43 @@ class Proyectos extends Model
     public static function obtenerProyecto($id)
     {
         $proyecto = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $id)
-            ->first();
+            ->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->where(
+                'p.id', '=', $id
+            )->first();
         
         return $proyecto;
     }
 
     #Función para obtener los proyectos asociados al usuario
-    public static function obtenerProyectosAsociados()
+    public static function obtenerProyectosAsociados($idCliente)
     {
         $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->select('u.*', 'p.*')
-            ->get();
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->select(
+                'u.*',
+                'p.*'
+            )->where(
+                'u.id', '=', $idCliente
+            )->get();
         
         return $proyectos;
     }
@@ -93,35 +170,90 @@ class Proyectos extends Model
     public static function obtenerProyectosConFacturas()
     {
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->where('a.ACT_Estado_Id', '=', 9)
-            ->groupBy('fc.FACT_Cliente_Id')
-            ->get();
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'fc.FACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'p.id as Id_Proyecto',
+                'a.*',
+                'p.*',
+                'u.*',
+                DB::raw('COUNT(a.id) as No_Actividades')
+            )->where(
+                'a.ACT_Costo_Real_Actividad', '<>', 0
+            )->where(
+                'a.ACT_Estado_Id', '=', 9
+            )->groupBy(
+                'fc.FACT_Cliente_Id'
+            )->get();
         
         return $proyectos;
     }
 
     #Función que obtiene los proyectos que tiene pendientes para realizar pago
-    public static function obtenerProyectosPagar()
+    public static function obtenerProyectosPagar($idCliente)
     {
         $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Empresas as e', 'e.id', '=', 'u.USR_Empresa_Id')
-            ->join('TBL_Estados as es', 'es.id', '=', 'a.ACT_Estado_Id')
-            ->select('a.*', 'p.*', 'a.id as Id_Actividad')
-            ->where('p.PRY_Cliente_Id', '=', session()->get('Usuario_Id'))
-            ->where('es.id', '=', 9)
-            ->where('a.ACT_Costo_Real_Actividad', '<>', 0)
-            ->groupBy('p.id')
-            ->get();
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Empresas as e',
+                'e.id',
+                '=',
+                'u.USR_Empresa_Id'
+            )->join(
+                'TBL_Estados as es',
+                'es.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'a.*',
+                'p.*',
+                'a.id as Id_Actividad'
+            )->where(
+                'p.PRY_Cliente_Id', '=', $idCliente
+            )->where(
+                'es.id', '=', 9
+            )->where(
+                'a.ACT_Costo_Real_Actividad', '<>', 0
+            )->groupBy(
+                'p.id'
+            )->get();
         
         return $proyectos;
     }
@@ -130,10 +262,17 @@ class Proyectos extends Model
     public static function obtenerProyectosCliente($id)
     {
         $proyectos = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->select('p.*')
-            ->where('p.PRY_Cliente_Id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->select(
+                'p.*'
+            )->where(
+                'p.PRY_Cliente_Id', '=', $id
+            )->get();
+        
         return $proyectos;
     }
 

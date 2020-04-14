@@ -37,7 +37,8 @@ class Usuarios extends Authenticatable
         'USR_Foto_Perfil_Usuario',
         'USR_Supervisor_Id',
         'USR_Empresa_Id',
-        'USR_Costo_Hora'];
+        'USR_Costo_Hora'
+    ];
     protected $guarded = ['id'];
     
     #Funcion que obtiene los roles del usuario
@@ -76,9 +77,14 @@ class Usuarios extends Authenticatable
     public static function obtenerClienteProyecto($idP)
     {
         $datosU = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->where('p.id', '=', $idP)
-            ->first();
+            ->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->where(
+                'p.id', '=', $idP
+            )->first();
         
         return $datosU;
     }
@@ -87,9 +93,14 @@ class Usuarios extends Authenticatable
     public static function obtenerPerfilAsociado($id)
     {
         $trabajador = DB::table('TBL_Actividades as a')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('a.id', '=', $id)
-            ->first();
+            ->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->where(
+                'a.id', '=', $id
+            )->first();
         
         return $trabajador;
     }
@@ -98,13 +109,26 @@ class Usuarios extends Authenticatable
     public static function obtenerTrabajadores()
     {
         $trabajadores = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Administrador')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Director de Proyectos')
-            ->where('r.RLS_Nombre_Rol', '<>', 'Cliente')
-            ->select('u.*')
-            ->get();
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as r',
+                'r.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->select(
+                'u.*'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Administrador'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Director de Proyectos'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Cliente'
+            )->get();
+        
         return $trabajadores;
     }
 
@@ -112,13 +136,28 @@ class Usuarios extends Authenticatable
     public static function obtenerPerfilOperacion()
     {
         $perfilesOperacion = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'u.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('u.*', 'ur.*', 'r.RLS_Nombre_Rol', 'u.id as Id_Perfil')
-            ->where('r.RLS_Rol_Id', '=', '4')
-            ->where('ur.USR_RLS_Estado', '=', '1')
-            ->orderBy('u.USR_Apellidos_Usuario', 'ASC')
-            ->get();
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'u.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'u.*',
+                'ur.*',
+                'r.RLS_Nombre_Rol',
+                'u.id as Id_Perfil'
+            )->where(
+                'r.RLS_Rol_Id', '=', '4'
+            )->where(
+                'ur.USR_RLS_Estado', '=', '1'
+            )->orderBy(
+                'u.USR_Apellidos_Usuario', 'ASC'
+            )->get();
         
         return $perfilesOperacion;
     }
@@ -133,12 +172,23 @@ class Usuarios extends Authenticatable
                 '=',
                 'TBL_Usuarios_Roles.USR_RLS_Usuario_Id'
             )
-            ->join('TBL_Roles', 'TBL_Usuarios_Roles.USR_RLS_Rol_Id', '=', 'TBL_Roles.Id')
-            ->select('TBL_Usuarios.*', 'TBL_Usuarios_Roles.*', 'TBL_Roles.*')
-            ->where('TBL_Roles.Id', '=', '2')
-            ->where('TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1')
-            ->orderBy('TBL_Usuarios.id', 'ASC')
-            ->get();
+            ->join(
+                'TBL_Roles',
+                'TBL_Usuarios_Roles.USR_RLS_Rol_Id',
+                '=',
+                'TBL_Roles.Id'
+            )->select(
+                'TBL_Usuarios.*',
+                'TBL_Usuarios_Roles.*',
+                'TBL_Roles.*'
+            )->where(
+                'TBL_Roles.Id', '=', '2'
+            )->where(
+                'TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1'
+            )->orderBy(
+                'TBL_Usuarios.id', 'ASC'
+            )->get();
+        
         return $directores;
     }
 
@@ -146,16 +196,40 @@ class Usuarios extends Authenticatable
     public static function obtenerClientes($id)
     {
         $clientes = DB::table('TBL_Usuarios as uu')
-            ->join('TBL_Usuarios as ud', 'ud.id', '=', 'uu.USR_Supervisor_Id')
-            ->join('TBL_Empresas as eu', 'eu.id', '=', 'uu.USR_Empresa_Id')
-            ->join('TBL_Empresas as ed', 'ed.id', '=', 'ud.USR_Empresa_Id')
-            ->join('TBL_Usuarios_Roles as ur', 'uu.id', '=', 'ur.USR_RLS_Usuario_Id')
-            ->join('TBL_Roles as r', 'ur.USR_RLS_Rol_Id', '=', 'r.Id')
-            ->select('uu.*', 'r.RLS_Nombre_Rol')
-            ->where('ur.USR_RLS_Rol_Id', '=', '3')
-            ->where('ur.USR_RLS_Estado', '=', '1')
-            ->where('eu.id', '=', $id)
-            ->get();
+            ->join(
+                'TBL_Usuarios as ud',
+                'ud.id',
+                '=',
+                'uu.USR_Supervisor_Id'
+            )->join(
+                'TBL_Empresas as eu',
+                'eu.id',
+                '=',
+                'uu.USR_Empresa_Id'
+            )->join(
+                'TBL_Empresas as ed',
+                'ed.id',
+                '=',
+                'ud.USR_Empresa_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'uu.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'uu.*', 'r.RLS_Nombre_Rol'
+            )->where(
+                'ur.USR_RLS_Rol_Id', '=', '3'
+            )->where(
+                'ur.USR_RLS_Estado', '=', '1'
+            )->where(
+                'eu.id', '=', $id
+            )->get();
         
         return $clientes;
     }
@@ -164,13 +238,34 @@ class Usuarios extends Authenticatable
     public static function obtenerPerfilOperacionActividad($id)
     {
         $perfil = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Actividades as a', 'a.ACT_Trabajador_Id', '=', 'u.id')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as ro', 'ro.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('a.id', '=', $id)
-            ->first();
+            ->join(
+                'TBL_Actividades as a',
+                'a.ACT_Trabajador_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->where(
+                'a.id', '=', $id
+            )->first();
         
         return $perfil;
+    }
+
+    #Funcion que obtiene un usuario en específico
+    public static function obtenerUsuario($documento)
+    {
+        return Usuarios::where(
+            'USR_Documento_Usuario', '=', $documento
+        )->first();
     }
 
     #Funcion que guarda el nuevo usuario en la Base de Datos
@@ -200,12 +295,6 @@ class Usuarios extends Authenticatable
             'USR_Empresa_Id' => $request->id,
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
-    }
-
-    #Funcion que obtiene un usuario en específico
-    public static function obtenerUsuario($documento)
-    {
-        return Usuarios::where('USR_Documento_Usuario', '=', $documento)->first();
     }
 
     #Funcion que actualiza los datos del usuario en la Base de Datos

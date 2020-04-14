@@ -50,8 +50,8 @@ class ActividadesController extends Controller
             'crearC' => can2('crear-actividades-cliente'),
             'listarP' => can2('listar-proyectos')
         ];
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $requerimiento = Requerimientos::findOrFail($idR);
         $requerimientos = Requerimientos::where('REQ_Proyecto_Id', '=', $requerimiento['REQ_Proyecto_Id'])->get();
         
@@ -70,7 +70,7 @@ class ActividadesController extends Controller
         $actividadesCliente = Actividades::obtenerActividadesCliente($idR, $cliente);
         $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'actividades.listar',
@@ -98,15 +98,15 @@ class ActividadesController extends Controller
     public function crearTrabajador($idR)
     {
         can('crear-actividades');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $requerimiento = Requerimientos::findOrFail($idR);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'actividades.crear',
@@ -131,14 +131,14 @@ class ActividadesController extends Controller
     public function crearCliente($idR)
     {
         can('crear-actividades-cliente');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $requerimiento = Requerimientos::findOrFail($idR);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
         
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'actividades.crear',
@@ -210,7 +210,7 @@ class ActividadesController extends Controller
             $rutaNotificacion = 'actividades_perfil_operacion';
         }
         
-        Actividades::crearActividad($request, $idR, $idUsuario);
+        Actividades::crearActividad($request, $idR, $idUsuario, session()->get('Usuario_Id'));
 
         $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
 
@@ -295,8 +295,8 @@ class ActividadesController extends Controller
      */
     public function detalleActividad($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $actividadesPendientes = Actividades::obtenerActividadPendiente($id);
@@ -308,7 +308,7 @@ class ActividadesController extends Controller
         $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($actividadFinalizada->ACT_FIN_Actividad_Id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'actividades.detalle',
@@ -335,15 +335,15 @@ class ActividadesController extends Controller
     public function editarTrabajador($idA)
     {
         can('editar-actividades');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividad = Actividades::findOrFail($idA);
         $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'actividades.editar',
@@ -368,14 +368,14 @@ class ActividadesController extends Controller
     public function editarCliente($idA)
     {
         can('editar-actividades');
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $actividad = Actividades::findOrFail($idA);
         $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
         $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'actividades.editar',
@@ -567,13 +567,13 @@ class ActividadesController extends Controller
      */
     public function aprobarHoras($idH)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $horasAprobar = HorasActividad::obtenerHorasAprobar($idH);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         if (count($horasAprobar) == 0) {
             return redirect()
@@ -599,11 +599,11 @@ class ActividadesController extends Controller
      * @return \Illuminate\View\View Vista para aprobar la solicitud de tiempo
      */
     public function solicitudTiempo($idA){
-        $notificaciones = Notificaciones::obtenerNotificaciones();
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones();
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil();
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         $solicitud = SolicitudTiempo::obtenerSolicitudTiempoActividad($idA);
         if ($solicitud) {

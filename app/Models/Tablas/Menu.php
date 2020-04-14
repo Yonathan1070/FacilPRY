@@ -91,7 +91,10 @@ class Menu extends Model
         $menus=json_decode($menu);
         foreach ($menus as $var => $value) {
             $this->where('id', $value->id)
-                ->update(['MN_Menu_Id' => 0, 'MN_Orden_Menu' => $var + 1]);
+                ->update([
+                    'MN_Menu_Id' => 0,
+                    'MN_Orden_Menu' => $var + 1
+                ]);
         }
     }
 
@@ -99,10 +102,16 @@ class Menu extends Model
     public static function obtenerItemsAsignados($id)
     {
         $menuAsignado = DB::table('TBL_Menu as m')
-            ->join('TBL_Menu_Usuario as mu', 'mu.MN_USR_Menu_Id', '=', 'm.id')
-            ->where('mu.MN_USR_Usuario_Id', '=', $id)
-            ->select('m.*')
-            ->get();
+            ->join(
+                'TBL_Menu_Usuario as mu',
+                'mu.MN_USR_Menu_Id',
+                '=',
+                'm.id'
+            )->select(
+                'm.*'
+            )->where(
+                'mu.MN_USR_Usuario_Id', '=', $id
+            )->get();
         
         return $menuAsignado;
     }
