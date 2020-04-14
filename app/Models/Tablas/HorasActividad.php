@@ -119,13 +119,32 @@ class HorasActividad extends Model
                 'p.id',
                 '=',
                 'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
             )->select(
                 DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
                 DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
                 'a.id as Actividad_Id',
-                'a.*'
+                'a.*',
+                'u.*',
+                'ro.*'
             )->where(
                 'p.id', '=', $id
+            )->where(
+                'ro.id', '!=', 3
             )->orderby(
                 'a.ACT_Fecha_Inicio_Actividad'
             )->groupBy(

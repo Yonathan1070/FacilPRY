@@ -31,6 +31,7 @@ Gantt Proyectos
                             <tr>
                                 <td style="width: 1px;">#</td>
                                 <td style="width: 30px;">Tareas</td>
+                                <td style="width: 50px;">Encargado</td>
                                 @foreach ($fechas as $fecha)
                                     <td style="width: 1px;">
                                         {{\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('m-d')}}
@@ -43,6 +44,7 @@ Gantt Proyectos
                                 <tr>
                                     <td style="width: 1px;">{{++$item}}</td>
                                     <td style="width: 30px;">{{$actividad->ACT_Nombre_Actividad}}</td>
+                                    <td style="width: 50px;">{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario.' ('.$actividad->RLS_Nombre_Rol.')'}}</td>
                                     @foreach ($fechas as $fecha)
                                         @if (\Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') >= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Inicio_Actividad)->format('Y-m-d') &&
                                             \Carbon\Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('Y-m-d') <= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $actividad->ACT_Fecha_Fin_Actividad)->format('Y-m-d'))
