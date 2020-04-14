@@ -211,6 +211,8 @@ class ProyectosController extends Controller
         $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+
         $proyecto = Proyectos::findOrFail($id);
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
@@ -224,7 +226,8 @@ class ProyectosController extends Controller
                 'permisos',
                 'notificaciones',
                 'cantidad',
-                'datos'
+                'datos',
+                'asignadas'
             )
         );
     }
