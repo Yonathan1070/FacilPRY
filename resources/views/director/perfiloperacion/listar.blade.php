@@ -71,6 +71,9 @@
                                                             <i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i>
                                                         </button>
                                                     @endif
+                                                    <a href="{{route('carga_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="btn-accion-tabla tooltipsC" title="Ver Carga de Trabajo">
+                                                        <i class="material-icons text-success" style="font-size: 18px;">remove_red_eye</i>
+                                                    </a>
                                                 </form>
                                             </td>
                                         </tr>

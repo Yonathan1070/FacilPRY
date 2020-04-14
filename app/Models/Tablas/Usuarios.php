@@ -268,6 +268,12 @@ class Usuarios extends Authenticatable
         )->first();
     }
 
+    #Funcion que obtiene un usuario en específico por id
+    public static function obtenerUsuarioById($id)
+    {
+        return Usuarios::findOrFail($id);
+    }
+
     #Funcion que guarda el nuevo usuario en la Base de Datos
     public static function crearUsuario($request)
     {

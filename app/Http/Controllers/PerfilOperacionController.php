@@ -12,6 +12,7 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
+use Exception;
 
 /**
  * Perfil Operacion Controller, donde se mostrarán las
@@ -267,5 +268,60 @@ class PerfilOperacionController extends Controller
         return redirect()
             ->route('perfil_operacion')
             ->with('mensaje', 'Perfil de operación reingresado con exito');
+    }
+
+    /**
+     * Muestra la vista con la carga de trabajo por Perfil de operación
+     *
+     * @param  $idA  Identificador de la actividad
+     * @return \Illuminate\View\View Vista para aprobar la solicitud de tiempo
+     */
+    public function cargaTrabajo($id){
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+
+        $actividades = Actividades::obtenerGenerales($id);
+        
+        $perfilOperacion = Usuarios::obtenerUsuarioById($id);
+
+        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion($id));
+        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil($id));
+        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil($id));
+        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil($id));
+
+        try {
+            $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeFinalizado = 0;
+        }
+        try {
+            $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeAtrasado = 0;
+        }
+        try {
+            $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeProceso = 0;
+        }
+        
+
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        return view(
+            'director.perfiloperacion.carga.actividades',
+            compact(
+                'actividades',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'asignadas',
+                'porcentajeFinalizado',
+                'porcentajeAtrasado',
+                'porcentajeProceso',
+                'perfilOperacion'
+            )
+        );
     }
 }
