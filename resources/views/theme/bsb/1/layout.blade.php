@@ -38,6 +38,21 @@
     <link href="{{asset("assets/bsb/css/themes/all-themes.css")}}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+    <script src="https://js.pusher.com/5.1/pusher.min.js"></script>
+    <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+    
+        var pusher = new Pusher('bb0a5f2f948c8ec6d9b5', {
+            cluster: 'us2',
+            forceTLS: true
+        });
+    
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function(data) {
+            alert(JSON.stringify(data));
+        });
+      </script>
     @yield('styles')
 </head>
 

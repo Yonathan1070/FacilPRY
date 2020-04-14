@@ -147,7 +147,7 @@ class InicioController extends Controller
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         $actividades = Actividades::obtenerGenerales(session()->get('Usuario_Id'));
-
+        
         $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion(session()->get('Usuario_Id')));
         $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id')));
         $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id')));

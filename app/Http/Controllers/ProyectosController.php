@@ -169,7 +169,7 @@ class ProyectosController extends Controller
         );
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
         
-        return $pdf->download($fileName);
+        return $pdf->download($fileName.'.pdf');
     }
 
     /**

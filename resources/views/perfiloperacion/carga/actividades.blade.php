@@ -34,11 +34,30 @@
                             <td>{{$actividad->REQ_Nombre_Requerimiento}}</td>
                             <td>{{$actividad->ACT_Fecha_Fin_Actividad}}</td>
                             @if ($actividad->HorasE == 0)
-                                <td>(Asignar horas de trabajo)</td>
+                                <td>
+                                    (Asignar horas de trabajo)
+                                    @if ($actividad->HorasE == 0 && $actividad->HorasR == null && $actividad->ACT_Estado_Id == 1)
+                                        <a href="{{route('actividades_asignar_horas_perfil_operacion', ['id'=>$actividad->Id_Actividad])}}"
+                                            class="btn-accion-tabla tooltipsC" title="Asignar Horas">
+                                            <i class="material-icons text-info"
+                                                style="font-size: 17px;">alarm</i>
+                                        </a>
+                                    @endif
+                                </td>
                             @elseif ($actividad->HorasR == null && $actividad->HorasE != 0)
                                 <td>{{$actividad->HorasE}} Horas (En espera de aprobación de horas de trabajo)</td>
                             @else
-                                <td>{{$actividad->HorasR}} Horas</td>
+                                <td>
+                                    {{$actividad->HorasR}} Horas
+                                    @if ($actividad->HorasE != 0 && $actividad->HorasR != null && $actividad->ACT_Estado_Id == 1)
+                                        <a href="{{route('actividades_finalizar_perfil_operacion', ['id'=>$actividad->Id_Actividad])}}"
+                                            class="btn-accion-tabla tooltipsC"
+                                            title="Finalizar Tarea">
+                                            <i class="material-icons text-info"
+                                                style="font-size: 17px;">done_all</i>
+                                        </a>
+                                    @endif
+                                </td>
                             @endif
                         </tr>
                         @endforeach

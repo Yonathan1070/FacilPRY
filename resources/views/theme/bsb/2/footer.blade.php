@@ -1,6 +1,6 @@
 <div class="legal">
     <div class="copyright">
-        &copy; 2019 <a >InkBrutalPRY</a>.
+        &copy; {{\Carbon\Carbon::now()->format('yy')}} <a >InkBrutalPRY</a>.
     </div>
     <div class="version">
         <b>Version: </b> 1.0
