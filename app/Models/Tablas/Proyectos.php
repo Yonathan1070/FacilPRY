@@ -276,6 +276,33 @@ class Proyectos extends Model
         return $proyectos;
     }
 
+    #Función que obtiene los proyectos asociados a un perfil de operación
+    public static function obtenerProyectosPerfil($id)
+    {
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->select(
+                'p.*'
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->where(
+                'p.PRY_Estado_Proyecto', '=', 1
+            )->groupBy(
+                'p.id'
+            )->get();
+        
+        return $proyectos;
+    }
+
     #Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {

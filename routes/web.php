@@ -94,6 +94,9 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
     Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general_perfil_operacion');
     Route::get('eficiencia', 'MetricasController@metricaEficienciaGeneral')->name('eficiencia_general_perfil_operacion');
     Route::get('efectividad', 'MetricasController@metricaEfectividadGeneral')->name('efectividad_general_perfil_operacion');
+    Route::get('eficacia-carga', 'MetricasController@metricaEficaciaCarga')->name('eficacia_carga_perfil_operacion');
+    Route::get('eficiencia-carga', 'MetricasController@metricaEficienciaCarga')->name('eficiencia_carga_perfil_operacion');
+    Route::get('efectividad-carga', 'MetricasController@metricaEfectividadCarga')->name('efectividad_carga_perfil_operacion');
     //Carga de trabajo
     Route::get('carga', 'InicioController@cargaTrabajo')->name('perfil_operacion_carga');
 });
