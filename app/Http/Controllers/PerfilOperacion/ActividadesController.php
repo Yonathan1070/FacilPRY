@@ -58,7 +58,7 @@ class ActividadesController extends Controller
         }
 
         $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id'));
-        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id'));
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfilOchoDias(session()->get('Usuario_Id'));
         
         return view(
             'perfiloperacion.actividades.listar',

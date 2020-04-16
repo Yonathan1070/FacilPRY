@@ -83,7 +83,7 @@ PDF Actividades
                                                         <th>Descripción</th>
                                                         <th>Fecha Limite de Entrega</th>
                                                         @foreach ($actividadesAtrasadas as $actividad)
-                                                            @if ($actividad->ACT_FIN_Estado_Id == 6)
+                                                            @if ($actividad->ACT_Estado_Id == 6)
                                                                 <th>Observación</th>
                                                                 <th>Estado</th>
                                                                 @break
@@ -98,7 +98,7 @@ PDF Actividades
                                                             <td>{{$actividad->ACT_Nombre_Actividad}}</td>
                                                             <td>{{$actividad->ACT_Descripcion_Actividad}}</td>
                                                             <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y')}}</td>
-                                                            @if ($actividad->ACT_FIN_Estado_Id == 6)
+                                                            @if ($actividad->ACT_Estado_Id == 6)
                                                                 <td>{{$actividad->ACT_FIN_Respuesta}}</td>
                                                                 <td>{{$actividad->EST_Nombre_Estado}}</td>
                                                             @endif

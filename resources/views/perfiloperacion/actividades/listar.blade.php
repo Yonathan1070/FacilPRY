@@ -164,7 +164,7 @@ Actividades
                                         <div class="panel-body table-responsive">
                                             @if (count($actividadesFinalizadas)<=0) 
                                                 <div class="alert alert-info">
-                                                    No hay datos que mostrar.
+                                                    No cuenta con actividades finalizadas en los ultimos 8 días
                                                 </div>
                                             @else
                                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable"

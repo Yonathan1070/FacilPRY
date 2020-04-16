@@ -964,6 +964,59 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
+    #Función para obtener las actividades finalizadas del perfil de operación en los ultimos 8 días
+    public static function obtenerActividadesFinalizadasPerfilOchoDias($id)
+    {
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Empresas as em',
+                'em.id',
+                '=',
+                'PRY_Empresa_Id'
+            )->join(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'a.id AS ID_Actividad',
+                'a.*',
+                'p.*',
+                'af.*',
+                'e.*',
+                'em.*'
+            )->where(
+                'a.ACT_Estado_Id', '<>', 1
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->where(
+                'p.PRY_Estado_Proyecto', '=', 1
+            )->where(
+                'af.ACT_FIN_Fecha_Finalizacion', '>=', Carbon::now()->subDays(8)->format('yy-m-d h:i:s')
+            )->orderBy(
+                'a.id'
+            )->groupBy(
+                'a.id'
+            )->get();
+        
+        return $actividadesFinalizadas;
+    }
+
     #Función para obtener todas las actividades por proyecto del usuario autenticado
     public static function obtenerActividadesProyectoUsuario($id, $idUsuario)
     {
