@@ -179,6 +179,7 @@ Route::put('perfil-operacion/{id}', 'PerfilOperacionController@actualizar')->nam
 Route::delete('perfil-operacion/{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_operacion');
 Route::get('perfil-operacion/{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_operacion');
 Route::get('perfil-operacion/{id}/carga', 'PerfilOperacionController@cargaTrabajo')->name('carga_perfil_operacion');
+Route::get('perfil-operacion/{id}/carga-pdf', 'PerfilOperacionController@pdfCargaTrabajo')->name('pdf_carga_perfil_operacion');
 
 //Rutas CRUD Proyectos
 Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');

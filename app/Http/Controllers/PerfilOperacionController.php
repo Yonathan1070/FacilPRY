@@ -12,6 +12,7 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
+use PDF;
 use Exception;
 
 /**
@@ -276,7 +277,8 @@ class PerfilOperacionController extends Controller
      * @param  $idA  Identificador de la actividad
      * @return \Illuminate\View\View Vista para aprobar la solicitud de tiempo
      */
-    public function cargaTrabajo($id){
+    public function cargaTrabajo($id)
+    {
         $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
         $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
@@ -323,5 +325,54 @@ class PerfilOperacionController extends Controller
                 'perfilOperacion'
             )
         );
+    }
+
+    /**
+     * Genera el PDF con la carga de trabajo por Perfil de operación
+     *
+     * @param  $id  Identificador de la actividad
+     * @return PDF->download()
+     */
+    public function pdfCargaTrabajo($id)
+    {
+        $actividades = Actividades::obtenerGenerales($id);
+        
+        $perfilOperacion = Usuarios::obtenerUsuarioById($id);
+
+        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion($id));
+        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil($id));
+        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil($id));
+        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil($id));
+
+        try {
+            $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeFinalizado = 0;
+        }
+        try {
+            $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeAtrasado = 0;
+        }
+        try {
+            $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
+        }catch(Exception $ex) {
+            $porcentajeProceso = 0;
+        }
+        
+        $pdf = PDF::loadView(
+            'includes.pdf.carga',
+            compact(
+                'actividades',
+                'perfilOperacion',
+                'porcentajeFinalizado',
+                'porcentajeAtrasado',
+                'porcentajeProceso'
+            )
+        );
+        $fileName = 'CargaTrabajo-'.$perfilOperacion->USR_Nombres_Usuario.'-'.$perfilOperacion->USR_Apellidos_Usuario;
+        
+        return $pdf->download($fileName.'.pdf');
+        
     }
 }

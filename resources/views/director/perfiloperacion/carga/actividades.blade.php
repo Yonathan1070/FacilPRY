@@ -14,6 +14,12 @@
                 <h2>
                     CARGA DE TRABAJO ({{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}})
                 </h2>
+                <ul class="header-dropdown" style="top:10px;">
+                    <li class="dropdown">
+                        <a class="btn btn-success waves-effect" href="{{route('pdf_carga_perfil_operacion', ['id'=>$perfilOperacion->id])}}"><i
+                            class="material-icons" style="color:white;">file_download</i> Descargar</a>
+                    </li>
+                </ul>
             </div>
             <div class="body table-responsive">
                 <ul>

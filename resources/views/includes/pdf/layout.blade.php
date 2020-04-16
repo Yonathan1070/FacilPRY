@@ -43,6 +43,10 @@
       text-decoration: none;
     }
 
+    h3,
+    .h3 {
+      font-size: 24px;
+    }
 
     h3,
     h4,
@@ -331,6 +335,52 @@
     .alert-warning {
       background-color: #ff9600 !important;
     }
+    
+    .label {
+      color: #fff;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      -ms-border-radius: 0;
+      border-radius: 0; }
+
+    .label-primary {
+      background-color: #1f91f3; }
+
+    .label-success {
+      background-color: #2b982b; }
+
+    .label-info {
+      background-color: #00b0e4; }
+
+    .label-warning {
+      background-color: #ff9600; }
+
+    .label-danger {
+      background-color: #fb483a; }
+
+    .progressbar {
+      background-color: black;
+      border-radius: 13px;
+      text-align: center;
+      color: #fff;
+      padding: 3px;
+    }
+
+    .progressbar-red {
+      background-color: #F44336;
+      height: 20px;
+      border-radius: 10px;
+    }
+    .progressbar-green {
+      background-color: #4CAF50;
+      height: 20px;
+      border-radius: 10px;
+    }
+    .progressbar-cyan {
+      background-color: #00BCD4;
+      height: 20px;
+      border-radius: 10px;
+    }
   </style>
 
 
@@ -341,5 +391,5 @@
 <body class="theme-cyan">
   @yield('contenido')
 </body>
-
+@yield('scripts')
 </html>
