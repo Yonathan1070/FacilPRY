@@ -245,6 +245,9 @@ Route::get('productividad', 'MetricasController@metricaProductividad')->name('pr
 Route::get('barraseficacia', 'MetricasController@barrasEficaciaPorTrabajador')->name('eficacia_barras_trabajador');
 Route::get('barraseficiencia', 'MetricasController@barrasEficienciaPorTrabajador')->name('eficiencia_barras_trabajador');
 Route::get('barrasefectividad', 'MetricasController@barrasEfectividadPorTrabajador')->name('efectividad_barras_trabajador');
+Route::get('eficacia-carga/{id}', 'MetricasController@metricaEficaciaCarga')->name('eficacia_carga_trabajador');
+Route::get('eficiencia-carga/{id}', 'MetricasController@metricaEficienciaCarga')->name('eficiencia_carga_trabajador');
+Route::get('efectividad-carga/{id}', 'MetricasController@metricaEfectividadCarga')->name('efectividad_carga_trabajador');
 
 //Enrutamiento Usuario General
 Route::group(['prefix' => '/', 'namespace' => 'General'], function () {

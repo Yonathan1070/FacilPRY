@@ -214,9 +214,9 @@ class MetricasController extends Controller
     }
 
     /**
-     * Obtiene los datos del indicador de eficacia por proyectos
+     * Obtiene los datos del indicador de eficacia del trabajador
      *
-     * @return json_encode Datos del indicador de eficacia por proyectos
+     * @return json_encode Datos del indicador de eficacia del trabajador
      * 
      */
     public function metricaEficaciaCarga()
@@ -259,9 +259,9 @@ class MetricasController extends Controller
     }
 
     /**
-     * Obtiene los datos del indicador de eficiencia por proyectos
+     * Obtiene los datos del indicador de eficiencia del trabajador
      *
-     * @return json_encode Datos del indicador de eficiencia por proyectos
+     * @return json_encode Datos del indicador de eficiencia del trabajador
      * 
      */
     public function metricaEficienciaCarga()
@@ -315,9 +315,9 @@ class MetricasController extends Controller
     }
 
     /**
-     * Obtiene los datos del indicador de efectividad por proyectos
+     * Obtiene los datos del indicador de efectividad del trabajador
      *
-     * @return json_encode Datos del indicador de efectividad por proyectos
+     * @return json_encode Datos del indicador de efectividad del trabajador
      * 
      */
     public function metricaEfectividadCarga()
