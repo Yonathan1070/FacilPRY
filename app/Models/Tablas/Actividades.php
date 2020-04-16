@@ -1017,6 +1017,51 @@ class Actividades extends Model
         return $actividadesFinalizadas;
     }
 
+    #Función para obtener las actividades totales del proyecto seleccionado
+    public static function obtenerTodasActividadesProyecto($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'a.*',
+                'r.*',
+                'p.*',
+                'u.*',
+                'e.*',
+                'a.id as ID_Actividad'
+            )->where(
+                'p.id', '=', $id
+            )->where(
+                'ur.USR_RLS_Rol_Id', '!=', 3
+            )->get();
+        
+        return $actividades;
+    }
+
     #Función para obtener todas las actividades por proyecto del usuario autenticado
     public static function obtenerActividadesProyectoUsuario($id, $idUsuario)
     {

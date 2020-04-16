@@ -90,6 +90,49 @@ class ActividadesController extends Controller
     }
 
     /**
+     * Muestra el listado de las todas las actividades por proyecto
+     *
+     * @param  $idP Identificador del proyecto
+     * @return \Illuminate\View\View Vista del listado de actividades
+     */
+    public function todas($idP)
+    {
+        can('listar-actividades');
+        $permisos = [
+            'listarP' => can2('listar-proyectos')
+        ];
+
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        
+        $proyecto = Proyectos::findOrFail($idP);
+
+        $actividades = Actividades::obtenerTodasActividadesProyecto($idP);
+        
+        if (count($actividades) <= 0) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No se encuentran tareas registradas'
+                );
+        }
+        
+        return view(
+            'actividades.todas',
+            compact(
+                'actividades',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'permisos',
+                'asignadas',
+                'proyecto'
+            )
+        );
+    }
+
+    /**
      * Muestra el formulario para crear las actividades a un Perfil de Operación
      *
      * @param  $idR Identificador del requerimiento

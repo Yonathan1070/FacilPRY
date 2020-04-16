@@ -202,6 +202,7 @@ Route::get('prequerimientos/{id}', 'RequerimientosController@obtenerPorcentaje')
 
 //Rutas CRUD Actividades
 Route::get('actividades/{idR}', 'ActividadesController@index')->name('actividades');
+Route::get('actividades/{idP}/total', 'ActividadesController@todas')->name('actividades_todas');
 Route::get('actividades/{idR}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
 Route::get('actividades/{idR}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
 Route::post('actividades/crear/{idR}', 'ActividadesController@guardar')->name('guardar_actividad');

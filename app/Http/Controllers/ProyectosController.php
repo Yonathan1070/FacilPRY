@@ -39,6 +39,7 @@ class ProyectosController extends Controller
         $permisos = [
             'crear'=> can2('crear-proyectos'),
             'listarR'=>can2('listar-requerimientos'),
+            'listarA'=>can2('listar-actividades'),
             'listarE'=>can2('listar-empresas')
         ];
         $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
