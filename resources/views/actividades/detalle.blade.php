@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Inicio
+Detalle Tarea Entregada
 @endsection
 @section('contenido')
     <div class="container-fluid">
@@ -14,9 +14,9 @@ Inicio
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
-                            <h6>{{$actividadesPendientes->PRY_Nombre_Proyecto}}</h6>
-                            <p>{{$actividadesPendientes->RLS_Nombre_Rol}}</p>
-                            <p>{{$actividadesPendientes->USR_Nombres_Usuario.' '.$actividadesPendientes->USR_Apellidos_Usuario}}</p>
+                            <h6>{{$detalle->PRY_Nombre_Proyecto}}</h6>
+                            <p>{{$detalle->RLS_Nombre_Rol}}</p>
+                            <p>{{$detalle->USR_Nombres_Usuario.' '.$detalle->USR_Apellidos_Usuario}}</p>
                         </div>
                     </div>
                 </div>
@@ -29,8 +29,8 @@ Inicio
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
-                            <h6>{{$actividadesPendientes->REQ_Nombre_Requerimiento}}</h6>
-                            <p>{{$actividadesPendientes->REQ_Descripcion_Requerimiento}}</p>
+                            <h6>{{$detalle->REQ_Nombre_Requerimiento}}</h6>
+                            <p>{{$detalle->REQ_Descripcion_Requerimiento}}</p>
                             <p></p>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ Inicio
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
-                            <h6>{{$actividadesPendientes->ACT_Nombre_Actividad}}</h6>
+                            <h6>{{$detalle->ACT_Nombre_Actividad}}</h6>
                             <p>Descripción: {{$perfil->ACT_Descripcion_Actividad}}</p>
                             <p>{{$perfil->RLS_Nombre_Rol}}</p>
                             <p>{{$perfil->USR_Nombres_Usuario.' '.$perfil->USR_Apellidos_Usuario}}</p>
@@ -80,16 +80,16 @@ Inicio
                     </div>
                     <div class="profile-body">
                         <div class="content-area">
-                            <h6>{{$actividadesPendientes->ACT_FIN_Titulo}}</h6>
-                            <p>Descripción: {{$actividadesPendientes->ACT_FIN_Descripcion}}</p>
+                            <h6>{{$detalle->ACT_FIN_Titulo}}</h6>
+                            <p>Descripción: {{$detalle->ACT_FIN_Descripcion}}</p>
                             <p>{{$perfil->USR_Nombres_Usuario.' '.$perfil->USR_Apellidos_Usuario}}</p>
                         </div>
                     </div>
                     <div class="profile-footer">
                         <ul>
                             <li>
-                                @if ($actividadesPendientes->ACT_FIN_Link != null)
-                                    <a href="{{$actividadesPendientes->ACT_FIN_Link}}" target="_blank">Ir a la evidencia</a>
+                                @if ($detalle->ACT_FIN_Link != null)
+                                    <a href="{{$detalle->ACT_FIN_Link}}" target="_blank">Ir a la evidencia</a>
                                 @endif
                                 @foreach ($documentosEvidencia as $documento)
                                     <span>Evidencias</span>
@@ -103,12 +103,9 @@ Inicio
                                 @endforeach
                             </li>
                             <li>
-                                <span>
-                                    <a data-toggle="modal" data-target="#modalAprueba" class="btn bg-green btn-xs waves-effect">APROBAR</a>
-                                </span>
-                                <span>
-                                    <a data-toggle="modal" data-target="#modalRechaza" class="btn bg-red btn-xs waves-effect">RECHAZAR</a>
-                                </span>
+                                <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idR'=>$detalle->ACT_Requerimiento_Id])}}">
+                                    <i class="material-icons" style="color:white;">keyboard_backspace</i>VOLVER A ACTIVIDADES
+                                </a>
                             </li>
                         </ul>
                     </div>

@@ -630,8 +630,7 @@ class Actividades extends Model
                 'r.id',
                 '=',
                 'a.ACT_Requerimiento_Id'
-            )
-            ->join(
+            )->join(
                 'TBL_Proyectos as p',
                 'p.id',
                 '=',
@@ -651,6 +650,58 @@ class Actividades extends Model
             )->first();
         
         return $actividad;
+    }
+
+    #Función para obtener el detalle de la actividad
+    public static function obtenerActividadDetalle($id)
+    {
+        $actividadPendiente = DB::table('TBL_Actividades_Finalizadas as af')
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'af.ACT_FIN_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->select(
+                'af.id as Id_Act_Fin',
+                'a.id as Id_Act',
+                'af.*',
+                'a.*',
+                'p.*',
+                're.*',
+                'u.*',
+                'ro.*'
+            )->where(
+                'a.id', '=', $id
+            )->orderByDesc(
+                'af.created_at'
+            )->first();
+        
+        return $actividadPendiente;
     }
 
     #Función para obtener las actividades pendientes de cobro

@@ -216,6 +216,7 @@ Route::get('actividades/{idH}/aprobar', 'ActividadesController@aprobarHoras')->n
 Route::put('actividades/{idH}/aprobar', 'ActividadesController@actualizarHoras')->name('actualizar_horas_actividad');
 Route::get('actividades/{idA}/terminar-aprobacion', 'ActividadesController@finalizarAprobacion')->name('finalizar_horas_actividad');
 Route::get('actividades/{id}/detalle', 'ActividadesController@detalleActividadModal')->name('detalle_actividades');
+Route::post('actividades/detalle-general', 'ActividadesController@detalleActividad')->name('detalle_general_actividad');
 Route::get('actividades/{idA}/solicitud-tiempo', 'ActividadesController@solicitudTiempo')->name('solicitud_tiempo_actividades');
 Route::get('actividades/{idS}/aprobar-solicitud', 'ActividadesController@aprobarSolicitud')->name('aprobar_solicitud_tiempo_actividades');
 

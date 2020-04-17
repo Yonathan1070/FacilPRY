@@ -336,27 +336,28 @@ class ActividadesController extends Controller
      * @param  $id  Identificador de la actividad
      * @return redirect()->route()
      */
-    public function detalleActividad($id)
+    public function detalleActividad(Request $request)
     {
         $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
         $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        $actividadesPendientes = Actividades::obtenerActividadPendiente($id);
+        $detalle = Actividades::obtenerActividadDetalle($request->idActividad);
+        
+        $documentosSoporte = DocumentosSoporte::obtenerDocumentosSoporte($request->idActividad);
+        $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia($detalle->Id_Act_Fin);
+        
+        $perfil = Usuarios::obtenerPerfilOperacionActividad($request->idActividad);
+        $actividadFinalizada = ActividadesFinalizadas::findOrFail($detalle->Id_Act_Fin);
 
-        $documentosSoporte = DocumentosSoporte::obtenerDocumentosSoporte($id);
-        $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia($id);
-
-        $perfil = Usuarios::obtenerPerfilOperacionActividad($actividadesPendientes->Id_Act);
-        $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($actividadFinalizada->ACT_FIN_Actividad_Id);
-
+        
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'actividades.detalle',
             compact(
-                'actividadesPendientes',
+                'detalle',
                 'perfil',
                 'datos',
                 'documentosSoporte',
