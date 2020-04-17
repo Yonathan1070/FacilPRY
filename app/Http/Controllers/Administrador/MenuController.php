@@ -29,10 +29,20 @@ class MenuController extends Controller
      */
     public function inicio()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
+
         $menus = Menu::getMenu();
+
         return view(
             'administrador.menu.listar',
             compact(
@@ -51,9 +61,17 @@ class MenuController extends Controller
      */
     public function crear()
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
         
         return view(
             'administrador.menu.crear',
@@ -107,10 +125,19 @@ class MenuController extends Controller
      */
     public function editar($id)
     {
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
         $menu = Menu::findOrFail($id);
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         
         return view(
             'administrador.menu.editar',

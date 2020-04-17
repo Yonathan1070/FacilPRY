@@ -28,9 +28,17 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Empresas::obtenerDatosEmpresa(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Empresas::obtenerDatosEmpresa(
+            session()->get('Usuario_Id')
+        );
 
         return view(
             'administrador.empresa.editar',
@@ -55,18 +63,33 @@ class EmpresaController extends Controller
         ]);
         
         if ($validator->passes()) {
-            $usuario = Empresas::obtenerDatosEmpresa();
+            $usuario = Empresas::obtenerDatosEmpresa(session()->get('Usuario_Id'));
             $empresa = Empresas::findOrFail($usuario->USR_Empresa_Id);
+            
             if ($empresa->EMP_Logo_Empresa != null) {
                 $ruta = public_path("assets/bsb/images/Logos/".$empresa->EMP_Logo_Empresa);
                 unlink($ruta);
             }
+
             $input = $request->all();
-            $nombreArchivo = $input['EMP_Logo_Empresa'] = time() . '.' . $request->EMP_Logo_Empresa->getClientOriginalExtension();
-            $request->EMP_Logo_Empresa->move(public_path('assets/bsb/images/Logos'), $input['EMP_Logo_Empresa']);
-            Empresas::findOrFail($usuario->USR_Empresa_Id)->update(['EMP_Logo_Empresa' => $nombreArchivo]);
+            $nombreArchivo = $input['EMP_Logo_Empresa'] = time().
+                '.'.
+                $request->EMP_Logo_Empresa->getClientOriginalExtension();
+            
+            $request->EMP_Logo_Empresa->move(
+                public_path('assets/bsb/images/Logos'),
+                $input['EMP_Logo_Empresa']
+            );
+            
+            Empresas::findOrFail(
+                $usuario->USR_Empresa_Id
+            )->update([
+                'EMP_Logo_Empresa' => $nombreArchivo
+            ]);
+            
             return response()->json(['success' => 'Logo Actualizado']);
         }
+
         return response()
             ->json(['error' => $validator->errors()->all()]);
     }
@@ -79,7 +102,11 @@ class EmpresaController extends Controller
      */
     public function actualizarDatos(Request $request)
     {
-        Empresas::findOrFail($request->id)->update($request->all());
+        Empresas::findOrFail(
+            $request->id
+        )->update(
+            $request->all()
+        );
         
         return redirect()
             ->back()

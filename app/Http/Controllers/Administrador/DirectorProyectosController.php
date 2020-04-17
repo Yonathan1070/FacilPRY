@@ -34,8 +34,14 @@ class DirectorProyectosController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         $directores = Usuarios::obtenerDirectores();
@@ -58,8 +64,14 @@ class DirectorProyectosController extends Controller
      */
     public function crear()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $roles = Roles::obtenerRolesNoCliente();
 
@@ -87,6 +99,7 @@ class DirectorProyectosController extends Controller
         UsuariosRoles::asignarRol(2, $director->id);
         MenuUsuario::asignarMenuDirector($director->id);
         PermisoUsuario::asignarPermisosDirector($director->id);
+        
         Usuarios::enviarcorreo(
             $request,
             'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
@@ -131,8 +144,14 @@ class DirectorProyectosController extends Controller
      */
     public function editar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
 

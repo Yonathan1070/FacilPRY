@@ -33,8 +33,14 @@ class InicioController extends Controller
     public function index()
     {
         # Datos de las notificaciones y del usuario
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         $proyectos = Proyectos::get();
@@ -79,12 +85,16 @@ class InicioController extends Controller
         $eficiencia = [];
         $efectividad = [];
 
-        $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
+        $proyectos = Proyectos::where(
+            'PRY_Estado_Proyecto', '=', 1
+        )->get();
+
         foreach ($proyectos as $key => $proyecto) {
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
             $efectividad[++$key] = [$proyecto->PRY_Nombre_Proyecto];
         }
+
         $pryEficaciaLlave = [];
         $pryEficienciaLlave = [];
         $pryEfectividadLlave = [];
@@ -92,9 +102,11 @@ class InicioController extends Controller
         foreach ($eficacia as $indEficacia) {
             array_push($pryEficaciaLlave, $indEficacia[0]);
         }
+
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
         }
+
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
         }
@@ -132,11 +144,13 @@ class InicioController extends Controller
         $efectividad = [];
 
         $trabajadores = Usuarios::obtenerTrabajadores();
+
         foreach ($trabajadores as $key => $trabajador) {
             $eficacia[++$key] = [$trabajador->USR_Nombres_Usuario];
             $eficiencia[++$key] = [$trabajador->USR_Nombres_Usuario];
             $efectividad[++$key] = [$trabajador->USR_Nombres_Usuario];
         }
+
         $pryEficaciaLlave = [];
         $pryEficienciaLlave = [];
         $pryEfectividadLlave = [];
@@ -144,9 +158,11 @@ class InicioController extends Controller
         foreach ($eficacia as $indEficacia) {
             array_push($pryEficaciaLlave, $indEficacia[0]);
         }
+
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
         }
+
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
         }
@@ -182,7 +198,9 @@ class InicioController extends Controller
     public function cambiarEstadoNotificacion($id)
     {
         $notificacion = Notificaciones::cambiarEstadoNotificacion($id);
+
         $notif = new stdClass();
+        
         if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null) {
             $notif->ruta = route(
                 $notificacion->NTF_Route,

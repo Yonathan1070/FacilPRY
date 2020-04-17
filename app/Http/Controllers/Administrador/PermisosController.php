@@ -34,10 +34,23 @@ class PermisosController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::orderBy('id')->where('id', '!=', 4)->pluck('RLS_Nombre_Rol', 'id')->toArray();
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
+
+        $roles = Roles::orderBy('id')
+            ->where('id', '!=', 4)
+            ->pluck('RLS_Nombre_Rol', 'id')
+            ->toArray();
+        
         $usuarios = Usuarios::with('roles')->get();
         
         return view(
@@ -58,9 +71,17 @@ class PermisosController extends Controller
      */
     public function crear()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
         
         return view(
             'administrador.permisos.crear',
@@ -95,9 +116,17 @@ class PermisosController extends Controller
      */
     public function asignarMenu($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(
+            session()->get('Usuario_Id')
+        );
 
         $menuAsignado = Menu::obtenerItemsAsignados($id);
         $menuNoAsignado = $this->menuNoAsignado($menuAsignado);
@@ -174,7 +203,9 @@ class PermisosController extends Controller
         $roles = Roles::where('id', '!=', 4)
             ->where('RLS_Nombre_Rol', '<>', 'Cliente')
             ->get();
+        
         $disponibles = [];
+
         foreach ($roles as $rol) {
             if(!$rolesAsignados->contains('id', $rol->id)) {
                 array_push($disponibles, $rol);
@@ -199,6 +230,7 @@ class PermisosController extends Controller
             $asignado = MenuUsuario::where('MN_USR_Usuario_Id', '=', $id)
                 ->where('MN_USR_Menu_Id', '=', $menuId)
                 ->first();
+            
             if (!$asignado) {
                 MenuUsuario::create([
                     'MN_USR_Usuario_Id' => $request->id,
@@ -313,6 +345,7 @@ class PermisosController extends Controller
             $asignado = UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)
                 ->where('USR_RLS_Rol_Id', '=', $rolId)
                 ->first();
+            
             if (!$asignado) {
                 UsuariosRoles::create([
                     'USR_RLS_Usuario_Id' => $id,
