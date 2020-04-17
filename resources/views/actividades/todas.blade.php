@@ -65,7 +65,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="defaultModalLabel">Detalles de la actividad</h4>
+                    <h4 class="modal-title" id="defaultModalLabel">Detalles de la tarea</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row clearfix">
@@ -88,6 +88,18 @@
                             <div class="form-group">
                                 <div class="form-line">
                                     <textarea name="" id="descripcionActividad" readonly="true" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                            <label for="nombreActividad">Actividad</label>
+                        </div>
+                        <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input type="text" id="nombreRequerimiento" class="form-control" readonly="true">
                                 </div>
                             </div>
                         </div>
@@ -128,6 +140,7 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="idActividad" id="idActividad" class="form-control" readonly="true">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
                     </div>
