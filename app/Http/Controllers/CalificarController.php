@@ -32,7 +32,9 @@ class CalificarController extends Controller
 
         $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
-        return view('calificaciones.listar', compact('datos', 'notificaciones', 'cantidad', 'permisos', 'calificaciones', 'asignadas'));
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+
+        return view('calificaciones.listar', compact('datos', 'notificaciones', 'cantidad', 'permisos', 'calificaciones', 'asignadas', 'perfilesOperacion'));
     }
 
     /**
@@ -42,20 +44,12 @@ class CalificarController extends Controller
      */
     public function calificar(Request $request)
     {
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        
         $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
         $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
-        $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
-
-        
-        if(count($calificaciones) != 0) {
-            return redirect()
-                ->back()
-                ->withErrors(
-                    'Ya se ha realizado la respectiva calificacion, revisa el historico de calificaciones'
-                );
-        }
         if(
             $request->Fecha_Inicio_Rango >= Carbon::now()->format('yy-m-d') ||
             $request->Fecha_Fin_Rango >= Carbon::now()->format('yy-m-d')
@@ -66,23 +60,20 @@ class CalificarController extends Controller
                     'Las fechas seleccionadas no pueden ser iguales o superiores a la fecha actual.'
                 );
         }
-        $perfilOperacion = Usuarios::obtenerPerfilOperacion();
-        foreach ($perfilOperacion as $key => $po) {
-            $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $po->id);
-            $actividadesTotales = Actividades::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $po->id);
-            try {
-                $eficaciaPorcentaje = (
-                    (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
-                );
-            } catch(Exception $ex) {
-                $eficaciaPorcentaje = 0;
-            }
-            $decision = Decisiones::obtenerDecisionPorRango((int)$eficaciaPorcentaje);
-            Calificaciones::guardarCalificacion($eficaciaPorcentaje, $po->id, $decision->id);
+        $perfilOperacion = Usuarios::findOrFail($request->ACT_Usuario_Id);
+        
+        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $request->ACT_Usuario_Id);
+        $actividadesTotales = Actividades::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $request->ACT_Usuario_Id);
+        try {
+            $eficaciaPorcentaje = (
+                (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
+            );
+        } catch(Exception $ex) {
+            $eficaciaPorcentaje = 0;
         }
+        $decision = Decisiones::obtenerDecisionPorRango((int)$eficaciaPorcentaje);
+        Calificaciones::guardarCalificacion($eficaciaPorcentaje, $request->ACT_Usuario_Id, $decision->id);
         $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view('calificaciones.calificar', compact('datos', 'notificaciones', 'cantidad', 'calificaciones', 'asignadas'));
     }

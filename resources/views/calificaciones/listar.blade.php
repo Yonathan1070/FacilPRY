@@ -2,6 +2,12 @@
 @section('titulo')
 Listar Calificaciones
 @endsection
+@section('styles')
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="{{asset('assets/bsb/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css')}}" rel="stylesheet" />
+    <!-- Bootstrap Select Css -->
+    <link href="{{asset('assets/bsb/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css')}}" rel="stylesheet" />
+@endsection
 @section('contenido')
 <div class="container-fluid">
     <div class="row clearfix">
@@ -144,9 +150,26 @@ Listar Calificaciones
                 <div class="modal-header">
                     <h4 class="modal-title" id="defaultModalLabel">Elija un rango de fechas para calificar</h4>
                 </div>
-                <form class="form_validation" action="{{route('calificar_trabajadores')}}" id="formularioCalificar" method="POST">
-                    @csrf
-                    <div class="modal-body">
+                <div class="modal-body">
+                    <form class="form_validation" action="{{route('calificar_trabajadores')}}" id="formularioCalificar" method="POST">
+                        @csrf
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12 col-sm-8 col-xs-7">
+                                <div class="form-group form-float">
+                                    <div class="form-line focused">
+                                        <select name="Id_Perfil" id="Id_Perfil" class="form-control show-tick" data-live-search="true"
+                                            required>
+                                            <option value="">-- Seleccione un Trabajador --</option>
+                                            @foreach ($perfilesOperacion as $perfilOperacion)
+                                                <option value="{{$perfilOperacion->id}}">
+                                                    {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
                                 <label for="perfilOperacion">Fecha Inicio</label>
@@ -180,8 +203,8 @@ Listar Calificaciones
                             <button type="submit" class="btn btn-link waves-effect">CALIFICAR</button>
                             <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -189,4 +212,21 @@ Listar Calificaciones
 @endsection
 @section('scripts')
 <script src="{{asset("assets/pages/scripts/Director/calificacionDetalle.js")}}"></script>
+
+<!-- Plugin Js para Validaciones -->
+<script src="{{asset("assets/bsb/plugins/jquery-validation/jquery.validate.js")}}"></script>
+<!-- Mensajes en español -->
+<script src="{{asset("assets/bsb/plugins/jquery-validation/localization/messages_es.js")}}"></script>
+
+<script src="{{asset("assets/bsb/js/pages/forms/form-validation.js")}}"></script>
+
+<!-- Bootstrap Material Datetime Picker Plugin Js -->
+<script src="{{asset("assets/bsb/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js")}}"></script>
+
+<!-- Select Plugin Js -->
+<script src="{{asset("assets/bsb/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js")}}"></script>
+<!-- Input Mask Plugin Js -->
+<script src="{{asset("assets/bsb/plugins/jquery-inputmask/jquery.inputmask.bundle.js")}}"></script>
+<script src="{{asset("assets/bsb/plugins/bootstrap-select/js/i18n/defaults-es_CL.js")}}"></script>
+<script src="{{asset("assets/bsb/js/pages/forms/basic-form-elements.js")}}"></script>
 @endsection
