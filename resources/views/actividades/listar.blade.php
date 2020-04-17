@@ -282,8 +282,9 @@
                             </div>
                         </div>
                         <input type="hidden" name="idActividad" id="idActividad" class="form-control" readonly="true">
+                        <input type="hidden" id="nombreRequerimiento" class="form-control" readonly="true">
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-link waves-effect">VER MÁS DETALLES</button>
+                            <button id="verMas" type="submit" class="btn btn-link waves-effect">VER MÁS DETALLES</button>
                             <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
                         </div>
                     </form>

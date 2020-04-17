@@ -645,6 +645,13 @@ class Actividades extends Model
                 'e.id',
                 '=',
                 'a.ACT_Estado_Id'
+            )->select(
+                'a.*',
+                'r.*',
+                'p.*',
+                'em.*',
+                'e.*',
+                'a.id as Id_Actividad'
             )->where(
                 'a.id', '=', $id
             )->first();

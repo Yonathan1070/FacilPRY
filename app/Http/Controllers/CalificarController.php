@@ -60,7 +60,7 @@ class CalificarController extends Controller
                     'Las fechas seleccionadas no pueden ser iguales o superiores a la fecha actual.'
                 );
         }
-        $perfilOperacion = Usuarios::findOrFail($request->ACT_Usuario_Id);
+        $perfilOperacion = Usuarios::findOrFail($request->Id_Perfil);
         
         $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $request->ACT_Usuario_Id);
         $actividadesTotales = Actividades::obtenerActividadesRango($request->Fecha_Inicio_Rango, $request->Fecha_Fin_Rango, $request->ACT_Usuario_Id);
@@ -72,7 +72,7 @@ class CalificarController extends Controller
             $eficaciaPorcentaje = 0;
         }
         $decision = Decisiones::obtenerDecisionPorRango((int)$eficaciaPorcentaje);
-        Calificaciones::guardarCalificacion($eficaciaPorcentaje, $request->ACT_Usuario_Id, $decision->id);
+        Calificaciones::guardarCalificacion($eficaciaPorcentaje, $request->Id_Perfil, $decision->id);
         $calificaciones = Calificaciones::obtenerCalificacionesFecha(Carbon::now()->format('yy-m-d'));
         
         return view('calificaciones.calificar', compact('datos', 'notificaciones', 'cantidad', 'calificaciones', 'asignadas'));

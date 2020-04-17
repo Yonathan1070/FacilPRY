@@ -12,7 +12,7 @@ function detalle(button){
             document.getElementById('fechaFinActividad').value = datos.ACT_Fecha_Fin_Actividad;
             document.getElementById('estadoActividad').value = datos.EST_Nombre_Estado;
             document.getElementById('nombreRequerimiento').value = datos.REQ_Nombre_Requerimiento;
-            document.getElementById('idActividad').value = datos.Actividad_Id;
+            document.getElementById('idActividad').value = datos.Id_Actividad;
         }
     });
 }

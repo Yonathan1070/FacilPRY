@@ -59,7 +59,7 @@ Detalle Tarea Entregada
                                     @foreach ($documentosSoporte as $documento)
                                         <span>Documento</span>
                                         <span>
-                                            <a href="{{route('descargar_documento_actividad_tester', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
+                                            <a href="{{route('descargar_documento_actividad_validador', ['ruta'=>$documento->ACT_Documento_Soporte_Actividad])}}"
                                                 class="btn bg-cyan btn-block btn-xs waves-effect">
                                                 <i class="material-icons"
                                                     style="font-size: 17px;">file_download</i>
@@ -104,7 +104,7 @@ Detalle Tarea Entregada
                             </li>
                             <li>
                                 <a class="btn btn-danger waves-effect" href="{{route('actividades', ['idR'=>$detalle->ACT_Requerimiento_Id])}}">
-                                    <i class="material-icons" style="color:white;">keyboard_backspace</i>VOLVER A ACTIVIDADES
+                                    <i class="material-icons" style="color:white;">keyboard_backspace</i>VOLVER A TAREAS
                                 </a>
                             </li>
                         </ul>
