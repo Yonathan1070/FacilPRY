@@ -6,9 +6,27 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
+/**
+ * Ajax Controller, donde verificamos el rol elegido por
+ * el usuario autenticado
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class AjaxController extends Controller
 {
-    public function asignarSesion(Request $request){
+    /**
+     * Dependiendo
+     *
+     * @return \Illuminate\View\View Vista de inicio
+     */
+    public function asignarSesion(Request $request)
+    {
         if($request->ajax()) {
             switch ($request->input('Rol_Id')) {
                 case '1':
@@ -30,11 +48,13 @@ class AjaxController extends Controller
                             break;
                     }
             }
+
             Session::put([
                 'Rol_Id' => $request->input('Rol_Id'),
                 'Rol_Nombre' => $request->input('Rol_Nombre'),
                 'Sub_Rol_Id' => $request->input('Sub_Rol_Id')
             ]);
+
             return response()->json(['ruta' => $ruta]);
         } else {
             abort(404);

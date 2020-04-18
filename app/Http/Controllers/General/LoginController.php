@@ -4,32 +4,51 @@ namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Tablas\Usuarios;
 
+/**
+ * Login Controller, controlador para la autenticcación de usuarios
+ * en el sistema.
+ * 
+ * @author: Yonathan Bohorquez
+ * @email: ycbohorquez@ucundinamarca.edu.co
+ * 
+ * @author: Manuel Bohorquez
+ * @email: jmbohorquez@ucundinamarca.edu.co
+ * 
+ * @version: dd/MM/yyyy 1.0
+ */
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
-
-    
 
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
 
-    public function username(){
+    public function username()
+    {
         return 'USR_Nombre_Usuario';
     }
 
+    /**
+     * Visualiza la página del inicio de sesión del software
+     *
+     * @return \Illuminate\View\View Vista de login
+     */
     public function index()
     {
         return view('general.login');
     }
 
-    public function authenticated(Request $request, $user){
+    /**
+     * Verifica las credenciales del usuario y verifica el rol autneticado
+     *
+     */
+    public function authenticated(Request $request, $user)
+    {
         $roles = $user->roles()->where('USR_RLS_Estado', 1)->get();
         if($roles->isNotEmpty()){
             $user->setSession($roles->toArray());
@@ -40,6 +59,10 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * Cierra y elimina la sesión del usuario
+     *
+     */
     public function logout(Request $request)
     {
         $this->guard()->logout();
@@ -49,9 +72,14 @@ class LoginController extends Controller
         return $this->loggedOut($request) ?: redirect('/iniciar-sesion');
     }
 
+    /**
+     * Redirige el usuario dependiendo del rol autenticado
+     *
+     */
     public function redirectTo()
     {
         $rol = Auth::user()->roles()->get();
+
         switch ($rol[0]['id']) {
             case '1':
                 return '/administrador';
