@@ -36,13 +36,29 @@ class InicioController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $permisos = ['listarA'=>can2('listar-actividades')];
 
-        $proyectos = Proyectos::obtenerProyectosCliente(session()->get('Usuario_Id'));
-        $proyectosPagar = Proyectos::obtenerProyectosPagar(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail(
+            $idUsuario
+        );
+
+        $proyectos = Proyectos::obtenerProyectosCliente(
+            $idUsuario
+        );
+        
+        $proyectosPagar = Proyectos::obtenerProyectosPagar(
+            $idUsuario
+        );
 
         return view(
             'cliente.inicio',
@@ -65,13 +81,21 @@ class InicioController extends Controller
      */
     public function pagar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $id_empresa = Empresas::obtenerIdEmpresa(session()->get('Usuario_Id'));
+        $id_empresa = Empresas::obtenerIdEmpresa($idUsuario);
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
@@ -107,8 +131,11 @@ class InicioController extends Controller
      */
     public function generarPdf($id)
     {
+        $idUsuario = session()->get('Usuario_Id');
+
         $proyecto = Proyectos::findOrFail($id);
         $actividades = Actividades::obtenerActividadesPDF($id);
+        
         if (count($actividades) == 0) {
             return redirect()
                 ->back()
@@ -116,8 +143,10 @@ class InicioController extends Controller
                     'No es posible generar el archivo sin que el proyecto tenga actividades'
                 );
         }
-        $id_empresa = Empresas::obtenerIdEmpresa(session()->get('Usuario_Id'));
+
+        $id_empresa = Empresas::obtenerIdEmpresa($idUsuario);
         $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
+        
         $pdf = PDF::loadView(
             'includes.pdf.proyecto.actividades',
             compact('actividades', 'empresa')
@@ -138,11 +167,7 @@ class InicioController extends Controller
     {
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $idEmpresa = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
-            ->select('ed.id')
-            ->first()->id;
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
@@ -159,7 +184,11 @@ class InicioController extends Controller
             'empresa'=>$empresa
         ];
         
-        $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
+        $pdf = PDF::loadView(
+            'includes.pdf.factura.factura',
+            compact('datos')
+        );
+
         $fileName = 'FacturaINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
@@ -175,11 +204,7 @@ class InicioController extends Controller
     {
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $idEmpresa = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
-            ->select('ed.id')
-            ->first()->id;
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
@@ -212,37 +237,37 @@ class InicioController extends Controller
         $fechaPago = Carbon::now();
         $estadoTx = $this->datosRespuesta();
 
+        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+
         if ($estadoTx == "Transacción aprobada") {
-            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
             $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
+            
             foreach ($actividades as $actividad) {
                 Actividades::actualizarEstadoPago($actividad->id, 10, $fechaPago);
             }
+
             return redirect()
                 ->route('inicio_cliente')
                 ->with('mensaje', 'Pago exitoso.');
-        }
-        else if ($estadoTx == "Transacción rechazada") {
+        } else if ($estadoTx == "Transacción rechazada") {
             return redirect()
                 ->route('inicio_cliente')
                 ->withErrors('Transacción Rechazada.');
-        }
-        else if ($estadoTx == "Error") {
+        } else if ($estadoTx == "Error") {
             return redirect()
                 ->route('inicio_cliente')
                 ->withErrors('Error al pagar.');
-        }
-        else if ($estadoTx == "Transacción pendiente" ) {
-            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+        } else if ($estadoTx == "Transacción pendiente" ) {
             $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
+            
             foreach ($actividades as $actividad) {
                 Actividades::actualizarEstadoPago($actividad->id, 14, $fechaPago);
             }
+
             return redirect()
                 ->route('inicio_cliente')
                 ->with('mensaje', 'Pago Pendiente.');
-        }
-        else {
+        } else {
             return redirect()
                 ->route('inicio_cliente')
                 ->withErrors('Otro.');
@@ -256,7 +281,8 @@ class InicioController extends Controller
      * 
      * @return redirect()->route()
      */
-    public function confirmacionPago(){
+    public function confirmacionPago()
+    {
         $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
 		$merchant_id =  $_REQUEST['merchant_id'];
 		$state_pol = $_REQUEST['state_pol'];
@@ -281,10 +307,12 @@ class InicioController extends Controller
         
         $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
         $actividades = Actividades::obtenerTransaccionPendiente($usuario->id);
-        if($state_pol==4){
+        
+        if($state_pol==4) {
             foreach ($actividades as $actividad) {
                 Actividades::actualizarEstadoPago($actividad->id, 10, $transaction_date);
             }
+
             Mail::send('general.correo.respuesta', [
                 'estado' => '',
                 'nombre' => 'Ink Brutal',
@@ -300,14 +328,15 @@ class InicioController extends Controller
                     'InkBrutalPRY, Software de Gestión de Proyectos'
                 )->subject('Pago Actividad');
             });
+
             return redirect()
                 ->route('inicio_cliente')
                 ->with('mensaje', 'Pago exitoso.');
-        }
-        else{
+        } else{
             foreach ($actividades as $actividad) {
                 Actividades::actualizarEstadoPago($actividad->id, 9, $transaction_date);
             }
+
             Mail::send('general.correo.respuesta', [
                 'estado' => 'PERO NO HA SIDO EXITOSA',
                 'nombre' => 'Ink Brutal',
@@ -341,6 +370,7 @@ class InicioController extends Controller
     {
         $notificacion = Notificaciones::cambiarEstadoNotificacion($id);
         $notif = new stdClass();
+        
         if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null) {
             $notif->ruta = route(
                 $notificacion->NTF_Route,
@@ -369,7 +399,8 @@ class InicioController extends Controller
     }
 
     #Metodo que obtiene los datos de la api de PayU
-    public function informacionPayu($datos){
+    public function informacionPayu($datos)
+    {
         $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
         $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
@@ -393,7 +424,8 @@ class InicioController extends Controller
     }
 
     #Metodo que obtiene los datos de la página de respuesta de PayU
-    public function datosRespuesta(){
+    public function datosRespuesta()
+    {
         $ApiKey = "4Vj8eK4rloUd272L48hsrarnUA";
         $merchant_id = $_REQUEST['merchantId'];
         $referenceCode = $_REQUEST['referenceCode'];

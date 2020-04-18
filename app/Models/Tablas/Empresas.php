@@ -92,6 +92,18 @@ class Empresas extends Model
         return $id_empresa;
     }
 
+    #Obtener Empresa por medio de proyecto
+    public static function obtenerEmpresa()
+    {
+        $empresa = DB::table('TBL_Proyectos as p')
+            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
+            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
+            ->select('ed.id')
+            ->first();
+        
+        return $empresa;
+    }
+
     #Función que crea la empresa
     public static function crearEmpresa($request)
     {

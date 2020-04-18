@@ -38,13 +38,29 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail(
+            $idUsuario
+        );
         
-        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobar(session()->get('Usuario_Id'));
-        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasCliente(session()->get('Usuario_Id'));
-        $actividadesEntregar = ActividadesFinalizadas::obtenerActividadesProcesoCliente(session()->get('Usuario_Id'));
+        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobar(
+            $idUsuario
+        );
+        $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasCliente(
+            $idUsuario
+        );
+        $actividadesEntregar = ActividadesFinalizadas::obtenerActividadesProcesoCliente(
+            $idUsuario
+        );
         
         return view(
             'cliente.actividades.inicio',
@@ -64,14 +80,25 @@ class ActividadesController extends Controller
      *
      * @return \Illuminate\View\View Vista del formulario de entrega
      */
-    public function finalizar($id){
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $hoy = Carbon::now();
-        $hoy->format('Y-m-d H:i:s');
+    public function finalizar($id)
+    {
+        $idUsuario = session()->get('Usuario_Id');
 
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = Actividades::obtenerActividad($id, session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail(
+            $idUsuario
+        );
+        $actividades = Actividades::obtenerActividad(
+            $id,
+            $idUsuario
+        );
 
         return view(
             'cliente.actividades.finalizar',
@@ -93,11 +120,19 @@ class ActividadesController extends Controller
      */
     public function guardarFinalizar(Request $request)
     {
+        $idUsuario = session()->get('Usuario_Id');
+
         $horas = HorasActividad::obtenerHorasActividad($request['Actividad_Id']);
+        
         $hR = count($horas) - Carbon::now()->diffInDays(
             $horas->first()->HRS_ACT_Fecha_Actividad
         );
-        HorasActividad::actualizarHoraActividad(count($horas), $hR, $horas->first()->id);
+        
+        HorasActividad::actualizarHoraActividad(
+            count($horas),
+            $hR,
+            $horas->first()->id
+        );
         
         if (!$request->hasFile('ACT_Documento_Evidencia_Actividad')) {
             return redirect()
@@ -116,18 +151,28 @@ class ActividadesController extends Controller
             if ($documento->isValid()) {
                 $archivo = time() . '.' . $documento->getClientOriginalName();
                 $documento->move(public_path('documentos_soporte'), $archivo);
-                DocumentosEvidencias::crearDocumentosEvicendia($af->id, $archivo);
+                DocumentosEvidencias::crearDocumentosEvicendia(
+                    $af->id,
+                    $archivo
+                );
             }
         }
-        Actividades::actualizarEstadoActividad($request['Actividad_Id'], 3);
+
+        Actividades::actualizarEstadoActividad(
+            $request['Actividad_Id'],
+            3
+        );
         
-        HistorialEstados::crearHistorialEstado($request['Actividad_Id'], 3);
+        HistorialEstados::crearHistorialEstado(
+            $request['Actividad_Id'],
+            3
+        );
         
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail($idUsuario);
         
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' ha finalizado una Actividad.',
-            session()->get('Usuario_Id'),
+            $idUsuario,
             $datos->USR_Supervisor_Id,
             null,
             null,
@@ -148,19 +193,35 @@ class ActividadesController extends Controller
      */
     public function aprobarActividad($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
         
-        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadFinalizada($id);
+        $datos = Usuarios::findOrFail($idUsuario);
+        
+        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadFinalizada(
+            $id
+        );
 
         $actividadFinalizada = ActividadesFinalizadas::findOrFail($id);
+        
         $documentosSoporte = DocumentosSoporte::obtenerDocumentosSoporte(
             $actividadFinalizada->ACT_FIN_Actividad_Id
         );
-        $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia($id);
+        
+        $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia(
+            $id
+        );
 
-        $perfil = Usuarios::obtenerPerfilOperacionActividad($actividadesPendientes->Id_Act);
+        $perfil = Usuarios::obtenerPerfilOperacionActividad(
+            $actividadesPendientes->Id_Act
+        );
         
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas(
             $actividadFinalizada->ACT_FIN_Actividad_Id
@@ -203,24 +264,35 @@ class ActividadesController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
+        $idUsuario = session()->get('Usuario_Id');
+        
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
         
         if ($rtaTest!=null) {
-            Respuesta::actualizarRespuestaCliente($request, 6, session()->get('Usuario_Id'));
+            Respuesta::actualizarRespuestaCliente(
+                $request,
+                6,
+                $idUsuario
+            );
+
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );
-            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola($request->id);
+
+            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola(
+                $request->id
+            );
+            
             HistorialEstados::crearHistorialEstado($actividad->id, 6);
             Actividades::actualizarEstadoActividad($actividad->id, 1);
-            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datos = Usuarios::findOrFail($idUsuario);
             $trabajador = Usuarios::obtenerPerfilAsociado($actividad->id);
             
             Notificaciones::crearNotificacion(
                 'El Cliente '.
                     $datos->USR_Nombres_Usuario.
                     ' ha rechazado la entrega de la Actividad.',
-                session()->get('Usuario_Id'),
+                $idUsuario,
                 $trabajador->ACT_Trabajador_Id,
                 'actividades_perfil_operacion',
                 null,
@@ -229,7 +301,8 @@ class ActividadesController extends Controller
             );
             
             $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
-            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $de = Usuarios::findOrFail($idUsuario);
+            
             Mail::send('general.correo.informacion', [
                 'titulo' => 'El Cliente '.
                     $datos->USR_Nombres_Usuario.
@@ -263,23 +336,34 @@ class ActividadesController extends Controller
      */
     public function respuestaAprobado(Request $request)
     {
+        $idUsuario = session()->get('Usuario_Id');
+
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
         
         if ($rtaTest!=null) {
-            Respuesta::actualizarRespuestaCliente($request, 7, session()->get('Usuario_Id'));
+            Respuesta::actualizarRespuestaCliente(
+                $request,
+                7,
+                $idUsuario
+            );
+            
             ActividadesFinalizadas::actualizarRevisadoActividad(
                 $rtaTest->RTA_Actividad_Finalizada_Id
             );
-            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola($request->id);
+            
+            $actividad = ActividadesFinalizadas::obtenerActividadFinalizadaSola(
+                $request->id
+            );
+            
             HistorialEstados::crearHistorialEstado($actividad->id, 7);
-            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datos = Usuarios::findOrFail($idUsuario);
             $trabajador = Usuarios::obtenerPerfilAsociado($actividad->id);
             
             Notificaciones::crearNotificacion(
                 'El Cliente '.
                     $datos->USR_Nombres_Usuario.
                     ' ha aprobado la entrega de la Actividad.',
-                session()->get('Usuario_Id'),
+                $idUsuario,
                 $trabajador->ACT_Trabajador_Id,
                 'actividades_perfil_operacion',
                 null,
@@ -289,7 +373,7 @@ class ActividadesController extends Controller
 
             Notificaciones::crearNotificacion(
                 'El Cliente '.$datos->USR_Nombres_Usuario.' ha aprobado la entrega una tarea',
-                session()->get('Usuario_Id'),
+                $idUsuario,
                 $datos->USR_Supervisor_Id,
                 'cobros',
                 null,
@@ -298,7 +382,8 @@ class ActividadesController extends Controller
             );
             
             $para = Usuarios::findOrFail($datos->USR_Supervisor_Id);
-            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $de = Usuarios::findOrFail($idUsuario);
+            
             Mail::send('general.correo.informacion', [
                 'titulo' => 'El Cliente '.
                     $datos->USR_Nombres_Usuario.
