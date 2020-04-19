@@ -508,8 +508,15 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
         
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $id
+            );
             try {
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
@@ -552,9 +559,19 @@ class MetricasController extends Controller
         
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
-            $actividades = Actividades::obtenerActividadesHoras($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $id
+            );
+            $actividades = Actividades::obtenerActividadesHorasPRY_TRB(
+                $proyecto->id,
+                $id
+            );
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
@@ -609,8 +626,16 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
         foreach ($proyectos as $key => $proyecto) {
             #Obtenermos la Eficacia
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $id
+            );
+            
             try {
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
@@ -620,7 +645,10 @@ class MetricasController extends Controller
             }
 
             #Obtenemos la Eficiencia
-            $actividades = Actividades::obtenerActividadesHoras($proyecto->id);
+            $actividades = Actividades::obtenerActividadesHorasPRY_TRB(
+                $proyecto->id,
+                $id
+            );
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;

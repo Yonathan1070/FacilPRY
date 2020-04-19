@@ -502,7 +502,7 @@ class InicioController extends Controller
         if ($estadoTx == "Transacción aprobada") {
             
             foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 10)
+                FacturaAdicional::actualizarFactura($actividad->id, 10);
             }
 
             return redirect()
@@ -519,7 +519,7 @@ class InicioController extends Controller
         } else if ($estadoTx == "Transacción pendiente" ) {
             
             foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 14)
+                FacturaAdicional::actualizarFactura($actividad->id, 14);
             }
 
             return redirect()

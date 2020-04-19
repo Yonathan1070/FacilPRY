@@ -68,6 +68,48 @@ class Actividades extends Model
         return $actividades;
     }
 
+    #Función para obtener las actividades y las horas estimadas de cada una
+    public static function obtenerActividadesHorasPRY_TRB($id, $idTrabajador)
+    {
+        $actividades = DB::table('TBL_Horas_Actividad as ha')
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->select(
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR'),
+                'ha.*',
+                'a.*'
+            )->where(
+                'u.id', '=', $idTrabajador
+            )->where(
+                'p.id', '=', $id
+            )->where(
+                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+            )->groupBy(
+                'HRS_ACT_Actividad_Id'
+            )->get();
+        
+        return $actividades;
+    }
+
     #Función para otener las horas de trabajo asignadas para cada actividad por trabajador
     public static function obtenerHorasActividadesTrabajador($id)
     {
@@ -329,6 +371,53 @@ class Actividades extends Model
         return $actividadesTotales;
     }
 
+        #Función para obtener las actividades por proyecto
+        public static function obtenerActividadesTotalesPRY_TRB($id, $idTrabajador)
+        {
+            $actividadesTotales = DB::table('TBL_Actividades as a')
+                ->join(
+                    'TBL_Requerimientos as re',
+                    're.id',
+                    '=',
+                    'a.ACT_Requerimiento_Id'
+                )->join(
+                    'TBL_Proyectos as p',
+                    'p.id',
+                    '=',
+                    're.REQ_Proyecto_Id'
+                )->join(
+                    'TBL_Usuarios as uu',
+                    'uu.id',
+                    '=',
+                    'a.ACT_Trabajador_Id'
+                )->join(
+                    'TBL_Usuarios_Roles as ur',
+                    'ur.USR_RLS_Usuario_Id',
+                    '=',
+                    'uu.id'
+                )->join(
+                    'TBL_Roles as r',
+                    'r.id',
+                    '=',
+                    'ur.USR_RLS_Rol_Id'
+                )->join(
+                    'TBL_Estados as e',
+                    'e.id',
+                    '=',
+                    'a.ACT_Estado_Id'
+                )->where(
+                    'r.id', '<>', 3
+                )->where(
+                    'p.id', '=', $id
+                )->where(
+                    'uu.id', '=', $idTrabajador
+                )->where(
+                    'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+                )->get();
+            
+            return $actividadesTotales;
+        }
+
     #Función para obtener las actividades de cada trabajador
     public static function obtenerActividadesTotalesTrabajador($id)
     {
@@ -442,6 +531,55 @@ class Actividades extends Model
                 'e.id', '<>', 2
             )->where(
                 'r.id', '<>', 3
+            )->where(
+                'p.id', '=', $id
+            )->get();
+        
+        return $actividadesFinalizadas;
+    }
+
+    #Funcion para obtener las actividades finalizadas por proyecto
+    public static function obtenerActividadesFinalizadasPRY_TRB($id, $idTrabajador)
+    {
+        $actividadesFinalizadas = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as uu',
+                'uu.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'uu.id'
+            )->join(
+                'TBL_Roles as r',
+                'r.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->where(
+                'e.id', '<>', 1
+            )->where(
+                'e.id', '<>', 2
+            )->where(
+                'r.id', '<>', 3
+            )->where(
+                'uu.id', '=', $idTrabajador
             )->where(
                 'p.id', '=', $id
             )->get();

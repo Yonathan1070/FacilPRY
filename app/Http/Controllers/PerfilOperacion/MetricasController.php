@@ -245,12 +245,14 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
         
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
-                $proyecto->id
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
-            $actividadesTotales = Actividades::obtenerActividadesTotales(
-                $proyecto->id
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
             try {
@@ -302,16 +304,19 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
 
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
-                $proyecto->id
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
-            $actividadesTotales = Actividades::obtenerActividadesTotales(
-                $proyecto->id
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
-            $actividades = Actividades::obtenerActividadesHoras(
-                $proyecto->id
+            $actividades = Actividades::obtenerActividadesHorasPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
             $costoEstimado = 0;
@@ -375,12 +380,14 @@ class MetricasController extends Controller
         $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
         foreach ($proyectos as $key => $proyecto) {
             #Obtenermos la Eficacia
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
-                $proyecto->id
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
-            $actividadesTotales = Actividades::obtenerActividadesTotales(
-                $proyecto->id
+            $actividadesTotales = Actividades::obtenerActividadesTotalesPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
             try {
@@ -392,8 +399,9 @@ class MetricasController extends Controller
             }
 
             #Obtenemos la Eficiencia
-            $actividades = Actividades::obtenerActividadesHoras(
-                $proyecto->id
+            $actividades = Actividades::obtenerActividadesHorasPRY_TRB(
+                $proyecto->id,
+                $idUsuario
             );
 
             $costoEstimado = 0;
