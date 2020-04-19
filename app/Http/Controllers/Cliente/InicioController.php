@@ -11,6 +11,7 @@ use App\Models\Tablas\Empresas;
 use Illuminate\Support\Carbon;
 use stdClass;
 use App\Models\Tablas\Actividades;
+use App\Models\Tablas\FacturaAdicional;
 use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Support\Facades\Mail;
@@ -60,10 +61,15 @@ class InicioController extends Controller
             $idUsuario
         );
 
+        $factAdicional = Proyectos::obtenerProyectosConFacturasAdicionalesById(
+            $idUsuario
+        );
+
         return view(
             'cliente.inicio',
             compact(
                 'proyectos',
+                'factAdicional',
                 'proyectosPagar',
                 'datos',
                 'notificaciones',
@@ -114,6 +120,56 @@ class InicioController extends Controller
 
         return view(
             'cliente.pagar',
+            compact(
+                'datos',
+                'datosU',
+                'notificaciones',
+                'cantidad'
+            )
+        );
+    }
+
+    /**
+     * Muestra el formulario para pagar las actividades pendientes
+     *
+     * @param  $id  Identificador del proyecto
+     * @return \Illuminate\View\View Vista para realizar el pago
+     */
+    public function pagarAdicional($id)
+    {
+        $idUsuario = session()->get('Usuario_Id');
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
+        $id_empresa = Empresas::obtenerIdEmpresa($idUsuario);
+        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
+        
+        foreach ($informacion as $info) {
+            $factura = $info->id;
+        }
+        
+        $datosU = [
+            'proyecto'=>$proyecto, 
+            'informacion'=>$informacion, 
+            'factura'=>$factura, 
+            'fecha'=>Carbon::now()->toFormattedDateString(),
+            'total'=>$total,
+            'empresa'=>$empresa
+        ];
+
+        return view(
+            'cliente.pagaradicional',
             compact(
                 'datos',
                 'datosU',
@@ -195,6 +251,43 @@ class InicioController extends Controller
     }
 
     /**
+     * Generar factura actividades
+     *
+     * @param  $id  Identificador del proyecto
+     * @return PDF->download()
+     */
+    public function generarFacturaAdicional($id)
+    {
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
+        
+        foreach ($informacion as $info) {
+            $factura = $info->id;
+        }
+        
+        $datos = [
+            'proyecto'=>$proyecto, 
+            'informacion'=>$informacion, 
+            'factura'=>$factura, 
+            'fecha'=>Carbon::now()->toFormattedDateString(),
+            'total'=>$total,
+            'empresa'=>$empresa
+        ];
+        
+        $pdf = PDF::loadView(
+            'includes.pdf.factura.facturaadicional',
+            compact('datos')
+        );
+
+        $fileName = 'FacturaINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
+        
+        return $pdf->download($fileName.'.pdf');
+    }
+
+    /**
      * Muestra la factura y el botón para realizar el pago
      *
      * @param  $id
@@ -221,6 +314,37 @@ class InicioController extends Controller
         ];
 
         $infoPago = $this->informacionPayu($datos);
+
+        return json_encode($infoPago);
+    }
+
+    /**
+     * Muestra la factura y el botón para realizar el pago adicional
+     *
+     * @param  $id
+     * @return json_encode()
+     */
+    public function informacionPagoAdicional($id)
+    {
+        $proyecto = Proyectos::obtenerProyecto($id);
+        $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
+        $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
+        
+        foreach ($informacion as $info) {
+            $factura = $info->id;
+        }
+        $datos = [
+            'proyecto'=>$proyecto, 
+            'informacion'=>$informacion, 
+            'factura'=>$factura, 
+            'fecha'=>Carbon::now()->toFormattedDateString(),
+            'total'=>$total,
+            'empresa'=>$empresa
+        ];
+
+        $infoPago = $this->informacionPayuAdicional($datos);
 
         return json_encode($infoPago);
     }
@@ -360,6 +484,140 @@ class InicioController extends Controller
     }
 
     /**
+     * Metodo que obtiene la respuesta del pago realizado en la pasarela de pagos
+     *
+     * 
+     * @return redirect()->route()
+     */
+    public function respuestaPagoAdicional()
+    {
+        $correo = $_REQUEST['buyerEmail'];
+        $fechaPago = Carbon::now();
+        $estadoTx = $this->datosRespuesta();
+
+        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+
+        $actividades = FacturaAdicional::obtenerFacturaAdicional($usuario->id);
+
+        if ($estadoTx == "Transacción aprobada") {
+            
+            foreach ($actividades as $actividad) {
+                FacturaAdicional::actualizarFactura($actividad->id, 10)
+            }
+
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago exitoso.');
+        } else if ($estadoTx == "Transacción rechazada") {
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Transacción Rechazada.');
+        } else if ($estadoTx == "Error") {
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Error al pagar.');
+        } else if ($estadoTx == "Transacción pendiente" ) {
+            
+            foreach ($actividades as $actividad) {
+                FacturaAdicional::actualizarFactura($actividad->id, 14)
+            }
+
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago Pendiente.');
+        } else {
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Otro.');
+        }
+    }
+
+    /**
+     * Metodo que obtiene la respuesta de confirmación del pago realizado 
+     * en la pasarela de pagos.
+     *
+     * 
+     * @return redirect()->route()
+     */
+    public function confirmacionPagoAdicional()
+    {
+        $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
+		$merchant_id =  $_REQUEST['merchant_id'];
+		$state_pol = $_REQUEST['state_pol'];
+		$response_code_pol=$_REQUEST['response_code_pol'];
+		$reference_sale=$_REQUEST['reference_sale'];
+		$reference_pol=$_REQUEST['reference_pol'];
+		$sign=$_REQUEST['sign'];
+		$extra1=$_REQUEST['extra1'];
+		$payment_method=$_REQUEST['payment_method'];
+		$payment_method_type=$_REQUEST['payment_method_type'];
+		$installments_number=$_REQUEST['installments_number'];	
+		$TX_VALUE = $_REQUEST['value'];
+		$New_value = number_format($TX_VALUE, 1, '.', '');
+		$transaction_date=$_REQUEST['transaction_date'];
+		$currency=$_REQUEST['currency'];
+		$email_buyer=$_REQUEST['email_buyer'];
+		$cus=$_REQUEST['cus'];
+		$pse_bank=$_REQUEST['pse_bank'];
+		$test=$_REQUEST['test'];
+		$description=$_REQUEST['description'];
+        $phone=$_REQUEST['phone'];
+        
+        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
+        $actividades = FacturaAdicional::obtenerFacturaAdicionalPendiente($usuario->id);
+        
+        if($state_pol==4) {
+            foreach ($actividades as $actividad) {
+                FacturaAdicional::actualizarFactura($actividad->id, 10);
+            }
+
+            Mail::send('general.correo.respuesta', [
+                'estado' => '',
+                'nombre' => 'Ink Brutal',
+                'descripcion' => $description,
+                'email' => $email_buyer,
+                'telefono' => $phone,
+                'referencia' => $reference_sale,
+                'valor' => $New_value
+            ], function($message){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to(
+                    'soporte@inkdigital.co',
+                    'InkBrutalPRY, Software de Gestión de Proyectos'
+                )->subject('Pago Actividad');
+            });
+
+            return redirect()
+                ->route('inicio_cliente')
+                ->with('mensaje', 'Pago exitoso.');
+        } else{
+            foreach ($actividades as $actividad) {
+                FacturaAdicional::actualizarFactura($actividad->id, 9);
+            }
+
+            Mail::send('general.correo.respuesta', [
+                'estado' => 'PERO NO HA SIDO EXITOSA',
+                'nombre' => 'Ink Brutal',
+                'descripcion' => $description,
+                'email' => $email_buyer,
+                'telefono' => $phone,
+                'referencia' => $reference_sale,
+                'valor' => $New_value
+            ], function($message){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to(
+                    'soporte@inkdigital.co',
+                    'InkBrutalPRY, Software de Gestión de Proyectos'
+                )->subject('Pago Actividad');
+            });
+
+            return redirect()
+                ->route('inicio_cliente')
+                ->withErrors('Transacción Rechazada o Expirada.');
+        }
+    }
+
+    /**
      * Cambia el estado de la notificación y retorna la ruta a la que debe redireccionar
      *
      * @param: $id Identificador de la notificación
@@ -408,6 +666,31 @@ class InicioController extends Controller
         $infoPago->merchantId="708186";
         $infoPago->accountId="711450";
         $infoPago->description="Cobro Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
+        $infoPago->referenceCode="Pago".$datos['factura'].'-'.$fecha->format("U");
+        $infoPago->amount=$datos['total']->Costo;
+        $infoPago->tax="0";
+        $infoPago->taxReturnBase="0";
+        $infoPago->currency="COP";
+        $infoPago->signature=md5($apiKey."~".$infoPago->merchantId."~".$infoPago->referenceCode."~".$datos['total']->Costo."~COP");
+        $infoPago->test="0";
+        $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
+        $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
+        $infoPago->responseUrl=route("respuesta_pago_cliente");
+        $infoPago->confirmationUrl=route("confirmacion_pago_cliente");
+
+        return $infoPago;
+    }
+
+    #Metodo que obtiene los datos de la api de PayU
+    public function informacionPayuAdicional($datos)
+    {
+        $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
+
+        $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
+        $infoPago = new stdClass();
+        $infoPago->merchantId="708186";
+        $infoPago->accountId="711450";
+        $infoPago->description="Cobro Adicional Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
         $infoPago->referenceCode="Pago".$datos['factura'].'-'.$fecha->format("U");
         $infoPago->amount=$datos['total']->Costo;
         $infoPago->tax="0";

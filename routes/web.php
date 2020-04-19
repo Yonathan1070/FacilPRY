@@ -106,8 +106,11 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     Route::get('', 'InicioController@index')->name('inicio_cliente');
     Route::get('{id}/generar-pdf', 'InicioController@generarPdf')->name('generar_pdf_proyecto_cliente');
     Route::get('{id}/factura', 'InicioController@generarFactura')->name('generar_factura_cliente');
+    Route::get('{id}/factura-adicional', 'InicioController@generarFacturaAdicional')->name('generar_factura_adicional_cliente');
     Route::get('{id}/pagar', 'InicioController@pagar')->name('pagar_factura_cliente');
+    Route::get('{id}/pagar-adicional', 'InicioController@pagarAdicional')->name('pagar_factura_adicional_cliente');
     Route::get('{id}/info-pago', 'InicioController@informacionPago')->name('informacion_pago_cliente');
+    Route::get('{id}/info-pago-adicional', 'InicioController@informacionPagoAdicional')->name('informacion_pago_adicional_cliente');
     Route::get('respuesta-pago', 'InicioController@respuestaPago')->name('respuesta_pago_cliente');
     Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_cliente');
@@ -238,6 +241,10 @@ Route::get('finanzas', 'FinanzasController@index')->name('inicio_finanzas');
 Route::get('finanzas/{id}', 'FinanzasController@agregarCosto')->name('agregar_costo_actividad_finanzas');
 Route::put('finanzas/cobro', 'FinanzasController@actualizarCosto')->name('actualizar_costo_actividad_finanzas');
 Route::get('finanzas/{id}/factura', 'FinanzasController@generarFactura')->name('generar_factura_finanzas');
+Route::get('agregar', 'FinanzasController@agregarCostosFactura')->name('agregar_cobro_finanzas');
+Route::get('agregar/{id}/proyectos', 'FinanzasController@obtenerProyectos')->name('proyectos_cliente_finanzas');
+Route::post('agregar/guardar', 'FinanzasController@guardarCostosFactura')->name('guardar_adicional');
+Route::get('finanzas/{id}/factura-adicional', 'FinanzasController@generarFacturaAdicional')->name('generar_factura_adicional_finanzas');
 
 //Rutas Metricas
 Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general');

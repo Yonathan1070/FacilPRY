@@ -30,7 +30,8 @@ Mis Proyectos
                                     <div>
                                         <ul class="nav nav-tabs" role="tablist">
                                             <li role="presentation" class="active"><a href="#proyectos" aria-controls="settings" role="tab" data-toggle="tab">Mis Proyectos</a></li>
-                                            <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Mis Facturas</a></li>
+                                            <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Mis Facturas <span class="label label-danger">({{count($proyectosPagar)}})</span></a></li>
+                                            <li role="presentation"><a href="#facturasadicionales" aria-controls="settings" role="tab" data-toggle="tab">Mis Facturas Adicionales <span class="label label-danger">({{count($factAdicional)}})</span></a></li>
                                         </ul>
                                         <div class="tab-content">
                                             <div role="tabpanel" class="tab-pane fade in active table-responsive" id="proyectos">
@@ -103,6 +104,40 @@ Mis Proyectos
                                                                     </td>
                                                                     <td>
                                                                         <a href="{{route('pagar_factura_cliente', ['id' => $proyecto->id])}}" class="btn btn-info">PAGAR</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                @endif
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fade in table-responsive" id="facturasadicionales">
+                                                @if (count($factAdicional)<=0)
+                                                    <div class="alert alert-info">
+                                                        No hay datos que mostrar.
+                                                    </div>
+                                                @else
+                                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Nombre</th>
+                                                                <th>Descripción</th>
+                                                                <th class="width70"></th>
+                                                                <th>Pagar</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($factAdicional as $factura)
+                                                                <tr>
+                                                                    <td>{{$factura->PRY_Nombre_Proyecto}}</td>
+                                                                    <td>{{$factura->PRY_Descripcion_Proyecto}}</td>
+                                                                    <td class="width70">
+                                                                        <a href="{{route('generar_factura_adicional_cliente', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                                            <i class="material-icons text-info" style="font-size: 17px;">find_in_page</i>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="{{route('pagar_factura_adicional_cliente', ['id' => $factura->Id_Proyecto])}}" class="btn btn-info">PAGAR</a>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

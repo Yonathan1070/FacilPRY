@@ -212,6 +212,76 @@ class Proyectos extends Model
         return $proyectos;
     }
 
+    #Funcion que obtiene los proyectos con facturas adicionales pendientes
+    public static function obtenerProyectosConFacturasAdicionales()
+    {
+        $proyectos = DB::table('TBL_Factura_Adicional as fa')
+            ->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'fa.FACT_AD_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'fa.FACT_AD_Estado_Id'
+            )->select(
+                'p.id as Id_Proyecto',
+                'fa.*',
+                'p.*',
+                'u.*',
+                DB::raw('COUNT(fa.id) as No_Actividades')
+            )->where(
+                'fa.FACT_AD_Estado_Id', '=', 9
+            )->groupBy(
+                'fa.FACT_AD_Proyecto_Id'
+            )->get();
+        
+        return $proyectos;
+    }
+
+    #Funcion que obtiene los proyectos con facturas adicionales pendientes
+    public static function obtenerProyectosConFacturasAdicionalesById($id)
+    {
+        $proyectos = DB::table('TBL_Factura_Adicional as fa')
+            ->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'fa.FACT_AD_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'fa.FACT_AD_Estado_Id'
+            )->select(
+                'p.id as Id_Proyecto',
+                'fa.*',
+                'p.*',
+                'u.*',
+                DB::raw('COUNT(fa.id) as No_Actividades')
+            )->where(
+                'u.id', '=', $id
+            )->where(
+                'fa.FACT_AD_Estado_Id', '=', 9
+            )->groupBy(
+                'fa.FACT_AD_Proyecto_Id'
+            )->get();
+        
+        return $proyectos;
+    }
+
     #Función que obtiene los proyectos que tiene pendientes para realizar pago
     public static function obtenerProyectosPagar($idCliente)
     {
