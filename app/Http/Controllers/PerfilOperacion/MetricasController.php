@@ -19,31 +19,36 @@ class MetricasController extends Controller
      * @return json_encode Datos del indicador de eficacia por proyectos
      * 
      */
-    public function metricaEficaciaGeneral(Request $request){
+    public function metricaEficaciaGeneral()
+    {
+        $idUsuario = session()->get('Usuario_Id');
         $eficacia = [];
 
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->groupBy('p.id')
-            ->select('u.*', 'p.*')
-            ->get();
+        $proyectos = Proyectos::obtenerProyectosMetricas($idUsuario);
         
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
                 $proyecto->id,
-                session()->get('Usuario_Id')
+                $idUsuario
             );
-            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id, session()->get('Usuario_Id'));
+
+            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario(
+                $proyecto->id,
+                $idUsuario
+            );
+
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
             }catch(Exception $ex){
                 $eficaciaPorcentaje = 0;
             }
-            $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$eficaciaPorcentaje];
+
+            $eficacia[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$eficaciaPorcentaje
+            ];
         }
+
         $pryEficaciaLlave = [];
         $pryEficaciaValor = [];
         $pryEficaciaColor = [];
@@ -72,35 +77,41 @@ class MetricasController extends Controller
      * @return json_encode Datos del indicador de eficacia por proyectos
      * 
      */
-    public function metricaEficienciaGeneral(){
+    public function metricaEficienciaGeneral()
+    {
+        $idUsuario = session()->get('Usuario_Id');
         $eficiencia = [];
 
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->groupBy('p.id')
-            ->select('u.*', 'p.*')
-            ->get();
+        $proyectos = Proyectos::obtenerProyectosMetricas($idUsuario);
 
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
                 $proyecto->id,
-                session()->get('Usuario_Id')
+                $idUsuario
             );
-            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario($proyecto->id, session()->get('Usuario_Id'));
-            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id, session()->get('Usuario_Id'));
+
+            $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario(
+                $proyecto->id,
+                $idUsuario
+            );
+
+            $actividades = HorasActividad::obtenerActividadesFinalizadas(
+                $proyecto->id,
+                $idUsuario
+            );
+
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
             $horasReales = 0;
+
             foreach ($actividades as $actividad) {
                 $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
                 $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
+
             try{
                 $datosFinal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $datosEstimado = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
@@ -108,8 +119,13 @@ class MetricasController extends Controller
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
-            $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
+
+            $eficiencia[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$eficienciaPorcentaje
+            ];
         }
+
         $pryEficienciaLlave = [];
         $pryEficienciaValor = [];
         $pryEficienciaColor = [];
@@ -138,28 +154,25 @@ class MetricasController extends Controller
      * @return json_encode Datos del indicador de eficacia por proyectos
      * 
      */
-    public function metricaEfectividadGeneral(){
+    public function metricaEfectividadGeneral()
+    {
+        $idUsuario = session()->get('Usuario_Id');
         $efectividad = [];
 
-        $proyectos = DB::table('TBL_Actividades as a')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'a.ACT_Trabajador_Id')
-            ->where('u.id', '=', session()->get('Usuario_Id'))
-            ->groupBy('p.id')
-            ->select('u.*', 'p.*')
-            ->get();
+        $proyectos = Proyectos::obtenerProyectosMetricas($idUsuario);
 	
         foreach ($proyectos as $key => $proyecto) {
             #Obtenemos la Eficacia
             $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesFinalizadasPerfil(
                 $proyecto->id,
-                session()->get('Usuario_Id')
+                $idUsuario
             );
+
             $actividadesTotales = Actividades::obtenerActividadesProyectoUsuario(
                 $proyecto->id,
-                session()->get('Usuario_Id')
+                $idUsuario
             );
+
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
             }catch(Exception $ex){
@@ -167,11 +180,16 @@ class MetricasController extends Controller
             }
 
             #Obtenemos la Eficiencia
-            $actividades = HorasActividad::obtenerActividadesFinalizadas($proyecto->id, session()->get('Usuario_Id'));
+            $actividades = HorasActividad::obtenerActividadesFinalizadas(
+                $proyecto->id,
+                $idUsuario
+            );
+
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
             $horasReales = 0;
+
             foreach ($actividades as $actividad) {
                 $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
                 $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
@@ -221,13 +239,20 @@ class MetricasController extends Controller
      */
     public function metricaEficaciaCarga()
     {
+        $idUsuario = session()->get('Usuario_Id');
         $eficacia = [];
 
-        $proyectos = Proyectos::obtenerProyectosPerfil(session()->get('Usuario_Id'));
+        $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
         
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
+                $proyecto->id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotales(
+                $proyecto->id
+            );
+
             try {
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
@@ -235,8 +260,13 @@ class MetricasController extends Controller
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
-            $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto, (int)$eficaciaPorcentaje];
+
+            $eficacia[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$eficaciaPorcentaje
+            ];
         }
+
         $pryEficaciaLlave = [];
         $pryEficaciaValor = [];
         $pryEficaciaColor = [];
@@ -266,23 +296,36 @@ class MetricasController extends Controller
      */
     public function metricaEficienciaCarga()
     {
+        $idUsuario = session()->get('Usuario_Id');
         $eficiencia = [];
         
-        $proyectos = Proyectos::obtenerProyectosPerfil(session()->get('Usuario_Id'));
+        $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
+
         foreach ($proyectos as $key => $proyecto) {
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
-            $actividades = Actividades::obtenerActividadesHoras($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
+                $proyecto->id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotales(
+                $proyecto->id
+            );
+
+            $actividades = Actividades::obtenerActividadesHoras(
+                $proyecto->id
+            );
+
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
             $horasReales = 0;
+
             foreach ($actividades as $actividad) {
                 $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
                 $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
+
             try {
                 $variableReal = (count($actividadesFinalizadas) / $costoReal) * $horasReales;
                 $variableEstimada = (count($actividadesTotales) / $costoEstimado) * $horasEstimadas;
@@ -290,7 +333,11 @@ class MetricasController extends Controller
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
-            $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
+
+            $eficiencia[++$key] = [
+                $proyecto->PRY_Nombre_Proyecto,
+                (int)$eficienciaPorcentaje
+            ];
         }
         $pryEficienciaLlave = [];
         $pryEficienciaValor = [];
@@ -322,13 +369,20 @@ class MetricasController extends Controller
      */
     public function metricaEfectividadCarga()
     {
+        $idUsuario = session()->get('Usuario_Id');
         $efectividad = [];
 
-        $proyectos = Proyectos::obtenerProyectosPerfil(session()->get('Usuario_Id'));
+        $proyectos = Proyectos::obtenerProyectosPerfil($idUsuario);
         foreach ($proyectos as $key => $proyecto) {
             #Obtenermos la Eficacia
-            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($proyecto->id);
-            $actividadesTotales = Actividades::obtenerActividadesTotales($proyecto->id);
+            $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas(
+                $proyecto->id
+            );
+
+            $actividadesTotales = Actividades::obtenerActividadesTotales(
+                $proyecto->id
+            );
+
             try {
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
@@ -338,17 +392,22 @@ class MetricasController extends Controller
             }
 
             #Obtenemos la Eficiencia
-            $actividades = Actividades::obtenerActividadesHoras($proyecto->id);
+            $actividades = Actividades::obtenerActividadesHoras(
+                $proyecto->id
+            );
+
             $costoEstimado = 0;
             $costoReal = 0;
             $horasEstimadas = 0;
             $horasReales = 0;
+
             foreach ($actividades as $actividad) {
                 $costoReal = $costoReal + $actividad->ACT_Costo_Real_Actividad;
                 $costoEstimado = $costoEstimado + $actividad->ACT_Costo_Estimado_Actividad;
                 $horasEstimadas = $horasEstimadas + $actividad->HorasE;
                 $horasReales = $horasReales + $actividad->HorasR;
             }
+
             try {
                 $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);

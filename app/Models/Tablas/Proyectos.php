@@ -303,6 +303,37 @@ class Proyectos extends Model
         return $proyectos;
     }
 
+    #Función que obtiene los proyectos asociados para obtener las métricas
+    public static function obtenerProyectosMetricas($id)
+    {
+        $proyectos = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->select(
+                'u.*',
+                'p.*'
+            )->where(
+                'u.id', '=', $id
+            )->groupBy(
+                'p.id'
+            )->get();
+        
+        return $proyectos;
+    }
+
     #Función que cambia el estado del proyecto
     public static function cambiarEstado($id)
     {

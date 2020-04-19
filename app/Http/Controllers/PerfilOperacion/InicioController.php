@@ -10,26 +10,34 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Usuarios;
-use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InicioController extends Controller
 {
     /**
      * Muestra las metricas de eficiencia, eficacia y efectividad para
-     * el usuario autenticado
+     * el usuario autenticado.
      *
      * @return \Illuminate\View\View Vista de inicio
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
         
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+        
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         
         $metricas = $this->metricasGenerales();
         
@@ -51,12 +59,21 @@ class InicioController extends Controller
         );
     }
 
-    public function metricasGenerales(){
+    /**
+     * Muestra las metricas de generales para
+     * el usuario autenticado.
+     *
+     * @return \Illuminate\View\View Vista de inicio
+     */
+    public function metricasGenerales()
+    {
+        $idUsuario = session()->get('Usuario_Id');
+
         $eficacia = [];
         $eficiencia = [];
         $efectividad = [];
 
-        $proyectos = Proyectos::obtenerProyectosAsociados(session()->get('Usuario_Id'));
+        $proyectos = Proyectos::obtenerProyectosAsociados($idUsuario);
         
         foreach ($proyectos as $key => $proyecto) {
             $eficacia[++$key] = [$proyecto->PRY_Nombre_Proyecto];
@@ -71,9 +88,11 @@ class InicioController extends Controller
         foreach ($eficacia as $indEficacia) {
             array_push($pryEficaciaLlave, $indEficacia[0]);
         }
+
         foreach ($eficiencia as $indEficiencia) {
             array_push($pryEficienciaLlave, $indEficiencia[0]);
         }
+
         foreach ($efectividad as $indEfectividad) {
             array_push($pryEfectividadLlave, $indEfectividad[0]);
         }
@@ -109,6 +128,7 @@ class InicioController extends Controller
     {
         $notificacion = Notificaciones::cambiarEstadoNotificacion($id);
         $notif = new stdClass();
+        
         if($notificacion->NTF_Route != null && $notificacion->NTF_Parametro != null) {
             $notif->ruta = route(
                 $notificacion->NTF_Route,
@@ -117,6 +137,7 @@ class InicioController extends Controller
         } else if($notificacion->NTF_Route != null) {
             $notif->ruta = route($notificacion->NTF_Route);
         }
+
         return json_encode($notif);
     }
 
@@ -142,35 +163,57 @@ class InicioController extends Controller
      */
     public function cargaTrabajo()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-
-        $actividades = Actividades::obtenerGenerales(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
         
-        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion(session()->get('Usuario_Id')));
-        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id')));
-        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id')));
-        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id')));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+        
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $actividades = Actividades::obtenerGenerales($idUsuario);
+        
+        $actividadesTotales = count(
+            Actividades::obtenerTodasPerfilOperacion($idUsuario)
+        );
+        
+        $actividadesFinalizadas = count(
+            Actividades::obtenerActividadesFinalizadasPerfil($idUsuario)
+        );
+
+        $actividadesAtrasadas = count(
+            Actividades::obtenerActividadesAtrasadasPerfil($idUsuario)
+        );
+
+        $actividadesProceso = count(
+            Actividades::obtenerActividadesProcesoPerfil($idUsuario)
+        );
 
         try {
             $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeFinalizado = 0;
         }
+
         try {
             $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeAtrasado = 0;
         }
+
         try {
             $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeProceso = 0;
         }
         
-
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail($idUsuario);
 
         return view(
             'perfiloperacion.carga.actividades',

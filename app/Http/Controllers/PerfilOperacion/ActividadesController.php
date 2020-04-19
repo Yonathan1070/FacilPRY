@@ -12,6 +12,7 @@ use App\Models\Tablas\HorasActividad;
 use PDF;
 use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\DocumentosEvidencias;
+use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HistorialEstados;
@@ -42,23 +43,41 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
         
         foreach ($actividadesProceso as $actividad) {
             if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
                 Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
                 HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
-                $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+                $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil($idUsuario);
             }
         }
 
-        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id'));
-        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfilOchoDias(session()->get('Usuario_Id'));
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(
+            $idUsuario
+        );
+
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfilOchoDias(
+            $idUsuario
+        );
         
         return view(
             'perfiloperacion.actividades.listar',
@@ -82,12 +101,26 @@ class ActividadesController extends Controller
      */
     public function asignarHoras($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $actividades = HorasActividad::obtenerActividadesHorasAsignacion($id, session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $actividades = HorasActividad::obtenerActividadesHorasAsignacion(
+            $id,
+            $idUsuario
+        );
+        
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
 
         if ($actividades == null){
             return redirect()
@@ -101,7 +134,7 @@ class ActividadesController extends Controller
         }
         
         $hoy = Carbon::now();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datos = Usuarios::findOrFail($idUsuario);
         
         return view(
             'perfiloperacion.actividades.asignacion',
@@ -126,21 +159,22 @@ class ActividadesController extends Controller
     public function guardarHoras(Request $request, $id)
     {
         $fecha = HorasActividad::findOrFail($id);
-        $vigente = Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00');
+        $formatoFechaActividad = Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad);
+        $formatoFechaHoy = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
         
         if (
-            Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') <
-                Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y')
+            $formatoFechaActividad->format('d/m/Y') <
+                $formatoFechaHoy->format('d/m/Y')
         ) {
             return response()
                 ->json(['msg' => 'errorF']);
         }
         if (
-            (Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') ==
-                Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y') &&
+            ($formatoFechaActividad->format('d/m/Y') ==
+                $formatoFechaHoy->format('d/m/Y') &&
                 Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <= 1)
-            || (Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad)->format('d/m/Y') ==
-                Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now())->format('d/m/Y') &&
+            || ($formatoFechaActividad->format('d/m/Y') ==
+                $formatoFechaHoy->format('d/m/Y') &&
                 Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <
                 $request->HRS_ACT_Cantidad_Horas_Asignadas)
         ) {
@@ -181,7 +215,8 @@ class ActividadesController extends Controller
      */
     public function terminarAsignacion($id)
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        $datos = Usuarios::findOrFail($idUsuario);
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
 
         if ($horas != 0) {
@@ -190,7 +225,7 @@ class ActividadesController extends Controller
                     ' '.
                     $datos->USR_Apellidos_Usuario.
                     ' se ha asignado sus horas de trabajo',
-                    session()->get('Usuario_Id'),
+                    $idUsuario,
                 $datos->USR_Supervisor_Id,
                 'aprobar_horas_actividad',
                 'idH',
@@ -199,7 +234,8 @@ class ActividadesController extends Controller
             );
 
             $para = Usuarios::findOrFail($datos->USR_Supervisor_Id);
-            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $de = Usuarios::findOrFail($idUsuario);
+            
             Mail::send('general.correo.informacion', [
                 'titulo' => $datos->USR_Nombres_Usuario.
                     ' '.
@@ -231,14 +267,22 @@ class ActividadesController extends Controller
      */
     public function generarPdf()
     {
-        $hoy = new DateTime();
-        $hoy->format('Y-m-d H:i:s');
+        $idUsuario = session()->get('Usuario_Id');
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $empresa = Empresas::findOrFail($datos->USR_Empresa_Id);
-        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(session()->get('Usuario_Id'));
-        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil(session()->get('Usuario_Id'));
+        
+        $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+        
+        $actividadesAtrasadas = Actividades::obtenerActividadesAtrasadasPerfil(
+            $idUsuario
+        );
+
+        $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasPerfil(
+            $idUsuario
+        );
 
         $pdf = PDF::loadView(
             'includes.pdf.actividades',
@@ -263,11 +307,8 @@ class ActividadesController extends Controller
      */
     public function descargarDocumentoSoporte($id)
     {
-        $actividad = DB::table('TBL_Actividades as a')
-            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
-            ->select('ds.ACT_Documento_Soporte_Actividad')
-            ->where('a.id', '=', $id)
-            ->first();
+        $actividad = DocumentosSoporte::obtenerDocumentoSoporte($id);
+        
         if(!$actividad){
             return redirect()
                 ->back()
@@ -289,15 +330,26 @@ class ActividadesController extends Controller
      */
     public function finalizar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $hoy = Carbon::now();
-        $hoy->format('Y-m-d H:i:s');
+        $idUsuario = session()->get('Usuario_Id');
 
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividades = HorasActividad::obtenerActividad($id, session()->get('Usuario_Id'));
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+
+        $actividades = HorasActividad::obtenerActividad(
+            $id,
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
 
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas($id);
 
@@ -333,12 +385,15 @@ class ActividadesController extends Controller
                     'Debe cargar un documento o agregar un link que evidencie la actividad realizada.'
                 )->withInput();
         }
+
         ActividadesFinalizadas::crearActividadFinalizadaTrabajador($request);
 
         $af = ActividadesFinalizadas::orderBy('created_at', 'desc')->first();
+
         if ($request->hasFile('ACT_Documento_Evidencia_Actividad')) {
             foreach ($request->file('ACT_Documento_Evidencia_Actividad') as $documento) {
                 $archivo = null;
+                
                 if ($documento->isValid()) {
                     $archivo = time() . '.' . $documento->getClientOriginalName();
                     $documento->move(public_path('documentos_soporte'), $archivo);
@@ -346,19 +401,18 @@ class ActividadesController extends Controller
                 }
             }
         }
+
         Respuesta::crearRespuesta($af->id, 4);
         
         Actividades::actualizarEstadoActividad($request['Actividad_Id'], 3);
         
         HistorialEstados::crearHistorialEstado($request['Actividad_Id'], 4);
         
-        $para = DB::table('TBL_Permiso as p')
-            ->join('TBL_Permiso_Usuario as pu', 'pu.PRM_USR_Permiso_Id', '=', 'p.id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'pu.PRM_USR_Usuario_Id')
-            ->where('p.PRM_Nombre_Permiso', '=', 'validador')
-            ->select('u.*')
-            ->first();
+        $actividad = Actividades::findOrFail($request['Actividad_Id']);
+        
+        $para = Usuarios::findOrFail($actividad->ACT_Encargado_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
         Mail::send('general.correo.informacion', [
             'titulo' => 'Tarea finalizada y entregada',
             'nombre' => $para->USR_Nombres_Usuario.' '.$para->USR_Apellidos_Usuario,
@@ -400,7 +454,8 @@ class ActividadesController extends Controller
      * @param  $id  Identificador de la actividad
      * @return redirect()->route()
      */
-    public function enviarSolicitud(Request $request, $id){
+    public function enviarSolicitud(Request $request, $id)
+    {
         SolicitudTiempo::crearSolicitud($id, $request);
 
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -418,6 +473,7 @@ class ActividadesController extends Controller
             $id,
             'alarm'
         );
+        
         Mail::send('general.correo.informacion', [
             'titulo' => $de->USR_Nombres_Usuario.
                 ' '.

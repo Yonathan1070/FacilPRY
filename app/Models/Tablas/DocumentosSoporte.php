@@ -77,6 +77,18 @@ class DocumentosSoporte extends Model
         return $documentosSoporte;
     }
 
+    #Funcion para obtener el documento soporte
+    public static function obtenerDocumentoSoporte($id)
+    {
+        $documento = DB::table('TBL_Actividades as a')
+            ->join('TBL_Documentos_Soporte as ds', 'ds.DOC_Actividad_Id', '=', 'a.id')
+            ->select('ds.ACT_Documento_Soporte_Actividad')
+            ->where('a.id', '=', $id)
+            ->first();
+        
+        return $documento;
+    }
+
     #Función que crea el documento soporte de la actividad
     public static function crearDocumentoSoporte($idA, $archivo)
     {
