@@ -34,7 +34,7 @@ class MenuUsuario extends Model
         MenuUsuario::asignarDecisiones($id);
         MenuUsuario::asignarEmpresas($id);
         MenuUsuario::asignarRoles($id);
-        MenuUsuario::asignarCobros($id);
+        //MenuUsuario::asignarCobros($id);
     }
 
     #Función que asigna los items al perfil de operación

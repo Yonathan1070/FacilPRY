@@ -1193,11 +1193,10 @@ class Actividades extends Model
                 'a.id as Id_Actividad'
             )->where(
                 'a.ACT_Trabajador_Id', '=', $id
-            )->where(
-                'e.id', '=', 1
-            )->orWhere(
-                'e.id', '=', 2
-            )->groupBy(
+            )->where(function($q) {
+                $q->where('e.id', 2)
+                  ->orWhere('e.id', 1);
+            })->groupBy(
                 'a.id'
             )->get();
         
