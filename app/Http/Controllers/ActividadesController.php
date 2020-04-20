@@ -251,6 +251,14 @@ class ActividadesController extends Controller
         $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
         
         if (
+            $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
+        ) {
+            return redirect()
+                ->route($request['ruta'], [$idR])
+                ->withErrors(
+                    'Las fechas no pueden ser dias ya pasados.'
+                )->withInput();
+        } else if (
             $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
         ) {
             return redirect()

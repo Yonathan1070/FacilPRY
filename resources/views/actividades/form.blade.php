@@ -119,7 +119,7 @@
                         required>
                         <option value="">-- Seleccione un Trabajador --</option>
                         @foreach ($perfilesOperacion as $perfilOperacion)
-                            <option value="{{$perfilOperacion->id}}" {{old("ACT_Usuario_Id", $perfilOperacion->id) == $perfilOperacion->id ? 'selected' : '' }}>
+                            <option value="{{$perfilOperacion->Id_Perfil}}" {{old("ACT_Usuario_Id", $perfilOperacion->Id_Perfil) == $perfilOperacion->Id_Perfil ? 'selected' : '' }}>
                                 {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}
                             </option>
                         @endforeach
