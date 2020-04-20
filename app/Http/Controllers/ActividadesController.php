@@ -940,7 +940,7 @@ class ActividadesController extends Controller
                 'InkBrutalPRY, Software de Gestión de Proyectos'
             )->subject('Horas de trabajo aprobadas');
         });
-        return response()->json(['msg' => 'exito']);
+        return response()->json(['msg' => 'exito', 'idPerfil' => $para->id]);
     }
 
     /**

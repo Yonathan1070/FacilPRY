@@ -108,7 +108,7 @@ Editar Datos Empresa
             form = new FormData();
             form.append('EMP_Logo_Empresa', $('#EMP_Logo_Empresa')[0].files[0]);
             jQuery.ajax({
-                url:"{{route('actualizar_logo_empresa_administrador')}}",
+                url:"/administrador/empresa/foto",
                 headers: {
                     'X-CSRF-TOKEN': "{{csrf_token()}}"
                 },

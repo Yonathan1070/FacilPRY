@@ -216,30 +216,30 @@ class ActividadesController extends Controller
     public function terminarAsignacion($id)
     {
         $idUsuario = session()->get('Usuario_Id');
-        $datos = Usuarios::findOrFail($idUsuario);
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
-
+        $actividad = Actividades::findOrFail($id);
+        
         if ($horas != 0) {
+            $para = Usuarios::findOrFail($actividad->ACT_Encargado_Id);
+            $de = Usuarios::findOrFail($idUsuario);
+
             Notificaciones::crearNotificacion(
-                $datos->USR_Nombres_Usuario.
+                $de->USR_Nombres_Usuario.
                     ' '.
-                    $datos->USR_Apellidos_Usuario.
+                    $de->USR_Apellidos_Usuario.
                     ' se ha asignado sus horas de trabajo',
-                    $idUsuario,
-                $datos->USR_Supervisor_Id,
+                $de->id,
+                $para->id,
                 'aprobar_horas_actividad',
                 'idH',
                 $id,
                 'alarm'
             );
-
-            $para = Usuarios::findOrFail($datos->USR_Supervisor_Id);
-            $de = Usuarios::findOrFail($idUsuario);
             
             Mail::send('general.correo.informacion', [
-                'titulo' => $datos->USR_Nombres_Usuario.
+                'titulo' => $de->USR_Nombres_Usuario.
                     ' '.
-                    $datos->USR_Apellidos_Usuario.
+                    $de->USR_Apellidos_Usuario.
                     ' ha asignado sus horas de trabajo',
                 'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
                 'contenido' => $para['USR_Nombres_Usuario'].
@@ -412,6 +412,19 @@ class ActividadesController extends Controller
         
         $para = Usuarios::findOrFail($actividad->ACT_Encargado_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        Notificaciones::crearNotificacion(
+            $de->USR_Nombres_Usuario.
+                ' '.
+                $de->USR_Apellidos_Usuario.
+                ' ha finalizado la tarea '.$actividad->ACT_Titulo_Actividad.'.',
+            $de->id,
+            $para->id,
+            'inicio_validador',
+            null,
+            null,
+            'done_all'
+        );
         
         Mail::send('general.correo.informacion', [
             'titulo' => 'Tarea finalizada y entregada',

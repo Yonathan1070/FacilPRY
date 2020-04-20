@@ -127,7 +127,7 @@ Aprobar Horas de Trabajo
                             url: "/actividades/" + idActividad +"/terminar-aprobacion",
                             success:function(data){
                                 if(data.msg == "exito")
-                                    document.location.href="{!! route('inicio_director'); !!}";
+                                    document.location.href="/perfil-operacion/"+data.idPerfil+"/carga";
                             }
                         });
                     }

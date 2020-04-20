@@ -37,9 +37,22 @@ class CobrosController extends Controller
     public function index()
     {
         can('listar-cobros');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $cobros = Actividades::obtenerActividadesCobrar();
         $proyectos = DB::table('TBL_Facturas_Cobro as fc')
             ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
@@ -53,8 +66,6 @@ class CobrosController extends Controller
             ->orWhere('e.id', '=', 9)
             ->groupBy('fc.FACT_Cliente_Id')
             ->get();
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'cobros.listar',
