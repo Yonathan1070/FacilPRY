@@ -56,4 +56,15 @@ class Roles extends Model
         
         return $rolesAsignados;
     }
+
+    #Funcion para obtener los roles asociados a perfil de operación
+    public static function obtenerRolesPefilOperacion()
+    {
+        $roles = Roles::where('id', '<>', '4')
+            ->where('RLS_Rol_Id', '=', 4)
+            ->orderBy('id')
+            ->get();
+        
+        return $roles;
+    }
 }

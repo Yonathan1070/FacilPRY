@@ -15,7 +15,6 @@ use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use PDF;
 
@@ -41,14 +40,25 @@ class FinanzasController extends Controller
     public function index()
     {
         can('finanzas');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $cobros = Actividades::obtenerActividadesAsignarCosto();
         $proyectos = Proyectos::obtenerProyectosConFacturas();
         $factAdicional = Proyectos::obtenerProyectosConFacturasAdicionales();
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'finanzas.inicio',
@@ -72,14 +82,24 @@ class FinanzasController extends Controller
      */
     public function agregarCosto($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $actividades = ActividadesFinalizadas::obtenerActividadFinalizadaDetalle($id);
         $documentosEvidencias = DocumentosEvidencias::obtenerDocumentosActividadCobrar($id);
         $documentosSoporte = DocumentosSoporte::obtenerDocumentosActividadCobrar($id);
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
         
         return view(
             'finanzas.cobro',
@@ -125,19 +145,22 @@ class FinanzasController extends Controller
     {
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
         foreach ($informacion as $info) {
             $factura = $info->id;
         }
 
-        $datos = ['proyecto'=>$proyecto, 
+        $datos = [
+            'proyecto'=>$proyecto, 
             'informacion'=>$informacion, 
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa];
+            'empresa'=>$empresa
+        ];
 
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
 
@@ -187,17 +210,24 @@ class FinanzasController extends Controller
     public function agregarCostosFactura()
     {
         can('finanzas');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $clientes = DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
-            ->where('r.id', '=', 3)
-            ->select('u.*')
-            ->get();
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+
+        $clientes = Usuarios::obtenerTodosClientes();
 
         return view(
             'finanzas.agregarcobro',

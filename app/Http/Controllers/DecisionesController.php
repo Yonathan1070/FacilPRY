@@ -11,183 +11,310 @@ use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Indicadores;
 use App\Models\Tablas\Notificaciones;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class DecisionesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de las decisiones registradas en el sistema
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del listado de decisiones
      */
     public function index()
     {
         can('listar-decisiones');
-        $permisos = ['crear'=> can2('crear-decisiones'), 'editar'=>can2('editar-decisiones'), 'eliminar'=>can2('eliminar-decisiones'), 'listar'=>can2('listar-calificaciones')];
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $decisiones = DB::table('TBL_Indicadores as i')
-            ->join('TBL_Decisiones as d', 'd.DSC_Indicador_Id', '=', 'i.id')
-            ->get();
-        #$decisiones = Decisiones::orderBy('id')->get();
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-        return view('decisiones.listar', compact('decisiones', 'datos', 'notificaciones', 'cantidad', 'permisos', 'asignadas'));
+
+        $permisos = [
+            'crear'=> can2('crear-decisiones'),
+            'editar'=>can2('editar-decisiones'),
+            'eliminar'=>can2('eliminar-decisiones'),
+            'listar'=>can2('listar-calificaciones')
+        ];
+
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $decisiones = Decisiones::obtenerDecisiones();
+        
+        return view(
+            'decisiones.listar',
+            compact(
+                'decisiones',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'permisos',
+                'asignadas'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario para crear la decision
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del formulario para crear decisiones
      */
     public function crear()
     {
         can('crear-decisiones');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $indicadores = Indicadores::orderBy('id')->get();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-        return view('decisiones.crear', compact('datos', 'indicadores', 'notificaciones', 'cantidad', 'asignadas'));
+        return view(
+            'decisiones.crear',
+            compact(
+                'datos',
+                'indicadores',
+                'notificaciones',
+                'cantidad',
+                'asignadas'
+            )
+        );
     }
 
+    /**
+     * Obtiene el total del indicador en un json
+     *
+     * @return json_encode()
+     */
     public function totalIndicador($id)
     {
         $indicador = Indicadores::findOrFail($id);
-        $diferencia = DB::table('TBL_Decisiones')
-            ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
-            ->where('DSC_Indicador_Id', '=', $id)
-            ->groupBy('id')
-            ->get();
+        $diferencia = Decisiones::obtenerDiferenciaDecisiones($id);
         $total = 0;
+
         foreach ($diferencia as $dif) {
             $total = $total + $dif->diferencia;
         }
+
         $dato = new stdClass();
         $dato->total = $total;
         $dato->indicador = $indicador->INDC_Nombre_Indicador;
+
         return json_encode($dato);
     }
+
     /**
-     * Store a newly created resource in storage.
+     * Guarda los datos de la decision en la Base de datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionDecision $request
+     * @return redirect()->back()->withErrors()->withInput();
      */
     public function guardar(ValidacionDecision $request)
     {
-        if ($request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision) {
-            return redirect()->back()->withErrors('El Rango de inicio no puede ser mayor al de fin')->withInput();
+        if (
+            $request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision
+        ) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'El Rango de inicio no puede ser mayor al de fin'
+                )->withInput();
         }
-        $diferencia = DB::table('TBL_Decisiones')
-            ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
-            ->where('DSC_Indicador_Id', '=', 2)
-            ->groupBy('id')
-            ->get();
+
+        $diferencia = Decisiones::obtenerDiferenciaDecisiones(2);
         $total = 0;
+
         foreach ($diferencia as $dif) {
             $total = $total + $dif->diferencia;
         }
-        if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
-            return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
+
+        if (
+            (
+                (int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision
+            ) + $total > 100
+        ) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No se puede exceder del 100% del rango del indicador'
+                )->withInput();
         }
-        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', 2)
-            ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')
-            ->get();
+        
+        $decisiones = Decisiones::obtenerDecisionById(2);
+        
         foreach ($decisiones as $decision) {
             if (
                 $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
                 $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
-                return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'El Rango de inicio ya está siendo usado por otra decisión'
+                    )->withInput();
             }
+
             if (
                 $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
                 $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
             ) {
-                return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'El Rango de fin ya está siendo usado por otra decisión'
+                    )->withInput();
             }
+
             if ($decision->DCS_Nombre_Decision == $request->DCS_Nombre_Decision) {
-                return redirect()->back()->withErrors('La desición ya está registrada en el sistema')->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'La desición ya está registrada en el sistema'
+                    )->withInput();
             }
         }
+
         Decisiones::crearDecision($request, 2);
-        return redirect()->back()->with('mensaje', 'Decisión creada con exito');
+
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Decisión creada con exito');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Muestra el formulario para editar la decision
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View Vista del formulario para editar decisiones
      */
     public function editar($id)
     {
         can('editar-decisiones');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
+
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+
         $indicadores = Indicadores::orderBy('id')->get();
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $decision = Decisiones::findOrFail($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-        return view('decisiones.editar', compact('decision', 'indicadores', 'datos', 'notificaciones', 'cantidad', 'asignadas'));
+        return view(
+            'decisiones.editar',
+            compact(
+                'decision',
+                'indicadores',
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'asignadas'
+            )
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza los datos de la decision en la Base de datos
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  App\Http\Requests\ValidacionDecision $request
+     * @return redirect()->back()->withErrors()->withInput();
      */
     public function actualizar(ValidacionDecision $request, $id)
     {
-        if ($request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision) {
-            return redirect()->back()->withErrors('El Rango de inicio no puede ser mayor al de fin')->withInput();
+        if (
+            $request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision
+        ) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'El Rango de inicio no puede ser mayor al de fin'
+                )->withInput();
         }
-        $diferencia = DB::table('TBL_Decisiones')
-            ->select(DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia"))
-            ->where('DSC_Indicador_Id', '=', 2)
-            ->where('id', '<>', $id)
-            ->groupBy('id')
-            ->get();
+
+        $diferencia = Decisiones::obtenerDiferenciaDecisionDistintasId($id, 2);
         $total = 0;
+
         foreach ($diferencia as $dif) {
             $total = $total + $dif->diferencia;
         }
-        if (((int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision) + $total > 100) {
-            return redirect()->back()->withErrors('No se puede exceder del 100% del rango del indicador')->withInput();
+        
+        if (
+            (
+                (int) $request->DCS_Rango_Fin_Decision - (int) $request->DCS_Rango_Inicio_Decision
+            ) + $total > 100
+        ) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No se puede exceder del 100% del rango del indicador'
+                )->withInput();
         }
-        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', 2)
-            ->where('id', '<>', $id)
-            ->select('DCS_Rango_Inicio_Decision', 'DCS_Rango_Fin_Decision', 'DCS_Nombre_Decision')
-            ->get();
+
+        $decisiones = Decisiones::obtenerDecisionDistintasId($id, 2);
+        
         foreach ($decisiones as $decision) {
             if (
                 $decision->DCS_Rango_Inicio_Decision <= $request->DCS_Rango_Inicio_Decision &&
                 $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
-                return redirect()->back()->withErrors('El Rango de inicio ya está siendo usado por otra decisión')->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'El Rango de inicio ya está siendo usado por otra decisión'
+                    )->withInput();
             }
             if (
                 $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
                 $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
             ) {
-                return redirect()->back()->withErrors('El Rango de fin ya está siendo usado por otra decisión')->withInput();
+                return redirect()
+                    ->back()
+                    ->withErrors(
+                        'El Rango de fin ya está siendo usado por otra decisión'
+                    )->withInput();
             }
         }
+
         Decisiones::findOrFail($id)->update($request->all());
-        return redirect()->route('decisiones')->with('mensaje', 'Decisión actualizada con exito');
+
+        return redirect()
+            ->route('decisiones')
+            ->with('mensaje', 'Decisión actualizada con exito');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina los datos de la decision en la Base de datos
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * 
+     * @return response()->json();
      */
     public function eliminar(Request $request, $id)
     {

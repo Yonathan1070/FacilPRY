@@ -3,6 +3,7 @@
 namespace App\Models\Tablas;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Modelo Decisiones, realiza las distintas consultas
@@ -39,6 +40,81 @@ class Decisiones extends Model
         return $decision;
     }
 
+    #Funcion para obtener las decisiones registradas
+    public static function obtenerDecisiones()
+    {
+        $decisiones = DB::table('TBL_Indicadores as i')
+            ->join(
+                'TBL_Decisiones as d',
+                'd.DSC_Indicador_Id',
+                '=',
+                'i.id'
+            )->get();
+        
+        return $decisiones;
+    }
+
+    #Funcion para obtener la diferencia de las decisiones registradas
+    public static function obtenerDiferenciaDecisiones($id)
+    {
+        $diferencia = DB::table('TBL_Decisiones')
+            ->select(
+                DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia")
+            )->where(
+                'DSC_Indicador_Id', '=', $id
+            )->groupBy(
+                'id'
+            )->get();
+        
+        return $diferencia;
+    }
+
+    #Funcion para obtener la diferencia de las decisiones registradas
+    public static function obtenerDecisionById($id)
+    {
+        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $id)
+            ->select(
+                'DCS_Rango_Inicio_Decision',
+                'DCS_Rango_Fin_Decision',
+                'DCS_Nombre_Decision'
+            )->get();
+        
+        return $decisiones;
+    }
+
+    #Funcion para obtener la diferencia de las decisiones registradas
+    public static function obtenerDiferenciaDecisionDistintasId($id, $idIndicador)
+    {
+        $decisiones = DB::table('TBL_Decisiones')
+            ->select(
+                DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia")
+            )->where(
+                'DSC_Indicador_Id', '=', $idIndicador
+            )->where(
+                'id', '<>', $id
+            )->groupBy(
+                'id'
+            )->get();
+        
+        return $decisiones;
+    }
+
+    #Funcion para obtener la diferencia de las decisiones registradas
+    public static function obtenerDecisionDistintasId($id, $idIndicador)
+    {
+        $decisiones = Decisiones::where('DSC_Indicador_Id', '=', $idIndicador)
+            ->where(
+                'id', '<>', $id
+            )->select(
+                'DCS_Rango_Inicio_Decision',
+                'DCS_Rango_Fin_Decision',
+                'DCS_Nombre_Decision'
+            )->get();
+        
+        return $decisiones;
+    }
+
+    #Funcion para crear la decision
     public static function crearDecision($request, $decision)
     {
         Decisiones::create([
@@ -51,6 +127,7 @@ class Decisiones extends Model
         ]);
     }
 
+    #Funcion para actualizar la decision
     public static function actualizarDecision($request, $decision)
     {
         Decisiones::create([

@@ -37,12 +37,23 @@ class PerfilOperacionController extends Controller
     public function index()
     {
         can('listar-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
         return view(
             'director.perfiloperacion.listar',
@@ -64,15 +75,23 @@ class PerfilOperacionController extends Controller
     public function crear()
     {
         can('crear-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '<>', '4')
-            ->where('RLS_Rol_Id', '=', 4)
-            ->orderBy('id')
-            ->get();
         
-            $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $roles = Roles::obtenerRolesPefilOperacion();
         
         return view(
             'director.perfiloperacion.crear',
@@ -94,8 +113,10 @@ class PerfilOperacionController extends Controller
      */
     public function guardar(ValidacionUsuario $request)
     {
-        Usuarios::crearUsuario($request);
         $perfil = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        Usuarios::crearUsuario($request);
         UsuariosRoles::asignarRol($request['USR_RLS_Rol_Id'], $perfil->id);
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
         PermisoUsuario::asignarPermisoPerfil($perfil->id);
@@ -106,8 +127,6 @@ class PerfilOperacionController extends Controller
             'Bienvenido(a) '.$request['USR_Nombres_Usuario'], 
             'general.correo.bienvenida'
         );
-
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.
@@ -148,12 +167,23 @@ class PerfilOperacionController extends Controller
     public function editar($id)
     {
         can('editar-perfil-operacion');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $perfil = Usuarios::findOrFail($id);
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $perfil = Usuarios::findOrFail($id);
 
         return view(
             'director.perfiloperacion.editar',
@@ -208,7 +238,9 @@ class PerfilOperacionController extends Controller
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
             $datosU = Usuarios::findOrFail($id);
             $usuario = Usuarios::findOrFail($id);
+            
             if($usuario != null){
+                
                 if($datos->USR_Supervisor_Id == 0)
                     $datos->USR_Supervisor_Id = 1;
                 
@@ -245,7 +277,9 @@ class PerfilOperacionController extends Controller
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $datosU = Usuarios::findOrFail($id);
         $usuario = Usuarios::findOrFail($id);
+        
         if($usuario != null){
+            
             if($datos->USR_Supervisor_Id == 0)
                 $datos->USR_Supervisor_Id = 1;
             
@@ -279,14 +313,23 @@ class PerfilOperacionController extends Controller
      */
     public function cargaTrabajo($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
-
-        $actividades = Actividades::obtenerGenerales($id);
+        $idUsuario = session()->get('Usuario_Id');
         
-        $perfilOperacion = Usuarios::obtenerUsuarioById($id);
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $actividades = Actividades::obtenerGenerales($id);
+        $perfilOperacion = Usuarios::obtenerUsuarioById($id);
         $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion($id));
         $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil($id));
         $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil($id));
@@ -297,19 +340,18 @@ class PerfilOperacionController extends Controller
         }catch(Exception $ex) {
             $porcentajeFinalizado = 0;
         }
+
         try {
             $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeAtrasado = 0;
         }
+
         try {
             $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeProceso = 0;
         }
-        
-
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
         return view(
             'director.perfiloperacion.carga.actividades',
@@ -336,24 +378,36 @@ class PerfilOperacionController extends Controller
     public function pdfCargaTrabajo($id)
     {
         $actividades = Actividades::obtenerGenerales($id);
-        
         $perfilOperacion = Usuarios::obtenerUsuarioById($id);
 
-        $actividadesTotales = count(Actividades::obtenerTodasPerfilOperacion($id));
-        $actividadesFinalizadas = count(Actividades::obtenerActividadesFinalizadasPerfil($id));
-        $actividadesAtrasadas = count(Actividades::obtenerActividadesAtrasadasPerfil($id));
-        $actividadesProceso = count(Actividades::obtenerActividadesProcesoPerfil($id));
+        $actividadesTotales = count(
+            Actividades::obtenerTodasPerfilOperacion($id)
+        );
+
+        $actividadesFinalizadas = count(
+            Actividades::obtenerActividadesFinalizadasPerfil($id)
+        );
+
+        $actividadesAtrasadas = count(
+            Actividades::obtenerActividadesAtrasadasPerfil($id)
+        );
+
+        $actividadesProceso = count(
+            Actividades::obtenerActividadesProcesoPerfil($id)
+        );
 
         try {
             $porcentajeFinalizado = (int)(($actividadesFinalizadas/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeFinalizado = 0;
         }
+
         try {
             $porcentajeAtrasado = (int)(($actividadesAtrasadas/$actividadesTotales)*100);
         }catch(Exception $ex) {
             $porcentajeAtrasado = 0;
         }
+
         try {
             $porcentajeProceso = (int)(($actividadesProceso/$actividadesTotales)*100);
         }catch(Exception $ex) {
@@ -370,9 +424,12 @@ class PerfilOperacionController extends Controller
                 'porcentajeProceso'
             )
         );
-        $fileName = 'CargaTrabajo-'.$perfilOperacion->USR_Nombres_Usuario.'-'.$perfilOperacion->USR_Apellidos_Usuario;
+
+        $fileName = 'CargaTrabajo-'.
+            $perfilOperacion->USR_Nombres_Usuario.
+            '-'.
+            $perfilOperacion->USR_Apellidos_Usuario;
         
         return $pdf->download($fileName.'.pdf');
-        
     }
 }

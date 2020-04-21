@@ -34,11 +34,21 @@ class PerfilUsuarioController extends Controller
     {
         can('editar-perfil');
 
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         
         return view(
             'perfil.editar',
@@ -67,17 +77,22 @@ class PerfilUsuarioController extends Controller
         if ($validator->passes()) {
             $usuario = Usuarios::findOrFail(session()->get('Usuario_Id'));
             $ruta = public_path("assets/bsb/images/".$usuario->USR_Foto_Perfil_Usuario);
+            
             if ($usuario->USR_Foto_Perfil_Usuario != null) {
                 unlink($ruta);
             }
+            
             $input = $request->all();
+            
             $nombreArchivo = $input['USR_Foto_Perfil_Usuario'] = time().
                 '.'.
                 $request->USR_Foto_Perfil_Usuario->getClientOriginalExtension();
+            
             $request->USR_Foto_Perfil_Usuario->move(
                 public_path('assets/bsb/images'),
                 $input['USR_Foto_Perfil_Usuario']
             );
+
             Usuarios::findOrFail(session()->get('Usuario_Id'))
                 ->update(['USR_Foto_Perfil_Usuario' => $nombreArchivo]);
             
@@ -100,18 +115,22 @@ class PerfilUsuarioController extends Controller
         $usuarios = Usuarios::where('USR_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->where('id', '<>', session()->get('Usuario_Id'))
             ->get();
+        
         foreach ($usuarios as $usuario) {
+            
             if($usuario->USR_Documento_Usuario == $request->USR_Documento_Usuario){
                 return redirect()
                     ->back()
                     ->withErrors('El Documento ya se encuentra en uso.');
             }
+            
             if($usuario->USR_Correo_Usuario == $request->USR_Correo_Usuario){
                 return redirect()
                     ->back()
                     ->withErrors('El correo electrónico ya se encuentra en uso.');
             }
         }
+
         Usuarios::findOrFail(session()->get('Usuario_Id'))
             ->update($request->all());
         
@@ -131,15 +150,19 @@ class PerfilUsuarioController extends Controller
         if($request->USR_Clave_Nueva != $request->USR_Clave_Confirmar){
             return redirect()->back()->withErrors('Las contraseñas no coinciden.');
         }
+
         $clave = Usuarios::select('password')
             ->where('id', '=', session()->get('Usuario_Id'))
             ->first();
+        
         $correcta = Hash::check($request->USR_Clave_Anterior, $clave->password, []);
+        
         if (!$correcta) {
             return redirect()
                 ->back()
                 ->withErrors('La contraseña antigua es incorrecta.');
         }
+
         Usuarios::findOrFail(session()->get('Usuario_Id'))->update([
             'password' => bcrypt($request->USR_Clave_Nueva)
         ]);

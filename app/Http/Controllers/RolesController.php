@@ -32,17 +32,29 @@ class RolesController extends Controller
     public function index()
     {
         can('listar-roles');
+        
         $permisos = [
             'crear'=> can2('crear-roles'),
             'editar'=>can2('editar-roles'),
             'eliminar'=>can2('eliminar-roles')
         ];
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
 
         return view(
             'roles.listar',
@@ -65,11 +77,22 @@ class RolesController extends Controller
     public function crear()
     {
         can('crear-roles');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         
         return view(
             'roles.crear',
@@ -93,12 +116,14 @@ class RolesController extends Controller
         $roles = Roles::where('RLS_Nombre_Rol', '=', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->first();
+        
         if ($roles) {
             return redirect()
                 ->back()
                 ->withErrors('Ya se encuentra registrado el rol en el sistema')
                 ->withInput();
         }
+        
         Roles::create([
             'RLS_Rol_Id' => 4,
             'RLS_Nombre_Rol' => $request->RLS_Nombre_Rol,
@@ -120,17 +145,29 @@ class RolesController extends Controller
     public function editar($id)
     {
         can('editar-roles');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $rol = Roles::findOrFail($id);
+        
         if ($rol->RLS_Rol_Id != 4) {
             return redirect()
                 ->back()
                 ->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
         }
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'roles.editar',

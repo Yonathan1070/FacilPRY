@@ -105,6 +105,54 @@ class FacturasCobro extends Model
         return $total;
     }
 
+    #Funcion para obtener el total de la factura
+    public static function obtenerProyectosFacturasPendientes()
+    {
+        $proyectos = DB::table('TBL_Facturas_Cobro as fc')
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'fc.FACT_Actividad_Id'
+            )->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->select(
+                'p.id as Id_Proyecto',
+                'a.*',
+                'p.*',
+                'u.*',
+                DB::raw('COUNT(a.id) as No_Actividades')
+            )->where(
+                'a.ACT_Costo_Estimado_Actividad', '<>', 0
+            )->where(
+                'e.id', '=', 8
+            )->orWhere(
+                'e.id', '=', 9
+            )->groupBy(
+                'fc.FACT_Cliente_Id'
+            )->get();
+
+        return $proyectos;
+    }
+
     #Funcion para crear las facturas de cobro
     public static function crearFactura($idA, $idC)
     {

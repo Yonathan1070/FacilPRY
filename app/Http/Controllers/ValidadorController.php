@@ -36,12 +36,23 @@ class ValidadorController extends Controller
     public function index()
     {
         can('validador');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobarValidador();
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $actividadesPendientes = ActividadesFinalizadas::obtenerActividadesAprobarValidador();
         
         return view(
             'tester.inicio',
@@ -63,10 +74,21 @@ class ValidadorController extends Controller
      */
     public function aprobacionActividad($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
         
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $actividadesPendientes = ActividadesFinalizadas::obtenerActividadFinalizada($id);
         $documentosSoporte = DocumentosSoporte::obtenerDocumentoSoporteFinalizada($id);
         $documentosEvidencia = DocumentosEvidencias::obtenerDocumentosEvidencia($id);
@@ -77,8 +99,6 @@ class ValidadorController extends Controller
         $respuestasAnteriores = Respuesta::obtenerHistoricoRespuestas(
             $actividadFinalizada->ACT_FIN_Actividad_Id
         );
-        
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'tester.aprobacion',

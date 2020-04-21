@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Actividades;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Carbon;
@@ -54,18 +53,7 @@ class CobrosController extends Controller
 
         $datos = Usuarios::findOrFail($idUsuario);
         $cobros = Actividades::obtenerActividadesCobrar();
-        $proyectos = DB::table('TBL_Facturas_Cobro as fc')
-            ->join('TBL_Actividades as a', 'a.id', '=', 'fc.FACT_Actividad_Id')
-            ->join('TBL_Requerimientos as r', 'r.id', '=', 'a.ACT_Requerimiento_Id')
-            ->join('TBL_Proyectos as p', 'p.id', '=', 'r.REQ_Proyecto_Id')
-            ->join('TBL_Usuarios as u', 'u.id', '=', 'p.PRY_Cliente_Id')
-            ->join('TBL_Estados as e', 'e.id', '=', 'a.ACT_Estado_Id')
-            ->select('p.id as Id_Proyecto', 'a.*', 'p.*', 'u.*', DB::raw('COUNT(a.id) as No_Actividades'))
-            ->where('a.ACT_Costo_Estimado_Actividad', '<>', 0)
-            ->where('e.id', '=', 8)
-            ->orWhere('e.id', '=', 9)
-            ->groupBy('fc.FACT_Cliente_Id')
-            ->get();
+        $proyectos = FacturasCobro::obtenerProyectosFacturasPendientes();
         
         return view(
             'cobros.listar',
@@ -89,15 +77,15 @@ class CobrosController extends Controller
      */
     public function agregarFactura($idA, $idC)
     {
-
         $cliente = Usuarios::findOrFail($idC);
-        Actividades::actualizarEstadoActividad($idA, 8);
         $rta = Respuesta::obtenerUltimaRespuesta($idA);
-        Respuesta::actualizarEstado($rta->last()->Id_Rta, 8);
-        FacturasCobro::crearFactura($idA, $idC);
         $actividad = Actividades::findOrFail($idA);
         $trabajador = Usuarios::findOrFail($actividad->ACT_Trabajador_Id);
         $horas = HorasActividad::obtenerHorasAprobadasActividad($idA);
+
+        Actividades::actualizarEstadoActividad($idA, 8);
+        Respuesta::actualizarEstado($rta->last()->Id_Rta, 8);
+        FacturasCobro::crearFactura($idA, $idC);
         Actividades::actualizarCostoEstimado(
             $idA,
             (int)$horas->HorasR,
@@ -126,11 +114,7 @@ class CobrosController extends Controller
     {
         $proyecto = Proyectos::obtenerProyecto($id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $idEmpresa = DB::table('TBL_Proyectos as p')
-            ->join('TBL_Empresas as eu', 'eu.id', '=', 'p.PRY_Empresa_Id')
-            ->join('TBL_Empresas as ed', 'ed.id', '=', 'eu.EMP_Empresa_Id')
-            ->select('ed.id')
-            ->first()->id;
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturasCobro::obtenerTotalFactura($id);
         

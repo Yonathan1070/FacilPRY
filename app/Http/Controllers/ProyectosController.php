@@ -36,19 +36,33 @@ class ProyectosController extends Controller
     public function index($id)
     {
         can('listar-proyectos');
+        
         $permisos = [
             'crear'=> can2('crear-proyectos'),
             'listarR'=>can2('listar-requerimientos'),
             'listarA'=>can2('listar-actividades'),
             'listarE'=>can2('listar-empresas')
         ];
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+
         $empresa = Empresas::findOrFail($id);
         $proyectosNoFinalizados = Proyectos::obtenerNoFinalizados($id);
         $proyectosFinalizados = Proyectos::obtenerFinalizados($id);
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'proyectos.listar',
@@ -73,13 +87,24 @@ class ProyectosController extends Controller
     public function crear($id)
     {
         can('crear-proyectos');
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $empresa = Empresas::findOrFail($id);
         $clientes = Usuarios::obtenerClientes($id);
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
 
         return view(
             'proyectos.crear',
@@ -105,6 +130,7 @@ class ProyectosController extends Controller
         Proyectos::create($request->all());
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $datosU = Usuarios::findOrFail($request->PRY_Cliente_Id);
+        
         if ($datos->USR_Supervisor_Id == 0)
             $datos->USR_Supervisor_Id = 1;
         
@@ -162,12 +188,14 @@ class ProyectosController extends Controller
                         'a que no hay actividades registradas para el proyecto seleccionado!'
                 );
         }
+
         $empresa = Empresas::findOrFail(session()->get('Empresa_Id'));
         
         $pdf = PDF::loadView(
             'includes.pdf.proyecto.actividades',
             compact('actividades', 'empresa')
         );
+
         $fileName = 'Actividades'.$proyecto->PRY_Nombre_Proyecto;
         
         return $pdf->download($fileName.'.pdf');
@@ -208,12 +236,21 @@ class ProyectosController extends Controller
             'listarE'=>can2('listar-empresas')
         ];
 
-        $notificaciones = Notificaciones::obtenerNotificaciones(session()->get('Usuario_Id'));
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(session()->get('Usuario_Id'));
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(session()->get('Usuario_Id'));
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
 
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
         $proyecto = Proyectos::findOrFail($id);
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
@@ -246,7 +283,14 @@ class ProyectosController extends Controller
         $fechas = HorasActividad::obtenerFechas($id);
         $actividades = HorasActividad::obtenerActividadesGantt($id);
         
-        $pdf = PDF::loadView('proyectos.ganttdos', compact('actividades', 'fechas', 'proyecto'))->setPaper('a2', 'landscape');
+        $pdf = PDF::loadView(
+            'proyectos.ganttdos',
+            compact(
+                'actividades',
+                'fechas',
+                'proyecto')
+            )->setPaper('a2', 'landscape');
+        
         $fileName = 'Gantt'.$proyecto->PRY_Nombre_Proyecto;
         
         return $pdf->download($fileName.'.pdf');
