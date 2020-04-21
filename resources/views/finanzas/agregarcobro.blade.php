@@ -16,7 +16,7 @@ Cobro Adicional
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-danger waves-effect" href="{{route('inicio_finanzas')}}">
-                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Costo Adicional
+                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Volver a finanzas
                             </a>
                         </li>
                     </ul>

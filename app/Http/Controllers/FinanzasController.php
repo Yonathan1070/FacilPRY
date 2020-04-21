@@ -14,6 +14,8 @@ use App\Models\Tablas\FacturaAdicional;
 use App\Models\Tablas\FacturasCobro;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use PDF;
@@ -144,6 +146,7 @@ class FinanzasController extends Controller
     public function generarFactura($id)
     {
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
         $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
@@ -159,7 +162,8 @@ class FinanzasController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
 
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
@@ -178,8 +182,10 @@ class FinanzasController extends Controller
     public function generarFacturaAdicional($id)
     {
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
         
         foreach ($informacion as $info) {
@@ -192,7 +198,8 @@ class FinanzasController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
 
         $pdf = PDF::loadView('includes.pdf.factura.facturaadicional', compact('datos'));
@@ -286,7 +293,8 @@ class FinanzasController extends Controller
                 $de['USR_Nombres_Usuario'].
                 ' '.
                 $de['USR_Apellidos_Usuario'].
-                ' le ha creado una factura adicional.'
+                ' le ha agregado un costo adicional a tu proyecto por concepto de '.
+                $request['FACT_AD_Descripcion']
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(
@@ -298,5 +306,80 @@ class FinanzasController extends Controller
         return redirect()
             ->route('agregar_cobro_finanzas')
             ->with('mensaje', 'Factura agregada con exito');
+    }
+
+    /**
+     * Muestra formulario para editar los costos adicionales
+     *
+     * @return \Illuminate\View\View Vista del formulario para editar los costos
+     */
+    public function editarCostosFactura($id)
+    {
+        can('finanzas');
+        
+        $idUsuario = session()->get('Usuario_Id');
+        
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            $idUsuario
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            $idUsuario
+        );
+
+        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+            $idUsuario
+        );
+
+        $datos = Usuarios::findOrFail($idUsuario);
+        $proyecto = Proyectos::findOrFail($id);
+        $cobros = FacturaAdicional::where('FACT_AD_Proyecto_Id', '=', $id)
+            ->where('FACT_AD_Estado_Id', '=', 9)
+            ->get();
+
+        return view(
+            'finanzas.editarcobro',
+            compact(
+                'datos',
+                'notificaciones',
+                'cantidad',
+                'asignadas',
+                'proyecto',
+                'cobros'
+            )
+        );
+    }
+
+    /**
+     * Actualiza los costos adicionales
+     *
+     * @param  $id  Identificador del costo adicional
+     * @return response()->json()
+     */
+    public function actualizarCostosFactura(Request $request, $id)
+    {
+        if($request->FACT_AD_Descripcion != null) {
+            try {
+                FacturaAdicional::findOrFail($id)
+                    ->update([
+                        'FACT_AD_Descripcion'=>$request->FACT_AD_Descripcion
+                    ]);
+                
+                return response()->json(['msg' => 'successDescripcion']);
+            } catch(QueryException $ex) {
+                return response()->json(['msg' => 'errorDescripcion']);
+            }
+        } else if($request->FACT_AD_Precio_Factura != null) {
+            try {
+                FacturaAdicional::findOrFail($id)
+                    ->update([
+                        'FACT_AD_Precio_Factura'=>$request->FACT_AD_Precio_Factura
+                    ]);
+                
+                return response()->json(['msg' => 'successPrecio']);
+            } catch(QueryException $ex) {
+                return response()->json(['msg' => 'errorPrecio']);
+            }
+        }
     }
 }

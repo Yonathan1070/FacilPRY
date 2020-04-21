@@ -129,6 +129,9 @@ Finanzas
                                                 <td>{{$factura->USR_Nombres_Usuario.' '.$factura->USR_Apellidos_Usuario}}</td>
                                                 <td>{{$factura->No_Actividades}}</td>
                                                 <td>
+                                                    <a href="{{route('editar_adicional_finanzas', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Editar costos adicionales">
+                                                        <i class="material-icons text-info" style="font-size: 17px;">mode_edit</i>
+                                                    </a>
                                                     @if ($factura->FACT_AD_Precio_Factura != 0)
                                                         <a href="{{route('generar_factura_adicional_finanzas', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
                                                             <i class="material-icons text-info" style="font-size: 17px;">get_app</i>

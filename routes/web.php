@@ -245,6 +245,8 @@ Route::get('agregar', 'FinanzasController@agregarCostosFactura')->name('agregar_
 Route::get('agregar/{id}/proyectos', 'FinanzasController@obtenerProyectos')->name('proyectos_cliente_finanzas');
 Route::post('agregar/guardar', 'FinanzasController@guardarCostosFactura')->name('guardar_adicional');
 Route::get('finanzas/{id}/factura-adicional', 'FinanzasController@generarFacturaAdicional')->name('generar_factura_adicional_finanzas');
+Route::get('finanzas/{id}/editar-adicional', 'FinanzasController@editarCostosFactura')->name('editar_adicional_finanzas');
+Route::put('finanzas/{id}/actualizar-adicional', 'FinanzasController@actualizarCostosFactura')->name('actualizar_adicional_finanzas');
 
 //Rutas Metricas
 Route::get('eficacia', 'MetricasController@metricaEficaciaGeneral')->name('eficacia_general');

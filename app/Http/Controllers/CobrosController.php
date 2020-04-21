@@ -113,6 +113,7 @@ class CobrosController extends Controller
     public function generarFactura($id)
     {
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
         $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
@@ -128,7 +129,8 @@ class CobrosController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
 
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));

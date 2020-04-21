@@ -100,9 +100,10 @@ class InicioController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
         
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
-        $id_empresa = Empresas::obtenerIdEmpresa($idUsuario);
-        $empresa = Empresas::findOrFail($id_empresa->USR_Empresa_Id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturasCobro::obtenerTotalFactura($id);
         
         foreach ($informacion as $info) {
@@ -115,7 +116,8 @@ class InicioController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
 
         return view(
@@ -150,9 +152,10 @@ class InicioController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
         
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
-        $id_empresa = Empresas::obtenerIdEmpresa($idUsuario);
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $idEmpresa = Empresas::obtenerEmpresa()->id;
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
         
         foreach ($informacion as $info) {
@@ -165,7 +168,8 @@ class InicioController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
 
         return view(
@@ -222,6 +226,7 @@ class InicioController extends Controller
     public function generarFactura($id)
     {
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
         $idEmpresa = Empresas::obtenerEmpresa()->id;
         $empresa = Empresas::findOrFail($idEmpresa);
@@ -237,7 +242,8 @@ class InicioController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
         
         $pdf = PDF::loadView(
@@ -259,9 +265,10 @@ class InicioController extends Controller
     public function generarFacturaAdicional($id)
     {
         $proyecto = Proyectos::obtenerProyecto($id);
+        $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
         $idEmpresa = Empresas::obtenerEmpresa()->id;
-        $empresa = Empresas::findOrFail($proyecto->USR_Empresa_Id);
+        $empresa = Empresas::findOrFail($idEmpresa);
         $total = FacturaAdicional::obtenerTotalFacturaAdicional($id);
         
         foreach ($informacion as $info) {
@@ -274,7 +281,8 @@ class InicioController extends Controller
             'factura'=>$factura, 
             'fecha'=>Carbon::now()->toFormattedDateString(),
             'total'=>$total,
-            'empresa'=>$empresa
+            'empresa'=>$empresa,
+            'empresaProyecto'=>$empresaProyecto
         ];
         
         $pdf = PDF::loadView(

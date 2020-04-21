@@ -155,7 +155,7 @@ Factura
 
         article address {
             float: left;
-            font-size: 125%;
+            font-size: 75%;
             font-weight: bold;
         }
 
@@ -252,8 +252,15 @@ Factura
                         </header>
                         <article>
                             <address>
-                                <p>Proyecto: {{$datos['proyecto']->PRY_Nombre_Proyecto}}<br>
-                                    Cliente: {{$datos['proyecto']->USR_Nombres_Usuario.' '.$datos['proyecto']->USR_Apellidos_Usuario}}</p>
+                                <p style="font-size: 125%;">Datos del Cliente</p>
+                                <p>
+                                    Empresa: {{$datos['empresaProyecto']->EMP_Nombre_Empresa}}<br>
+                                    NIT Empresa: {{$datos['empresaProyecto']->EMP_NIT_Empresa}}<br>
+                                    Proyecto: {{$datos['proyecto']->PRY_Nombre_Proyecto}}<br>
+                                    Encargado: {{$datos['proyecto']->USR_Nombres_Usuario.' '.$datos['proyecto']->USR_Apellidos_Usuario}}<br>
+                                    Cedula: {{$datos['proyecto']->USR_Documento_Usuario}}<br>
+                                    Correo: {{$datos['proyecto']->USR_Correo_Usuario}}<br>
+                                </p>
                             </address>
                             <table class="meta">
                                 <tr>
