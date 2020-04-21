@@ -469,10 +469,11 @@ class ActividadesController extends Controller
      */
     public function enviarSolicitud(Request $request, $id)
     {
+        $actividad = Actividades::findOrFail($id);
         SolicitudTiempo::crearSolicitud($id, $request);
 
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $para = Usuarios::findOrFail($de->USR_Supervisor_Id);
+        $para = Usuarios::findOrFail($actividad->ACT_Encargado_Id);
         
         Notificaciones::crearNotificacion(
             $de->USR_Nombres_Usuario.
