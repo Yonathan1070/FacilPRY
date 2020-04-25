@@ -23,7 +23,6 @@ class MetricasController extends Controller
     {
         $idUsuario = session()->get('Usuario_Id');
         $eficacia = [];
-
         $proyectos = Proyectos::obtenerProyectosMetricas($idUsuario);
         
         foreach ($proyectos as $key => $proyecto) {

@@ -13,6 +13,7 @@ use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Permiso;
 use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\UsuariosRoles;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Permisos Controller, donde se habilitarán o dehabilitarán los permisos a los usuarios
@@ -50,8 +51,12 @@ class PermisosController extends Controller
             ->where('id', '!=', 4)
             ->pluck('RLS_Nombre_Rol', 'id')
             ->toArray();
-        
-        $usuarios = Usuarios::with('roles')->get();
+        $usuarios = Usuarios::with('roles')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'TBL_Usuarios.id')
+            ->where('ur.USR_RLS_Estado', '=', 1)
+            ->select('TBL_Usuarios.*')
+            ->with('roles')
+            ->get();
         
         return view(
             'administrador.permisos.listar',

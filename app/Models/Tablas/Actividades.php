@@ -59,8 +59,8 @@ class Actividades extends Model
                 'a.*'
             )->where(
                 'p.id', '=', $id
-            )->where(
-                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+            )->orWhere(
+                'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->groupBy(
                 'HRS_ACT_Actividad_Id'
             )->get();
@@ -364,8 +364,10 @@ class Actividades extends Model
                 'r.id', '<>', 3
             )->where(
                 'p.id', '=', $id
-            )->where(
-                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+            )->orWhere(
+                'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+            )->groupBy(
+                'a.id'
             )->get();
         
         return $actividadesTotales;
@@ -457,7 +459,7 @@ class Actividades extends Model
             )->where(
                 'uu.id', '=', $id
             )->where(
-                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+                'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->get();
         
         return $actividadesTotales;
@@ -526,13 +528,13 @@ class Actividades extends Model
                 '=',
                 'a.ACT_Estado_Id'
             )->where(
-                'e.id', '<>', 1
-            )->where(
-                'e.id', '<>', 2
-            )->where(
-                'r.id', '<>', 3
+                'r.RLS_Rol_Id', '=', 4
             )->where(
                 'p.id', '=', $id
+            )->where(
+                'e.id', '!=', 1
+            )->where(
+                'e.id', '!=', 2
             )->get();
         
         return $actividadesFinalizadas;
@@ -1278,11 +1280,11 @@ class Actividades extends Model
                 '=',
                 'a.ACT_Trabajador_Id'
             )->where(
-                'uu.id', '=', $idUsuario
-            )->where(
                 'p.id', '=', $id
             )->where(
-                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+                'uu.id', '=', $idUsuario
+            )->orWhere(
+                'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->get();
         
         return $actividadesTotales;

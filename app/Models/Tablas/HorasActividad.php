@@ -317,7 +317,7 @@ class HorasActividad extends Model
             )->where(
                 'p.id', '=', $id
             )->where(
-                'a.ACT_Fecha_Inicio_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
+                'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->groupBy(
                 'HRS_ACT_Actividad_Id'
             )->get();

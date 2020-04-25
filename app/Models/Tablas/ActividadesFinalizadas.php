@@ -356,13 +356,13 @@ class ActividadesFinalizadas extends Model
                 '=',
                 'a.ACT_Estado_Id'
             )->where(
-                'e.id', '<>', 1
-            )->where(
-                'e.id', '<>', 2
+                'p.id', '=', $id
             )->where(
                 'uu.id', '=', $idUsuario
             )->where(
-                'p.id', '=', $id
+                'e.id', '!=', 1
+            )->where(
+                'e.id', '!=', 2
             )->get();
         
         return $actividadesFinalizadas;

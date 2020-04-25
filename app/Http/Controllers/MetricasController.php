@@ -31,7 +31,7 @@ class MetricasController extends Controller
         $eficacia = [];
 
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
-
+        
         foreach ($proyectos as $key => $proyecto) {
             $actividadesFinalizadas = $this->obtenerFinalizadas($proyecto->id);
             $actividadesTotales = $this->obtenerTotales($proyecto->id);

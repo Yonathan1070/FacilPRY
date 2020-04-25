@@ -19,10 +19,8 @@ class CrearTablaFacturaAdicional extends Migration
             $table->text('FACT_AD_Descripcion');
             $table->double('FACT_AD_Precio_Factura');
             $table->bigInteger('FACT_AD_Estado_Id');
-            $table->foreign('FACT_AD_Estado_Id', 'FK_Factura_Adicional_Estado')->references('id')->on('TBL_Estados')->onDelete('restrict')->onUpdate('restrict');
             $table->dateTime('FACT_AD_Fecha_Factura');
             $table->bigInteger('FACT_AD_Proyecto_Id');
-            $table->foreign('FACT_AD_Proyecto_Id', 'FK_Factura_Adicional_Proyecto')->references('id')->on('TBL_Proyectos')->onDelete('restrict')->onUpdate('restrict');
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';
         });

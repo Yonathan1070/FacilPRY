@@ -116,10 +116,11 @@ class PerfilOperacionController extends Controller
      */
     public function guardar(ValidacionUsuario $request)
     {
+        Usuarios::crearUsuario($request);
+        
         $perfil = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
 
-        Usuarios::crearUsuario($request);
         UsuariosRoles::asignarRol($request['USR_RLS_Rol_Id'], $perfil->id);
         MenuUsuario::asignarMenuPerfilOperacion($perfil->id);
         PermisoUsuario::asignarPermisoPerfil($perfil->id);
@@ -138,7 +139,7 @@ class PerfilOperacionController extends Controller
                 ' ha creado el usuario '.
                 $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
+            ($datos->USR_Supervisor_Id == 0) ? 1 : $datos->USR_Supervisor_Id,
             'perfil_operacion', null, null,
             'person_add'
         );
