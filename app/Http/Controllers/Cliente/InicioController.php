@@ -664,6 +664,55 @@ class InicioController extends Controller
             ->json(['mensaje' => 'ok']);
     }
 
+    /**
+     * Cambia la visibilidad de la notificacion
+     *
+     * @param: $id Identificador del usuario autenticado
+     * @return response()->json() Mensaje de exito
+     * 
+     */
+    public function limpiarNotificacion($id)
+    {
+        Notificaciones::limpiar($id);
+        
+        return response()
+            ->json(['mensaje' => 'ok']);
+    }
+
+    /**
+     * Muestra una vista con el listado de todas las notificaciones
+     *
+     * @return \Illuminate\View\View Vista de las notificaciones
+     * 
+     */
+    public function verTodas()
+    {
+        # Datos de las notificaciones y del usuario
+        $notificaciones = Notificaciones::obtenerNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
+            session()->get('Usuario_Id')
+        );
+
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+
+        $notificacionesTodas = Notificaciones::obtenerNotificacionesTodas(
+            session()->get('Usuario_Id')
+        );
+        
+        return view(
+            'cliente.notificaciones.listar',
+            compact(
+                'datos',
+                'notificaciones', 
+                'cantidad',
+                'notificacionesTodas'
+            )
+        );
+    }
+
     #Metodo que obtiene los datos de la api de PayU
     public function informacionPayu($datos)
     {

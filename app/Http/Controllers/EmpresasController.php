@@ -56,7 +56,7 @@ class EmpresasController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
         $empresasActivas = Empresas::obtenerEmpresasActivas();
         $empresasInActivas = Empresas::obtenerEmpresasInactivas();
-
+        //dd($empresasActivas);
         return view(
             'empresas.listar',
             compact(

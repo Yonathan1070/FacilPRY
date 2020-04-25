@@ -14,6 +14,7 @@ use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
 use PDF;
 use Exception;
+use Illuminate\Database\QueryException;
 
 /**
  * Perfil Operacion Controller, donde se mostrarán las
@@ -53,12 +54,14 @@ class PerfilOperacionController extends Controller
         );
 
         $datos = Usuarios::findOrFail($idUsuario);
-        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
+        $perfilesOperacionActivos = Usuarios::obtenerPerfilOperacionActivos();
+        $perfilesOperacionInactivos = Usuarios::obtenerPerfilOperacionInactivos();
 
         return view(
             'director.perfiloperacion.listar',
             compact(
-                'perfilesOperacion',
+                'perfilesOperacionActivos',
+                'perfilesOperacionInactivos',
                 'datos',
                 'notificaciones',
                 'cantidad',
@@ -226,13 +229,13 @@ class PerfilOperacionController extends Controller
     }
 
     /**
-     * Deja inactivo el perfil de operación
+     * Inactivar el perfil de operacion seleccionado
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  $id Identificador del perfil de operación
-     * @return response()->json()
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
      */
-    public function eliminar(Request $request, $id)
+    public function inactivar(Request $request, $id)
     {
         if ($request->ajax()) {
             $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -261,6 +264,66 @@ class PerfilOperacionController extends Controller
 
                 return response()->json(['mensaje' => 'ok']);
             }else{
+                return response()->json(['mensaje' => 'ng']);
+            }
+        }
+    }
+
+    /**
+     * Activar el perfil de operacion seleccionado
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
+     */
+    public function activar(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($id);
+            $usuario = Usuarios::findOrFail($id);
+            
+            if($usuario != null){
+                
+                if($datos->USR_Supervisor_Id == 0)
+                    $datos->USR_Supervisor_Id = 1;
+                
+                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+                Notificaciones::crearNotificacion(
+                    $datos->USR_Nombres_Usuario.
+                        ' '.
+                        $datos->USR_Apellidos_Usuario.
+                        ' ha reactivado al usuario '.
+                        $datosU->USR_Nombres_Usuario,
+                    session()->get('Usuario_Id'),
+                    $datos->USR_Supervisor_Id,
+                    'perfil_operacion',
+                    null,
+                    null,
+                    'arrow_downward'
+                );
+
+                return response()->json(['mensaje' => 'ok']);
+            }else{
+                return response()->json(['mensaje' => 'ng']);
+            }
+        }
+    }
+
+    /**
+     * Deja inactivo el perfil de operación
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id Identificador del perfil de operación
+     * @return response()->json()
+     */
+    public function eliminar(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            try {
+                Usuarios::findOrFail($id)->delete($id);
+                return response()->json(['mensaje' => 'ok']);
+            } catch (QueryException $e) {
                 return response()->json(['mensaje' => 'ng']);
             }
         }

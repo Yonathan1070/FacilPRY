@@ -76,10 +76,12 @@
                                                                             <i class="material-icons text-info" style="font-size: 20px;">list</i>
                                                                         </a>
                                                                     @endif
-                                                                    @if ($permisos['lProyectos']==true)
-                                                                        <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
-                                                                            <i class="material-icons text-info" style="font-size: 20px;">notes</i>
-                                                                        </a>
+                                                                    @if ($empresa->clientes != 0)
+                                                                        @if ($permisos['lProyectos']==true)
+                                                                            <a href="{{route('proyectos', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Lista de Proyectos">
+                                                                                <i class="material-icons text-info" style="font-size: 20px;">notes</i>
+                                                                            </a>
+                                                                        @endif
                                                                     @endif
                                                                 </form>
                                                             @endif

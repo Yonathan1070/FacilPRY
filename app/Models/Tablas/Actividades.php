@@ -1396,7 +1396,7 @@ class Actividades extends Model
     {
         Actividades::findOrFail($solicitud->Id_Actividad)->update([
             'ACT_Estado_Id' => 1,
-            'ACT_Fecha_Fin_Actividad' => $solicitud->SOL_TMP_Fecha_Solicitada
+            'ACT_Fecha_Fin_Actividad' => Carbon::now()->addDays(1)->format('yy-m-d h:i:s')
         ]);
     }
 

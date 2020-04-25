@@ -117,7 +117,10 @@
                                     </ul>
                                 </li>
                                 <li class="footer">
-                                    <a href="javascript:void(0);">View All Notifications</a>
+                                    <a onclick="limpiarNotificacion({{session()->get('Usuario_Id')}})">Limpiar Bandeja</a>
+                                </li>
+                                <li class="footer">
+                                    <a onclick="verTodas()">Ver todas las notificaciones</a>
                                 </li>
                             </ul>
                         </li>
@@ -237,6 +240,18 @@
                     InkBrutalPRY.notificaciones('Notificaciones marcadas como leidas', 'InkBrutalPRY', 'success');
                 }
             });
+        }
+        function limpiarNotificacion(id){
+            $.ajax({
+                dataType: "json",
+                method: "get",
+                url: "/administrador/" + id + "/limpiar-notificaciones"
+            }).done(function (mensaje) {
+                location.reload();
+            });
+        }
+        function verTodas(id){
+            window.location.href = "{{route('notificaciones_administrador')}}";
         }
     </script>
     <script src="{{asset("assets/pages/scripts/Administrador/menu/crear.js")}}"></script>

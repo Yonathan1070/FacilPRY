@@ -1,17 +1,17 @@
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:4F4MNj07ZSt4ZCzHwnrVD7+kakdpFKre6QzdXt/IOeM=
-APP_DEBUG=true
+APP_DEBUG=false
 APP_URL=http://localhost
 
 LOG_CHANNEL=stack
 
 DB_CONNECTION=mysql
-DB_HOST=localhost
+DB_HOST=176.9.51.48
 DB_PORT=3306
 DB_DATABASE=bds_facilpry
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=InkDigital2019*
 
 BROADCAST_DRIVER=pusher
 CACHE_DRIVER=redis

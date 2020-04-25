@@ -162,6 +162,66 @@ class Usuarios extends Authenticatable
         return $perfilesOperacion;
     }
 
+    #Función que obtiene los perfil de operación activos
+    public static function obtenerPerfilOperacionActivos()
+    {
+        $perfilesOperacion = DB::table('TBL_Usuarios as u')
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'u.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'u.*',
+                'ur.*',
+                'r.RLS_Nombre_Rol',
+                'u.id as Id_Perfil'
+            )->where(
+                'r.RLS_Rol_Id', '=', '4'
+            )->where(
+                'ur.USR_RLS_Estado', '=', 1
+            )->orderBy(
+                'u.USR_Apellidos_Usuario', 'ASC'
+            )->get();
+        
+        return $perfilesOperacion;
+    }
+
+    #Función que obtiene los perfil de operación activos
+    public static function obtenerPerfilOperacionInactivos()
+    {
+        $perfilesOperacion = DB::table('TBL_Usuarios as u')
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'u.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'u.*',
+                'ur.*',
+                'r.RLS_Nombre_Rol',
+                'u.id as Id_Perfil'
+            )->where(
+                'r.RLS_Rol_Id', '=', '4'
+            )->where(
+                'ur.USR_RLS_Estado', '=', 0
+            )->orderBy(
+                'u.USR_Apellidos_Usuario', 'ASC'
+            )->get();
+        
+        return $perfilesOperacion;
+    }
+
     #Función que obtiene los directores de proyectos
     public static function obtenerDirectores()
     {
@@ -187,6 +247,66 @@ class Usuarios extends Authenticatable
                 'TBL_Usuarios_Roles.USR_RLS_Estado', '=', '1'
             )->orderBy(
                 'TBL_Usuarios.id', 'ASC'
+            )->get();
+        
+        return $directores;
+    }
+
+    #Función que obtiene los directores de proyectos activos
+    public static function obtenerDirectoresActivos()
+    {
+        $directores = DB::table('TBL_Usuarios as u')
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'u.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )
+            ->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'u.*',
+                'ur.*',
+                'r.*'
+            )->where(
+                'r.id', '=', '2'
+            )->where(
+                'ur.USR_RLS_Estado', '=', 1
+            )->orderBy(
+                'u.id', 'ASC'
+            )->get();
+        
+        return $directores;
+    }
+
+    #Función que obtiene los directores de proyectos activos
+    public static function obtenerDirectoresInactivos()
+    {
+        $directores = DB::table('TBL_Usuarios as u')
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'u.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )
+            ->join(
+                'TBL_Roles as r',
+                'ur.USR_RLS_Rol_Id',
+                '=',
+                'r.Id'
+            )->select(
+                'u.*',
+                'ur.*',
+                'r.*'
+            )->where(
+                'r.id', '=', '2'
+            )->where(
+                'ur.USR_RLS_Estado', '=', 0
+            )->orderBy(
+                'u.id', 'ASC'
             )->get();
         
         return $directores;

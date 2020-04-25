@@ -44,12 +44,14 @@ class DirectorProyectosController extends Controller
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        $directores = Usuarios::obtenerDirectores();
+        $directoresActivos = Usuarios::obtenerDirectoresActivos();
+        $directoresInactivos = Usuarios::obtenerDirectoresInactivos();
 
         return view(
             'administrador.director.listar',
             compact(
-                'directores',
+                'directoresActivos',
+                'directoresInactivos',
                 'datos',
                 'notificaciones',
                 'cantidad'
@@ -195,6 +197,88 @@ class DirectorProyectosController extends Controller
     }
 
     /**
+     * Inactivar el director de proyectos seleccionado
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
+     */
+    public function inactivar(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($id);
+            $usuario = Usuarios::findOrFail($id);
+            
+            if($usuario != null){
+                
+                if($datos->USR_Supervisor_Id == 0)
+                    $datos->USR_Supervisor_Id = 1;
+                
+                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
+                Notificaciones::crearNotificacion(
+                    $datos->USR_Nombres_Usuario.
+                        ' '.
+                        $datos->USR_Apellidos_Usuario.
+                        ' ha dejado inactivo al usuario '.
+                        $datosU->USR_Nombres_Usuario,
+                    session()->get('Usuario_Id'),
+                    $datos->USR_Supervisor_Id,
+                    'directores_administrador',
+                    null,
+                    null,
+                    'arrow_downward'
+                );
+
+                return response()->json(['mensaje' => 'ok']);
+            }else{
+                return response()->json(['mensaje' => 'ng']);
+            }
+        }
+    }
+
+    /**
+     * Activar el director de proyectos seleccionado
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
+     */
+    public function activar(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($id);
+            $usuario = Usuarios::findOrFail($id);
+            
+            if($usuario != null){
+                
+                if($datos->USR_Supervisor_Id == 0)
+                    $datos->USR_Supervisor_Id = 1;
+                
+                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+                Notificaciones::crearNotificacion(
+                    $datos->USR_Nombres_Usuario.
+                        ' '.
+                        $datos->USR_Apellidos_Usuario.
+                        ' ha reactivado al usuario '.
+                        $datosU->USR_Nombres_Usuario,
+                    session()->get('Usuario_Id'),
+                    $datos->USR_Supervisor_Id,
+                    'directores_administrador',
+                    null,
+                    null,
+                    'arrow_downward'
+                );
+
+                return response()->json(['mensaje' => 'ok']);
+            }else{
+                return response()->json(['mensaje' => 'ng']);
+            }
+        }
+    }
+
+    /**
      * Elimina el director de proyectos seleccionado
      *
      * @param  \Illuminate\Http\Request  $request
@@ -205,7 +289,7 @@ class DirectorProyectosController extends Controller
     {
         if ($request->ajax()) {
             try {
-                Usuarios::destroy($id);
+                Usuarios::findOrFail($id)->delete($id);
                 return response()->json(['mensaje' => 'ok']);
             } catch (QueryException $e) {
                 return response()->json(['mensaje' => 'ng']);

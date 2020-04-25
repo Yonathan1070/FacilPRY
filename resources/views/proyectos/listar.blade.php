@@ -76,10 +76,12 @@
                                                     <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                                     <td>{{$proyecto->Actividades_Finalizadas}} / {{$proyecto->Actividades_Totales}}</td>
                                                     <td class="grid-width-100">
-                                                        @if ($permisos['listarA']==true)
-                                                            <a href="{{route('actividades_todas', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar todas las tareas">
-                                                                <i class="material-icons text-info" style="font-size: 17px;">line_weight</i>
-                                                            </a>
+                                                        @if ($proyecto->Actividades_Totales != 0)
+                                                            @if ($permisos['listarA']==true)
+                                                                <a href="{{route('actividades_todas', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar todas las tareas">
+                                                                    <i class="material-icons text-info" style="font-size: 17px;">line_weight</i>
+                                                                </a>
+                                                            @endif
                                                         @endif
                                                         @if ($permisos['listarR']==true)
                                                             <a href="{{route('requerimientos', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">

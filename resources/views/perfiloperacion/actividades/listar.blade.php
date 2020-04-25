@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Actividades
+Tareas
 @endsection
 @section('styles')
     <!-- Bootstrap Material Datetime Picker Css -->
@@ -268,10 +268,10 @@ Actividades
                             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-7">
                                 <div class="form-group form-float">
                                     <div class="form-line">
-                                        <input type="text" class="form-control datetimepicker" name="Hora_Solicitud" id="Hora_Solicitud" placeholder="YYYY-MM-DD HH:mm"
+                                        <input type="number" class="form-control" min="1" max="15" name="Hora_Solicitud" id="Hora_Solicitud" placeholder="Cantidad de horas a solicitar"
                                             value="{{old('Hora_Solicitud' ?? '')}}" required>
                                     </div>
-                                    <div class="help-info">Hora de Entrega</div>
+                                    <div class="help-info">Horas necesarias</div>
                                 </div>
                             </div>
                         </div>

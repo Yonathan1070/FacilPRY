@@ -80,6 +80,15 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
         $cliente = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
         $actividades = Actividades::obtenerActividades($idR, $cliente);
+
+        foreach ($actividades as $actividad) {
+            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
+                Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
+                HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
+                $actividades = Actividades::obtenerActividades($idR, $cliente);
+            }
+        }
+
         $actividadesCliente = Actividades::obtenerActividadesCliente($idR, $cliente);
         $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
         
@@ -276,16 +285,16 @@ class ActividadesController extends Controller
                     'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
                 )->withInput();
         }
-        
-        $actividades = Actividades::obtenerActividadesProyecto(
-            $request->ACT_Proyecto_Id
+
+        $actividades = Actividades::obtenerActividadesTotalesRequerimiento(
+            $idR
         );
 
         foreach ($actividades as $actividad) {
-            if ($actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad) {
+            if (strtolower($actividad->ACT_Nombre_Actividad) == strtolower($request->ACT_Nombre_Actividad)) {
                 return redirect()
                     ->route($request['ruta'], [$idR])
-                    ->withErrors('Ya hay registrada una actividad con el mismo nombre.')
+                    ->withErrors('La actividad ya cuenta con una tarea del mismo nombre.')
                     ->withInput();
             }
         }
@@ -367,7 +376,7 @@ class ActividadesController extends Controller
 
         return redirect()
             ->route($ruta, [$idR])
-            ->with('mensaje', 'Actividad agregada con exito');
+            ->with('mensaje', 'Tarea agregada con exito');
     }
 
     #Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
@@ -798,16 +807,13 @@ class ActividadesController extends Controller
         
         Actividades::actualizarFechaFin($solicitud);
 
-        $rangos = $this->obtenerFechasRango(
-            $solicitud->ACT_Fecha_Inicio_Actividad, $solicitud->SOL_TMP_Fecha_Solicitada
-        );
-
-        HorasActividad::where('HRS_ACT_Actividad_Id', '=', $solicitud->Id_Actividad)
-            ->delete();
+        $horas = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $solicitud->Id_Actividad)
+            ->orderBy('id', 'desc')
+            ->first();
+        $horas->update([
+            'HRS_ACT_Cantidad_Horas_Reales' => $horas->HRS_ACT_Cantidad_Horas_Asignadas
+        ]);
         
-        foreach ($rangos as $fecha) {
-            HorasActividad::crearHorasActividad($solicitud->Id_Actividad, $fecha);
-        }
         HistorialEstados::crearHistorialEstado($solicitud->Id_Actividad, 1);
 
         SolicitudTiempo::findOrFail($idS)->update(['SOL_TMP_Estado_Solicitud' => 1]);
@@ -816,7 +822,7 @@ class ActividadesController extends Controller
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         Notificaciones::crearNotificacion(
-            'Solicitud aprobada, ya puede reasignar sus horas de trabajo',
+            'Solicitud aprobada, ya puede realizar la entrega de la tarea.',
             $de->id,
             $para->id,
             'actividades_perfil_operacion',
@@ -833,7 +839,7 @@ class ActividadesController extends Controller
                 $de['USR_Nombres_Usuario'].
                 ' '.
                 $de['USR_Apellidos_Usuario'].
-                ' ha aprobado su solicitud de tiempo, asigna tus horas de trabajo'
+                ' ha aprobado su solicitud de tiempo, realiza la entrega de la tarea.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(

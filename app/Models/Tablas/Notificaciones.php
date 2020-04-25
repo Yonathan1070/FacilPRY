@@ -20,7 +20,8 @@ use Illuminate\Support\Carbon;
 class Notificaciones extends Model
 {
     protected $table = "TBL_Notificaciones";
-    protected $fillable = ['NTF_Titulo',
+    protected $fillable = [
+        'NTF_Titulo',
         'NTF_De',
         'NTF_Para',
         'NTF_Fecha',
@@ -28,16 +29,33 @@ class Notificaciones extends Model
         'NTF_Parametro',
         'NTF_Valor_Parametro',
         'NTF_Estado',
-        'NTF_Icono'];
+        'NTF_Icono',
+        'NTF_Visible'
+    ];
     protected $guarded = ['id'];
 
     #Funcion donde obtenemos el listado de las notificaciones de cada usuario
+    public static function obtenerNotificacionesTodas($id)
+    {
+        $notificaciones = Notificaciones::where(
+            'NTF_Para', '=', $id
+        )->orderByDesc(
+            'created_at'
+        )->get();
+        
+        return $notificaciones;
+    }
+
+    #Funcion donde obtenemos el listado de las notificaciones visibles de cada usuario
     public static function obtenerNotificaciones($id)
     {
         $notificaciones = Notificaciones::where(
             'NTF_Para', '=', $id
-        )->orderByDesc('created_at')
-            ->get();
+        )->where(
+            'NTF_Visible', '=', 1
+        )->orderByDesc(
+            'created_at'
+        )->get();
         
         return $notificaciones;
     }
@@ -89,6 +107,18 @@ class Notificaciones extends Model
         foreach ($notificaciones as $notificacion) {
             $notificacion->update([
                 'NTF_Estado' => 1
+            ]);
+        }
+    }
+
+    #Funcion que cambia la visibilidad de las notificaciones
+    public static function limpiar($id)
+    {
+        $notificaciones = Notificaciones::where('NTF_Para', '=', $id)->get();
+        foreach ($notificaciones as $notificacion) {
+            $notificacion->update([
+                'NTF_Estado' => 1,
+                'NTF_Visible' => 0
             ]);
         }
     }

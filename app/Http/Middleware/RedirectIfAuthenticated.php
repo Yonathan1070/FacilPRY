@@ -19,7 +19,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
             $rol = session()->all();
-            switch ($rol['Rol_Id']) {
+            switch ($rol['Sub_Rol_Id']) {
                 case '1':
                     return redirect('/administrador');;
                     break;

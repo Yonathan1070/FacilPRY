@@ -33,8 +33,8 @@ Solicitud de Tiempo Tarea
                                 <span>{{$solicitud->ACT_Fecha_Fin_Actividad}}</span>
                             </li>
                             <li>
-                                <span>Fecha de Entrega Solicitada</span>
-                                <span>{{$solicitud->SOL_TMP_Fecha_Solicitada}}</span>
+                                <span>Horas adicionales Solicitadas</span>
+                                <span>{{$solicitud->SOL_TMP_Hora_Solicitada}}</span>
                             </li>
                         </ul>
                         <a href="{{route('aprobar_solicitud_tiempo_actividades', ['idS' => $solicitud->Id_Solicitud])}}" class="btn btn-primary btn-lg waves-effect btn-block">APROBAR</a>

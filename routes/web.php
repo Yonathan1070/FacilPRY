@@ -20,6 +20,8 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
     Route::get('', 'InicioController@index')->name('inicio_administrador');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_administrador');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_administrador');
+    Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_administrador');
+    Route::get('notificaciones', 'InicioController@verTodas')->name('notificaciones_administrador');
     //Enroutamiento para CRUD Director de Proyectos
     Route::group(['prefix' => 'director-proyectos'], function () {
         Route::get('', 'DirectorProyectosController@index')->name('directores_administrador');
@@ -28,6 +30,8 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
         Route::get('{id}/editar', 'DirectorProyectosController@editar')->name('editar_director_administrador');
         Route::put('{id}', 'DirectorProyectosController@actualizar')->name('actualizar_director_administrador');
         Route::delete('{id}', 'DirectorProyectosController@eliminar')->name('eliminar_director_administrador');
+        Route::get('{id}/inactivar', 'DirectorProyectosController@inactivar')->name('inactivar_director_administrador');
+        Route::get('{id}/activar', 'DirectorProyectosController@activar')->name('activar_director_administrador');
     });
     //Enroutamiento para Sistema de Permisos 
     Route::group(['prefix' => 'asignar-permiso'], function () {
@@ -70,6 +74,8 @@ Route::group(['prefix' => 'director', 'namespace' => 'Director', 'middleware' =>
     Route::get('/metrica', 'InicioController@metrica')->name('metrica_director');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_director');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_director');
+    Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_director');
+    Route::get('notificaciones', 'InicioController@verTodas')->name('notificaciones_director');
 });
 
 //Enrutamiento Perfil de Operacion
@@ -77,6 +83,8 @@ Route::group(['prefix' => 'perfil-operacion', 'namespace' => 'PerfilOperacion', 
     Route::get('', 'InicioController@index')->name('inicio_perfil_operacion');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_perfil_operacion');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_perfil_operacion');
+    Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_perfil_operacion');
+    Route::get('notificaciones', 'InicioController@verTodas')->name('notificaciones_perfil_operacion');
     //Enrutamiento Actividades
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_perfil_operacion');
@@ -115,6 +123,8 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_cliente');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_cliente');
+    Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_cliente');
+    Route::get('notificaciones', 'InicioController@verTodas')->name('notificaciones_cliente');
 
     Route::group(['prefix' => 'actividades'], function () {
         Route::get('', 'ActividadesController@index')->name('actividades_cliente');
@@ -178,6 +188,8 @@ Route::get('lperfil-operacion', 'PerfilOperacionController@index')->name('perfil
 Route::get('perfil-operacion/crear', 'PerfilOperacionController@crear')->name('crear_perfil_operacion');
 Route::post('perfil-operacion/crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_operacion');
 Route::get('perfil-operacion/{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_operacion');
+Route::get('perfil-operacion/{id}/inactivar', 'PerfilOperacionController@inactivar')->name('inactivar_perfil_operacion');
+Route::get('perfil-operacion/{id}/activar', 'PerfilOperacionController@activar')->name('activar_perfil_operacion');
 Route::put('perfil-operacion/{id}', 'PerfilOperacionController@actualizar')->name('actualizar_perfil_operacion');
 Route::delete('perfil-operacion/{id}', 'PerfilOperacionController@eliminar')->name('eliminar_perfil_operacion');
 Route::get('perfil-operacion/{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_operacion');

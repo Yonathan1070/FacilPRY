@@ -35,11 +35,21 @@ class Empresas extends Model
     #Función que obtiene las empresas activas
     public static function obtenerEmpresasActivas()
     {
-        $empresas = DB::table('TBL_Empresas')
-            ->where(
+        $empresas = DB::table('TBL_Usuarios as u')
+            ->rightJoin(
+                'TBL_Empresas as e',
+                'e.id',
+                '=',
+                'u.USR_Empresa_Id'
+            )->select(
+                DB::raw('count(u.id) as clientes'),
+                'e.*'
+            )->where(
                 'EMP_Empresa_Id', '=', session()->get('Empresa_Id')
             )->where(
                 'EMP_Estado_Empresa', '=', 1
+            )->groupBy(
+                'e.id'
             )->get();
         
         return $empresas;
@@ -114,7 +124,8 @@ class Empresas extends Model
             'EMP_Direccion_Empresa' => $request['EMP_Direccion_Empresa'],
             'EMP_Correo_Empresa' => $request['EMP_Correo_Empresa'],
             'EMP_Logo_Empresa' => null,
-            'EMP_Empresa_Id' => $request['id']
+            'EMP_Empresa_Id' => $request['id'],
+            'EMP_Estado_Empresa' => 1
         ]);
     }
 

@@ -19,6 +19,7 @@
                 <ul class="dropdown-menu pull-right">
                     <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
                     <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
+                    <li><a href="{{route("menu")}}"><i class="material-icons">list</i>Menu</a></li>
                     <li role="separator" class="divider"></li>
                     @if (session()->get('roles') && count(session()->get('roles')) > 1)
                         <li><a href="#" class="cambiar-rol"><i class="material-icons">autorenew</i>Cambiar de Rol</a></li>
@@ -43,12 +44,6 @@
                 <a href="{{route("directores_administrador")}}">
                     <i class="material-icons">assessment</i>
                     <span>Director de Proyectos</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route("menu")}}">
-                    <i class="material-icons">list</i>
-                    <span>Menu</span>
                 </a>
             </li>
             <li>

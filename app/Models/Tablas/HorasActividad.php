@@ -334,6 +334,16 @@ class HorasActividad extends Model
         ]);
     }
 
+    #Función para crear las Horas asignadas para las actividades
+    public static function crearHorasActividadConHora($idA, $fecha, $cantidadHoras)
+    {
+        HorasActividad::create([
+            'HRS_ACT_Cantidad_Horas_Asignadas' => $cantidadHoras,
+            'HRS_ACT_Actividad_Id' => $idA,
+            'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
+        ]);
+    }
+
     #Función para actualizar las horas de la actividad
     public static function actualizarHoraActividad($horasAsignadas, $horasReales, $idH)
     {

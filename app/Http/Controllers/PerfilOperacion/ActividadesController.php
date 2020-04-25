@@ -472,6 +472,12 @@ class ActividadesController extends Controller
         $actividad = Actividades::findOrFail($id);
         SolicitudTiempo::crearSolicitud($id, $request);
 
+        HorasActividad::crearHorasActividadConHora(
+            $id,
+            Carbon::now(),
+            $request->Hora_Solicitud
+        );
+
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $para = Usuarios::findOrFail($actividad->ACT_Encargado_Id);
         

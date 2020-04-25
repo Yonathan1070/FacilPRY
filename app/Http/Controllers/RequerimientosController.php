@@ -129,11 +129,11 @@ class RequerimientosController extends Controller
         
         foreach ($requerimientos as $requerimiento) {
             if (
-                $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
+                strtolower($requerimiento->REQ_Nombre_Requerimiento) == strtolower($request['REQ_Nombre_Requerimiento'])
             ) {
                 return redirect()
                     ->back()
-                    ->withErrors('El requerimiento ya se encuentra registrado para este proyecto.')
+                    ->withErrors('El proyecto ya cuenta con una actividad del mismo nombre.')
                     ->withInput();
             }
         }
@@ -153,7 +153,7 @@ class RequerimientosController extends Controller
         return redirect()
             ->route(
                 'crear_requerimiento', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Requerimiento agregado con exito');
+            )->with('mensaje', 'Actividad agregada con exito');
     }
 
     /**

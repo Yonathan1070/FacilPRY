@@ -27,6 +27,7 @@ class CrearTablaNotificaciones extends Migration
             $table->bigInteger('NTF_Valor_Parametro')->nullable();
             $table->boolean('NTF_Estado');
             $table->string('NTF_Icono', 40);
+            $table->boolean('NTF_Visible')->default(1);
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_spanish_ci';

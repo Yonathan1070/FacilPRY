@@ -22,7 +22,7 @@ class SolicitudTiempo extends Model
 {
     protected $table = "TBL_Solicitud_Tiempo";
     protected $fillable = ['SOL_TMP_Actividad_Id',
-        'SOL_TMP_Fecha_Solicitada',
+        'SOL_TMP_Hora_Solicitada',
         'SOL_TMP_Estado_Solicitud'
     ];
     public $timestamps = false;
@@ -91,9 +91,7 @@ class SolicitudTiempo extends Model
     {
         SolicitudTiempo::create([
             'SOL_TMP_Actividad_Id' => $id,
-            'SOL_TMP_Fecha_Solicitada' => Carbon::parse(
-                $request->Hora_Solicitud
-            )->format('Y-m-d H:m')
+            'SOL_TMP_Hora_Solicitada' => $request->Hora_Solicitud
         ]);
     }
 }
