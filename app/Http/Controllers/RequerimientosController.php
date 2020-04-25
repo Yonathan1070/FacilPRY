@@ -216,14 +216,14 @@ class RequerimientosController extends Controller
                 return redirect()
                     ->back()
                     ->withErrors(
-                        'El requerimiento ya se encuentra registrado para este proyecto.'
+                        'El proyecto ya cuenta con una actividad del mismo nombre.'
                     )->withInput();
             }
         }
         return redirect()
             ->route(
                 'requerimientos', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Requerimiento actualizado con exito');
+            )->with('mensaje', 'Actividad actualizado con exito');
     }
 
     /**

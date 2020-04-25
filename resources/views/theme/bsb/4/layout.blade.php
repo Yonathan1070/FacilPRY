@@ -225,6 +225,8 @@
     <!-- Custom Js -->
     <script src="{{asset("assets/bsb/js/admin.js")}}"></script>
     <script src="{{asset("assets/bsb/js/pages/tables/jquery-datatable.js")}}"></script>
+
+    <script src="{{asset("assets/bsb/js/pages/ui/tooltips-popovers.js")}}"></script>
     
     <!-- Autosize Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/autosize/autosize.js")}}"></script>

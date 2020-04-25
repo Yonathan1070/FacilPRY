@@ -2,6 +2,22 @@
 @section('titulo')
     Inicio
 @endsection
+@section('styles')
+    <style>
+        .fraction {
+            display: inline-block;
+            vertical-align: middle; 
+            margin: 0 0.2em 0.4ex;
+            text-align: center;
+        }
+        .fraction > span {
+            display: block;
+            padding-top: 0.15em;
+        }
+        .fraction span.fdn {border-top: thin solid black;}
+        .fraction span.bar {display: none;}
+    </style>
+@endsection
 @section('contenido')
 @include('includes.form-exito')
 @include('includes.form-error')
@@ -48,6 +64,31 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficacia General</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la eficacia"
+                                data-html="true"
+                                data-content="El resultado de la eficacia la obtenemos con la formula:<br />
+                                    <div class='fraction'>
+                                        <span class='fup'>tf</span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>tt</span>
+                                    </div>*100<br /><br />
+                                    Donde:<br />
+                                    tf = Tareas Finalizadas<br />
+                                    tt = Tareas Totales">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEficacia" width="400" height="400"></canvas>
@@ -60,6 +101,47 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficiencia General</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la eficiencia"
+                                data-html="true"
+                                data-content="El resultado de la eficiencia la obtenemos con la formula:<br />
+                                    (<div class='fraction'>
+                                        <span class='fup'>
+                                            (<div class='fraction'>
+                                                <span class='fup'>tf</span>
+                                                <span class='bar'>/</span>
+                                                <span class='fdn'>cr</span>
+                                            </div>*hr)
+                                        </span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>
+                                            (<div class='fraction'>
+                                                <span class='fup'>tt</span>
+                                                <span class='bar'>/</span>
+                                                <span class='fdn'>ce</span>
+                                            </div>*he)
+                                        </span>
+                                    </div>)*100<br /><br />
+                                    Donde:<br />
+                                    tf = Tareas Finalizadas<br />
+                                    cr = Costo Real<br />
+                                    hr = Horas Reales<br />
+                                    tt = Tareas Totales<br />
+                                    ce = Costo Estimado<br />
+                                    he = Horas Estimadas">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEficiencia" width="400" height="400"></canvas>
@@ -72,6 +154,28 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Efectividad General</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la efectividad"
+                                data-html="true"
+                                data-content="El resultado de la efectividad la obtenemos con la formula:<br />
+                                    <div class='fraction'>
+                                        <span class='fup'>Eficacia</span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>Eficiencia</span>
+                                    </div>">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEfectividad" width="400" height="400"></canvas>
@@ -84,6 +188,31 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Productividad</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la Productividad"
+                                data-html="true"
+                                data-content="El resultado de la productividad la obtenemos con la formula:<br />
+                                    <div class='fraction'>
+                                        <span class='fup'>cr</span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>ce</span>
+                                    </div>*100<br /><br />
+                                    Donde:<br />
+                                    cr = Costo real<br />
+                                    ce = Costo Estimado">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartProductividad" width="400" height="400"></canvas>
@@ -98,6 +227,31 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficacia Por Trabajadores</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la eficacia"
+                                data-html="true"
+                                data-content="El resultado de la eficacia la obtenemos con la formula:<br />
+                                    <div class='fraction'>
+                                        <span class='fup'>tf</span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>tt</span>
+                                    </div>*100<br /><br />
+                                    Donde:<br />
+                                    tf = Tareas Finalizadas<br />
+                                    tt = Tareas Totales">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEficaciaBar" width="400" height="400"></canvas>
@@ -110,6 +264,47 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Eficiencia Por Trabajadores</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la eficiencia"
+                                data-html="true"
+                                data-content="El resultado de la eficiencia la obtenemos con la formula:<br />
+                                    (<div class='fraction'>
+                                        <span class='fup'>
+                                            (<div class='fraction'>
+                                                <span class='fup'>tf</span>
+                                                <span class='bar'>/</span>
+                                                <span class='fdn'>cr</span>
+                                            </div>*hr)
+                                        </span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>
+                                            (<div class='fraction'>
+                                                <span class='fup'>tt</span>
+                                                <span class='bar'>/</span>
+                                                <span class='fdn'>ce</span>
+                                            </div>*he)
+                                        </span>
+                                    </div>)*100<br /><br />
+                                    Donde:<br />
+                                    tf = Tareas Finalizadas<br />
+                                    cr = Costo Real<br />
+                                    hr = Horas Reales<br />
+                                    tt = Tareas Totales<br />
+                                    ce = Costo Estimado<br />
+                                    he = Horas Estimadas">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEficienciaBar" width="400" height="400"></canvas>
@@ -123,6 +318,28 @@
             <div class="card">
                 <div class="header">
                     <h2>Indicador de Efectividad Por Trabajadores</h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                style="border: transparent; background: transparent;"
+                                data-trigger="focus"
+                                data-container="body"
+                                data-toggle="popover"
+                                data-placement="left"
+                                title="Detalle de la efectividad"
+                                data-html="true"
+                                data-content="El resultado de la efectividad la obtenemos con la formula:<br />
+                                    <div class='fraction'>
+                                        <span class='fup'>Eficacia</span>
+                                        <span class='bar'>/</span>
+                                        <span class='fdn'>Eficiencia</span>
+                                    </div>">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
                     <canvas id="chartEfectividadBar" width="400" height="400"></canvas>
