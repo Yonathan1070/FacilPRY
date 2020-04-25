@@ -127,8 +127,10 @@ class PerfilOperacionController extends Controller
         PermisoUsuario::asignarPermisosPerfilOperacion($perfil->id);
         Usuarios::enviarcorreo(
             $request,
-            'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
-            'Bienvenido(a) '.$request['USR_Nombres_Usuario'], 
+            'Bienvenido(a) '.
+                $request['USR_Nombres_Usuario'].
+                ' '.
+                $request['USR_Apellidos_Usuario'],
             'general.correo.bienvenida'
         );
         

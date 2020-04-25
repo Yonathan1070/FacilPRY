@@ -454,16 +454,14 @@ class Usuarios extends Authenticatable
     }
 
     #Funcion que envía el correo al usuario
-    public static function enviarcorreo($request, $mensaje, $asunto, $plantilla)
+    public static function enviarcorreo($request, $asunto, $plantilla)
     {
         Mail::send($plantilla, [
-            'nombre' =>
-                $request['USR_Nombres_Usuario'].' '.$request['USR_Apellidos_Usuario'],
             'username' =>
                 $request['USR_Nombre_Usuario']],
-                function($message) use ($request, $mensaje, $asunto){
+                function($message) use ($request, $asunto){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to($request['USR_Correo_Usuario'], $mensaje)
+            $message->to($request['USR_Correo_Usuario'])
                 ->subject($asunto);
         });
     }

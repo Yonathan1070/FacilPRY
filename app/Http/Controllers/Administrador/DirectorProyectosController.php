@@ -104,7 +104,6 @@ class DirectorProyectosController extends Controller
         
         Usuarios::enviarcorreo(
             $request,
-            'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
             'Bienvenido(a) '.
                 $request['USR_Nombres_Usuario'].
                 ' '.

@@ -132,7 +132,6 @@ class ClientesController extends Controller
         PermisoUsuario::asignarPermisosCliente($cliente->id);
         Usuarios::enviarcorreo(
             $request,
-            'Bienvenido(a) a InkBrutalPRY, Software de Gestión de Proyectos',
             'Bienvenido '.
                 $request['USR_Nombres_Usuario'].
                 ' '.
