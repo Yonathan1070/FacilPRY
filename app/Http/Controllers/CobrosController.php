@@ -97,7 +97,7 @@ class CobrosController extends Controller
             ->back()
             ->with(
                 'mensaje',
-                'Actividad agregada a la factura del cliente '.
+                'Actividad agregada a la cuenta de cobro del cliente '.
                     $cliente->USR_Nombres_Usuario.
                     ' '.
                     $cliente->USR_Apellidos_Usuario
@@ -135,7 +135,7 @@ class CobrosController extends Controller
 
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
 
-        $fileName = 'FacturaINK-'.$factura;
+        $fileName = 'CuentaCobroINK-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
     }

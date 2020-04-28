@@ -1,6 +1,6 @@
 @extends('includes.pdf.layout')
 @section('titulo')
-Factura
+Cuenta de Cobro
 @endsection
 @section('styles')
     <style>
@@ -240,7 +240,7 @@ Factura
                 <div class="row clearfix">
                     <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
                         <header>
-                            <h1>FACTURA DE COBRO</h1>
+                            <h1>CUENTA DE COBRO</h1>
                             <address>
                                 <p>{{$datos['empresa']->EMP_Nombre_Empresa}}</p>
                                 <p>Dirección: {{$datos['empresa']->EMP_Direccion_Empresa}}<br>Correo Electrónico: {{$datos['empresa']->EMP_Correo_Empresa}}</p>
@@ -264,7 +264,7 @@ Factura
                             </address>
                             <table class="meta">
                                 <tr>
-                                    <th><span>Factura # </span></th>
+                                    <th><span>Cobro # </span></th>
                                     <td><span>INK-{{$datos['factura']}}</span></td>
                                 </tr>
                                 <tr>

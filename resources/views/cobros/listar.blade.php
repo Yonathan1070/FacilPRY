@@ -39,7 +39,7 @@ Cobros
                                         <td>{{$cobro->ACT_Descripcion_Actividad}}</td>
                                         <td>{{$cobro->USR_Nombres_Usuario.' '.$cobro->USR_Apellidos_Usuario}}</td>
                                         <td>
-                                            <a href="{{route('agregar_factura', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Factura de {{$cobro->USR_Nombres_Usuario.' '.$cobro->USR_Apellidos_Usuario}}">
+                                            <a href="{{route('agregar_factura', ['idA' => $cobro->Id_Actividad, 'idC' => $cobro->Id_Cliente])}}" class="btn-accion-tabla tooltipsC" title="Agregar a Cuenta de Cobro de {{$cobro->USR_Nombres_Usuario.' '.$cobro->USR_Apellidos_Usuario}}">
                                                 <i class="material-icons text-info" style="font-size: 17px;">note_add</i>
                                             </a>
                                         </td>
@@ -57,13 +57,13 @@ Cobros
             <div class="card">
                 <div class="header">
                     <h2>
-                        PROYECTOS CON ACTIVIDADES FACTURADAS
+                        PROYECTOS CON ACTIVIDADES POR COBRAR
                     </h2>
                 </div>
                 <div class="body table-responsive">
                     @if (count($proyectos)<=0)
                     <div class="alert alert-success">
-                        No hay facturas pendientes
+                        No hay cobros pendientes
                     @else
                         <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
                             <thead>
@@ -87,7 +87,7 @@ Cobros
                                         <td>{{$proyecto->No_Actividades}}</td>
                                         @if ($proyecto->ACT_Costo_Real_Actividad != 0)
                                             <td>
-                                                <a href="{{route('generar_factura', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                <a href="{{route('generar_factura', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Cuenta de Cobro">
                                                     <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                 </a>
                                             </td>

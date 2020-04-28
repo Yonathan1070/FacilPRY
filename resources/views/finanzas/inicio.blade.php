@@ -64,13 +64,13 @@ Finanzas
             <div class="card">
                 <div class="header">
                     <h2>
-                        PROYECTOS CON ACTIVIDADES FACTURADAS
+                        PROYECTOS CON ACTIVIDADES POR COBRAR
                     </h2>
                 </div>
                 <div class="body table-responsive">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#proyectos" aria-controls="settings" role="tab" data-toggle="tab">Facturas</a></li>
-                        <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Facturas Adicionales</a></li>
+                        <li role="presentation" class="active"><a href="#proyectos" aria-controls="settings" role="tab" data-toggle="tab">Cuentas de Cobro</a></li>
+                        <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Cuentas de Cobro Adicionales</a></li>
                     </ul>
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane fade in active table-responsive" id="proyectos">
@@ -96,7 +96,7 @@ Finanzas
                                                 <td>{{$proyecto->No_Actividades}}</td>
                                                 <td>
                                                     @if ($proyecto->ACT_Costo_Real_Actividad != 0)
-                                                        <a href="{{route('generar_factura_finanzas', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                        <a href="{{route('generar_factura_finanzas', ['id' => $proyecto->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Cuenta de Cobro">
                                                             <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                         </a>
                                                     @endif
@@ -110,7 +110,7 @@ Finanzas
                         <div role="tabpanel" class="tab-pane fade in table-responsive" id="facturas">
                             @if (count($factAdicional)<=0)
                                 <div class="alert alert-success">
-                                    No hay facturas adicionales pendientes
+                                    No hay cuentas de cobro adicionales pendientes
                                 </div>
                             @else
                                 <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
@@ -133,7 +133,7 @@ Finanzas
                                                         <i class="material-icons text-info" style="font-size: 17px;">mode_edit</i>
                                                     </a>
                                                     @if ($factura->FACT_AD_Precio_Factura != 0)
-                                                        <a href="{{route('generar_factura_adicional_finanzas', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                        <a href="{{route('generar_factura_adicional_finanzas', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Cuenta de Cobro">
                                                             <i class="material-icons text-info" style="font-size: 17px;">get_app</i>
                                                         </a>
                                                     @endif

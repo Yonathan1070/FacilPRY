@@ -251,7 +251,7 @@ class InicioController extends Controller
             compact('datos')
         );
 
-        $fileName = 'FacturaINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
+        $fileName = 'CuentaCobroINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
     }
@@ -290,7 +290,7 @@ class InicioController extends Controller
             compact('datos')
         );
 
-        $fileName = 'FacturaINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
+        $fileName = 'CuentaCobroINK-'.$proyecto->PRY_Nombre_Proyecto.'-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
     }

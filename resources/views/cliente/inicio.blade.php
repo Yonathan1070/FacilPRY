@@ -30,8 +30,8 @@ Mis Proyectos
                                     <div>
                                         <ul class="nav nav-tabs" role="tablist">
                                             <li role="presentation" class="active"><a href="#proyectos" aria-controls="settings" role="tab" data-toggle="tab">Mis Proyectos</a></li>
-                                            <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Mis Facturas <span class="label label-danger">({{count($proyectosPagar)}})</span></a></li>
-                                            <li role="presentation"><a href="#facturasadicionales" aria-controls="settings" role="tab" data-toggle="tab">Mis Facturas Adicionales <span class="label label-danger">({{count($factAdicional)}})</span></a></li>
+                                            <li role="presentation"><a href="#facturas" aria-controls="settings" role="tab" data-toggle="tab">Mis Cuentas de Cobro <span class="label label-danger">({{count($proyectosPagar)}})</span></a></li>
+                                            <li role="presentation"><a href="#facturasadicionales" aria-controls="settings" role="tab" data-toggle="tab">Mis Cuentas de Cobro Adicionales <span class="label label-danger">({{count($factAdicional)}})</span></a></li>
                                         </ul>
                                         <div class="tab-content">
                                             <div role="tabpanel" class="tab-pane fade in active table-responsive" id="proyectos">
@@ -98,7 +98,7 @@ Mis Proyectos
                                                                         <a href="{{route('generar_pdf_proyecto_cliente', ['id'=>$proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Actividades">
                                                                             <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
                                                                         </a>
-                                                                        <a href="{{route('generar_factura_cliente', ['id' => $proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                                        <a href="{{route('generar_factura_cliente', ['id' => $proyecto->id])}}" class="btn-accion-tabla tooltipsC" title="Descargar Cuenta de Cobro">
                                                                             <i class="material-icons text-info" style="font-size: 17px;">find_in_page</i>
                                                                         </a>
                                                                     </td>
@@ -132,7 +132,7 @@ Mis Proyectos
                                                                     <td>{{$factura->PRY_Nombre_Proyecto}}</td>
                                                                     <td>{{$factura->PRY_Descripcion_Proyecto}}</td>
                                                                     <td class="width70">
-                                                                        <a href="{{route('generar_factura_adicional_cliente', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Factura">
+                                                                        <a href="{{route('generar_factura_adicional_cliente', ['id' => $factura->Id_Proyecto])}}" class="btn-accion-tabla tooltipsC" title="Descargar Cuenta de Cobro">
                                                                             <i class="material-icons text-info" style="font-size: 17px;">find_in_page</i>
                                                                         </a>
                                                                     </td>

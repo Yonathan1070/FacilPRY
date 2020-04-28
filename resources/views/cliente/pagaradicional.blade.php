@@ -50,7 +50,7 @@ Pagar
             <div class="card">
                 <div class="header table-resposive">
                     <header>
-                        <h1>FACTURA DE COBRO</h1>
+                        <h1>CUENTA DE COBRO</h1>
                         <address>
                             <p>{{$datosU['empresa']->EMP_Nombre_Empresa}}</p>
                             <p>Dirección: {{$datosU['empresa']->EMP_Direccion_Empresa}}<br>Correo Electrónico: {{$datosU['empresa']->EMP_Correo_Empresa}}</p>
@@ -73,7 +73,7 @@ Pagar
                         </address>
                         <table class="meta">
                             <tr>
-                                <th><span>Factura # </span></th>
+                                <th><span>Cuenta # </span></th>
                                 <td><span>INK-{{$datosU['factura']}}</span></td>
                             </tr>
                             <tr>

@@ -171,7 +171,7 @@ class FinanzasController extends Controller
 
         $pdf = PDF::loadView('includes.pdf.factura.factura', compact('datos'));
 
-        $fileName = 'FacturaINK-'.$factura;
+        $fileName = 'CuentaCobroINK-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
     }
@@ -207,7 +207,7 @@ class FinanzasController extends Controller
 
         $pdf = PDF::loadView('includes.pdf.factura.facturaadicional', compact('datos'));
 
-        $fileName = 'FacturaINK-'.$factura;
+        $fileName = 'CuentaCobroINK-'.$factura;
         
         return $pdf->download($fileName.'.pdf');
     }
@@ -276,7 +276,7 @@ class FinanzasController extends Controller
         FacturaAdicional::crearFactura($request);
 
         Notificaciones::crearNotificacion(
-            'Se ha creado una factura adicional',
+            'Se ha creado una cuenta de cobro adicional',
             session()->get('Usuario_Id'),
             $request->ClienteSelect,
             'inicio_cliente',
@@ -297,12 +297,12 @@ class FinanzasController extends Controller
             $message->to(
                 $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
             )
-                ->subject('Factura Adicional');
+                ->subject('Cuenta de Cobro Adicional');
         });
 
         return redirect()
             ->route('agregar_cobro_finanzas')
-            ->with('mensaje', 'Factura agregada con exito');
+            ->with('mensaje', 'Cuenta de Cobro agregada con exito');
     }
 
     /**
