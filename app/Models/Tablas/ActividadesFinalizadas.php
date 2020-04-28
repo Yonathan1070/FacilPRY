@@ -323,7 +323,7 @@ class ActividadesFinalizadas extends Model
                 '=',
                 'af.ACT_FIN_Actividad_Id'
             )->select(
-                'a.id'
+                'a.*'
             )->where(
                 'af.id', '=', $id
             )->first();

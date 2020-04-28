@@ -4,8 +4,6 @@ namespace App\Http\Controllers\PerfilOperacion;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use DateTime;
 use App\Models\Tablas\Actividades;
 use Illuminate\Support\Carbon;
 use App\Models\Tablas\HorasActividad;
@@ -237,17 +235,8 @@ class ActividadesController extends Controller
             );
             
             Mail::send('general.correo.informacion', [
-                'titulo' => $de->USR_Nombres_Usuario.
-                    ' '.
-                    $de->USR_Apellidos_Usuario.
-                    ' ha asignado sus horas de trabajo',
-                'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-                'contenido' => $para['USR_Nombres_Usuario'].
-                    ', revisa la plataforma InkBrutalPry, '.
-                    $de['USR_Nombres_Usuario'].
-                    ' '.
-                    $de['USR_Apellidos_Usuario'].
-                    ' a asignado sus horas de trabajo, para que las apruebes.'
+                'nombre' => $de['USR_Nombre_Usuario'],
+                'contenido' => 'Asignó sus horas de trabajo, para que las apruebes.'
             ], function($message) use ($para){
                 $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
                 $message->to(
@@ -427,19 +416,13 @@ class ActividadesController extends Controller
         );
         
         Mail::send('general.correo.informacion', [
-            'titulo' => 'Tarea finalizada y entregada',
-            'nombre' => $para->USR_Nombres_Usuario.' '.$para->USR_Apellidos_Usuario,
-            'contenido' => $para->USR_Nombres_Usuario.
-                ', revisa la plataforma InkBrutalPry, '.
-                $de['USR_Nombres_Usuario'].
-                ' '.
-                $de['USR_Apellidos_Usuario'].
-                ' a realizado la entrega de una tarea y está esperando a ser aprobada.'
-        ], function($message) use ($para){
+            'nombre' => $de->USR_Nombre_Usuario,
+            'contenido' => 'Realizó la entrega de la tarea '.$actividad->ACT_Nombre_Actividad.' y está esperando a ser aprobada.'
+        ], function($message) use ($para, $actividad){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(
                 $para->USR_Correo_Usuario, 'InkBrutalPRY, Software de Gestión de Proyectos'
-            )->subject('Tarea finalizada y entregada');
+            )->subject('Tarea '.$actividad->ACT_Nombre_Actividad.' finalizada y entregada');
         });
         
         return redirect()
@@ -495,17 +478,8 @@ class ActividadesController extends Controller
         );
         
         Mail::send('general.correo.informacion', [
-            'titulo' => $de->USR_Nombres_Usuario.
-                ' '.
-                $de->USR_Apellidos_Usuario.
-                ' solicita tiempo adicional para entregar una tarea.',
-            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].
-                ', revisa la plataforma InkBrutalPry, '.
-                $de['USR_Nombres_Usuario'].
-                ' '.
-                $de['USR_Apellidos_Usuario'].
-                ' solicita tiempo adicional para entregar una tarea.'
+            'nombre' => $de['USR_Nombre_Usuario'],
+            'contenido' => 'Solicita tiempo adicional para entregar la tarea '.$actividad->ACT_Nombre_Actividad.'.'
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(

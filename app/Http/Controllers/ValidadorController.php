@@ -159,20 +159,15 @@ class ValidadorController extends Controller
         $para = Usuarios::findOrFail($trabajador->ACT_Trabajador_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
-            'titulo' => $datos->USR_Nombres_Usuario.' ha rechazado la entrega de la Tarea.',
-            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].
-                ', revisa la plataforma InkBrutalPry, '.
-                $de['USR_Nombres_Usuario'].
-                ' '.
-                $de['USR_Apellidos_Usuario'].
-                ' a rechazado la entrega de la tarea.'
-        ], function($message) use ($para){
+            'nombre' => $de['USR_Nombre_Usuario'],
+            'contenido' => 'Rechazó la entrega de la tarea '.
+                $actividad->ACT_Nombre_Actividad.'.'
+        ], function($message) use ($para, $actividad){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(
                 $para['USR_Correo_Usuario'],
                 'InkBrutalPRY, Software de Gestión de Proyectos'
-            )->subject('Entrega de la tarea, rechazada');
+            )->subject('Entrega de la tarea '.$actividad->ACT_Nombre_Actividad.', rechazada');
         });
         
         return redirect()
@@ -226,21 +221,14 @@ class ValidadorController extends Controller
         $para = Usuarios::findOrFail($trabajador->PRY_Cliente_Id);
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Mail::send('general.correo.informacion', [
-            'titulo' => 'Se ha finalizado una actividad del proyecto '.
-                $trabajador->PRY_Nombre_Proyecto,
-            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].
-                ', revisa la plataforma InkBrutalPry, '.
-                $de['USR_Nombres_Usuario'].
-                ' '.
-                $de['USR_Apellidos_Usuario'].
-                ' está en espera de su aprobado en tarea entregada.'
-        ], function($message) use ($para){
+            'nombre' => $de['USR_Nombre_Usuario'],
+            'contenido' => 'Está en espera de su aprobado en tarea ('.$actividad->ACT_Nombre_Actividad.') entregada.'
+        ], function($message) use ($para, $actividad){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
             $message->to(
                 $para['USR_Correo_Usuario'],
                 'InkBrutalPRY, Software de Gestión de Proyectos'
-            )->subject('Tarea finalizada, pendiente de aprobación');
+            )->subject('Tarea '.$actividad->ACT_Nombre_Actividad.' finalizada, pendiente de aprobación');
         });
         
         return redirect()
@@ -252,10 +240,10 @@ class ValidadorController extends Controller
     {
         $actividad = DB::table('TBL_Actividades_Finalizadas as af')
             ->join('TBL_Actividades as a', 'a.id', '=', 'af.ACT_FIN_Actividad_Id')
-            ->select('a.id')
+            ->select('a.*')
             ->where('af.id', '=', $id)
             ->first();
-
+        
         return $actividad;
     }
 }

@@ -29,6 +29,7 @@ class FacturaAdicional extends Model
         'FACT_AD_Proyecto_Id'
     ];
     protected $guarded = ['id'];
+    public $timestamps = false;
 
     #Funcion para obtener las tareas adicionales facturadas
     public static function obtenerFacturaAdicional($id)

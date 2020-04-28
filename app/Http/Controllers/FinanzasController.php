@@ -286,14 +286,8 @@ class FinanzasController extends Controller
         $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
         Mail::send('general.correo.informacion', [
-            'titulo' => 'Costo adicional agregado',
-            'nombre' => $para['USR_Nombres_Usuario'].' '.$para['USR_Apellidos_Usuario'],
-            'contenido' => $para['USR_Nombres_Usuario'].
-                ', revisa la plataforma InkBrutalPry, '.
-                $de['USR_Nombres_Usuario'].
-                ' '.
-                $de['USR_Apellidos_Usuario'].
-                ' le ha agregado un costo adicional a tu proyecto por concepto de '.
+            'nombre' => $de['USR_Nombre_Usuario'],
+            'contenido' => 'Agregó un costo adicional a tu proyecto por concepto de '.
                 $request['FACT_AD_Descripcion']
         ], function($message) use ($para){
             $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ValidacionCliente;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
@@ -122,7 +123,7 @@ class ClientesController extends Controller
      * @param  App\Http\Requests\ValidacionUsuario $request
      * @return redirect()->back()->with()
      */
-    public function guardar(ValidacionUsuario $request)
+    public function guardar(ValidacionCliente $request)
     {
         Usuarios::crearUsuario($request);
         $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
@@ -226,7 +227,7 @@ class ClientesController extends Controller
      * @param  $idE Identifcador de la empresa
      * @return redirect()->route()->with()
      */
-    public function actualizar(Request $request, $idC, $idE)
+    public function actualizar(ValidacionCliente $request, $idC, $idE)
     {
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Usuarios::editarUsuario($request, $idC);
@@ -238,7 +239,7 @@ class ClientesController extends Controller
                 ' ha actualizado los datos de '.
                 $request->USR_Nombres_Usuario,
             session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
+            ($datos->USR_Supervisor_Id == 0) ? 1 : $datos->USR_Supervisor_Id,
             null,
             null,
             null,
