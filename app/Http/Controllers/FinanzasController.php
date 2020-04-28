@@ -12,11 +12,13 @@ use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\FacturaAdicional;
 use App\Models\Tablas\FacturasCobro;
+use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use PDF;
 
@@ -102,7 +104,7 @@ class FinanzasController extends Controller
         $actividades = ActividadesFinalizadas::obtenerActividadFinalizadaDetalle($id);
         $documentosEvidencias = DocumentosEvidencias::obtenerDocumentosActividadCobrar($id);
         $documentosSoporte = DocumentosSoporte::obtenerDocumentosActividadCobrar($id);
-        
+        $horas = HorasActividad::obtenerHorasTrabajoActividad($id);
         return view(
             'finanzas.cobro',
             compact(
@@ -110,6 +112,7 @@ class FinanzasController extends Controller
                 'actividades',
                 'documentosEvidencias',
                 'documentosSoporte',
+                'horas',
                 'id',
                 'notificaciones',
                 'cantidad',

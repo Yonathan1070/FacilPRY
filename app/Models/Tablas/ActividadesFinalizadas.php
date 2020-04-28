@@ -303,6 +303,7 @@ class ActividadesFinalizadas extends Model
                 'p.*',
                 'u.*',
                 'ro.*',
+                'us.USR_Costo_Hora as CostoTrabajador',
                 'us.USR_Nombres_Usuario as NombreT',
                 'us.USR_Apellidos_Usuario as ApellidoT',
                 'ros.RLS_Nombre_Rol as RolT'

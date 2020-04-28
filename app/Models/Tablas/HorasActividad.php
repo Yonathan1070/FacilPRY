@@ -264,6 +264,27 @@ class HorasActividad extends Model
         return $actividades;
     }
 
+    #Función para obtener las horas ejercidas en la actividad
+    public static function obtenerHorasTrabajoActividad($id)
+    {
+        $horas = DB::table('TBL_Horas_Actividad as ha')
+            ->join(
+                'TBL_Actividades as a',
+                'a.id',
+                '=',
+                'ha.HRS_ACT_Actividad_Id'
+            )->select(
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Asignadas) as HorasE'),
+                DB::raw('SUM(HRS_ACT_Cantidad_Horas_Reales) as HorasR')
+            )->where(
+                'a.id', '=', $id
+            )->groupBy(
+                'a.id'
+            )->first();
+        
+        return $horas;
+    }
+
     #Función para obtener las actividades finalizadas agrupadas por horas
     public static function obtenerActividadesFinalizadas($id, $idUsuario)
     {

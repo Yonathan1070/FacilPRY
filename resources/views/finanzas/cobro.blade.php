@@ -94,6 +94,12 @@ Cobros
             <div class="header">
                 <h2>COSTO</h2>
             </div>
+            <div class="profile-body">
+                <div class="content-area">
+                    <h6>Horas empleadas: {{$horas->HorasR}}</h6>
+                    <p>Costo de la Hora Trabajador: {{$actividades->CostoTrabajador}}</p>
+                </div>
+            </div>
             <div class="profile-footer">
                 <ul>
                     <li>
