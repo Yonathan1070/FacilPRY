@@ -59,6 +59,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 1
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item inicio administrador del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 1',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarMenu($id)
     {
@@ -66,6 +75,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 2
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 2',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarDirectorProyectos($id)
     {
@@ -73,6 +91,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 3
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item director de proyectos del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 3',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarRoles($id)
     {
@@ -80,6 +107,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 4
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item roles del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 4',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarPermisos($id)
     {
@@ -87,6 +123,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 5
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item permisos del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 5',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarInicioDirector($id)
     {
@@ -94,6 +139,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 6
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item inicio director del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 6',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarPerfilOperacion($id)
     {
@@ -101,6 +155,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 7
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item perfil de operación del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 7',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarEmpresas($id)
     {
@@ -108,6 +171,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 8
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item empresas del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 8',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarDecisiones($id)
     {
@@ -115,6 +187,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 9
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item decisiones del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 9',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarCobros($id)
     {
@@ -122,6 +203,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 10
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item cobros del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 10',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarInicioPerfilOperacion($id)
     {
@@ -129,6 +219,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 11
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item inicio perfil de operación del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 11',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarActividades($id)
     {
@@ -136,6 +235,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 12
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item actividades del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 12',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarInicioTester($id)
     {
@@ -143,6 +251,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 13
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item inicio tester del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 13',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarInicioCliente($id)
     {
@@ -150,6 +267,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 14
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item inicio cliente del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 14',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarAprobarActividades($id)
     {
@@ -157,6 +283,15 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 15
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item aprobar actividades del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 15',
+            session()->get('Usuario_Id')
+        );
     }
     public static function asignarFinanzas($id)
     {
@@ -164,5 +299,48 @@ class MenuUsuario extends Model
             'MN_USR_Usuario_Id' => $id,
             'MN_USR_Menu_Id' => 16
         ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item finanzas del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$id.
+                ', MN_USR_Menu_Id -> 16',
+            session()->get('Usuario_Id')
+        );
+    }
+
+    #función para asignar un menú
+    public static function asignar($request)
+    {
+        MenuUsuario::create([
+            'MN_USR_Usuario_Id' => $request->id,
+            'MN_USR_Menu_Id' => $request->menuId
+        ]);
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'INSERT',
+            'Asignó el item del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$request->id.
+                ', MN_USR_Menu_Id -> '.$request->menuId,
+            session()->get('Usuario_Id')
+        );
+    }
+
+    #función para desasignar un menú
+    public static function desasignar($asignado)
+    {
+        $oldAsignado = $asignado;
+        $asignado->delete();
+
+        LogCambios::guardar(
+            'TBL_Menu_Usuario',
+            'DELETE',
+            'Desasignó el item del menú al usuario:'.
+                ' MN_USR_Usuario_Id -> '.$oldAsignado->MN_USR_Usuario_Id.
+                ', MN_USR_Menu_Id -> '.$oldAsignado->MN_USR_Menu_Id,
+            session()->get('Usuario_Id')
+        );
     }
 }

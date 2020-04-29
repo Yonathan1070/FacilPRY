@@ -52,4 +52,19 @@ class Permiso extends Model
         
         return $permisoAsignado;
     }
+
+    #Funcion para crear permisos
+    public static function crear($request)
+    {
+        Permiso::create($request->all());
+
+        LogCambios::guardar(
+            'TBL_Permiso',
+            'INSERT',
+            'Creó un nuevo permiso de la siguiente forma:'.
+                ' PRM_Nombre_Permiso -> '.$request->PRM_Nombre_Permiso.
+                ', PRM_Slug_Permiso -> '.$request->PRM_Slug_Permiso,
+            session()->get('Usuario_Id')
+        );
+    }
 }

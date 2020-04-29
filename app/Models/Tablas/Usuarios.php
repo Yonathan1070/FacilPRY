@@ -434,12 +434,36 @@ class Usuarios extends Authenticatable
             'USR_Empresa_Id' => $request->id,
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
+
+        LogCambios::guardar(
+            'TBL_Usuarios',
+            'INSERT',
+            'Insertó los datos del usuario de la siguiente forma:'.
+                ' USR_Tipo_Documento_Usuario -> '.$request['USR_Tipo_Documento_Usuario'].
+                ', USR_Documento_Usuario -> '.$request['USR_Documento_Usuario'].
+                ', USR_Nombres_Usuario -> '.$request['USR_Nombres_Usuario'].
+                ', USR_Apellidos_Usuario -> '.$request['USR_Apellidos_Usuario'].
+                ', USR_Fecha_Nacimiento_Usuario -> '.$request['USR_Fecha_Nacimiento_Usuario'].
+                ', USR_Direccion_Residencia_Usuario -> '.$request['USR_Direccion_Residencia_Usuario'].
+                " ".
+                $request['USR_Ciudad_Residencia_Usuario'].
+                ', USR_Telefono_Usuario -> '.$request['USR_Telefono_Usuario'].
+                ', USR_Correo_Usuario -> '.$request['USR_Correo_Usuario'].
+                ', USR_Nombre_Usuario -> '.$request['USR_Nombre_Usuario'].
+                ', password -> '.bcrypt($request['USR_Nombre_Usuario']).
+                ', USR_Supervisor_Id -> '.session()->get('Usuario_Id').
+                ', USR_Empresa_Id -> '.$request->id.
+                ', USR_Costo_Hora -> '.$request['USR_Costo_Hora'],
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion que actualiza los datos del usuario en la Base de Datos
     public static function editarUsuario($request, $id)
     {
-        Usuarios::findOrFail($id)->update([
+        $oldUsuario = Usuarios::findOrFail($id);
+        $usuario = Usuarios::findOrFail($id);
+        $usuario->update([
             'USR_Documento_Usuario' => $request['USR_Documento_Usuario'],
             'USR_Nombres_Usuario' => $request['USR_Nombres_Usuario'],
             'USR_Apellidos_Usuario' => $request['USR_Apellidos_Usuario'],
@@ -451,6 +475,21 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
+        LogCambios::guardar(
+            'TBL_Usuarios',
+            'UPDATE',
+            'Actualizó los datos los datos del usuario de la siguiente forma:'.
+                ', USR_Documento_Usuario -> '.$oldUsuario->USR_Documento_Usuario.' / '.$request['USR_Documento_Usuario'].
+                ', USR_Nombres_Usuario -> '.$oldUsuario->USR_Nombres_Usuario.' / '.$request['USR_Nombres_Usuario'].
+                ', USR_Apellidos_Usuario -> '.$oldUsuario->USR_Apellidos_Usuario.' / '.$request['USR_Apellidos_Usuario'].
+                ', USR_Fecha_Nacimiento_Usuario -> '.$oldUsuario->USR_Fecha_Nacimiento_Usuario.' / '.$request['USR_Fecha_Nacimiento_Usuario'].
+                ', USR_Direccion_Residencia_Usuario -> '.$oldUsuario->USR_Direccion_Residencia_Usuario.' / '.$request['USR_Direccion_Residencia_Usuario'].
+                ', USR_Telefono_Usuario -> '.$oldUsuario->USR_Telefono_Usuario.' / '.$request['USR_Telefono_Usuario'].
+                ', USR_Correo_Usuario -> '.$oldUsuario->USR_Correo_Usuario.' / '.$request['USR_Correo_Usuario'].
+                ', USR_Nombre_Usuario -> '.$oldUsuario->USR_Nombre_Usuario.' / '.$request['USR_Nombre_Usuario'].
+                ', USR_Costo_Hora -> '.$oldUsuario->USR_Costo_Hora.' / '.$request['USR_Costo_Hora'],
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion que envía el correo al usuario

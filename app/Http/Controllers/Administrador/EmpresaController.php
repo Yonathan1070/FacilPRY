@@ -81,13 +81,9 @@ class EmpresaController extends Controller
                 $input['EMP_Logo_Empresa']
             );
             
-            Empresas::findOrFail(
-                $usuario->USR_Empresa_Id
-            )->update([
-                'EMP_Logo_Empresa' => $nombreArchivo
-            ]);
+            Empresas::cambiarLogo($usuario, $nombreArchivo);
             
-            return response()->json(['success' => 'Logo Actualizado']);
+            return response()->json(['success' => 'Logo actualizado']);
         }
 
         return response()
@@ -102,11 +98,7 @@ class EmpresaController extends Controller
      */
     public function actualizarDatos(Request $request)
     {
-        Empresas::findOrFail(
-            $request->id
-        )->update(
-            $request->all()
-        );
+        Empresas::actualizar($request);
         
         return redirect()
             ->back()

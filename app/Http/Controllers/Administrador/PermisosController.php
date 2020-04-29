@@ -13,7 +13,6 @@ use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Permiso;
 use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\UsuariosRoles;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Permisos Controller, donde se habilitarán o dehabilitarán los permisos a los usuarios
@@ -54,6 +53,7 @@ class PermisosController extends Controller
         $usuarios = Usuarios::with('roles')
             ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'TBL_Usuarios.id')
             ->where('ur.USR_RLS_Estado', '=', 1)
+            ->groupBy('TBL_Usuarios.id')
             ->select('TBL_Usuarios.*')
             ->with('roles')
             ->get();
@@ -106,11 +106,11 @@ class PermisosController extends Controller
      */
     public function guardar(ValidacionPermiso $request)
     {
-        Permiso::create($request->all());
+        Permiso::crear($request);
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Permiso creado con exito');
+            ->with('mensaje', 'Permiso creado con éxito');
     }
 
     /**
@@ -237,10 +237,7 @@ class PermisosController extends Controller
                 ->first();
             
             if (!$asignado) {
-                MenuUsuario::create([
-                    'MN_USR_Usuario_Id' => $request->id,
-                    'MN_USR_Menu_Id' => $request->menuId
-                ]);
+                MenuUsuario::asignar($request);
 
                 return response()
                     ->json(['mensaje' => 'okMA']);
@@ -270,7 +267,7 @@ class PermisosController extends Controller
                 return response()
                     ->json(['mensaje' => 'ngMD']);
             } else {
-                $asignado->delete();
+                MenuUsuario::desasignar($asignado);
 
                 return response()
                     ->json(['mensaje' => 'okMD']);
@@ -294,10 +291,7 @@ class PermisosController extends Controller
                 ->where('PRM_USR_Permiso_Id', '=', $menuId)
                 ->first();
             if (!$asignado) {
-                PermisoUsuario::create([
-                    'PRM_USR_Usuario_Id' => $id,
-                    'PRM_USR_Permiso_Id' => $menuId
-                ]);
+                PermisoUsuario::asignar($id, $menuId);
 
                 return response()
                     ->json(['mensaje' => 'okPA']);
@@ -327,7 +321,7 @@ class PermisosController extends Controller
                 return response()
                     ->json(['mensaje' => 'ngPD']);
             } else {
-                $asignado->delete();
+                PermisoUsuario::desasignar($asignado);
 
                 return response()
                     ->json(['mensaje' => 'okPD']);
@@ -352,11 +346,7 @@ class PermisosController extends Controller
                 ->first();
             
             if (!$asignado) {
-                UsuariosRoles::create([
-                    'USR_RLS_Usuario_Id' => $id,
-                    'USR_RLS_Rol_Id' => $rolId,
-                    'USR_RLS_Estado' => 1
-                ]);
+                UsuariosRoles::asignarRol($rolId, $id);
 
                 return response()
                     ->json(['mensaje' => 'okRA']);
@@ -386,7 +376,7 @@ class PermisosController extends Controller
                 return response()
                     ->json(['mensaje' => 'ngRD']);
             } else {
-                $asignado->delete();
+                UsuariosRoles::desasignar($asignado);
 
                 return response()
                     ->json(['mensaje' => 'okRD']);

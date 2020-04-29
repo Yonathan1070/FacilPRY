@@ -115,4 +115,55 @@ class Menu extends Model
         
         return $menuAsignado;
     }
+
+    #Funcion para crear items menú
+    public static function crear($request)
+    {
+        Menu::create($request->all());
+
+        LogCambios::guardar(
+            'TBL_Menu',
+            'INSERT',
+            'Creó un nuevo item de menú de la siguiente forma:'.
+                ' MN_Nombre_Menu -> '.$request->MN_Nombre_Menu.
+                ', MN_Nombre_Ruta_Menu -> '.$request->MN_Nombre_Ruta_Menu.
+                ', MN_Icono_Menu -> '.$request->MN_Icono_Menu,
+            session()->get('Usuario_Id')
+        );
+    }
+
+    #Funcion para actualizar el item del menú
+    public static function actualizar($id, $request)
+    {
+        $oldMenu = Menu::findOrFail($id);
+        $menu = Menu::findOrFail($id);
+        $menu->update($request->all());
+
+        LogCambios::guardar(
+            'TBL_Menu',
+            'UPDATE',
+            'Actualizó el item de menú de la siguiente forma:'.
+                ' MN_Nombre_Menu -> '.$oldMenu->MN_Nombre_Menu.' / '.$request->MN_Nombre_Menu.
+                ', MN_Nombre_Ruta_Menu -> '.$oldMenu->MN_Nombre_Ruta_Menu.' / '.$request->MN_Nombre_Ruta_Menu.
+                ', MN_Icono_Menu -> '.$oldMenu->MN_Icono_Menu.' / '.$request->MN_Icono_Menu,
+            session()->get('Usuario_Id')
+        );
+    }
+
+    #Funcion para eliminar el item del menú
+    public static function eliminar($id)
+    {
+        $oldMenu = Menu::findOrFail($id);
+        Menu::findOrFail($id)->delete();
+
+        LogCambios::guardar(
+            'TBL_Menu',
+            'DELETE',
+            'Eliminó el item de menú:'.
+                ' MN_Nombre_Menu -> '.$oldMenu->MN_Nombre_Menu.
+                ', MN_Nombre_Ruta_Menu -> '.$oldMenu->MN_Nombre_Ruta_Menu.
+                ', MN_Icono_Menu -> '.$oldMenu->MN_Icono_Menu,
+            session()->get('Usuario_Id')
+        );
+    }
 }

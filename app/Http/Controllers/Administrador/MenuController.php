@@ -91,7 +91,7 @@ class MenuController extends Controller
      */
     public function guardar(ValidacionMenu $request)
     {
-        Menu::create($request->all());
+        Menu::crear($request);
         
         return redirect()
             ->back()
@@ -159,7 +159,7 @@ class MenuController extends Controller
      */
     public function actualizar(ValidacionMenu $request, $id)
     {
-        Menu::findOrFail($id)->update($request->all());
+        Menu::actualizar($id, $request);
         
         return redirect()
             ->route('menu')
@@ -174,7 +174,7 @@ class MenuController extends Controller
      */
     public function eliminar($id)
     {
-        Menu::findOrFail($id)->delete();
+        Menu::eliminar($id);
         
         return redirect()
             ->route('menu')

@@ -88,6 +88,21 @@ class Notificaciones extends Model
             'NTF_Estado' => 0,
             'NTF_Icono' => $icono
         ]);
+        LogCambios::guardar(
+            'TBL_Notificaciones',
+            'INSERT',
+            'Notificación enviada'.
+                ' NTF_Titulo -> '.$titulo.
+                ', NTF_De -> '.$de.
+                ', NTF_Para -> '.$para.
+                ', NTF_Fecha -> '.Carbon::now()->format('yy-m-d').
+                ', NTF_Route -> '.$ruta.
+                ', NTF_Parametro -> '.$parametro.
+                ', NTF_Valor_Parametro -> '.$valor.
+                ', NTF_Estado -> 0'.
+                ', NTF_Icono -> '.$icono,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion que vambia el estado de la notificación a visto

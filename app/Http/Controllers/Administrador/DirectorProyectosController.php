@@ -129,7 +129,7 @@ class DirectorProyectosController extends Controller
             ->back()
             ->with(
                 'mensaje',
-                'Director de Proyectos agregado con exito, por favor que '.
+                'Director de proyectos agregado con éxito, por favor que '.
                     $request['USR_Nombres_Usuario'].
                     ' '.
                     $request['USR_Apellidos_Usuario'].
@@ -192,7 +192,7 @@ class DirectorProyectosController extends Controller
 
         return redirect()
             ->route('directores_administrador')
-            ->with('mensaje', 'Director de Proyectos actualizado con exito');
+            ->with('mensaje', 'Director de proyectos actualizado con exito');
     }
 
     /**
@@ -214,7 +214,7 @@ class DirectorProyectosController extends Controller
                 if($datos->USR_Supervisor_Id == 0)
                     $datos->USR_Supervisor_Id = 1;
                 
-                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
+                UsuariosRoles::inactivarUsuario($id, 2);
                 Notificaciones::crearNotificacion(
                     $datos->USR_Nombres_Usuario.
                         ' '.
@@ -255,7 +255,7 @@ class DirectorProyectosController extends Controller
                 if($datos->USR_Supervisor_Id == 0)
                     $datos->USR_Supervisor_Id = 1;
                 
-                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+                UsuariosRoles::activarUsuario($id, 2);
                 Notificaciones::crearNotificacion(
                     $datos->USR_Nombres_Usuario.
                         ' '.
@@ -288,7 +288,7 @@ class DirectorProyectosController extends Controller
     {
         if ($request->ajax()) {
             try {
-                Usuarios::findOrFail($id)->delete($id);
+                Usuarios::findOrFail($id)->destroy();
                 return response()->json(['mensaje' => 'ok']);
             } catch (QueryException $e) {
                 return response()->json(['mensaje' => 'ng']);

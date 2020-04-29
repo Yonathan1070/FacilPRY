@@ -159,4 +159,49 @@ class Empresas extends Model
                 'EMP_Estado_Empresa' => 1
             ]);
     }
+
+    #Función para actualizar el logo de la empresa
+    public static function cambiarLogo($usuario, $nombreArchivo)
+    {
+        $oldEmpresa = Empresas::findOrFail($usuario->USR_Empresa_Id);
+        $empresa = Empresas::findOrFail($usuario->USR_Empresa_Id);
+        $empresa->update([
+            'EMP_Logo_Empresa' => $nombreArchivo
+        ]);
+
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'Cambió el logo de la empresa:'.
+                ' id -> '.$usuario->USR_Empresa_Id.
+                ', EMP_Logo_Empresa -> '.$oldEmpresa->EMP_Logo_Empresa.' / '.$nombreArchivo,
+            session()->get('Usuario_Id')
+        );
+    }
+
+    #Función para actualizar los datos de la empresa
+    public static function actualizar($request)
+    {
+        $oldEmpresa = Empresas::findOrFail($request->id);
+        $empresa = Empresas::findOrFail($request->id);
+        
+        $empresa->update(
+            $request->all()
+        );
+        
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'Cambió los datos de la empresa:'.
+                ' EMP_Nombre_Empresa -> '.$oldEmpresa->EMP_Nombre_Empresa.' / '.$empresa->EMP_Nombre_Empresa.
+                ', EMP_NIT_Empresa -> '.$oldEmpresa->EMP_NIT_Empresa.' / '.$empresa->EMP_NIT_Empresa.
+                ', EMP_Telefono_Empresa'.$oldEmpresa->EMP_Telefono_Empresa.' / '.$empresa->EMP_Telefono_Empresa.
+                ', EMP_Direccion_Empresa'.$oldEmpresa->EMP_Direccion_Empresa.' / '.$empresa->EMP_Direccion_Empresa.
+                ', EMP_Correo_Empresa'.$oldEmpresa->EMP_Correo_Empresa.' / '.$empresa->EMP_Correo_Empresa.
+                ', EMP_Logo_Empresa'.$oldEmpresa->EMP_Logo_Empresa.' / '.$empresa->EMP_Logo_Empresa.
+                ', EMP_Empresa_Id'.$oldEmpresa->EMP_Empresa_Id.' / '.$empresa->EMP_Empresa_Id.
+                ', EMP_Estado_Empresa'.$oldEmpresa->EMP_Estado_Empresa.' / '.$empresa->EMP_Estado_Empresa,
+            session()->get('Usuario_Id')
+        );
+    }
 }
