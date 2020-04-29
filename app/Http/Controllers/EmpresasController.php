@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ValidacionEmpresa;
 use App\Models\Tablas\Actividades;
 use Illuminate\Http\Request;
 use App\Models\Tablas\Empresas;
@@ -113,7 +114,7 @@ class EmpresasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return redirect()->back()->with()
      */
-    public function guardar(Request $request)
+    public function guardar(ValidacionEmpresa $request)
     {
         Empresas::crearEmpresa($request);
 
@@ -187,7 +188,7 @@ class EmpresasController extends Controller
      * @param  $id  Identificador de la empresa
      * @return redirect()->route()
      */
-    public function actualizar(Request $request, $id)
+    public function actualizar(ValidacionEmpresa $request, $id)
     {
         Empresas::editarEmpresa($request, $id);
 

@@ -145,8 +145,8 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <form class="form-eliminar" action="{{route('eliminar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="d-inline" method="POST">
-                                                                <a href="{{route('agregar_perfil_operacion', ['id'=>$perfilOperacion->id])}}" class="btn-accion-tabla tooltipsC" title="Activar Usuario">
+                                                            <form class="form-eliminar" action="{{route('eliminar_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="d-inline" method="POST">
+                                                                <a href="{{route('activar_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="btn-accion-tabla tooltipsC" title="Activar Usuario">
                                                                     <i class="material-icons text-success" style="font-size: 18px;">arrow_upward</i>
                                                                 </a>
                                                                 @csrf @method("delete")

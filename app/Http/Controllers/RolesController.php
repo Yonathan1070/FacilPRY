@@ -54,7 +54,7 @@ class RolesController extends Controller
         );
 
         $datos = Usuarios::findOrFail($idUsuario);
-        $roles = Roles::where('id', '<>', '6')->orderBy('id')->get();
+        $roles = Roles::where('id', '<>', '4')->orderBy('id')->get();
 
         return view(
             'roles.listar',

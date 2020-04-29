@@ -279,37 +279,35 @@ class PerfilOperacionController extends Controller
      * @param $id Identificador del director de proyectos a eliminar
      * @return \Illuminate\Http\Response
      */
-    public function activar(Request $request, $id)
+    public function activar($id)
     {
-        if ($request->ajax()) {
-            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            $datosU = Usuarios::findOrFail($id);
-            $usuario = Usuarios::findOrFail($id);
+        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+        $datosU = Usuarios::findOrFail($id);
+        $usuario = Usuarios::findOrFail($id);
+        
+        if($usuario != null){
             
-            if($usuario != null){
+            if($datos->USR_Supervisor_Id == 0)
+                $datos->USR_Supervisor_Id = 1;
                 
-                if($datos->USR_Supervisor_Id == 0)
-                    $datos->USR_Supervisor_Id = 1;
-                
-                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
-                Notificaciones::crearNotificacion(
-                    $datos->USR_Nombres_Usuario.
-                        ' '.
-                        $datos->USR_Apellidos_Usuario.
-                        ' ha reactivado al usuario '.
-                        $datosU->USR_Nombres_Usuario,
-                    session()->get('Usuario_Id'),
-                    $datos->USR_Supervisor_Id,
-                    'perfil_operacion',
-                    null,
-                    null,
-                    'arrow_downward'
-                );
+            UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 1]);
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha reactivado al usuario '.
+                    $datosU->USR_Nombres_Usuario,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                'perfil_operacion',
+                null,
+                null,
+                'arrow_downward'
+            );
 
-                return response()->json(['mensaje' => 'ok']);
-            }else{
-                return response()->json(['mensaje' => 'ng']);
-            }
+            return redirect()
+                ->route('perfil_operacion')
+                ->with('mensaje', 'Perfil de operación reactivado');
         }
     }
 
