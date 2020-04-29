@@ -110,7 +110,7 @@
                                                                                 style="font-size: 17px;">delete_forever</i>
                                                                         </button>
                                                                         @if ($actividad->HorasE != 0)
-                                                                            <a href="{{route('aprobar_horas_actividad', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                            <a href="{{route('aprobar_horas_actividad', ['idH'=>$actividad->ID_Actividad])}}"
                                                                                 class="btn-accion-tabla tooltipsC" title="Aprobar horas de trabajo">
                                                                                 <i class="material-icons text-success" style="font-size: 17px;">alarm_on</i>
                                                                             </a>

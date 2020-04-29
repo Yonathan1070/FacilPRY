@@ -80,9 +80,9 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
         $cliente = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
         $actividades = Actividades::obtenerActividades($idR, $cliente);
-
+        
         foreach ($actividades as $actividad) {
-            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad) {
+            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad && $actividad->ACT_Costo_Estimado_Actividad == 0 && $actividad->ACT_Costo_Real_Actividad == 0) {
                 Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
                 HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
                 $actividades = Actividades::obtenerActividades($idR, $cliente);
@@ -728,10 +728,10 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
 
         $horasAprobar = HorasActividad::obtenerHorasAprobar($idH);
-        
+
         if (count($horasAprobar) == 0) {
             return redirect()
-                ->route('inicio_director')
+                ->back()
                 ->with('mensaje', 'Las horas de trabajo ya han sido aprobadas.');
         }
         return view(
