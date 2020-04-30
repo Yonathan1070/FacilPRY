@@ -21,9 +21,11 @@ use Illuminate\Database\Eloquent\Model;
 class HistorialEstados extends Model
 {
     protected $table = "TBL_Historial_Estados";
-    protected $fillable = ['HST_EST_Fecha',
+    protected $fillable = [
+        'HST_EST_Fecha',
         'HST_EST_Estado',
-        'HST_EST_Actividad'];
+        'HST_EST_Actividad'
+    ];
     protected $guarded = ['id'];
 
     #Funcion para crear el historico de los estados de la actividad
@@ -33,5 +35,15 @@ class HistorialEstados extends Model
             'HST_EST_Estado' => $estado,
             'HST_EST_Actividad' => $idA
         ]);
+
+        LogCambios::guardar(
+            'TBL_Historial_Estados',
+            'INSERT',
+            'Guardó el historial de estado de la actividad '.$idA.':'.
+                ' HST_EST_Fecha -> '.Carbon::now().
+                ' HST_EST_Estado -> '.$estado.
+                ' HST_EST_Actividad -> '.$idA,
+            session()->get('Usuario_Id')
+        );
     }
 }

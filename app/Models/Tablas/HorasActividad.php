@@ -368,10 +368,21 @@ class HorasActividad extends Model
     #Función para actualizar las horas de la actividad
     public static function actualizarHoraActividad($horasAsignadas, $horasReales, $idH)
     {
-        HorasActividad::findOrFail($idH)->update([
+        $haOld = HorasActividad::findOrFail($idH);
+        $haNew = HorasActividad::findOrFail($idH);
+        $haNew->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $horasAsignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $horasReales
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'UPDATE',
+            'Cambió las horas de la actividad '.$haOld->HRS_ACT_Actividad_Id.':'.
+                ' HRS_ACT_Cantidad_Horas_Asignadas -> '.$haOld->HRS_ACT_Cantidad_Horas_Asignadas.' / '.$haNew->HRS_ACT_Cantidad_Horas_Asignadas.
+                ', HRS_ACT_Cantidad_Horas_Reales -> '.$haOld->HRS_ACT_Cantidad_Horas_Reales.' / '.$haNew->HRS_ACT_Cantidad_Horas_Reales,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función para actualizar las horas de la actividad

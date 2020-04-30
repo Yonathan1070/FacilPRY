@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\DB;
 class Respuesta extends Model
 {
     protected $table = "TBL_Respuesta";
-    protected $fillable = ['RTA_Titulo',
+    protected $fillable = [
+        'RTA_Titulo',
         'RTA_Respuesta',
         'RTA_Actividad_Finalizada_Id',
         'RTA_Estado_Id',
@@ -115,16 +116,30 @@ class Respuesta extends Model
     #Funcion para actualizar la respuesta cliente
     public static function actualizarRespuestaCliente($request, $estado, $idUsuario)
     {
-        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+        $rtaOld = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
             ->where('RTA_Usuario_Id', '=', 0)
-            ->first()
-            ->update([
-                'RTA_Titulo' => $request->RTA_Titulo,
-                'RTA_Respuesta' => $request->RTA_Respuesta,
-                'RTA_Estado_Id' => $estado,
-                'RTA_Usuario_Id' => $idUsuario,
-                'RTA_Fecha_Respuesta' => Carbon::now()
-            ]);
+            ->first();
+        $rtaNew = $rtaOld;
+        
+        $rtaNew->update([
+            'RTA_Titulo' => $request->RTA_Titulo,
+            'RTA_Respuesta' => $request->RTA_Respuesta,
+            'RTA_Estado_Id' => $estado,
+            'RTA_Usuario_Id' => $idUsuario,
+            'RTA_Fecha_Respuesta' => Carbon::now()
+        ]);
+        
+        LogCambios::guardar(
+            'TBL_Respuesta',
+            'UPDATE',
+            'Agregó la respuesta a la actividad '.$request->id.':'.
+                ' RTA_Titulo -> '.$rtaOld->RTA_Titulo.' / '.$rtaNew->RTA_Titulo.
+                ', RTA_Respuesta -> '.$rtaOld->RTA_Respuesta.' / '.$rtaNew->RTA_Respuesta.
+                ', RTA_Estado_Id -> '.$rtaOld->RTA_Estado_Id.' / '.$rtaNew->RTA_Estado_Id.
+                ', RTA_Usuario_Id -> '.$rtaOld->RTA_Usuario_Id.' / '.$rtaNew->RTA_Usuario_Id.
+                ', RTA_Fecha_Respuesta -> '.$rtaOld->RTA_Fecha_Respuesta.' / '.$rtaNew->RTA_Fecha_Respuesta,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar el estado de la respuesta

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Usuarios;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tablas\Proyectos;
 use PDF;
 use App\Models\Tablas\Empresas;

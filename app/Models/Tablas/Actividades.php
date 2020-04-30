@@ -1405,16 +1405,38 @@ class Actividades extends Model
     #Funcion para cambiar estado de la actividad
     public static function actualizarEstadoActividad($id, $estado)
     {
-        Actividades::findOrFail($id)->update(['ACT_Estado_Id' => $estado]);
+        $oldActividad = Actividades::findOrFail($id);
+        $newActividad = Actividades::findOrFail($id);
+        
+        $newActividad->update(['ACT_Estado_Id' => $estado]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Cambió el estado de la actividad '.$id.':'.
+                ' ACT_Estado_Id -> '.$oldActividad->ACT_Estado_Id.' / '.$newActividad->ACT_Estado_Id,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion que actualiza el estado de la actividad a pagado y en que fecha se efectuó
     public static function actualizarEstadoPago($id, $estado, $fecha)
     {
-        Actividades::findOrFail($id)->update([
+        $oldEstado = Actividades::findOrFail($id);
+        $estadoNew = Actividades::findOrFail($id);
+        $estadoNew->update([
             'ACT_Estado_Id' => $estado,
             'ACT_Fecha_Pago' => $fecha
         ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Cambió el estado del pago '.$id.':'.
+                ' ACT_Estado_Id -> '.$oldEstado->ACT_Estado_Id.' / '.$estadoNew->ACT_Estado_Id.
+                ', ACT_Fecha_Pago -> '.$oldEstado->ACT_Fecha_Pago.' / '.$estadoNew->ACT_Fecha_Pago,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función para actualizar el costo estimado de la actividad

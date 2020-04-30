@@ -68,5 +68,14 @@ class DocumentosEvidencias extends Model
             'DOC_Actividad_Finalizada_Id' => $idActividad,
             'ACT_Documento_Evidencia_Actividad' => $archivo
         ]);
+
+        LogCambios::guardar(
+            'TBL_Documentos_Evidencias',
+            'INSERT',
+            'Cargó un documento de evidencia:'.
+                ' DOC_Actividad_Finalizada_Id -> '.$idActividad.
+                ', ACT_Documento_Evidencia_Actividad -> '.$archivo,
+            session()->get('Usuario_Id')
+        );
     }
 }

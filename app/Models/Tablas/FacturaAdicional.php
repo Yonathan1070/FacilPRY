@@ -158,9 +158,19 @@ class FacturaAdicional extends Model
     #Funcion para actualizar el estado de la factura de cobro
     public static function actualizarFactura($id, $estado)
     {
-        FacturaAdicional::findOrFail($id)
-            ->update([
-                'FACT_AD_Estado_Id' => $estado,
-            ]);
+        $oldEstado = FacturaAdicional::findOrFail($id);
+        $estadoNew = FacturaAdicional::findOrFail($id);
+        
+        $estadoNew->update([
+            'FACT_AD_Estado_Id' => $estado,
+        ]);
+        
+        LogCambios::guardar(
+            'TBL_Factura_Adicional',
+            'UPDATE',
+            'Cambió el estado del pago en la factura adicional '.$id.':'.
+                ' FACT_AD_Estado_Id -> '.$oldEstado->FACT_AD_Estado_Id.' / '.$estadoNew->FACT_AD_Estado_Id,
+            session()->get('Usuario_Id')
+        );
     }
 }
