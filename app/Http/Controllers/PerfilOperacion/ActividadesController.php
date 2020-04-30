@@ -157,16 +157,16 @@ class ActividadesController extends Controller
     public function guardarHoras(Request $request, $id)
     {
         $fecha = HorasActividad::findOrFail($id);
-        $formatoFechaActividad = Carbon::createFromFormat('Y-m-d', $fecha->HRS_ACT_Fecha_Actividad);
+        $formatoFechaActividad = Carbon::createFromFormat('Y-m-d H:s:i', $fecha->HRS_ACT_Fecha_Actividad.' 23:59:59');
         $formatoFechaHoy = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
-        
+
         if (
-            $formatoFechaActividad->format('d/m/Y') <
-                $formatoFechaHoy->format('d/m/Y')
+            $formatoFechaActividad->lt($formatoFechaHoy)
         ) {
             return response()
                 ->json(['msg' => 'errorF']);
         }
+        
         if (
             ($formatoFechaActividad->format('d/m/Y') ==
                 $formatoFechaHoy->format('d/m/Y') &&
@@ -177,7 +177,7 @@ class ActividadesController extends Controller
                 $request->HRS_ACT_Cantidad_Horas_Asignadas)
         ) {
             return response()
-                ->json(['msg' => 'errorF']);
+                ->json(['msg' => 'errorH']);
         }
 
         $horas = HorasActividad::obtenerHorasAsignadasNoSeleccionada($id, $fecha);

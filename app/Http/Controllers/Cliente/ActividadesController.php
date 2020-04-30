@@ -11,6 +11,7 @@ use App\Models\Tablas\DocumentosSoporte;
 use App\Models\Tablas\HistorialEstados;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use App\Models\Tablas\Requerimientos;
 use App\Models\Tablas\Respuesta;
 use App\Models\Tablas\Usuarios;
 use Carbon\Carbon;
@@ -169,14 +170,15 @@ class ActividadesController extends Controller
         );
         
         $datos = Usuarios::findOrFail($idUsuario);
+        $actividad = Actividades::obtenerDetalleActividad($request['Actividad_Id']);
         
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.' ha finalizado una Actividad.',
             $idUsuario,
             $datos->USR_Supervisor_Id,
-            null,
-            null,
-            null,
+            'actividades',
+            'idR',
+            $actividad->ACT_Requerimiento_Id,
             'find_in_page'
         );
         

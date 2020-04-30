@@ -153,7 +153,7 @@ class DecisionesController extends Controller
             return redirect()
                 ->back()
                 ->withErrors(
-                    'No se puede exceder del 100% del rango del indicador'
+                    'No se puede exceder del 100% del rango de la decisión'
                 )->withInput();
         }
         
@@ -161,7 +161,7 @@ class DecisionesController extends Controller
         
         foreach ($decisiones as $decision) {
             if (
-                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Inicio_Decision &&
+                $decision->DCS_Rango_Inicio_Decision <= $request->DCS_Rango_Inicio_Decision &&
                 $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()

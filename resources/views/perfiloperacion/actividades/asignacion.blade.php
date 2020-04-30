@@ -43,7 +43,7 @@ Asignación de Horas
                             </thead>
                             <tbody>
                                 @foreach ($actividades as $actividad)
-                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d', $actividad->HRS_ACT_Fecha_Actividad)->format('d/m/Y') >= \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y'))
+                                @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->lt(\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y')))
                                         <tr>
                                             <td class="identifier"  style="display: none">{{$actividad->Id_Horas}}</td>
                                             <td class="uneditable">{{$actividad->HRS_ACT_Fecha_Actividad}}</td>
@@ -95,6 +95,8 @@ Asignación de Horas
                     InkBrutalPRY.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'InkBrutalPRY', 'error');
                 if(data.msg == "errorF")
                     InkBrutalPRY.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'InkBrutalPRY', 'error');
+                if(data.msg == "errorH")
+                    InkBrutalPRY.notificaciones('No puede asignar horas de trabajo debido a que está asignando una cantidad de horas superior a las restantes del día.', 'InkBrutalPRY', 'error');
                 if(data.msg == "exito")
                     InkBrutalPRY.notificaciones('Horas Asignadas', 'InkBrutalPRY', 'success');
             }

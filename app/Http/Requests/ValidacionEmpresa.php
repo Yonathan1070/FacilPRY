@@ -24,10 +24,10 @@ class ValidacionEmpresa extends FormRequest
     public function rules()
     {
         return [
-            'EMP_NIT_Empresa' => 'required|numeric|max:20|unique:TBL_Empresas,EMP_NIT_Empresa,' . $this->route('id'),
-            'EMP_Nombre_Empresa' => 'required|max:100|regex:/^[a-zA-Z]+$/u|unique:TBL_Empresas,EMP_Nombre_Empresa,' . $this->route('id'),
+            'EMP_NIT_Empresa' => 'required|regex:/^[0-9]+$/u|max:20|unique:TBL_Empresas,EMP_NIT_Empresa,' . $this->route('id'),
+            'EMP_Nombre_Empresa' => 'required|max:100|regex:/^[a-zA-Z ]+$/u|unique:TBL_Empresas,EMP_Nombre_Empresa,' . $this->route('id'),
             'EMP_Direccion_Empresa' => 'required|max:100',
-            'EMP_Telefono_Empresa' => 'required|max:20|numeric',
+            'EMP_Telefono_Empresa' => 'required|max:20|regex:/^[0-9]+$/u',
             'EMP_Correo_Empresa' => 'required|max:100|email|unique:TBL_Empresas,EMP_Correo_Empresa,' . $this->route('id'),
         ];
     }

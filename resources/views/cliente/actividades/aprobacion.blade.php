@@ -163,7 +163,7 @@ Inicio
                             <div class="form-line">
                                 <input name="RTA_Titulo" id="RTA_Titulo" class="form-control" required>
                                 <label class="form-label">Titulo de Respuesta</label>
-                            </div>
+                            </div><br />
                             <div class="form-line">
                                 <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
                                     class="form-control no-resize"
@@ -195,7 +195,7 @@ Inicio
                             <div class="form-line">
                                 <input name="RTA_Titulo" id="RTA_Titulo" class="form-control" required>
                                 <label class="form-label">Titulo de Respuesta</label>
-                            </div>
+                            </div><br />
                             <div class="form-line">
                                 <textarea name="RTA_Respuesta" id="RTA_Respuesta" cols="30" rows="5"
                                     class="form-control no-resize"

@@ -46,7 +46,7 @@ Aprobar Horas de Trabajo
                             </thead>
                             <tbody>
                                 @foreach ($horasAprobar as $horas)
-                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->format('d/m/Y') >= \Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y'))
+                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->lt(\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y')))
                                         <tr>
                                             <td style="display: none">{{$horas->Id_Horas}}</td>
                                             <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
@@ -89,6 +89,10 @@ Aprobar Horas de Trabajo
                     InkBrutalPRY.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'InkBrutalPRY', 'warning');
                 if(data.msg == "error")
                     InkBrutalPRY.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'InkBrutalPRY', 'error');
+                if(data.msg == "errorF")
+                    InkBrutalPRY.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'InkBrutalPRY', 'error');
+                if(data.msg == "errorH")
+                    InkBrutalPRY.notificaciones('No puede asignar horas de trabajo debido a que está asignando una cantidad de horas superior a las restantes del día.', 'InkBrutalPRY', 'error');
                 if(data.msg == "cero")
                     InkBrutalPRY.notificaciones('El trabajador ya asignó unas horas, no puede ser cero esta asignación', 'InkBrutalPRY', 'error');
                 if(data.msg == "exito")

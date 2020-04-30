@@ -150,5 +150,17 @@ class Decisiones extends Model
             'DCS_Rango_Fin_Decision' => $request->DCS_Rango_Fin_Decision,
             'DSC_Indicador_Id' => $decision
         ]);
+
+        LogCambios::guardar(
+            'TBL_Decisiones',
+            'INSERT',
+            'Creó una decisión de la siguiente forma:'.
+                ' DCS_Nombre_Decision -> '.$request->DCS_Nombre_Decision.
+                ' DCS_Descripcion_Decision -> '.$request->DCS_Descripcion_Decision.
+                ' DCS_Rango_Inicio_Decision -> '.$request->DCS_Rango_Inicio_Decision.
+                ' DCS_Rango_Fin_Decision -> '.$request->DCS_Rango_Fin_Decision.
+                ' DSC_Indicador_Id -> '.$decision,
+            session()->get('Usuario_Id')
+        );
     }
 }

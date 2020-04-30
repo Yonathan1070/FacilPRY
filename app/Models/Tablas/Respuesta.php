@@ -110,16 +110,32 @@ class Respuesta extends Model
     #Funcion para actualizar los datos de la respuesta
     public static function actualizarRespuesta($request, $estado, $idUsuario)
     {
-        Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+        $oldRta = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
             ->where('RTA_Titulo', '=', null)
-            ->first()
-            ->update([
+            ->first();
+        $newRta = Respuesta::where('RTA_Actividad_Finalizada_Id', '=', $request->id)
+            ->where('RTA_Titulo', '=', null)
+            ->first();
+        
+        $newRta->update([
                 'RTA_Titulo'=>$request->RTA_Titulo,
                 'RTA_Respuesta' => $request->RTA_Respuesta,
                 'RTA_Estado_Id' => $estado,
                 'RTA_Usuario_Id' => $idUsuario,
                 'RTA_Fecha_Respuesta' => Carbon::now()
             ]);
+        
+        LogCambios::guardar(
+            'TBL_Respuesta',
+            'UPDATE',
+            'Agregó la respuesta a la actividad '.$request->id.':'.
+                ' RTA_Titulo -> '.$oldRta->RTA_Titulo.' / '.$newRta->RTA_Titulo.
+                ', RTA_Respuesta -> '.$oldRta->RTA_Respuesta.' / '.$newRta->RTA_Respuesta.
+                ', RTA_Estado_Id -> '.$oldRta->RTA_Estado_Id.' / '.$newRta->RTA_Estado_Id.
+                ', RTA_Usuario_Id -> '.$oldRta->RTA_Usuario_Id.' / '.$newRta->RTA_Usuario_Id.
+                ', RTA_Fecha_Respuesta -> '.$oldRta->RTA_Fecha_Respuesta.' / '.$newRta->RTA_Fecha_Respuesta,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar la respuesta cliente

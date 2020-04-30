@@ -854,6 +854,9 @@ class ActividadesController extends Controller
     public function actualizarHoras(Request $request, $idH)
     {
         $fecha = HorasActividad::findOrFail($idH);
+        $formatoFechaHoy = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
+        $formatoFechaActividad = Carbon::createFromFormat('Y-m-d H:s:i', $fecha->HRS_ACT_Fecha_Actividad.' 23:59:59');
+
         $actividades = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id');
         $trabajador = $actividades->where('ha.id', '=', $idH)->first();
@@ -867,6 +870,26 @@ class ActividadesController extends Controller
         
         $horaModif = HorasActividad::findOrFail($idH);
         
+        if (
+            $formatoFechaActividad->lt($formatoFechaHoy)
+        ) {
+            return response()
+                ->json(['msg' => 'errorF']);
+        }
+        
+        if (
+            ($formatoFechaActividad->format('d/m/Y') ==
+                $formatoFechaHoy->format('d/m/Y') &&
+                Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <= 1)
+            || ($formatoFechaActividad->format('d/m/Y') ==
+                $formatoFechaHoy->format('d/m/Y') &&
+                Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <
+                $request->HRS_ACT_Cantidad_Horas_Asignadas)
+        ) {
+            return response()
+                ->json(['msg' => 'errorH']);
+        }
+
         if (
             ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 &&
             ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18

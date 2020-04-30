@@ -408,7 +408,7 @@ class HorasActividad extends Model
     public static function actualizarHoraRealActividad($request, $idH)
     {
         $oldHora = HorasActividad::findOrFail($idH);
-        $newHora = $oldHora;
+        $newHora = HorasActividad::findOrFail($idH);
         $newHora->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
@@ -428,7 +428,7 @@ class HorasActividad extends Model
     public static function actualizarHorasAsignadas($id, $cantidadHoras)
     {
         $oldHoras = HorasActividad::findOrFail($id);
-        $newHoras = $oldHoras;
+        $newHoras = HorasActividad::findOrFail($id);
         $newHoras->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $cantidadHoras
         ]);
@@ -446,7 +446,7 @@ class HorasActividad extends Model
     public static function actualizarHorasReales($idH, $request)
     {
         $oldHoras = HorasActividad::findOrFail($idH);
-        $newHoras = $oldHoras;
+        $newHoras = HorasActividad::findOrFail($idH);
         $newHoras->update([
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);

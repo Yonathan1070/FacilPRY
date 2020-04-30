@@ -444,7 +444,7 @@ class ActividadesFinalizadas extends Model
     public static function actualizarRevisadoActividad($id)
     {
         $oldRevisado = ActividadesFinalizadas::findOrFail($id);
-        $newRevisado = $oldRevisado;
+        $newRevisado = ActividadesFinalizadas::findOrFail($id);
         $newRevisado->update([
             'ACT_FIN_Revisado' => 1
         ]);

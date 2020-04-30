@@ -1389,7 +1389,7 @@ class Actividades extends Model
     public static function actualizarActividad($request, $idA, $idUsuario)
     {
         $oldActividad = Actividades::findOrFail($idA);
-        $newActividad = $oldActividad;
+        $newActividad = Actividades::findOrFail($idA);
         $actividad = $newActividad->update([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
@@ -1421,7 +1421,7 @@ class Actividades extends Model
     public static function actualizarRequerimientoActividad($idA, $request)
     {
         $oldReq = Actividades::findOrFail($idA);
-        $newReq = $oldReq;
+        $newReq = Actividades::findOrFail($idA);
         
         $newReq->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
 
@@ -1438,7 +1438,7 @@ class Actividades extends Model
     public static function actualizarFechaFin($solicitud)
     {
         $oldFecha = Actividades::findOrFail($solicitud->Id_Actividad);
-        $newFecha = $oldFecha;
+        $newFecha = Actividades::findOrFail($solicitud->Id_Actividad);
         $newFecha->update([
             'ACT_Estado_Id' => 1,
             'ACT_Fecha_Fin_Actividad' => Carbon::now()->addDays(1)->format('yy-m-d h:i:s')
@@ -1447,7 +1447,7 @@ class Actividades extends Model
         LogCambios::guardar(
             'TBL_Actividades',
             'UPDATE',
-            'Cambió el requerimiento de la actividad '.$idA.':'.
+            'Cambió el la fecha de entrrega de la actividad:'.
                 ' ACT_Estado_Id -> '.$oldFecha->ACT_Estado_Id.' / '.$newFecha->ACT_Estado_Id.
                 ', ACT_Fecha_Fin_Actividad -> '.$oldFecha->ACT_Fecha_Fin_Actividad.' / '.$newFecha->ACT_Fecha_Fin_Actividad,
             session()->get('Usuario_Id')
@@ -1495,7 +1495,7 @@ class Actividades extends Model
     public static function actualizarCostoEstimado($idA, $horas, $costoHora)
     {
         $oldCosto = Actividades::findOrFail($idA);
-        $newCosto = $oldCosto;
+        $newCosto = Actividades::findOrFail($idA);
         
         $newCosto->update([
             'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
@@ -1514,7 +1514,7 @@ class Actividades extends Model
     public static function actualizarCostoReal($id, $estado, $costo)
     {
         $oldCosto = Actividades::findOrFail($id);
-        $newCosto = $oldCosto;
+        $newCosto = Actividades::findOrFail($id);
         $newCosto->update([
             'ACT_Estado_Id' => $estado,
             'ACT_Costo_Real_Actividad' => $costo

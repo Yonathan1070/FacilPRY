@@ -56,4 +56,25 @@ class Requerimientos extends Model
         
         return $requerimientos;
     }
+
+    #Funcion para obtener los requerimientos de un proyecto, excepto el requerimiento actual
+    public static function actualizar($request, $idR)
+    {
+        $oldRequerimiento = Requerimientos::findOrFail($idR);
+        $newRequerimiento = Requerimientos::findOrFail($idR);;
+
+        $newRequerimiento->update([
+            'REQ_Nombre_Requerimiento' => $request->REQ_Nombre_Requerimiento,
+            'REQ_Descripcion_Requerimiento' => $request->REQ_Descripcion_Requerimiento
+        ]);
+
+        LogCambios::guardar(
+            'TBL_Requerimientos',
+            'UPDATE',
+            'Actualizó los datos del requerimiento '.$idR.' de la siguiente forma:'.
+                ' REQ_Nombre_Requerimiento -> '.$oldRequerimiento->REQ_Nombre_Requerimiento.' / '.$newRequerimiento->REQ_Nombre_Requerimiento.
+                ', REQ_Descripcion_Requerimiento -> '.$oldRequerimiento->REQ_Descripcion_Requerimiento.' / '.$newRequerimiento->REQ_Descripcion_Requerimiento,
+            session()->get('Usuario_Id')
+        );
+    }
 }

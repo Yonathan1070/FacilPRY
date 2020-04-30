@@ -220,6 +220,9 @@ class RequerimientosController extends Controller
                     )->withInput();
             }
         }
+        
+        Requerimientos::actualizar($request, $idR);
+        
         return redirect()
             ->route(
                 'requerimientos', [$request['REQ_Proyecto_Id']]
