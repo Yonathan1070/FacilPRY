@@ -363,6 +363,16 @@ class HorasActividad extends Model
             'HRS_ACT_Actividad_Id' => $idA,
             'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'INSERT',
+            'Solicitó '.$cantidadHoras.' horas para entregar la actividad '.$idA.':'.
+                ' HRS_ACT_Cantidad_Horas_Asignadas -> '.$cantidadHoras.
+                ', HRS_ACT_Actividad_Id -> '.$idA.
+                ', HRS_ACT_Fecha_Actividad -> '.$fecha . " 23:59:00",
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función para actualizar las horas de la actividad
@@ -397,9 +407,19 @@ class HorasActividad extends Model
     #Funcion para ajustar las horas asignadas de la actividad
     public static function actualizarHorasAsignadas($id, $cantidadHoras)
     {
-        HorasActividad::findOrFail($id)->update([
+        $oldHoras = HorasActividad::findOrFail($id);
+        $newHoras = $oldHoras;
+        $newHoras->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $cantidadHoras
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'UPDATE',
+            'Asignó horas de trabajo :'.
+                ' HRS_ACT_Cantidad_Horas_Asignadas -> '.$oldHoras->HRS_ACT_Cantidad_Horas_Asignadas.' / '.$newHoras->HRS_ACT_Cantidad_Horas_Asignadas,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para ajustar las horas reales de la actividad

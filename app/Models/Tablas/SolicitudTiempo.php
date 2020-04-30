@@ -93,5 +93,14 @@ class SolicitudTiempo extends Model
             'SOL_TMP_Actividad_Id' => $id,
             'SOL_TMP_Hora_Solicitada' => $request->Hora_Solicitud
         ]);
+
+        LogCambios::guardar(
+            'TBL_Solicitud_Tiempo',
+            'INSERT',
+            'Solicitó tiempo para la actividad '.$id.':'.
+                ' SOL_TMP_Actividad_Id -> '.$id.
+                ', SOL_TMP_Hora_Solicitada -> '.$request->Hora_Solicitud,
+            session()->get('Usuario_Id')
+        );
     }
 }

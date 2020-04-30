@@ -96,6 +96,15 @@ class Respuesta extends Model
             'RTA_Actividad_Finalizada_Id' => $id,
             'RTA_Estado_Id' => $estado
         ]);
+
+        LogCambios::guardar(
+            'TBL_Respuesta',
+            'INSERT',
+            'Realizó una respuesta a la actividad '.$id.':'.
+                ' RTA_Actividad_Finalizada_Id -> '.$id.
+                ', RTA_Estado_Id -> '.$estado,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar los datos de la respuesta

@@ -426,6 +426,18 @@ class ActividadesFinalizadas extends Model
             'ACT_FIN_Fecha_Finalizacion' => Carbon::now(),
             'ACT_FIN_Link' => $request['ACT_FIN_Link']
         ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades_Finalizadas',
+            'INSERT',
+            'Realizó la entrega de una actividad:'.
+                ' ACT_FIN_Titulo -> '.$request->ACT_FIN_Titulo.
+                ', ACT_FIN_Descripcion -> '.$request->ACT_FIN_Descripcion.
+                ', ACT_FIN_Actividad_Id -> '.$request->ACT_FIN_Actividad_Id.
+                ', ACT_FIN_Fecha_Finalizacion -> '.$request->ACT_FIN_Fecha_Finalizacion.
+                ', ACT_FIN_Revisado -> '.$request->ACT_FIN_Revisado,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar el revisado de la actividad entregada

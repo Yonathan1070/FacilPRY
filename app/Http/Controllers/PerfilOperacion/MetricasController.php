@@ -8,8 +8,6 @@ use App\Models\Tablas\ActividadesFinalizadas;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Proyectos;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class MetricasController extends Controller
 {
