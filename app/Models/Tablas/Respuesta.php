@@ -154,7 +154,17 @@ class Respuesta extends Model
     #Funcion para actualizar el estado de la respuesta
     public static function actualizarEstado($id, $estado)
     {
-        Respuesta::findOrFail($id)
-            ->update(['RTA_Estado_Id' => $estado]);
+        $oldRta = Respuesta::findOrFail($id);
+        $newRta = $oldRta;
+        
+        $newRta->update(['RTA_Estado_Id' => $estado]);
+        
+        LogCambios::guardar(
+            'TBL_Respuesta',
+            'UPDATE',
+            'Cambió estado de la respuesta:'.
+                ', RTA_Estado_Id -> '.$oldRta->RTA_Estado_Id.' / '.$newRta->RTA_Estado_Id,
+            session()->get('Usuario_Id')
+        );
     }
 }

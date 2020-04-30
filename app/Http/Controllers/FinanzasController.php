@@ -18,7 +18,6 @@ use App\Models\Tablas\Proyectos;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use PDF;
 

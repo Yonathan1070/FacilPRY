@@ -153,6 +153,18 @@ class FacturaAdicional extends Model
             'FACT_AD_Fecha_Factura' => Carbon::now(),
             'FACT_AD_Proyecto_Id' => $request['ProyectoSelect']
         ]);
+
+        LogCambios::guardar(
+            'TBL_Factura_Adicional',
+            'UPDATE',
+            'Creó una factura adicional de la siguiente forma:'.
+                ' FACT_AD_Descripcion -> '.$request['FACT_AD_Descripcion'].
+                ', FACT_AD_Precio_Factura -> '.$request['FACT_AD_Costo'].
+                ', FACT_AD_Estado_Id -> 9'.
+                ', FACT_AD_Fecha_Factura -> '.Carbon::now().
+                ', FACT_AD_Proyecto_Id -> '.$request['ProyectoSelect'],
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar el estado de la factura de cobro

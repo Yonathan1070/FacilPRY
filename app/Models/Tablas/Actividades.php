@@ -1367,12 +1367,30 @@ class Actividades extends Model
             'ACT_Trabajador_Id' => $idUsuario,
             'ACT_Encargado_Id' => $idEncargado
         ]);
+
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'INSERT',
+            'Creó la actividad con la siguiente información:'.
+                ' ACT_Nombre_Actividad -> '.$request['ACT_Nombre_Actividad'].
+                ', ACT_Descripcion_Actividad -> '.$request['ACT_Descripcion_Actividad'].
+                ', ACT_Estado_Id -> 1'.
+                ', ACT_Fecha_Inicio_Actividad -> '.$request['ACT_Fecha_Inicio_Actividad'].
+                ', ACT_Fecha_Fin_Actividad -> '.$request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'].
+                ', ACT_Costo_Estimado_Actividad -> 0'.
+                ', ACT_Requerimiento_Id -> '.$idR.
+                ', ACT_Trabajador_Id -> '.$idUsuario.
+                ', ACT_Encargado_Id -> '.$idEncargado,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función para actualizar los datos de la Actividad
     public static function actualizarActividad($request, $idA, $idUsuario)
     {
-        $actividad = Actividades::findOrFail($idA)->update([
+        $oldActividad = Actividades::findOrFail($idA);
+        $newActividad = $oldActividad;
+        $actividad = $newActividad->update([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
@@ -1383,23 +1401,57 @@ class Actividades extends Model
             'ACT_Trabajador_Id' => $idUsuario,
         ]);
 
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'Cambió los datos de la empresa:'.
+                ' ACT_Nombre_Actividad -> '.$oldActividad->ACT_Nombre_Actividad.' / '.$request['ACT_Nombre_Actividad'].
+                ', ACT_Descripcion_Actividad -> '.$oldActividad->ACT_Descripcion_Actividad.' / '.$request['ACT_Descripcion_Actividad'].
+                ', ACT_Fecha_Inicio_Actividad -> '.$oldActividad->ACT_Fecha_Inicio_Actividad.' / '.$request['ACT_Fecha_Inicio_Actividad'].
+                ', ACT_Fecha_Fin_Actividad -> '.$oldActividad->ACT_Fecha_Fin_Actividad.' / '.$request['ACT_Fecha_Fin_Actividad'] . ' ' . $request['ACT_Hora_Entrega'].
+                ', ACT_Costo_Estimado_Actividad -> '.$oldActividad->ACT_Costo_Estimado_Actividad.' / 0'.
+                ', ACT_Trabajador_Id -> '.$oldActividad->ACT_Trabajador_Id.' / '.$idUsuario,
+            session()->get('Usuario_Id')
+        );
+
         return $actividad;
     }
 
     #Funcion para actualizar el requerimiento de la actividad
     public static function actualizarRequerimientoActividad($idA, $request)
     {
-        Actividades::findOrFail($idA)
-            ->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
+        $oldReq = Actividades::findOrFail($idA);
+        $newReq = $oldReq;
+        
+        $newReq->update(['ACT_Requerimiento_Id' => $request['ACT_Requerimiento']]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Cambió el requerimiento de la actividad '.$idA.':'.
+                ' ACT_Requerimiento_Id -> '.$request['ACT_Requerimiento'],
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar la fechaa de finalización de la actividad
     public static function actualizarFechaFin($solicitud)
     {
-        Actividades::findOrFail($solicitud->Id_Actividad)->update([
+        $oldFecha = Actividades::findOrFail($solicitud->Id_Actividad);
+        $newFecha = $oldFecha;
+        $newFecha->update([
             'ACT_Estado_Id' => 1,
             'ACT_Fecha_Fin_Actividad' => Carbon::now()->addDays(1)->format('yy-m-d h:i:s')
         ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Cambió el requerimiento de la actividad '.$idA.':'.
+                ' ACT_Estado_Id -> '.$oldFecha->ACT_Estado_Id.' / '.$newFecha->ACT_Estado_Id.
+                ', ACT_Fecha_Fin_Actividad -> '.$oldFecha->ACT_Fecha_Fin_Actividad.' / '.$newFecha->ACT_Fecha_Fin_Actividad,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para cambiar estado de la actividad
@@ -1442,18 +1494,39 @@ class Actividades extends Model
     #Función para actualizar el costo estimado de la actividad
     public static function actualizarCostoEstimado($idA, $horas, $costoHora)
     {
-        Actividades::findOrFail($idA)
-            ->update([
-                'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
-            ]);
+        $oldCosto = Actividades::findOrFail($idA);
+        $newCosto = $oldCosto;
+        
+        $newCosto->update([
+            'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
+        ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Actualizó el costo de la actividad:'.
+                ' ACT_Costo_Estimado_Actividad -> '.$oldCosto->ACT_Costo_Estimado_Actividad.' / '.$newCosto->ACT_Costo_Estimado_Actividad,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar el estado y costo real de la actividad
     public static function actualizarCostoReal($id, $estado, $costo)
     {
-        Actividades::findOrFail($id)->update([
+        $oldCosto = Actividades::findOrFail($id);
+        $newCosto = $oldCosto;
+        $newCosto->update([
             'ACT_Estado_Id' => $estado,
             'ACT_Costo_Real_Actividad' => $costo
         ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Actualizó el costo de la actividad:'.
+                ' ACT_Estado_Id -> '.$oldCosto->ACT_Estado_Id.' / '.$newCosto->ACT_Estado_Id.
+                ' ACT_Costo_Real_Actividad -> '.$oldCosto->ACT_Costo_Real_Actividad.' / '.$newCosto->ACT_Costo_Real_Actividad,
+            session()->get('Usuario_Id')
+        );
     }
 }

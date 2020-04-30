@@ -7,7 +7,6 @@ use App\Http\Requests\ValidacionCliente;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
-use App\Http\Requests\ValidacionUsuario;
 use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\MenuUsuario;

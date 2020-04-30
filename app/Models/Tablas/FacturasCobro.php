@@ -161,5 +161,15 @@ class FacturasCobro extends Model
             'FACT_Cliente_Id' => $idC,
             'FACT_Fecha_Cobro' => Carbon::now()
         ]);
+
+        LogCambios::guardar(
+            'TBL_Facturas_Cobro',
+            'INSERT',
+            'Agregó la respuesta a la actividad:'.
+                ' FACT_Actividad_Id -> '.$idA.
+                ', FACT_Cliente_Id -> '.$idC.
+                ', FACT_Fecha_Cobro -> '.Carbon::now(),
+            session()->get('Usuario_Id')
+        );
     }
 }

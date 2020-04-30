@@ -112,5 +112,16 @@ class Calificaciones extends Model
             'CALIF_Decision_Id' => $decision,
             'CALIF_Fecha_Calificacion' => Carbon::now()
         ]);
+
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'Creó la calificacion para el usuario:'.
+                ' CALIF_calificacion -> '.$calificacion.
+                ', CALIF_Trabajador_Id -> '.$trabajador.
+                ', CALIF_Decision_Id -> '.$decision.
+                ', CALIF_Fecha_Calificacion -> '.Carbon::now(),
+            session()->get('Usuario_Id')
+        );
     }
 }

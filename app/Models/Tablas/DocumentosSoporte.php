@@ -96,6 +96,15 @@ class DocumentosSoporte extends Model
             'DOC_Actividad_Id' => $idA,
             'ACT_Documento_Soporte_Actividad' => $archivo
         ]);
+
+        LogCambios::guardar(
+            'TBL_Documentos_Soporte',
+            'INSERT',
+            'Cargó un documento de soporte:'.
+                ' DOC_Actividad_Id -> '.$idA.
+                ', ACT_Documento_Soporte_Actividad -> '.$archivo,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar el documento soporte
@@ -104,5 +113,13 @@ class DocumentosSoporte extends Model
         $documento->update([
             'ACT_Documento_Soporte_Actividad' => $archivo
         ]);
+
+        LogCambios::guardar(
+            'TBL_Documentos_Soporte',
+            'INSERT',
+            'Cargó un documento de soporte:'.
+                ', ACT_Documento_Soporte_Actividad -> '.$archivo,
+            session()->get('Usuario_Id')
+        );
     }
 }

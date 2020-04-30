@@ -127,19 +127,50 @@ class Empresas extends Model
             'EMP_Empresa_Id' => $request['id'],
             'EMP_Estado_Empresa' => 1
         ]);
+
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'Creó la empresa de la siguiente forma:'.
+                ' EMP_Nombre_Empresa -> '.$request->EMP_Nombre_Empresa.
+                ' EMP_NIT_Empresa -> '.$request->EMP_NIT_Empresa.
+                ' EMP_Telefono_Empresa -> '.$request->EMP_Telefono_Empresa.
+                ' EMP_Direccion_Empresa -> '.$request->EMP_Direccion_Empresa.
+                ' EMP_Correo_Empresa -> '.$request->EMP_Correo_Empresa.
+                ' EMP_Logo_Empresa -> NULL'.
+                ' EMP_Empresa_Id -> '.$request->id.
+                ', EMP_Estado_Empresa -> 1',
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función que actualiza los datos de la empresa
     public static function editarEmpresa($request, $id)
     {
-        Empresas::findOrFail($id)
-            ->update([
-                'EMP_Nombre_Empresa' => $request['EMP_Nombre_Empresa'],
-                'EMP_NIT_Empresa' => $request['EMP_NIT_Empresa'],
-                'EMP_Telefono_Empresa' => $request['EMP_Telefono_Empresa'],
-                'EMP_Direccion_Empresa' => $request['EMP_Direccion_Empresa'],
-                'EMP_Correo_Empresa' => $request['EMP_Correo_Empresa']
-            ]);
+        $oldEmpresa = Empresas::findOrFail($id);
+        $newEmpresa = $oldEmpresa;
+        $newEmpresa->update([
+            'EMP_Nombre_Empresa' => $request['EMP_Nombre_Empresa'],
+            'EMP_NIT_Empresa' => $request['EMP_NIT_Empresa'],
+            'EMP_Telefono_Empresa' => $request['EMP_Telefono_Empresa'],
+            'EMP_Direccion_Empresa' => $request['EMP_Direccion_Empresa'],
+            'EMP_Correo_Empresa' => $request['EMP_Correo_Empresa']
+        ]);
+        
+        LogCambios::guardar(
+            'TBL_Empresas',
+            'UPDATE',
+            'actualizó la empresa de la siguiente forma:'.
+                ' EMP_Nombre_Empresa -> '.$oldEmpresa->EMP_Nombre_Empresa.' / '.$newEmpresa->EMP_Nombre_Empresa.
+                ', EMP_NIT_Empresa -> '.$oldEmpresa->EMP_NIT_Empresa.' / '.$newEmpresa->EMP_NIT_Empresa.
+                ', EMP_Telefono_Empresa -> '.$oldEmpresa->EMP_Telefono_Empresa.' / '.$newEmpresa->EMP_Telefono_Empresa.
+                ', EMP_Direccion_Empresa -> '.$oldEmpresa->EMP_Direccion_Empresa.' / '.$newEmpresa->EMP_Direccion_Empresa.
+                ', EMP_Correo_Empresa -> '.$oldEmpresa->EMP_Correo_Empresa.' / '.$newEmpresa->EMP_Correo_Empresa.
+                ', EMP_Logo_Empresa -> '.$oldEmpresa->EMP_Logo_Empresa.' / '.$newEmpresa->EMP_Logo_Empresa.
+                ', EMP_Empresa_Id -> '.$oldEmpresa->EMP_Empresa_Id.' / '.$newEmpresa->EMP_Empresa_Id.
+                ', EMP_Estado_Empresa -> '.$oldEmpresa->EMP_Estado_Empresa.' / '.$newEmpresa->EMP_Estado_Empresa,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función que cambia el estado de la empresa
@@ -195,12 +226,12 @@ class Empresas extends Model
             'Cambió los datos de la empresa:'.
                 ' EMP_Nombre_Empresa -> '.$oldEmpresa->EMP_Nombre_Empresa.' / '.$empresa->EMP_Nombre_Empresa.
                 ', EMP_NIT_Empresa -> '.$oldEmpresa->EMP_NIT_Empresa.' / '.$empresa->EMP_NIT_Empresa.
-                ', EMP_Telefono_Empresa'.$oldEmpresa->EMP_Telefono_Empresa.' / '.$empresa->EMP_Telefono_Empresa.
-                ', EMP_Direccion_Empresa'.$oldEmpresa->EMP_Direccion_Empresa.' / '.$empresa->EMP_Direccion_Empresa.
-                ', EMP_Correo_Empresa'.$oldEmpresa->EMP_Correo_Empresa.' / '.$empresa->EMP_Correo_Empresa.
-                ', EMP_Logo_Empresa'.$oldEmpresa->EMP_Logo_Empresa.' / '.$empresa->EMP_Logo_Empresa.
-                ', EMP_Empresa_Id'.$oldEmpresa->EMP_Empresa_Id.' / '.$empresa->EMP_Empresa_Id.
-                ', EMP_Estado_Empresa'.$oldEmpresa->EMP_Estado_Empresa.' / '.$empresa->EMP_Estado_Empresa,
+                ', EMP_Telefono_Empresa -> '.$oldEmpresa->EMP_Telefono_Empresa.' / '.$empresa->EMP_Telefono_Empresa.
+                ', EMP_Direccion_Empresa -> '.$oldEmpresa->EMP_Direccion_Empresa.' / '.$empresa->EMP_Direccion_Empresa.
+                ', EMP_Correo_Empresa -> '.$oldEmpresa->EMP_Correo_Empresa.' / '.$empresa->EMP_Correo_Empresa.
+                ', EMP_Logo_Empresa -> '.$oldEmpresa->EMP_Logo_Empresa.' / '.$empresa->EMP_Logo_Empresa.
+                ', EMP_Empresa_Id -> '.$oldEmpresa->EMP_Empresa_Id.' / '.$empresa->EMP_Empresa_Id.
+                ', EMP_Estado_Empresa -> '.$oldEmpresa->EMP_Estado_Empresa.' / '.$empresa->EMP_Estado_Empresa,
             session()->get('Usuario_Id')
         );
     }

@@ -353,6 +353,15 @@ class HorasActividad extends Model
             'HRS_ACT_Actividad_Id' => $idA,
             'HRS_ACT_Fecha_Actividad' => $fecha . " 23:59:00"
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'INSERT',
+            'Creó los rangos de las fechas para asignar horas de trabajo:'.
+                ', HRS_ACT_Actividad_Id -> '.$idA.
+                ', HRS_ACT_Fecha_Actividad -> '.$fecha . " 23:59:00",
+            session()->get('Usuario_Id')
+        );
     }
 
     #Función para crear las Horas asignadas para las actividades
@@ -398,10 +407,21 @@ class HorasActividad extends Model
     #Función para actualizar las horas de la actividad
     public static function actualizarHoraRealActividad($request, $idH)
     {
-        HorasActividad::findOrFail($idH)->update([
+        $oldHora = HorasActividad::findOrFail($idH);
+        $newHora = $oldHora;
+        $newHora->update([
             'HRS_ACT_Cantidad_Horas_Asignadas' => $request->HRS_ACT_Cantidad_Horas_Asignadas,
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'UPDATE',
+            'Cambió las horas de la actividad '.$oldHora->HRS_ACT_Actividad_Id.':'.
+                ' HRS_ACT_Cantidad_Horas_Asignadas -> '.$oldHora->HRS_ACT_Cantidad_Horas_Asignadas.' / '.$newHora->HRS_ACT_Cantidad_Horas_Asignadas.
+                ', HRS_ACT_Cantidad_Horas_Reales -> '.$oldHora->HRS_ACT_Cantidad_Horas_Reales.' / '.$newHora->HRS_ACT_Cantidad_Horas_Reales,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para ajustar las horas asignadas de la actividad
@@ -425,8 +445,18 @@ class HorasActividad extends Model
     #Funcion para ajustar las horas reales de la actividad
     public static function actualizarHorasReales($idH, $request)
     {
-        HorasActividad::findOrFail($idH)->update([
+        $oldHoras = HorasActividad::findOrFail($idH);
+        $newHoras = $oldHoras;
+        $newHoras->update([
             'HRS_ACT_Cantidad_Horas_Reales' => $request->HRS_ACT_Cantidad_Horas_Asignadas
         ]);
+
+        LogCambios::guardar(
+            'TBL_Horas_Actividad',
+            'UPDATE',
+            'Aprobó horas de trabajo :'.
+                ' HRS_ACT_Cantidad_Horas_Asignadas -> '.$oldHoras->HRS_ACT_Cantidad_Horas_Asignadas.' / '.$newHoras->HRS_ACT_Cantidad_Horas_Asignadas,
+            session()->get('Usuario_Id')
+        );
     }
 }

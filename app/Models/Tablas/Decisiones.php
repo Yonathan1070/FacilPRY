@@ -125,6 +125,19 @@ class Decisiones extends Model
             'DSC_Indicador_Id' => $decision,
             'DSC_Empresa_Id' => $request->DSC_Empresa_Id
         ]);
+
+        LogCambios::guardar(
+            'TBL_Decisiones',
+            'INSERT',
+            'Creó una desicion de la siguiente forma:'.
+                ' DCS_Nombre_Decision -> '.$request->DCS_Nombre_Decision.
+                ', DCS_Descripcion_Decision -> '.$request->DCS_Descripcion_Decision.
+                ', DCS_Rango_Inicio_Decision -> '.$request->DCS_Rango_Inicio_Decision.
+                ', DCS_Rango_Fin_Decision -> '.$request->DCS_Rango_Fin_Decision.
+                ', DSC_Indicador_Id -> '.$decision.
+                ', DSC_Empresa_Id -> '.$request->DSC_Empresa_Id,
+            session()->get('Usuario_Id')
+        );
     }
 
     #Funcion para actualizar la decision
