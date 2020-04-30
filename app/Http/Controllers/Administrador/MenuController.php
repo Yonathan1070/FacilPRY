@@ -95,7 +95,7 @@ class MenuController extends Controller
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Menú creado con exito');
+            ->with('mensaje', 'Menú creado con éxito');
     }
 
     /**

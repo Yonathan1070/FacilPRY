@@ -301,7 +301,7 @@ class FinanzasController extends Controller
 
         return redirect()
             ->route('agregar_cobro_finanzas')
-            ->with('mensaje', 'Cuenta de Cobro agregada con exito');
+            ->with('mensaje', 'Cuenta de Cobro agregada con éxito');
     }
 
     /**

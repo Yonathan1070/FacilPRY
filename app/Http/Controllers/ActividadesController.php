@@ -371,7 +371,7 @@ class ActividadesController extends Controller
 
         return redirect()
             ->route($ruta, [$idR])
-            ->with('mensaje', 'Tarea agregada con exito');
+            ->with('mensaje', 'Tarea agregada con éxito');
     }
 
     #Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
@@ -660,7 +660,7 @@ class ActividadesController extends Controller
         
         return redirect()
             ->route('actividades', [$actividad->ACT_Requerimiento_Id])
-            ->with('mensaje', 'Actividad editada con exito');
+            ->with('mensaje', 'Actividad editada con éxito');
     }
 
     /**

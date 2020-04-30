@@ -18,7 +18,7 @@ use Illuminate\Database\QueryException;
 
 /**
  * Perfil Operacion Controller, donde se mostrarán las
- * metricas del sistema para el administrador
+ * métricas del sistema para el administrador
  * 
  * @author: Yonathan Bohorquez
  * @email: ycbohorquez@ucundinamarca.edu.co
@@ -161,7 +161,7 @@ class PerfilOperacionController extends Controller
 
         return redirect()
             ->back()
-            ->with('mensaje', 'Perfil de Operación agregado con exito');
+            ->with('mensaje', 'Perfil de Operación agregado con éxito');
     }
 
     /**
@@ -228,7 +228,7 @@ class PerfilOperacionController extends Controller
 
         return redirect()
             ->route('perfil_operacion')
-            ->with('mensaje', 'Perfi de operación  actualizado con exito');
+            ->with('mensaje', 'Perfi de operación  actualizado con éxito');
     }
 
     /**
@@ -366,7 +366,7 @@ class PerfilOperacionController extends Controller
         
         return redirect()
             ->route('perfil_operacion')
-            ->with('mensaje', 'Perfil de operación reingresado con exito');
+            ->with('mensaje', 'Perfil de operación reingresado con éxito');
     }
 
     /**

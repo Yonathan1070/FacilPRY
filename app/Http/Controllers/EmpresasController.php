@@ -139,7 +139,7 @@ class EmpresasController extends Controller
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Empresa agregada con exito');
+            ->with('mensaje', 'Empresa agregada con éxito');
     }
 
     /**
@@ -194,7 +194,7 @@ class EmpresasController extends Controller
 
         return redirect()
             ->route('empresas')
-            ->with('mensaje', 'Empresa actualizada con exito');
+            ->with('mensaje', 'Empresa actualizada con éxito');
     }
 
     /**

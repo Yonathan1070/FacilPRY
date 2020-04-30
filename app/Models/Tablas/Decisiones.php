@@ -129,7 +129,7 @@ class Decisiones extends Model
         LogCambios::guardar(
             'TBL_Decisiones',
             'INSERT',
-            'Creó una desicion de la siguiente forma:'.
+            'Creó una decision de la siguiente forma:'.
                 ' DCS_Nombre_Decision -> '.$request->DCS_Nombre_Decision.
                 ', DCS_Descripcion_Decision -> '.$request->DCS_Descripcion_Decision.
                 ', DCS_Rango_Inicio_Decision -> '.$request->DCS_Rango_Inicio_Decision.

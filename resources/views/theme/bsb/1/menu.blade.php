@@ -37,7 +37,7 @@
             <li>
                 <a href="{{route("inicio_administrador")}}">
                     <i class="material-icons">pie_chart</i>
-                    <span>Metricas</span>
+                    <span>Métricas</span>
                 </a>
             </li>
             <li>

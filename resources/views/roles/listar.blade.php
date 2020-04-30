@@ -56,14 +56,14 @@ Listar Roles
                                                         class="d-inline" method="POST">
                                                         @if ($permisos['editar'] == true)
                                                             <a href="{{route('editar_rol', ['id'=>$rol->id])}}"
-                                                                class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                                 <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                             </a>
                                                         @endif
                                                         @if ($permisos['eliminar'] == true)
                                                             @csrf @method("delete")
                                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
-                                                                title="Eliminar este registro">
+                                                                title="Eliminar este Registro">
                                                                 <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
                                                             </button>
                                                         @endif

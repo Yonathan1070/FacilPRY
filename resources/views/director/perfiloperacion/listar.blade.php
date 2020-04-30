@@ -63,7 +63,7 @@
                                 <div role="tabpanel" class="tab-pane fade in active" id="activos">
                                     @if (count($perfilesOperacionActivos)<=0)
                                         <div class="alert alert-info">
-                                            El sistema no cuenta con Perfil de Operación registrado
+                                            El sistema no cuenta con Perfil de Operación Registrado
                                             <a href="{{route('crear_perfil_operacion')}}" class="alert-link">Clic aquí para agregar!</a>.
                                         </div>
                                     @else
@@ -95,7 +95,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <a href="{{route('editar_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                            <a href="{{route('editar_perfil_operacion', ['id'=>$perfilOperacion->Id_Perfil])}}" class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                                 <i class="material-icons text-info" style="font-size: 18px;">edit</i>
                                                             </a>
                                                             <a onclick="inactivar({{$perfilOperacion->Id_Perfil}})" class="tooltipsC" title="Desactivar Perfil de Operación">

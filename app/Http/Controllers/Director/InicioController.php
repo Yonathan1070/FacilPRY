@@ -12,7 +12,7 @@ use App\Models\Tablas\Usuarios;
 use stdClass;
 
 /**
- * Inicio Controller, donde se visualizarán las metricas del sistema
+ * Inicio Controller, donde se visualizarán las métricas del sistema
  * 
  * @author: Yonathan Bohorquez
  * @email: ycbohorquez@ucundinamarca.edu.co

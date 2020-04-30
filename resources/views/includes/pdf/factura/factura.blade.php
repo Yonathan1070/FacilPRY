@@ -258,7 +258,7 @@ Cuenta de Cobro
                                     NIT Empresa: {{$datos['empresaProyecto']->EMP_NIT_Empresa}}<br>
                                     Proyecto: {{$datos['proyecto']->PRY_Nombre_Proyecto}}<br>
                                     Encargado: {{$datos['proyecto']->USR_Nombres_Usuario.' '.$datos['proyecto']->USR_Apellidos_Usuario}}<br>
-                                    Cedula: {{$datos['proyecto']->USR_Documento_Usuario}}<br>
+                                    Cédula: {{$datos['proyecto']->USR_Documento_Usuario}}<br>
                                     Correo: {{$datos['proyecto']->USR_Correo_Usuario}}<br>
                                 </p>
                             </address>

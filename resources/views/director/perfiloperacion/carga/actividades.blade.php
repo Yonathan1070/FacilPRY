@@ -106,7 +106,7 @@
                     <li>
                         <div class="title">
                             <i class="material-icons">pie_chart</i>
-                            Metricas
+                            Métricas
                         </div>
                         <div class="content">
                             <div id="pie" class="row clearfix">

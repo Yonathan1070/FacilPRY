@@ -14,7 +14,7 @@ class TablaUsuariosSeeder extends Seeder
     {
         #Agregar Usuario Administrador
         DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
+            'USR_Tipo_Documento_Usuario' => 'Cédula de Ciudadanía',
             'USR_Documento_Usuario' => '80845861',
             'USR_Nombres_Usuario' => 'Alejandro',
             'USR_Apellidos_Usuario'  => 'Ayure',
@@ -30,7 +30,7 @@ class TablaUsuariosSeeder extends Seeder
         ]);
         #Agregar Usuario Financiero
         /*DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
+            'USR_Tipo_Documento_Usuario' => 'Cédula de Ciudadanía',
             'USR_Documento_Usuario' => '35526078',
             'USR_Nombres_Usuario' => 'Maria',
             'USR_Apellidos_Usuario'  => 'Rincon',
@@ -46,7 +46,7 @@ class TablaUsuariosSeeder extends Seeder
         ]);*/
         #Agregar Usuario Tester
         /*DB::table('TBL_Usuarios')->insert([
-            'USR_Tipo_Documento_Usuario' => 'Cedula Ciudadanía',
+            'USR_Tipo_Documento_Usuario' => 'Cédula de Ciudadanía',
             'USR_Documento_Usuario' => '80393256',
             'USR_Nombres_Usuario' => 'Alirio',
             'USR_Apellidos_Usuario'  => 'Mendez',

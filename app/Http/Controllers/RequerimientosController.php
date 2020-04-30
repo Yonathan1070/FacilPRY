@@ -153,7 +153,7 @@ class RequerimientosController extends Controller
         return redirect()
             ->route(
                 'crear_requerimiento', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Actividad agregada con exito');
+            )->with('mensaje', 'Actividad agregada con éxito');
     }
 
     /**
@@ -226,7 +226,7 @@ class RequerimientosController extends Controller
         return redirect()
             ->route(
                 'requerimientos', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Actividad actualizado con exito');
+            )->with('mensaje', 'Actividad actualizado con éxito');
     }
 
     /**

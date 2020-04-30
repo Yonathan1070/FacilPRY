@@ -14,7 +14,7 @@ class TablaMenuSeeder extends Seeder
     {
         #Agregar Menús Iniciales
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Metricas',
+            'MN_Nombre_Menu' => 'Métricas',
             'MN_Nombre_Ruta_Menu' => 'inicio_administrador',
             'MN_Orden_Menu' => 1,
             'MN_Icono_Menu' => 'pie_chart'
@@ -44,7 +44,7 @@ class TablaMenuSeeder extends Seeder
             'MN_Icono_Menu' => 'assignment_ind'
         ]);
         DB::table('TBL_Menu')->insert([
-            'MN_Nombre_Menu' => 'Metricas',
+            'MN_Nombre_Menu' => 'Métricas',
             'MN_Nombre_Ruta_Menu' => 'inicio_director',
             'MN_Orden_Menu' => 1,
             'MN_Icono_Menu' => 'pie_chart'

@@ -192,7 +192,7 @@ class DirectorProyectosController extends Controller
 
         return redirect()
             ->route('directores_administrador')
-            ->with('mensaje', 'Director de proyectos actualizado con exito');
+            ->with('mensaje', 'Director de proyectos actualizado con éxito');
     }
 
     /**

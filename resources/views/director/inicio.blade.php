@@ -26,7 +26,7 @@ Inicio
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <h2>Filtrar Metricas</h2>
+                    <h2>Filtrar Métricas</h2>
                 </div>
                 <div class="body">
                     <div class="row clearfix">
@@ -207,7 +207,7 @@ Inicio
                                         <span class='fdn'>ce</span>
                                     </div>*100<br /><br />
                                     Donde:<br />
-                                    cr = Costo real<br />
+                                    cr = Costo Real<br />
                                     ce = Costo Estimado">
                                 <i class="material-icons">more_vert</i>
                             </button>

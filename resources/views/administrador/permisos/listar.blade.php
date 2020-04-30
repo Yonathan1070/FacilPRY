@@ -14,7 +14,7 @@ Sistema de Permisos
             <div class="card">
                 <div class="header">
                     <h2>
-                        Asignar permisos a Usuarios
+                        Asignar Permisos a Usuarios
                     </h2>
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">

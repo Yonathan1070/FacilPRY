@@ -102,6 +102,6 @@ class EmpresaController extends Controller
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Datos actualizados con exito');
+            ->with('mensaje', 'Datos actualizados con éxito');
     }
 }

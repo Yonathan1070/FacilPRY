@@ -71,13 +71,13 @@
                                         <td>
                                             <form class="form-eliminar" action="{{route('eliminar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="d-inline" method="POST">
                                                 @if ($permisos['editar']==true)
-                                                    <a href="{{route('editar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                    <a href="{{route('editar_requerimiento', ['idP'=>$proyecto->id, 'idR'=>$requerimiento->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                     </a>
                                                 @endif
                                                 @if ($permisos['eliminar']==true)
                                                     @csrf @method("delete")
-                                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este registro">
+                                                    <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm" title="Eliminar este Registro">
                                                         <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
                                                     </button>
                                                 @endif

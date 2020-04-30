@@ -67,7 +67,7 @@ Pagar
                                     NIT Empresa: {{$datosU['empresaProyecto']->EMP_NIT_Empresa}}<br>
                                     Proyecto: {{$datosU['proyecto']->PRY_Nombre_Proyecto}}<br>
                                     Encargado: {{$datosU['proyecto']->USR_Nombres_Usuario.' '.$datosU['proyecto']->USR_Apellidos_Usuario}}<br>
-                                    Cedula: {{$datosU['proyecto']->USR_Documento_Usuario}}<br>
+                                    Cédula: {{$datosU['proyecto']->USR_Documento_Usuario}}<br>
                                     Correo: {{$datosU['proyecto']->USR_Correo_Usuario}}<br>
                                 </p>
                         </address>

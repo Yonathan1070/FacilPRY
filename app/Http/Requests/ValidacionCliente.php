@@ -63,7 +63,7 @@ class ValidacionCliente extends FormRequest
             'USR_Correo_Usuario.unique' => 'El correo electrónco ya se encuentra en uso.',
             'USR_Correo_Usuario.email' => 'Digite un correo electrónco válido.',
             'USR_Nombre_Usuario.required' => 'El nombre de usuario es requerido.',
-            'USR_Nombre_Usuario.max' => 'el nombre de usuario no puede exceder el limite de :max carácteres.',
+            'USR_Nombre_Usuario.max' => 'El nombre de usuario no puede exceder el limite de :max carácteres.',
             'USR_Nombre_Usuario.unique' => 'El nombre de usuario ya se encuentra en uso.',
         ];
     }

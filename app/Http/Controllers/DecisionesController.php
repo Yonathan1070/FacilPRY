@@ -186,7 +186,7 @@ class DecisionesController extends Controller
                 return redirect()
                     ->back()
                     ->withErrors(
-                        'La desición ya está registrada en el sistema'
+                        'La decisión ya está registrada en el sistema'
                     )->withInput();
             }
         }
@@ -195,7 +195,7 @@ class DecisionesController extends Controller
 
         return redirect()
             ->back()
-            ->with('mensaje', 'Decisión creada con exito');
+            ->with('mensaje', 'Decisión creada con éxito');
     }
 
     /**
@@ -305,7 +305,7 @@ class DecisionesController extends Controller
 
         return redirect()
             ->route('decisiones')
-            ->with('mensaje', 'Decisión actualizada con exito');
+            ->with('mensaje', 'Decisión actualizada con éxito');
     }
 
     /**

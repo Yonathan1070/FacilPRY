@@ -166,7 +166,7 @@ class ProyectosController extends Controller
 
         return redirect()
             ->back()
-            ->with('mensaje', 'Proyecto agregado con exito');
+            ->with('mensaje', 'Proyecto agregado con éxito');
     }
 
     /**

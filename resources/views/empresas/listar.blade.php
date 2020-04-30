@@ -28,7 +28,7 @@
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
                                 <li role="presentation" class="active"><a href="#activas" aria-controls="settings" role="tab" data-toggle="tab">Activas</a></li>
-                                <li role="presentation"><a href="#inactivas" aria-controls="settings" role="tab" data-toggle="tab">InActivas</a></li>
+                                <li role="presentation"><a href="#inactivas" aria-controls="settings" role="tab" data-toggle="tab">Inactivas</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane fade in active" id="activas">
@@ -61,7 +61,7 @@
                                                             @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
                                                                 <form class="form-eliminar" action="{{route('inactivar_empresa', ['id'=>$empresa->id])}}" class="d-inline" method="POST">
                                                                     @if ($permisos['editar']==true)
-                                                                        <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                        <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                                             <i class="material-icons text-info" style="font-size: 20px;">edit</i>
                                                                         </a>
                                                                     @endif    
@@ -120,7 +120,7 @@
                                                         <td class="width100">
                                                             @if ($permisos['editar']==true || $permisos['eliminar']==true || $permisos['lUsuarios']==true || $permisos['lProyectos']==true)
                                                                 @if ($permisos['editar']==true)
-                                                                    <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                                    <a href="{{route('editar_empresa', ['id'=>$empresa->id])}}" class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                                         <i class="material-icons text-info" style="font-size: 20px;">edit</i>
                                                                     </a>
                                                                 @endif    

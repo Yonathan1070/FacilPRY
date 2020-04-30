@@ -173,7 +173,7 @@ class ClientesController extends Controller
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Cliente agregado con exito');
+            ->with('mensaje', 'Cliente agregado con éxito');
     }
 
     /**
@@ -261,7 +261,7 @@ class ClientesController extends Controller
         return redirect()
             ->route(
                 'clientes', ['id'=>$idE]
-            )->with('mensaje', 'Cliente actualizado con exito');
+            )->with('mensaje', 'Cliente actualizado con éxito');
     }
 
     /**

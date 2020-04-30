@@ -76,7 +76,7 @@
                 <div class="form-line">
                     <input type="text" class="form-control" name="USR_Nombre_Usuario" id="USR_Nombre_Usuario"
                         value="{{old('USR_Nombre_Usuario', $director->USR_Nombre_Usuario ?? '')}}" maxlength="15" required>
-                    <label class="form-label">Nombre De Usuario</label>
+                    <label class="form-label">Nombre de Usuario</label>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <div class="form-line">
                     <select name="USR_Tipo_Documento_Usuario" id="USR_Tipo_Documento_Usuario" class="form-control" required>
                         <option value="">-- Seleccione un tipo de Documento --</option>
-                        <option value="Cedula de Ciudadanía">Cedula de Ciudadanía</option>
+                        <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
                     </select>
                 </div>
             </div>
@@ -179,7 +179,7 @@
                 <div class="form-line">
                     <input type="text" class="form-control" name="USR_Nombre_Usuario" id="USR_Nombre_Usuario"
                         value="{{old('USR_Nombre_Usuario', $director->USR_Nombre_Usuario ?? '')}}" maxlength="15" required>
-                    <label class="form-label">Nombre De Usuario</label>
+                    <label class="form-label">Nombre de Usuario</label>
                 </div>
             </div>
         </div>

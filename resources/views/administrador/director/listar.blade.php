@@ -91,7 +91,7 @@ Listar Director de Proyectos
                                                     <td>{{$director->USR_Nombre_Usuario}}</td>
                                                     <td>
                                                         <a href="{{route('editar_director_administrador', ['id'=>$director->USR_RLS_Usuario_Id])}}"
-                                                            class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                            class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                             <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                         </a>
                                                         <a onclick="inactivar({{$director->USR_RLS_Usuario_Id}})" class="tooltipsC" title="Desactivar Director">
@@ -137,7 +137,7 @@ Listar Director de Proyectos
                                                             </a>
                                                             @csrf @method("delete")
                                                             <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
-                                                                data-type="confirm" title="Eliminar este registro">
+                                                                data-type="confirm" title="Eliminar este Registro">
                                                                 <i class="material-icons text-danger"
                                                                     style="font-size: 17px;">delete_forever</i>
                                                             </button>

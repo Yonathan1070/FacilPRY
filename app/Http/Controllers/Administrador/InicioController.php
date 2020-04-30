@@ -12,7 +12,7 @@ use App\Models\Tablas\Usuarios;
 use stdClass;
 
 /**
- * Inicio Controller, donde se mostrarán las metricas del sistema para el administrador
+ * Inicio Controller, donde se mostrarán las métricas del sistema para el administrador
  * 
  * @author: Yonathan Bohorquez
  * @email: ycbohorquez@ucundinamarca.edu.co
@@ -26,7 +26,7 @@ use stdClass;
 class InicioController extends Controller
 {
     /**
-     * Muestra las metricas de los proyectos y de los trabajadores
+     * Muestra las métricas de los proyectos y de los trabajadores
      *
      * @return \Illuminate\View\View Vista de inicio
      */

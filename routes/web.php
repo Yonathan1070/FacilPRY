@@ -140,7 +140,7 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
 
 //Rutas Decisiones
 Route::get('decisiones', 'DecisionesController@index')->name('decisiones');
-Route::get('decisiones/crear-desicion', 'DecisionesController@crear')->name('crear_decision');
+Route::get('decisiones/crear-decision', 'DecisionesController@crear')->name('crear_decision');
 Route::get('decisiones/{id}/total-indicador', 'DecisionesController@totalIndicador')->name('total_indicador');
 Route::post('decisiones/crear-decision', 'DecisionesController@guardar')->name('guardar_decision');
 Route::get('decisiones/{id}/editar', 'DecisionesController@editar')->name('editar_decision');

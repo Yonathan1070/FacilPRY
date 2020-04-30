@@ -38,7 +38,7 @@
             <li>
                 <a href="{{route("inicio_director")}}">
                     <i class="material-icons">pie_chart</i>
-                    <span>Metricas</span>
+                    <span>Métricas</span>
                 </a>
             </li>
             @include("theme.bsb.menu")

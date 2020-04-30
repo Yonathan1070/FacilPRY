@@ -1,6 +1,6 @@
 @extends('theme.bsb.'.strtolower(session()->get('Sub_Rol_Id')).'.layout')
 @section('titulo')
-Listar Desiciones
+Listar Decisiones
 @endsection
 @section("scripts")
 <script src="{{asset("assets/pages/scripts/Director/index.js")}}" type="text/javascript"></script>
@@ -20,7 +20,7 @@ Listar Desiciones
                         <li class="dropdown">
                             @if ($permisos['crear']==true)
                                 <a class="btn btn-success waves-effect" href="{{route('crear_decision')}}"><i
-                                    class="material-icons" style="color:white;">add</i> Nueva Desición</a>
+                                    class="material-icons" style="color:white;">add</i> Nueva Decisión</a>
                             @endif
                             @if ($permisos['listar']==true)
                                 <a class="btn bg-light-green btn-circle-lg waves-effect waves-circle waves-float tooltipsC" title="Ver Calificación Trabajadores" href="{{route('calificacion_trabajadores')}}"><i
@@ -61,14 +61,14 @@ Listar Desiciones
                                                 class="d-inline" method="POST">
                                                 @if ($permisos['editar']==true)
                                                     <a href="{{route('editar_decision', ['id'=>$decision->id])}}"
-                                                        class="btn-accion-tabla tooltipsC" title="Editar este registro">
+                                                        class="btn-accion-tabla tooltipsC" title="Editar este Registro">
                                                         <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                     </a>
                                                 @endif
                                                 @if ($permisos['eliminar']==true)
                                                     @csrf @method("delete")
                                                     <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
-                                                        title="Eliminar este registro">
+                                                        title="Eliminar este Registro">
                                                         <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
                                                     </button>
                                                 @endif

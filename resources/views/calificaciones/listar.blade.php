@@ -23,7 +23,7 @@ Listar Calificaciones
                         <li class="dropdown">
                             @if ($permisos['listar']==true)
                                 <a class="btn btn-danger waves-effect" href="{{route('decisiones')}}"><i
-                                    class="material-icons" style="color:white;">arrow_back</i> Volver a Desiciones</a>
+                                    class="material-icons" style="color:white;">arrow_back</i> Volver a Decisiones</a>
                             @endif
                             @if ($permisos['calificar']==true)
                                 <a

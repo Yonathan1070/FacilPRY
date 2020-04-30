@@ -16,7 +16,7 @@ use stdClass;
 class InicioController extends Controller
 {
     /**
-     * Muestra las metricas de eficiencia, eficacia y efectividad para
+     * Muestra las métricas de eficiencia, eficacia y efectividad para
      * el usuario autenticado.
      *
      * @return \Illuminate\View\View Vista de inicio
@@ -60,7 +60,7 @@ class InicioController extends Controller
     }
 
     /**
-     * Muestra las metricas de generales para
+     * Muestra las métricas de generales para
      * el usuario autenticado.
      *
      * @return \Illuminate\View\View Vista de inicio

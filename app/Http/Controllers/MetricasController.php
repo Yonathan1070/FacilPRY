@@ -8,7 +8,7 @@ use App\Models\Tablas\Usuarios;
 use Exception;
 
 /**
- * Metricas Controller, donde se obtienen los datos de las metricas del sistema
+ * Métricas Controller, donde se obtienen los datos de las métricas del sistema
  * 
  * @author: Yonathan Bohorquez
  * @email: ycbohorquez@ucundinamarca.edu.co

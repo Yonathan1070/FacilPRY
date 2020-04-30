@@ -133,7 +133,7 @@ class RolesController extends Controller
         
         return redirect()
             ->back()
-            ->with('mensaje', 'Rol creado con exito');
+            ->with('mensaje', 'Rol creado con éxito');
     }
 
     /**
@@ -205,7 +205,7 @@ class RolesController extends Controller
         
         return redirect()
             ->route('roles')
-            ->with('mensaje', 'Rol actualizado con exito');
+            ->with('mensaje', 'Rol actualizado con éxito');
     }
 
     /**
