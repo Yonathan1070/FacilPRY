@@ -57,7 +57,7 @@ class ActividadesController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
         
@@ -116,7 +116,7 @@ class ActividadesController extends Controller
         
         $horas = HorasActividad::obtenerHorasAsignadasActividad($id);
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -140,6 +140,7 @@ class ActividadesController extends Controller
                 'id',
                 'actividades',
                 'datos',
+                'horas',
                 'notificaciones',
                 'cantidad',
                 'asignadas'
@@ -336,7 +337,7 @@ class ActividadesController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 

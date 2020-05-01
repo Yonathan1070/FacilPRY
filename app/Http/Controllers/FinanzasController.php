@@ -54,7 +54,7 @@ class FinanzasController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -95,7 +95,7 @@ class FinanzasController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -230,7 +230,7 @@ class FinanzasController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -323,7 +323,7 @@ class FinanzasController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 

@@ -54,7 +54,7 @@ class RequerimientosController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -97,7 +97,7 @@ class RequerimientosController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 
@@ -177,7 +177,7 @@ class RequerimientosController extends Controller
             $idUsuario
         );
 
-        $asignadas = Actividades::obtenerActividadesProcesoPerfil(
+        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
             $idUsuario
         );
 

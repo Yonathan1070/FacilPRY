@@ -43,7 +43,7 @@ Asignación de Horas
                             </thead>
                             <tbody>
                                 @foreach ($actividades as $actividad)
-                                @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->lt(\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y')))
+                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->lte(\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->HRS_ACT_Fecha_Actividad.' 23:59:59')))
                                         <tr>
                                             <td class="identifier"  style="display: none">{{$actividad->Id_Horas}}</td>
                                             <td class="uneditable">{{$actividad->HRS_ACT_Fecha_Actividad}}</td>

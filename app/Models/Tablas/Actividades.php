@@ -1060,6 +1060,67 @@ class Actividades extends Model
         return $actividadesProceso;
     }
 
+    #Funcion para obtener las actividades en proceso del perfil de operación
+    public static function obtenerActividadesProcesoPerfilHoy($id)
+    {
+        $actividadesProceso = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Empresas as em',
+                'em.id',
+                '=',
+                'PRY_Empresa_Id'
+            )->leftjoin(
+                'TBL_Horas_Actividad as ha',
+                'ha.HRS_ACT_Actividad_Id',
+                '=',
+                'a.id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->leftJoin(
+                'TBL_Documentos_Soporte as ds',
+                'ds.DOC_Actividad_Id',
+                '=',
+                'a.id'
+            )->select(
+                'a.id AS ID_Actividad',
+                'a.*',
+                'ds.*',
+                'p.*',
+                'ha.*',
+                'e.*',
+                'em.*',
+                DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'),
+                DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR')
+            )->where(
+                'a.ACT_Estado_Id', '=', 1
+            )->where(
+                'a.ACT_Trabajador_Id', '=', $id
+            )->where(
+                'p.PRY_Estado_Proyecto', '=', 1
+            )->where(
+                'ha.HRS_ACT_Fecha_Actividad', '=', Carbon::now()->format('yy-m-d')
+            )->orderBy(
+                'a.id', 'ASC'
+            )->groupBy(
+                'a.id'
+            )->get();
+        
+        return $actividadesProceso;
+    }
+
     #Función para obtener las actividades atrasadas del perfil de operación
     public static function obtenerActividadesAtrasadasPerfil($id)
     {
