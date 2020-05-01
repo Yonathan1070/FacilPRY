@@ -364,44 +364,82 @@ class InicioController extends Controller
      */
     public function respuestaPago()
     {
-        $correo = $_REQUEST['buyerEmail'];
-        $fechaPago = Carbon::now();
-        $estadoTx = $this->datosRespuesta();
+        if($_REQUEST) {
+            session([
+                'buyerEmail' => $_REQUEST['buyerEmail'],
+                'merchantId' => $_REQUEST['merchantId'],
+                'referenceCode' => $_REQUEST['referenceCode'],
+                'TX_VALUE' => $_REQUEST['TX_VALUE'],
+                'currency' => $_REQUEST['currency'],
+                'transactionState' => $_REQUEST['transactionState'],
+                'signature' => $_REQUEST['signature'],
+                'reference_pol' => $_REQUEST['reference_pol'],
+                'cus' => $_REQUEST['cus'],
+                'description' => $_REQUEST['description'],
+                'pseBank' => $_REQUEST['pseBank'],
+                'lapPaymentMethod' => $_REQUEST['lapPaymentMethod'],
+                'transactionId' => $_REQUEST['transactionId']
+            ]);
 
-        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
-
-        if ($estadoTx == "Transacción aprobada") {
-            $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
-            
-            foreach ($actividades as $actividad) {
-                Actividades::actualizarEstadoPago($actividad->id, 10, $fechaPago);
-            }
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago exitoso.');
-        } else if ($estadoTx == "Transacción rechazada") {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Transacción Rechazada.');
-        } else if ($estadoTx == "Error") {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Error al pagar.');
-        } else if ($estadoTx == "Transacción pendiente" ) {
-            $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
-            
-            foreach ($actividades as $actividad) {
-                Actividades::actualizarEstadoPago($actividad->id, 14, $fechaPago);
-            }
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago Pendiente.');
+            return redirect()->route('respuesta_pago_cliente');
+        } else if (session('buyerEmail') == null){
+            return redirect()->route('inicio_cliente')->withErrors('Error en la transacción');
         } else {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Otro.');
+            $correo = session('buyerEmail');
+            $fechaPago = Carbon::now();
+            $estadoTx = $this->datosRespuesta();
+
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+
+            session([
+                'buyerEmail' => null,
+                'merchantId' => null,
+                'referenceCode' => null,
+                'TX_VALUE' => null,
+                'currency' => null,
+                'transactionState' => null,
+                'signature' => null,
+                'reference_pol' => null,
+                'cus' => null,
+                'description' => null,
+                'pseBank' => null,
+                'lapPaymentMethod' => null,
+                'transactionId' => null
+            ]);
+
+            if ($estadoTx == "Transacción aprobada") {
+                $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
+                
+                foreach ($actividades as $actividad) {
+                    Actividades::actualizarEstadoPago($actividad->id, 10, $fechaPago);
+                }
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago exitoso.');
+            } else if ($estadoTx == "Transacción rechazada") {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Transacción Rechazada.');
+            } else if ($estadoTx == "Error") {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Error al pagar.');
+            } else if ($estadoTx == "Transacción pendiente" ) {
+                $actividades = Actividades::obtenerActividadesPendientesPago($usuario->id);
+                
+                foreach ($actividades as $actividad) {
+                    Actividades::actualizarEstadoPago($actividad->id, 14, $fechaPago);
+                }
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago Pendiente.');
+            } else {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Otro.');
+            }
         }
     }
 
@@ -415,78 +453,86 @@ class InicioController extends Controller
     public function confirmacionPago()
     {
         $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
-		$merchant_id =  $_REQUEST['merchant_id'];
-		$state_pol = $_REQUEST['state_pol'];
-		$response_code_pol=$_REQUEST['response_code_pol'];
-		$reference_sale=$_REQUEST['reference_sale'];
-		$reference_pol=$_REQUEST['reference_pol'];
-		$sign=$_REQUEST['sign'];
-		$extra1=$_REQUEST['extra1'];
-		$payment_method=$_REQUEST['payment_method'];
-		$payment_method_type=$_REQUEST['payment_method_type'];
-		$installments_number=$_REQUEST['installments_number'];	
-		$TX_VALUE = $_REQUEST['value'];
-		$New_value = number_format($TX_VALUE, 1, '.', '');
-		$transaction_date=$_REQUEST['transaction_date'];
-		$currency=$_REQUEST['currency'];
-		$email_buyer=$_REQUEST['email_buyer'];
-		$cus=$_REQUEST['cus'];
-		$pse_bank=$_REQUEST['pse_bank'];
-		$test=$_REQUEST['test'];
-		$description=$_REQUEST['description'];
-        $phone=$_REQUEST['phone'];
-        
-        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
-        $actividades = Actividades::obtenerTransaccionPendiente($usuario->id);
-        
-        if($state_pol==4) {
-            foreach ($actividades as $actividad) {
-                Actividades::actualizarEstadoPago($actividad->id, 10, $transaction_date);
+        if($_REQUEST) {
+            session([
+                'merchant_id' => $_REQUEST['merchant_id'],
+                'state_pol' => $_REQUEST['state_pol'],
+                'response_code_pol' => $_REQUEST['response_code_pol'],
+                'reference_sale' => $_REQUEST['reference_sale'],
+                'reference_pol' => $_REQUEST['reference_pol'],
+                'sign' => $_REQUEST['sign'],
+                'extra1' => $_REQUEST['extra1'],
+                'payment_method' => $_REQUEST['payment_method'],
+                'payment_method_type' => $_REQUEST['payment_method_type'],
+                'installments_number' => $_REQUEST['installments_number'],
+                'TX_VALUE' => $_REQUEST['value'],
+                'New_value' => number_format($_REQUEST['value'], 1, '.', ''),
+                'transaction_date' => $_REQUEST['transaction_date'],
+                'currency' => $_REQUEST['currency'],
+                'email_buyer' => $_REQUEST['email_buyer'],
+                'cus' => $_REQUEST['cus'],
+                'pse_bank' => $_REQUEST['pse_bank'],
+                'test' => $_REQUEST['test'],
+                'description' => $_REQUEST['description'],
+                'phone' => $_REQUEST['phone']
+            ]);
+
+            return redirect()->route('confirmacion_pago_cliente');
+        } else if (session('email_buyer') == null){
+            return redirect()->route('inicio_cliente')->withErrors('Error en la transacción');
+        } else {
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', session('email_buyer'))->first();
+            $actividades = Actividades::obtenerTransaccionPendiente($usuario->id);
+            
+            if(session('state_pol')==4) {
+                foreach ($actividades as $actividad) {
+                    Actividades::actualizarEstadoPago($actividad->id, 10, session('transaction_date'));
+                }
+
+                Mail::send('general.correo.respuesta', [
+                    'estado' => '',
+                    'nombre' => 'Ink Brutal',
+                    'descripcion' => session('description'),
+                    'email' => session('email_buyer'),
+                    'telefono' => session('phone'),
+                    'referencia' => session('reference_sale'),
+                    'valor' => session('New_value')
+                ], function($message){
+                    $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                    $message->to(
+                        'soporte@inkdigital.co',
+                        'InkBrutalPRY, Software de Gestión de Proyectos'
+                    )->subject('Pago Actividad');
+                });
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago exitoso.');
+            } else{
+                foreach ($actividades as $actividad) {
+                    Actividades::actualizarEstadoPago($actividad->id, 9, session('transaction_date'));
+                }
+
+                Mail::send('general.correo.respuesta', [
+                    'estado' => 'PERO NO HA SIDO EXITOSA',
+                    'nombre' => 'Ink Brutal',
+                    'descripcion' => session('description'),
+                    'email' => session('email_buyer'),
+                    'telefono' => session('phone'),
+                    'referencia' => session('reference_sale'),
+                    'valor' => session('New_value')
+                ], function($message){
+                    $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                    $message->to(
+                        'soporte@inkdigital.co',
+                        'InkBrutalPRY, Software de Gestión de Proyectos'
+                    )->subject('Pago Actividad');
+                });
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Transacción Rechazada o Expirada.');
             }
-
-            Mail::send('general.correo.respuesta', [
-                'estado' => '',
-                'nombre' => 'Ink Brutal',
-                'descripcion' => $description,
-                'email' => $email_buyer,
-                'telefono' => $phone,
-                'referencia' => $reference_sale,
-                'valor' => $New_value
-            ], function($message){
-                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to(
-                    'soporte@inkdigital.co',
-                    'InkBrutalPRY, Software de Gestión de Proyectos'
-                )->subject('Pago Actividad');
-            });
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago exitoso.');
-        } else{
-            foreach ($actividades as $actividad) {
-                Actividades::actualizarEstadoPago($actividad->id, 9, $transaction_date);
-            }
-
-            Mail::send('general.correo.respuesta', [
-                'estado' => 'PERO NO HA SIDO EXITOSA',
-                'nombre' => 'Ink Brutal',
-                'descripcion' => $description,
-                'email' => $email_buyer,
-                'telefono' => $phone,
-                'referencia' => $reference_sale,
-                'valor' => $New_value
-            ], function($message){
-                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to(
-                    'soporte@inkdigital.co',
-                    'InkBrutalPRY, Software de Gestión de Proyectos'
-                )->subject('Pago Actividad');
-            });
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Transacción Rechazada o Expirada.');
         }
     }
 
@@ -498,44 +544,82 @@ class InicioController extends Controller
      */
     public function respuestaPagoAdicional()
     {
-        $correo = $_REQUEST['buyerEmail'];
-        $fechaPago = Carbon::now();
-        $estadoTx = $this->datosRespuesta();
+        if($_REQUEST) {
+            session([
+                'buyerEmail' => $_REQUEST['buyerEmail'],
+                'merchantId' => $_REQUEST['merchantId'],
+                'referenceCode' => $_REQUEST['referenceCode'],
+                'TX_VALUE' => $_REQUEST['TX_VALUE'],
+                'currency' => $_REQUEST['currency'],
+                'transactionState' => $_REQUEST['transactionState'],
+                'signature' => $_REQUEST['signature'],
+                'reference_pol' => $_REQUEST['reference_pol'],
+                'cus' => $_REQUEST['cus'],
+                'description' => $_REQUEST['description'],
+                'pseBank' => $_REQUEST['pseBank'],
+                'lapPaymentMethod' => $_REQUEST['lapPaymentMethod'],
+                'transactionId' => $_REQUEST['transactionId']
+            ]);
 
-        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
-
-        $actividades = FacturaAdicional::obtenerFacturaAdicional($usuario->id);
-
-        if ($estadoTx == "Transacción aprobada") {
-            
-            foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 10);
-            }
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago exitoso.');
-        } else if ($estadoTx == "Transacción rechazada") {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Transacción Rechazada.');
-        } else if ($estadoTx == "Error") {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Error al pagar.');
-        } else if ($estadoTx == "Transacción pendiente" ) {
-            
-            foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 14);
-            }
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago Pendiente.');
+            return redirect()->route('respuesta_pago_cliente_adicional');
+        } else if (session('buyerEmail') == null){
+            return redirect()->route('inicio_cliente')->withErrors('Error en la transacción');
         } else {
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Otro.');
+            $correo = session('buyerEmail');
+            $fechaPago = Carbon::now();
+            $estadoTx = $this->datosRespuesta();
+
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', $correo)->first();
+
+            $actividades = FacturaAdicional::obtenerFacturaAdicional($usuario->id);
+
+            session([
+                'buyerEmail' => null,
+                'merchantId' => null,
+                'referenceCode' => null,
+                'TX_VALUE' => null,
+                'currency' => null,
+                'transactionState' => null,
+                'signature' => null,
+                'reference_pol' => null,
+                'cus' => null,
+                'description' => null,
+                'pseBank' => null,
+                'lapPaymentMethod' => null,
+                'transactionId' => null
+            ]);
+
+            if ($estadoTx == "Transacción aprobada") {
+                
+                foreach ($actividades as $actividad) {
+                    FacturaAdicional::actualizarFactura($actividad->id, 10);
+                }
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago exitoso.');
+            } else if ($estadoTx == "Transacción rechazada") {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Transacción Rechazada.');
+            } else if ($estadoTx == "Error") {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Error al pagar.');
+            } else if ($estadoTx == "Transacción pendiente" ) {
+                
+                foreach ($actividades as $actividad) {
+                    FacturaAdicional::actualizarFactura($actividad->id, 14);
+                }
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago Pendiente.');
+            } else {
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Otro.');
+            }
         }
     }
 
@@ -549,78 +633,132 @@ class InicioController extends Controller
     public function confirmacionPagoAdicional()
     {
         $ApiKey = "NDzo4w71RkoV65mpP4Fj3lI82v";
-		$merchant_id =  $_REQUEST['merchant_id'];
-		$state_pol = $_REQUEST['state_pol'];
-		$response_code_pol=$_REQUEST['response_code_pol'];
-		$reference_sale=$_REQUEST['reference_sale'];
-		$reference_pol=$_REQUEST['reference_pol'];
-		$sign=$_REQUEST['sign'];
-		$extra1=$_REQUEST['extra1'];
-		$payment_method=$_REQUEST['payment_method'];
-		$payment_method_type=$_REQUEST['payment_method_type'];
-		$installments_number=$_REQUEST['installments_number'];	
-		$TX_VALUE = $_REQUEST['value'];
-		$New_value = number_format($TX_VALUE, 1, '.', '');
-		$transaction_date=$_REQUEST['transaction_date'];
-		$currency=$_REQUEST['currency'];
-		$email_buyer=$_REQUEST['email_buyer'];
-		$cus=$_REQUEST['cus'];
-		$pse_bank=$_REQUEST['pse_bank'];
-		$test=$_REQUEST['test'];
-		$description=$_REQUEST['description'];
-        $phone=$_REQUEST['phone'];
-        
-        $usuario = Usuarios::where('USR_Correo_Usuario', '=', $email_buyer)->first();
-        $actividades = FacturaAdicional::obtenerFacturaAdicionalPendiente($usuario->id);
-        
-        if($state_pol==4) {
-            foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 10);
+        if($_REQUEST) {
+            session([
+                'merchant_id' => $_REQUEST['merchant_id'],
+                'state_pol' => $_REQUEST['state_pol'],
+                'response_code_pol' => $_REQUEST['response_code_pol'],
+                'reference_sale' => $_REQUEST['reference_sale'],
+                'reference_pol' => $_REQUEST['reference_pol'],
+                'sign' => $_REQUEST['sign'],
+                'extra1' => $_REQUEST['extra1'],
+                'payment_method' => $_REQUEST['payment_method'],
+                'payment_method_type' => $_REQUEST['payment_method_type'],
+                'installments_number' => $_REQUEST['installments_number'],
+                'TX_VALUE' => $_REQUEST['value'],
+                'New_value' => number_format($_REQUEST['value'], 1, '.', ''),
+                'transaction_date' => $_REQUEST['transaction_date'],
+                'currency' => $_REQUEST['currency'],
+                'email_buyer' => $_REQUEST['email_buyer'],
+                'cus' => $_REQUEST['cus'],
+                'pse_bank' => $_REQUEST['pse_bank'],
+                'test' => $_REQUEST['test'],
+                'description' => $_REQUEST['description'],
+                'phone' => $_REQUEST['phone']
+            ]);
+
+            return redirect()->route('confirmacion_pago_cliente_adicional');
+        } else if (session('email_buyer') == null){
+            return redirect()->route('inicio_cliente')->withErrors('Error en la transacción');
+        } else {
+            $usuario = Usuarios::where('USR_Correo_Usuario', '=', session('email_buyer'))->first();
+            $actividades = FacturaAdicional::obtenerFacturaAdicionalPendiente($usuario->id);
+            
+            if(session('state_pol')==4) {
+                foreach ($actividades as $actividad) {
+                    FacturaAdicional::actualizarFactura($actividad->id, 10);
+                }
+
+                Mail::send('general.correo.respuesta', [
+                    'estado' => '',
+                    'nombre' => 'Ink Brutal',
+                    'descripcion' => session('description'),
+                    'email' => session('email_buyer'),
+                    'telefono' => session('phone'),
+                    'referencia' => session('reference_sale'),
+                    'valor' => session('New_value')
+                ], function($message){
+                    $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                    $message->to(
+                        'soporte@inkdigital.co',
+                        'InkBrutalPRY, Software de Gestión de Proyectos'
+                    )->subject('Pago Actividad');
+                });
+
+                session([
+                    'merchant_id' => null,
+                    'state_pol' => null,
+                    'response_code_pol' => null,
+                    'reference_sale' => null,
+                    'reference_pol' => null,
+                    'sign' => null,
+                    'extra1' => null,
+                    'payment_method' => null,
+                    'payment_method_type' => null,
+                    'installments_number' => null,
+                    'TX_VALUE' => null,
+                    'New_value' => null,
+                    'transaction_date' => null,
+                    'currency' => null,
+                    'email_buyer' => null,
+                    'cus' => null,
+                    'pse_bank' => null,
+                    'test' => null,
+                    'description' => null,
+                    'phone' => null
+                ]);
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->with('mensaje', 'Pago exitoso.');
+            } else{
+                foreach ($actividades as $actividad) {
+                    FacturaAdicional::actualizarFactura($actividad->id, 9);
+                }
+
+                Mail::send('general.correo.respuesta', [
+                    'estado' => 'PERO NO HA SIDO EXITOSA',
+                    'nombre' => 'Ink Brutal',
+                    'descripcion' => session('description'),
+                    'email' => session('email_buyer'),
+                    'telefono' => session('phone'),
+                    'referencia' => session('reference_sale'),
+                    'valor' => session('New_value')
+                ], function($message){
+                    $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                    $message->to(
+                        'soporte@inkdigital.co',
+                        'InkBrutalPRY, Software de Gestión de Proyectos'
+                    )->subject('Pago Actividad');
+                });
+
+                session([
+                    'merchant_id' => null,
+                    'state_pol' => null,
+                    'response_code_pol' => null,
+                    'reference_sale' => null,
+                    'reference_pol' => null,
+                    'sign' => null,
+                    'extra1' => null,
+                    'payment_method' => null,
+                    'payment_method_type' => null,
+                    'installments_number' => null,
+                    'TX_VALUE' => null,
+                    'New_value' => null,
+                    'transaction_date' => null,
+                    'currency' => null,
+                    'email_buyer' => null,
+                    'cus' => null,
+                    'pse_bank' => null,
+                    'test' => null,
+                    'description' => null,
+                    'phone' => null
+                ]);
+
+                return redirect()
+                    ->route('inicio_cliente')
+                    ->withErrors('Transacción Rechazada o Expirada.');
             }
-
-            Mail::send('general.correo.respuesta', [
-                'estado' => '',
-                'nombre' => 'Ink Brutal',
-                'descripcion' => $description,
-                'email' => $email_buyer,
-                'telefono' => $phone,
-                'referencia' => $reference_sale,
-                'valor' => $New_value
-            ], function($message){
-                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to(
-                    'soporte@inkdigital.co',
-                    'InkBrutalPRY, Software de Gestión de Proyectos'
-                )->subject('Pago Actividad');
-            });
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->with('mensaje', 'Pago exitoso.');
-        } else{
-            foreach ($actividades as $actividad) {
-                FacturaAdicional::actualizarFactura($actividad->id, 9);
-            }
-
-            Mail::send('general.correo.respuesta', [
-                'estado' => 'PERO NO HA SIDO EXITOSA',
-                'nombre' => 'Ink Brutal',
-                'descripcion' => $description,
-                'email' => $email_buyer,
-                'telefono' => $phone,
-                'referencia' => $reference_sale,
-                'valor' => $New_value
-            ], function($message){
-                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to(
-                    'soporte@inkdigital.co',
-                    'InkBrutalPRY, Software de Gestión de Proyectos'
-                )->subject('Pago Actividad');
-            });
-
-            return redirect()
-                ->route('inicio_cliente')
-                ->withErrors('Transacción Rechazada o Expirada.');
         }
     }
 
@@ -717,10 +855,13 @@ class InicioController extends Controller
     {
         $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
+        //$apiKey="4Vj8eK4rloUd272L48hsrarnUA";
         $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
         $infoPago = new stdClass();
+        //$infoPago->merchantId="508029";
         $infoPago->merchantId="708186";
         $infoPago->accountId="711450";
+        //$infoPago->accountId="512321";
         $infoPago->description="Cobro Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
         $infoPago->referenceCode="Pago".$datos['factura'].'-'.$fecha->format("U");
         $infoPago->amount=$datos['total']->Costo;
@@ -729,6 +870,7 @@ class InicioController extends Controller
         $infoPago->currency="COP";
         $infoPago->signature=md5($apiKey."~".$infoPago->merchantId."~".$infoPago->referenceCode."~".$datos['total']->Costo."~COP");
         $infoPago->test="0";
+        //$infoPago->test="1";
         $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
         $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
         $infoPago->responseUrl=route("respuesta_pago_cliente");
@@ -742,10 +884,13 @@ class InicioController extends Controller
     {
         $fecha = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
+        //$apiKey="4Vj8eK4rloUd272L48hsrarnUA";
         $apiKey="NDzo4w71RkoV65mpP4Fj3lI82v";
         $infoPago = new stdClass();
+        //$infoPago->merchantId="508029";
         $infoPago->merchantId="708186";
         $infoPago->accountId="711450";
+        //$infoPago->accountId="512321";
         $infoPago->description="Cobro Adicional Proyecto ".$datos['proyecto']->PRY_Nombre_Proyecto;
         $infoPago->referenceCode="Pago".$datos['factura'].'-'.$fecha->format("U");
         $infoPago->amount=$datos['total']->Costo;
@@ -753,11 +898,12 @@ class InicioController extends Controller
         $infoPago->taxReturnBase="0";
         $infoPago->currency="COP";
         $infoPago->signature=md5($apiKey."~".$infoPago->merchantId."~".$infoPago->referenceCode."~".$datos['total']->Costo."~COP");
-        $infoPago->test="0";
+        //$infoPago->test="0";
+        $infoPago->test="1";
         $infoPago->buyerFullName=$datos['proyecto']->USR_Nombres_Usuario." ".$datos['proyecto']->USR_Apellidos_Usuario;
         $infoPago->buyerEmail=$datos['proyecto']->USR_Correo_Usuario;
-        $infoPago->responseUrl=route("respuesta_pago_cliente");
-        $infoPago->confirmationUrl=route("confirmacion_pago_cliente");
+        $infoPago->responseUrl=route("respuesta_pago_cliente_adicional");
+        $infoPago->confirmationUrl=route("confirmacion_pago_cliente_adicional");
 
         return $infoPago;
     }
@@ -766,21 +912,21 @@ class InicioController extends Controller
     public function datosRespuesta()
     {
         $ApiKey = "4Vj8eK4rloUd272L48hsrarnUA";
-        $merchant_id = $_REQUEST['merchantId'];
-        $referenceCode = $_REQUEST['referenceCode'];
-        $TX_VALUE = $_REQUEST['TX_VALUE'];
+        $merchant_id = session('merchantId');
+        $referenceCode = session('referenceCode');
+        $TX_VALUE = session('TX_VALUE');
         $New_value = number_format($TX_VALUE, 1, '.', '');
-        $currency = $_REQUEST['currency'];
-        $transactionState = $_REQUEST['transactionState'];
+        $currency = session('currency');
+        $transactionState = session('transactionState');
         $firma_cadena = "$ApiKey~$merchant_id~$referenceCode~$New_value~$currency~$transactionState";
         $firmacreada = md5($firma_cadena);
-        $firma = $_REQUEST['signature'];
-        $reference_pol = $_REQUEST['reference_pol'];
-        $cus = $_REQUEST['cus'];
-        $extra1 = $_REQUEST['description'];
-        $pseBank = $_REQUEST['pseBank'];
-        $lapPaymentMethod = $_REQUEST['lapPaymentMethod'];
-        $transactionId = $_REQUEST['transactionId'];
+        $firma = session('signature');
+        $reference_pol = session('reference_pol');
+        $cus = session('cus');
+        $extra1 = session('description');
+        $pseBank = session('pseBank');
+        $lapPaymentMethod = session('lapPaymentMethod');
+        $transactionId = session('transactionId');
 
         if ($transactionState == 4 ) {
             $estadoTx = "Transacción aprobada";

@@ -121,6 +121,8 @@ Route::group(['prefix' => 'cliente', 'namespace' => 'Cliente', 'middleware' => [
     Route::get('{id}/info-pago-adicional', 'InicioController@informacionPagoAdicional')->name('informacion_pago_adicional_cliente');
     Route::get('respuesta-pago', 'InicioController@respuestaPago')->name('respuesta_pago_cliente');
     Route::get('confirmacion-pago', 'InicioController@confirmacionPago')->name('confirmacion_pago_cliente');
+    Route::get('respuesta-pago-adicional', 'InicioController@respuestaPagoAdicional')->name('respuesta_pago_cliente_adicional');
+    Route::get('confirmacion-pago-adicional', 'InicioController@confirmacionPagoAdicional')->name('confirmacion_pago_cliente_adicional');
     Route::get('{id}/cambio-estado', 'InicioController@cambiarEstadoNotificacion')->name('cambiar_estado_cliente');
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_cliente');
     Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_cliente');
