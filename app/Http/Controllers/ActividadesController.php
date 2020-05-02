@@ -740,7 +740,7 @@ class ActividadesController extends Controller
         $datos = Usuarios::findOrFail($idUsuario);
 
         $horasAprobar = HorasActividad::obtenerHorasAprobar($idH);
-
+        
         if (count($horasAprobar) == 0) {
             return redirect()
                 ->back()

@@ -46,15 +46,13 @@ Aprobar Horas de Trabajo
                             </thead>
                             <tbody>
                                 @foreach ($horasAprobar as $horas)
-                                    @if (\Carbon\Carbon::createFromFormat('Y-m-d', $horas->HRS_ACT_Fecha_Actividad)->lt(\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', \Carbon\Carbon::now())->format('d/m/Y')))
-                                        <tr>
-                                            <td style="display: none">{{$horas->Id_Horas}}</td>
-                                            <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
-                                            <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
-                                            <td class="uneditable">{{$horas->HRS_ACT_Fecha_Actividad}}</td>
-                                            <td class="hora">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
-                                        </tr>
-                                    @endif
+                                    <tr>
+                                        <td style="display: none">{{$horas->Id_Horas}}</td>
+                                        <td class="uneditable">{{$horas->ACT_Nombre_Actividad}}</td>
+                                        <td class="uneditable">{{$horas->ACT_Descripcion_Actividad}}</td>
+                                        <td class="uneditable">{{$horas->HRS_ACT_Fecha_Actividad}}</td>
+                                        <td class="hora" id="{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}">{{$horas->HRS_ACT_Cantidad_Horas_Asignadas}}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
