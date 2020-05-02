@@ -210,6 +210,11 @@ class Actividades extends Model
                 'e.id',
                 '=',
                 'a.ACT_Estado_Id'
+            )->leftJoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
             )->where(
                 'r.id', '=', $idR
             )->where(
@@ -222,7 +227,8 @@ class Actividades extends Model
                 'a.*',
                 'u.*',
                 'e.*',
-                'r.*'
+                'r.*',
+                'af.*'
             )->orderBy(
                 'a.Id', 'ASC'
             )->groupBy(
@@ -361,10 +367,10 @@ class Actividades extends Model
                 '=',
                 'a.ACT_Estado_Id'
             )->where(
-                'r.id', '<>', 3
+                'r.RLS_Rol_Id', '>', 3
             )->where(
                 'p.id', '=', $id
-            )->orWhere(
+            )->where(
                 'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->groupBy(
                 'a.id'
@@ -408,7 +414,7 @@ class Actividades extends Model
                     '=',
                     'a.ACT_Estado_Id'
                 )->where(
-                    'r.id', '<>', 3
+                    'r.id', '>', 3
                 )->where(
                     'p.id', '=', $id
                 )->where(
@@ -455,10 +461,10 @@ class Actividades extends Model
                 '=',
                 'a.ACT_Estado_Id'
             )->where(
-                'r.id', '<>', 3
+                'r.id', '>', 3
             )->where(
                 'uu.id', '=', $id
-            )->orWhere(
+            )->where(
                 'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->get();
         
@@ -528,7 +534,7 @@ class Actividades extends Model
                 '=',
                 'a.ACT_Estado_Id'
             )->where(
-                'r.RLS_Rol_Id', '=', 4
+                'r.RLS_Rol_Id', '>', 3
             )->where(
                 'p.id', '=', $id
             )->where(
@@ -579,7 +585,7 @@ class Actividades extends Model
             )->where(
                 'e.id', '<>', 2
             )->where(
-                'r.id', '<>', 3
+                'r.id', '>', 3
             )->where(
                 'uu.id', '=', $idTrabajador
             )->where(
@@ -628,7 +634,7 @@ class Actividades extends Model
             )->where(
                 'e.id', '<>', 2
             )->where(
-                'r.id', '<>', 3
+                'r.id', '>', 3
             )->where(
                 'uu.id', '=', $id
             )->get();
@@ -1035,6 +1041,11 @@ class Actividades extends Model
                 'ds.DOC_Actividad_Id',
                 '=',
                 'a.id'
+            )->leftJoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
             )->select(
                 'a.id AS ID_Actividad',
                 'a.*',
@@ -1043,6 +1054,7 @@ class Actividades extends Model
                 'ha.*',
                 'e.*',
                 'em.*',
+                'af.*',
                 DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Asignadas) as Horas'),
                 DB::raw('SUM(ha.HRS_ACT_Cantidad_Horas_Reales) as HorasR')
             )->where(
@@ -1211,6 +1223,8 @@ class Actividades extends Model
             )->where(
                 'a.ACT_Estado_Id', '<>', 1
             )->where(
+                'a.ACT_Estado_Id', '<>', 2
+            )->where(
                 'a.ACT_Trabajador_Id', '=', $id
             )->where(
                 'p.PRY_Estado_Proyecto', '=', 1
@@ -1316,6 +1330,8 @@ class Actividades extends Model
                 'p.id', '=', $id
             )->where(
                 'ur.USR_RLS_Rol_Id', '!=', 3
+            )->groupBy(
+                'a.id'
             )->get();
         
         return $actividades;
@@ -1344,7 +1360,7 @@ class Actividades extends Model
                 'p.id', '=', $id
             )->where(
                 'uu.id', '=', $idUsuario
-            )->orWhere(
+            )->where(
                 'a.ACT_Fecha_Fin_Actividad', '<=', Carbon::now()->format('y/m/d h:i:s')
             )->get();
         

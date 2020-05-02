@@ -18,7 +18,7 @@ Asignación de Horas
                     <ul class="header-dropdown" style="top:10px;">
                         <li class="dropdown">
                             <a class="btn btn-success waves-effect" onclick="volver()">
-                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Guardar y Volver
+                                <i class="material-icons" style="color:white;">keyboard_backspace</i> Notificar y Volver
                             </a>
                         </li>
                     </ul>

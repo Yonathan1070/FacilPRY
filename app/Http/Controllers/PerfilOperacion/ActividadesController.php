@@ -62,7 +62,11 @@ class ActividadesController extends Controller
         );
         
         foreach ($actividadesProceso as $actividad) {
-            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad && $actividad->ACT_Costo_Estimado_Actividad == 0 && $actividad->ACT_Costo_Real_Actividad == 0) {
+            if (Carbon::now() > $actividad->ACT_Fecha_Fin_Actividad 
+                && $actividad->ACT_Costo_Estimado_Actividad == 0 
+                && $actividad->ACT_Costo_Real_Actividad == 0
+                && $actividad->ACT_FIN_Titulo == null
+            ) {
                 Actividades::actualizarEstadoActividad($actividad->ID_Actividad, 2);
                 HistorialEstados::crearHistorialEstado($actividad->ID_Actividad, 2);
                 $actividadesProceso = Actividades::obtenerActividadesProcesoPerfil($idUsuario);
