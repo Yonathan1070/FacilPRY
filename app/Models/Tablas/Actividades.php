@@ -1606,4 +1606,22 @@ class Actividades extends Model
             session()->get('Usuario_Id')
         );
     }
+
+    #Funcion para actualizar la fechaa de finalización de la actividad
+    public static function actualizarFechaFinEntrega($id)
+    {
+        $oldFecha = Actividades::findOrFail($id);
+        $newFecha = Actividades::findOrFail($id);
+        $newFecha->update([
+            'ACT_Fecha_Fin_Actividad' => Carbon::now()->format('yy-m-d h:i:s')
+        ]);
+
+        LogCambios::guardar(
+            'TBL_Actividades',
+            'UPDATE',
+            'Cambió el la fecha de entrrega de la actividad:'.
+                ', ACT_Fecha_Fin_Actividad -> '.$oldFecha->ACT_Fecha_Fin_Actividad.' / '.$newFecha->ACT_Fecha_Fin_Actividad,
+            session()->get('Usuario_Id')
+        );
+    }
 }

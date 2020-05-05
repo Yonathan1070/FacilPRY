@@ -42,7 +42,7 @@
             <li>
                 <a href="{{route("actividades_cliente")}}">
                     <i class="material-icons">toc</i>
-                    <span>Aprobar Actividades</span>
+                    <span>Tareas</span>
                 </a>
             </li>
             @include("theme.bsb.menu")

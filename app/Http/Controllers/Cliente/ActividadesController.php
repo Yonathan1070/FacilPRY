@@ -350,6 +350,7 @@ class ActividadesController extends Controller
             );
             
             HistorialEstados::crearHistorialEstado($actividad->id, 7);
+            Actividades::actualizarFechaFinEntrega($actividad->id);
             $datos = Usuarios::findOrFail($idUsuario);
             $trabajador = Usuarios::obtenerPerfilAsociado($actividad->id);
             

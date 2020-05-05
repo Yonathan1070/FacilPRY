@@ -43,7 +43,7 @@ class Proyectos extends Model
                 'a.ACT_Requerimiento_Id',
                 '=',
                 'r.id'
-            )->leftjoin(
+            )->leftJoin(
                 'TBL_Actividades_Finalizadas as af',
                 'af.ACT_FIN_Actividad_Id',
                 '=',
@@ -58,6 +58,21 @@ class Proyectos extends Model
                 'u.id',
                 '=',
                 'p.PRY_Cliente_Id'
+            )->join(
+                'TBL_Usuarios as ut',
+                'ut.id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Usuarios_Roles as ur',
+                'ut.id',
+                '=',
+                'ur.USR_RLS_Usuario_Id'
+            )->join(
+                'TBL_Roles as ro',
+                'ro.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
             )->select(
                 'u.*',
                 'p.*',
@@ -68,6 +83,8 @@ class Proyectos extends Model
                 'p.PRY_Empresa_Id', '=', $id
             )->where(
                 'p.PRY_Finalizado_Proyecto', '=', 0
+            )->where(
+                'ro.id', '>', 3
             )->groupBy(
                 'p.id'
             )->get();
