@@ -260,122 +260,124 @@ class ActividadesController extends Controller
      */
     public function guardar(ValidacionActividad $request, $idR)
     {
-        $hoy = Carbon::now();
-        $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
-        
-        if (
-            $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
-        ) {
-            return redirect()
-                ->route($request['ruta'], [$idR])
-                ->withErrors(
-                    'Las fechas no pueden ser dias ya pasados.'
-                )->withInput();
-        } else if (
-            $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
-        ) {
-            return redirect()
-                ->route($request['ruta'], [$idR])
-                ->withErrors(
-                    'La fecha de inicio no puede ser superior a la fecha de finalización'
-                )->withInput();
-        } else if (
-            ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
-            ($diferencia < 60 || $diferencia > 600)
-        ) {
-            return redirect()
-                ->route($request['ruta'], [$idR])
-                ->withErrors(
-                    'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
-                )->withInput();
-        }
-
-        $actividades = Actividades::obtenerActividadesTotalesRequerimiento(
-            $idR
-        );
-
-        foreach ($actividades as $actividad) {
-            if (strtolower($actividad->ACT_Nombre_Actividad) == strtolower($request->ACT_Nombre_Actividad)) {
+        if (can('crear-actividades') || can('crear-actividades-cliente')) {
+            $hoy = Carbon::now();
+            $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
+            
+            if (
+                $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
+            ) {
                 return redirect()
                     ->route($request['ruta'], [$idR])
-                    ->withErrors('La actividad ya cuenta con una tarea del mismo nombre.')
-                    ->withInput();
+                    ->withErrors(
+                        'Las fechas no pueden ser dias ya pasados.'
+                    )->withInput();
+            } else if (
+                $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
+            ) {
+                return redirect()
+                    ->route($request['ruta'], [$idR])
+                    ->withErrors(
+                        'La fecha de inicio no puede ser superior a la fecha de finalización'
+                    )->withInput();
+            } else if (
+                ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+                ($diferencia < 60 || $diferencia > 600)
+            ) {
+                return redirect()
+                    ->route($request['ruta'], [$idR])
+                    ->withErrors(
+                        'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
+                    )->withInput();
             }
-        }
 
-        $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
-        
-        if ($request->ACT_Usuario_Id == null) {
-            $idUsuario = $proyecto->PRY_Cliente_Id;
-            $ruta = 'crear_actividad_cliente';
-            $rutaNotificacion = 'actividades_cliente';
-        } else {
-            $idUsuario = $request['ACT_Usuario_Id'];
-            $ruta = 'crear_actividad_trabajador';
-            $rutaNotificacion = 'actividades_perfil_operacion';
-        }
-        
-        Actividades::crearActividad(
-            $request,
-            $idR,
-            $idUsuario,
-            session()->get('Usuario_Id')
-        );
+            $actividades = Actividades::obtenerActividadesTotalesRequerimiento(
+                $idR
+            );
 
-        $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
-
-        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
-            foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
-                $archivo = null;
-                if ($documento->isValid()) {
-                    $archivo = time() . '.' . $documento->getClientOriginalName();
-                    $documento->move(public_path('documentos_soporte'), $archivo);
-                    DocumentosSoporte::crearDocumentoSoporte($actividad->id, $archivo);
-                } else {
-                    $actividad->destroy();
+            foreach ($actividades as $actividad) {
+                if (strtolower($actividad->ACT_Nombre_Actividad) == strtolower($request->ACT_Nombre_Actividad)) {
+                    return redirect()
+                        ->route($request['ruta'], [$idR])
+                        ->withErrors('La actividad ya cuenta con una tarea del mismo nombre.')
+                        ->withInput();
                 }
             }
+
+            $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
+            
+            if ($request->ACT_Usuario_Id == null) {
+                $idUsuario = $proyecto->PRY_Cliente_Id;
+                $ruta = 'crear_actividad_cliente';
+                $rutaNotificacion = 'actividades_cliente';
+            } else {
+                $idUsuario = $request['ACT_Usuario_Id'];
+                $ruta = 'crear_actividad_trabajador';
+                $rutaNotificacion = 'actividades_perfil_operacion';
+            }
+            
+            Actividades::crearActividad(
+                $request,
+                $idR,
+                $idUsuario,
+                session()->get('Usuario_Id')
+            );
+
+            $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
+
+            if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
+                foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
+                    $archivo = null;
+                    if ($documento->isValid()) {
+                        $archivo = time() . '.' . $documento->getClientOriginalName();
+                        $documento->move(public_path('documentos_soporte'), $archivo);
+                        DocumentosSoporte::crearDocumentoSoporte($actividad->id, $archivo);
+                    } else {
+                        $actividad->destroy();
+                    }
+                }
+            }
+
+            $rangos = $this->obtenerFechasRango(
+                $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
+            );
+
+            foreach ($rangos as $fecha) {
+                HorasActividad::crearHorasActividad($actividad->id, $fecha);
+            }
+
+            HistorialEstados::crearHistorialEstado($actividad->id, 1);
+            
+            Notificaciones::crearNotificacion(
+                'Nueva tarea asignada',
+                session()->get('Usuario_Id'),
+                $idUsuario,
+                $rutaNotificacion,
+                null,
+                null,
+                'add_to_photos'
+            );
+
+            $para = Usuarios::findOrFail($idUsuario);
+            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            
+            Mail::send('general.correo.informacion', [
+                'nombre' => $de['USR_Nombre_Usuario'],
+                'contenido' => 'Ha creado la actividad '.
+                    $request['ACT_Nombre_Actividad'].
+                    ' y se la ha asignado.'
+            ], function($message) use ($para, $request){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to(
+                    $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+                )
+                    ->subject($request['ACT_Nombre_Actividad']);
+            });
+
+            return redirect()
+                ->route($ruta, [$idR])
+                ->with('mensaje', 'Tarea agregada con éxito');
         }
-
-        $rangos = $this->obtenerFechasRango(
-            $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
-        );
-
-        foreach ($rangos as $fecha) {
-            HorasActividad::crearHorasActividad($actividad->id, $fecha);
-        }
-
-        HistorialEstados::crearHistorialEstado($actividad->id, 1);
-        
-        Notificaciones::crearNotificacion(
-            'Nueva tarea asignada',
-            session()->get('Usuario_Id'),
-            $idUsuario,
-            $rutaNotificacion,
-            null,
-            null,
-            'add_to_photos'
-        );
-
-        $para = Usuarios::findOrFail($idUsuario);
-        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        
-        Mail::send('general.correo.informacion', [
-            'nombre' => $de['USR_Nombre_Usuario'],
-            'contenido' => 'Ha creado la actividad '.
-                $request['ACT_Nombre_Actividad'].
-                ' y se la ha asignado.'
-        ], function($message) use ($para, $request){
-            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to(
-                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
-            )
-                ->subject($request['ACT_Nombre_Actividad']);
-        });
-
-        return redirect()
-            ->route($ruta, [$idR])
-            ->with('mensaje', 'Tarea agregada con éxito');
     }
 
     #Función que retorna la lista de los días desde el inicio hasta la entrega de la actividad
@@ -400,6 +402,7 @@ class ActividadesController extends Controller
      */
     public function detalleActividad(Request $request)
     {
+        can('listar-actividades');
         $idUsuario = session()->get('Usuario_Id');
         $notificaciones = Notificaciones::obtenerNotificaciones(
             $idUsuario
@@ -548,6 +551,8 @@ class ActividadesController extends Controller
      */
     public function actualizar(Request $request, $idA)
     {
+        can('editar-actividades');
+
         $hoy = Carbon::now();
         $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
         
@@ -676,6 +681,8 @@ class ActividadesController extends Controller
      */
     public function cambiarRequerimiento(Request $request, $idA)
     {
+        can('editar-actividades');
+
         if ($request->ajax()) {
             try {
                 Actividades::actualizarRequerimientoActividad($idA, $request);
@@ -723,6 +730,8 @@ class ActividadesController extends Controller
      */
     public function aprobarHoras($idH)
     {
+        can('listar-actividades');
+
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -766,6 +775,8 @@ class ActividadesController extends Controller
      */
     public function solicitudTiempo($idA)
     {
+        can('listar-actividades');
+
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -806,6 +817,8 @@ class ActividadesController extends Controller
      */
     public function aprobarSolicitud($idS)
     {
+        can('listar-actividades');
+
         $solicitud = SolicitudTiempo::obtenerSolicitudTiempo($idS);
         
         Actividades::actualizarFechaFin($solicitud);
@@ -857,6 +870,7 @@ class ActividadesController extends Controller
      */
     public function actualizarHoras(Request $request, $idH)
     {
+        can('listar-actividades');
         $fecha = HorasActividad::findOrFail($idH);
         $formatoFechaHoy = Carbon::createFromFormat('Y-m-d H:s:i', Carbon::now());
         $formatoFechaActividad = Carbon::createFromFormat('Y-m-d H:s:i', $fecha->HRS_ACT_Fecha_Actividad.' 23:59:59');
@@ -864,55 +878,81 @@ class ActividadesController extends Controller
         $actividades = DB::table('TBL_Horas_Actividad as ha')
             ->join('TBL_Actividades as a', 'a.id', '=', 'ha.HRS_ACT_Actividad_Id');
         $trabajador = $actividades->where('ha.id', '=', $idH)->first();
-        
+            
         $horas = HorasActividad::obtenerHorasAsignadas(
             $actividades,
             $fecha,
             $trabajador,
             $idH
         );
-        
-        $horaModif = HorasActividad::findOrFail($idH);
-        
-        if (
-            $formatoFechaActividad->lt($formatoFechaHoy)
-        ) {
-            return response()
-                ->json(['msg' => 'errorF']);
-        }
-        
-        if (
-            ($formatoFechaActividad->format('d/m/Y') ==
-                $formatoFechaHoy->format('d/m/Y') &&
-                Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <= 1)
-            || ($formatoFechaActividad->format('d/m/Y') ==
-                $formatoFechaHoy->format('d/m/Y') &&
-                Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <
-                $request->HRS_ACT_Cantidad_Horas_Asignadas)
-        ) {
-            return response()
-                ->json(['msg' => 'errorH']);
-        }
-
-        if (
-            ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 &&
-            ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18
-        ) {
-            HorasActividad::actualizarHoraRealActividad($request, $idH);
             
-            return response()->json(['msg' => 'alerta']);
-        } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18) {
-            return response()->json(['msg' => 'error']);
-        } else if (
-            $horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 &&
-            $request->HRS_ACT_Cantidad_Horas_Asignadas == 0
-        ){
-            return response()->json(['msg' => 'cero']);
-        }
+        $horaModif = HorasActividad::findOrFail($idH);
+        if ($request->valor == null) {
+            if (
+                $formatoFechaActividad->lt($formatoFechaHoy)
+            ) {
+                return response()
+                    ->json(['msg' => 'errorF']);
+            }
+            
+            if (
+                ($formatoFechaActividad->format('d/m/Y') ==
+                    $formatoFechaHoy->format('d/m/Y') &&
+                    Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <= 1)
+                || ($formatoFechaActividad->format('d/m/Y') ==
+                    $formatoFechaHoy->format('d/m/Y') &&
+                    Carbon::now()->diffInHours($fecha->HRS_ACT_Fecha_Actividad.' 23:59:00') <
+                    $request->HRS_ACT_Cantidad_Horas_Asignadas)
+            ) {
+                return response()
+                    ->json(['msg' => 'errorH']);
+            }
+            
+            if(
+                ($horaModif->HRS_ACT_Cantidad_Horas_Asignadas - $request->HRS_ACT_Cantidad_Horas_Asignadas) >= 3
+            ) {
+                return response()->json(['msg' => 'diferencia', 'valor' => $request->HRS_ACT_Cantidad_Horas_Asignadas]);
+            } else if (($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 18) {
+                return response()->json(['msg' => 'error']);
+            } else if (
+                ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) > 8 &&
+                ($horas + $request->HRS_ACT_Cantidad_Horas_Asignadas) <= 18
+            ) {
+                HorasActividad::actualizarHorasReales($request, $idH);
+                
+                return response()->json(['msg' => 'alerta']);
+            } else if (
+                $horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 &&
+                $request->HRS_ACT_Cantidad_Horas_Asignadas == 0
+            ){
+                return response()->json(['msg' => 'cero']);
+            }
 
-        HorasActividad::actualizarHorasReales($idH, $request);
-        
-        return response()->json(['msg' => 'exito']);
+            HorasActividad::actualizarHorasReales($idH, $request);
+            
+            return response()->json(['msg' => 'exito']);
+        } else {
+            if (($horas + $request->valor) > 18) {
+                return response()->json(['msg' => 'error']);
+            } else if (
+                ($horas + $request->valor) > 8 &&
+                ($horas + $request->valor) <= 18
+            ) {
+                $request->HRS_ACT_Cantidad_Horas_Asignadas = $request->valor;
+                HorasActividad::actualizarHorasReales($idH, $request);
+                
+                return response()->json(['msg' => 'alerta']);
+            } else if (
+                $horaModif->HRS_ACT_Cantidad_Horas_Asignadas != 0 &&
+                $request->HRS_ACT_Cantidad_Horas_Asignadas == 0
+            ){
+                return response()->json(['msg' => 'cero']);
+            }
+            $request->HRS_ACT_Cantidad_Horas_Asignadas = $request->valor;
+            HorasActividad::actualizarHorasReales($idH, $request);
+            
+            return response()->json(['msg' => 'exito']);
+        }
     }
 
     /**
@@ -923,6 +963,8 @@ class ActividadesController extends Controller
      */
     public function finalizarAprobacion($idA)
     {
+        can('listar-actividades');
+        
         $horasActividades = HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)
             ->get();
         $trabajador = Actividades::findOrFail(

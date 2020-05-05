@@ -132,6 +132,50 @@ class Usuarios extends Authenticatable
         return $trabajadores;
     }
 
+    #Funcion que obtiene los usuarios con el rol de perfil de operación
+    public static function obtenerTrabajadoresPry()
+    {
+        $trabajadores = DB::table('TBL_Usuarios as u')
+            ->join(
+                'TBL_Usuarios_Roles as ur',
+                'ur.USR_RLS_Usuario_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Roles as r',
+                'r.id',
+                '=',
+                'ur.USR_RLS_Rol_Id'
+            )->rightJoin(
+                'TBL_Actividades as a',
+                'a.ACT_Trabajador_Id',
+                '=',
+                'u.id'
+            )->join(
+                'TBL_Requerimientos as re',
+                're.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.id',
+                '=',
+                're.REQ_Proyecto_Id'
+            )->select(
+                'u.*'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Administrador'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Director de Proyectos'
+            )->where(
+                'r.RLS_Nombre_Rol', '<>', 'Cliente'
+            )->groupBy(
+                'u.id'
+            )->get();
+
+        return $trabajadores;
+    }
+
     #Función que obtiene los perfil de operación
     public static function obtenerPerfilOperacion()
     {

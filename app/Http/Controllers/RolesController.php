@@ -113,6 +113,8 @@ class RolesController extends Controller
      */
     public function guardar(ValidacionRol $request)
     {
+        can('crear-roles');
+
         $roles = Roles::where('RLS_Nombre_Rol', '=', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->first();
@@ -190,6 +192,8 @@ class RolesController extends Controller
      */
     public function actualizar(ValidacionRol $request, $id)
     {
+        can('editar-roles');
+        
         $roles = Roles::where('RLS_Nombre_Rol', '<>', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->get();

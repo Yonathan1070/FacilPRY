@@ -36,6 +36,7 @@ class MetricasController extends Controller
 
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             }catch(Exception $ex){
                 $eficaciaPorcentaje = 0;
             }
@@ -113,6 +114,7 @@ class MetricasController extends Controller
                 $datosFinal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $datosEstimado = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = ($datosFinal / $datosEstimado) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
@@ -172,6 +174,7 @@ class MetricasController extends Controller
 
             try{
                 $eficaciaPorcentaje = ((count($actividadesFinalizadas) / count($actividadesTotales)) * 100);
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             }catch(Exception $ex){
                 $eficaciaPorcentaje = 0;
             }
@@ -197,6 +200,7 @@ class MetricasController extends Controller
                 $datosFinal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $datosEstimado = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = ($datosFinal / $datosEstimado) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
@@ -256,6 +260,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -332,6 +337,7 @@ class MetricasController extends Controller
                 $variableReal = (count($actividadesFinalizadas) / $costoReal) * $horasReales;
                 $variableEstimada = (count($actividadesTotales) / $costoEstimado) * $horasEstimadas;
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
@@ -391,6 +397,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -417,6 +424,7 @@ class MetricasController extends Controller
                 $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }

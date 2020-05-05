@@ -128,6 +128,8 @@ class DecisionesController extends Controller
      */
     public function guardar(ValidacionDecision $request)
     {
+        can('crear-decisiones');
+
         if (
             $request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision
         ) {
@@ -247,6 +249,7 @@ class DecisionesController extends Controller
      */
     public function actualizar(ValidacionDecision $request, $id)
     {
+        can('editar-decisiones');
         if (
             $request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision
         ) {

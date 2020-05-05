@@ -124,6 +124,8 @@ class ClientesController extends Controller
      */
     public function guardar(ValidacionCliente $request)
     {
+        can('crear-clientes');
+
         Usuarios::crearUsuario($request);
         $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
         UsuariosRoles::asignarRol(3, $cliente->id);
@@ -228,6 +230,8 @@ class ClientesController extends Controller
      */
     public function actualizar(ValidacionCliente $request, $idC, $idE)
     {
+        can('editar-clientes');
+        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Usuarios::editarUsuario($request, $idC);
         

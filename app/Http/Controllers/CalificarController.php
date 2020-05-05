@@ -67,6 +67,8 @@ class CalificarController extends Controller
      */
     public function calificar(Request $request)
     {
+        can('listar-calificaciones');
+
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -147,6 +149,8 @@ class CalificarController extends Controller
      */
     public function obtener($id)
     {
+        can('listar-calificaciones');
+        
         $calificacion = Calificaciones::obtenerCalificacionId($id);
 
         return json_encode($calificacion);

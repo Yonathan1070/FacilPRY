@@ -116,6 +116,8 @@ class PerfilOperacionController extends Controller
      */
     public function guardar(ValidacionUsuario $request)
     {
+        can('crear-perfil-operacion');
+
         Usuarios::crearUsuario($request);
         
         $perfil = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
@@ -212,6 +214,8 @@ class PerfilOperacionController extends Controller
      */
     public function actualizar(ValidacionUsuario $request, $id)
     {
+        can('editar-perfil-operacion');
+
         Usuarios::editarUsuario($request, $id);
         Notificaciones::crearNotificacion(
             $request->USR_Nombres_Usuario.
@@ -240,35 +244,39 @@ class PerfilOperacionController extends Controller
      */
     public function inactivar(Request $request, $id)
     {
-        if ($request->ajax()) {
-            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            $datosU = Usuarios::findOrFail($id);
-            $usuario = Usuarios::findOrFail($id);
-            
-            if($usuario != null){
+        if (can('editar-perfil-operacion')){
+            if ($request->ajax()) {
+                $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+                $datosU = Usuarios::findOrFail($id);
+                $usuario = Usuarios::findOrFail($id);
                 
-                if($datos->USR_Supervisor_Id == 0)
-                    $datos->USR_Supervisor_Id = 1;
-                
-                UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
-                Notificaciones::crearNotificacion(
-                    $datos->USR_Nombres_Usuario.
-                        ' '.
-                        $datos->USR_Apellidos_Usuario.
-                        ' ha dejado inactivo al usuario '.
-                        $datosU->USR_Nombres_Usuario,
-                    session()->get('Usuario_Id'),
-                    $datos->USR_Supervisor_Id,
-                    'perfil_operacion',
-                    null,
-                    null,
-                    'arrow_downward'
-                );
+                if($usuario != null){
+                    
+                    if($datos->USR_Supervisor_Id == 0)
+                        $datos->USR_Supervisor_Id = 1;
+                    
+                    UsuariosRoles::where('USR_RLS_Usuario_Id', '=', $id)->update(['USR_RLS_Estado' => 0]);
+                    Notificaciones::crearNotificacion(
+                        $datos->USR_Nombres_Usuario.
+                            ' '.
+                            $datos->USR_Apellidos_Usuario.
+                            ' ha dejado inactivo al usuario '.
+                            $datosU->USR_Nombres_Usuario,
+                        session()->get('Usuario_Id'),
+                        $datos->USR_Supervisor_Id,
+                        'perfil_operacion',
+                        null,
+                        null,
+                        'arrow_downward'
+                    );
 
-                return response()->json(['mensaje' => 'ok']);
-            }else{
-                return response()->json(['mensaje' => 'ng']);
+                    return response()->json(['mensaje' => 'ok']);
+                }else{
+                    return response()->json(['mensaje' => 'ng']);
+                }
             }
+        } else {
+            abort(404);
         }
     }
 
@@ -281,6 +289,8 @@ class PerfilOperacionController extends Controller
      */
     public function activar($id)
     {
+        can('editar-perfil-operacion');
+
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $datosU = Usuarios::findOrFail($id);
         $usuario = Usuarios::findOrFail($id);
@@ -320,14 +330,19 @@ class PerfilOperacionController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
-        if ($request->ajax()) {
-            try {
-                Usuarios::findOrFail($id)->delete($id);
-                return response()->json(['mensaje' => 'ok']);
-            } catch (QueryException $e) {
-                return response()->json(['mensaje' => 'ng']);
+        if (can('eliminar-perfil-operacion')) {
+            if ($request->ajax()) {
+                try {
+                    Usuarios::findOrFail($id)->delete($id);
+                    return response()->json(['mensaje' => 'ok']);
+                } catch (QueryException $e) {
+                    return response()->json(['mensaje' => 'ng']);
+                }
             }
+        } else {
+            abort(404);
         }
+        
     }
 
     /**
@@ -338,6 +353,8 @@ class PerfilOperacionController extends Controller
      */
     public function agregar($id)
     {
+        can('editar-perfil-operacion');
+
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $datosU = Usuarios::findOrFail($id);
         $usuario = Usuarios::findOrFail($id);
@@ -377,6 +394,8 @@ class PerfilOperacionController extends Controller
      */
     public function cargaTrabajo($id)
     {
+        can('listar-perfil-operacion');
+
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -441,6 +460,8 @@ class PerfilOperacionController extends Controller
      */
     public function pdfCargaTrabajo($id)
     {
+        can('listar-perfil-operacion');
+        
         $actividades = Actividades::obtenerGenerales($id);
         $perfilOperacion = Usuarios::obtenerUsuarioById($id);
 

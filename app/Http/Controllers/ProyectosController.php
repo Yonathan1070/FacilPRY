@@ -127,6 +127,8 @@ class ProyectosController extends Controller
      */
     public function guardar(ValidacionProyecto $request)
     {
+        can('crear-proyectos');
+
         Proyectos::create($request->all());
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $datosU = Usuarios::findOrFail($request->PRY_Cliente_Id);
@@ -177,6 +179,8 @@ class ProyectosController extends Controller
      */
     public function generarPdf($id)
     {
+        can('listar-proyectos');
+
         $proyecto = Proyectos::findOrFail($id);
         $actividades = Actividades::obtenerActividadesPDF($id);
 
@@ -209,6 +213,8 @@ class ProyectosController extends Controller
      */
     public function obtenerPorcentaje($id)
     {
+        can('listar-proyectos');
+
         $actividadesTotales = Actividades::obtenerActividadesTotales($id);
         $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadas($id);
         
@@ -232,6 +238,8 @@ class ProyectosController extends Controller
      */
     public function gantt($id)
     {
+        can('listar-proyectos');
+
         $permisos = [
             'listarE'=>can2('listar-empresas')
         ];
@@ -277,6 +285,7 @@ class ProyectosController extends Controller
      */
     public function ganttDescargar($id)
     {
+        can('listar-proyectos');
 
         $proyecto = Proyectos::findOrFail($id);
         
@@ -305,6 +314,8 @@ class ProyectosController extends Controller
      */
     public function finalizar($id)
     {
+        can('editar-proyectos');
+
         Proyectos::finalizarProyecto($id);
         
         return redirect()
@@ -320,6 +331,8 @@ class ProyectosController extends Controller
      */
     public function activar($id)
     {
+        can('editar-proyectos');
+        
         Proyectos::activarProyecto($id);
         
         return redirect()

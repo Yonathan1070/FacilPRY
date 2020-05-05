@@ -91,6 +91,62 @@ Aprobar Horas de Trabajo
                     InkBrutalPRY.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'InkBrutalPRY', 'error');
                 if(data.msg == "errorH")
                     InkBrutalPRY.notificaciones('No puede asignar horas de trabajo debido a que está asignando una cantidad de horas superior a las restantes del día.', 'InkBrutalPRY', 'error');
+                if(data.msg == "diferencia") {
+                    event.preventDefault();
+                    const form = $(this);
+                    swal({
+                        title: 'Está asignando una cantidad muy baja de horas comparada con las que asignó el perfil de operación ¿Desea continuar?',
+                        text: 'Se asignaran las horas de trabajo al continuar',
+                        icon: 'warning',
+                        buttons: {
+                            cancel: "Cancelar",
+                            confirm: "Aceptar"
+                        },
+                    }).then((value) => {
+                        if(value){
+                            swal({
+                                title: 'Asignadas',
+                                text: 'Horas de trabajo asignadas',
+                                icon: 'success',
+                                buttons: {
+                                    confirm: "Aceptar"
+                                },
+                            }).then((value) => {
+                                if(value){
+                                    $.ajax({
+                                        dataType: "json",
+                                        method: "put",
+                                        url: "/actividades/" + idHora +"/aprobar",
+                                        data: {"_token":"{{ csrf_token() }}", valor:data.valor},
+                                        success:function(data){
+                                            if(data.msg == "alerta")
+                                                InkBrutalPRY.notificaciones('Horas asignadas, ya superó el limite de 8 horas', 'InkBrutalPRY', 'warning');
+                                            if(data.msg == "error")
+                                                InkBrutalPRY.notificaciones('La cantidad de horas de trabajo diaria ha superado el límite de 15 Horas', 'InkBrutalPRY', 'error');
+                                            if(data.msg == "errorF")
+                                                InkBrutalPRY.notificaciones('No puede asignar horas de trabajo a una fecha expirada.', 'InkBrutalPRY', 'error');
+                                            if(data.msg == "errorH")
+                                                InkBrutalPRY.notificaciones('No puede asignar horas de trabajo debido a que está asignando una cantidad de horas superior a las restantes del día.', 'InkBrutalPRY', 'error');
+                                            if(data.msg == "cero")
+                                                InkBrutalPRY.notificaciones('El trabajador ya asignó unas horas, no puede ser cero esta asignación', 'InkBrutalPRY', 'error');
+                                            if(data.msg == "exito")
+                                                InkBrutalPRY.notificaciones('Horas Asignadas', 'InkBrutalPRY', 'success');
+                                        }
+                                    });
+                                }
+                            })
+                        }else{
+                            swal({
+                                title: 'Cancelado',
+                                text: 'Asigne una cantidad distinta de horas',
+                                icon: 'info',
+                                buttons: {
+                                    confirm: "Aceptar"
+                                },
+                            })
+                        }
+                    });
+                }
                 if(data.msg == "cero")
                     InkBrutalPRY.notificaciones('El trabajador ya asignó unas horas, no puede ser cero esta asignación', 'InkBrutalPRY', 'error');
                 if(data.msg == "exito")

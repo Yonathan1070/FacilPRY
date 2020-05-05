@@ -28,6 +28,9 @@ class MetricasController extends Controller
      */
     public function metricaEficaciaGeneral()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficacia = [];
 
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
@@ -40,6 +43,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -76,6 +80,9 @@ class MetricasController extends Controller
      */
     public function metricaEficienciaGeneral()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficiencia = [];
         
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
@@ -100,6 +107,7 @@ class MetricasController extends Controller
                 $variableReal = (count($actividadesFinalizadas) / $costoReal) * $horasReales;
                 $variableEstimada = (count($actividadesTotales) / $costoEstimado) * $horasEstimadas;
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
@@ -136,6 +144,9 @@ class MetricasController extends Controller
      */
     public function metricaEfectividadGeneral()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $efectividad = [];
 
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
@@ -149,6 +160,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -171,6 +183,7 @@ class MetricasController extends Controller
                 $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
@@ -214,6 +227,9 @@ class MetricasController extends Controller
      */
     public function metricaProductividad()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $proyectos = Proyectos::where('PRY_Estado_Proyecto', '=', 1)->get();
         
         foreach ($proyectos as $key => $proyecto) {
@@ -269,9 +285,12 @@ class MetricasController extends Controller
      */
     public function barrasEficaciaPorTrabajador()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficacia = [];
 
-        $trabajadores = Usuarios::obtenerTrabajadores();
+        $trabajadores = Usuarios::obtenerTrabajadoresPry();
         
         foreach ($trabajadores as $key => $trabajador) {
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
@@ -281,6 +300,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -321,9 +341,12 @@ class MetricasController extends Controller
      */
     public function barrasEficienciaPorTrabajador()
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficiencia = [];
 
-        $trabajadores = Usuarios::obtenerTrabajadores();
+        $trabajadores = Usuarios::obtenerTrabajadoresPry();
         
         foreach ($trabajadores as $key => $trabajador) {
             $actividadesFinalizadas = $this->obtenerFinalizadasTrabajador($trabajador->id);
@@ -345,6 +368,7 @@ class MetricasController extends Controller
                 $variableEstimada = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableReal = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = $variableEstimada / $variableReal * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
@@ -385,7 +409,10 @@ class MetricasController extends Controller
      */
     public function barrasEfectividadPorTrabajador()
     {
-        $trabajadores = Usuarios::obtenerTrabajadores();
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
+        $trabajadores = Usuarios::obtenerTrabajadoresPry();
         
         foreach ($trabajadores as $key => $trabajador) {
             #Obtenemos la Eficacia
@@ -396,6 +423,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -418,6 +446,7 @@ class MetricasController extends Controller
                 $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = $variableReal / $variableEstimada * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             }catch(Exception $ex){
                 $eficienciaPorcentaje = 0;
             }
@@ -538,6 +567,9 @@ class MetricasController extends Controller
      */
     public function metricaEficaciaCarga($id)
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficacia = [];
 
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
@@ -557,6 +589,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -597,6 +630,9 @@ class MetricasController extends Controller
      */
     public function metricaEficienciaCarga($id)
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $eficiencia = [];
         
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
@@ -631,6 +667,7 @@ class MetricasController extends Controller
                 $variableReal = (count($actividadesFinalizadas) / $costoReal) * $horasReales;
                 $variableEstimada = (count($actividadesTotales) / $costoEstimado) * $horasEstimadas;
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }
@@ -671,6 +708,9 @@ class MetricasController extends Controller
      */
     public function metricaEfectividadCarga($id)
     {
+        if (session()->get('Usuario_Id') == null) {
+            return redirect()->back()->withErrors('No tiene permisos para entrar aquí.');
+        }
         $efectividad = [];
 
         $proyectos = Proyectos::obtenerProyectosPerfil($id);
@@ -691,6 +731,7 @@ class MetricasController extends Controller
                 $eficaciaPorcentaje = (
                     (count($actividadesFinalizadas) / count($actividadesTotales)) * 100
                 );
+                $eficaciaPorcentaje = ($eficaciaPorcentaje > 100) ? 100 : $eficaciaPorcentaje;
             } catch(Exception $ex) {
                 $eficaciaPorcentaje = 0;
             }
@@ -716,6 +757,7 @@ class MetricasController extends Controller
                 $variableReal = ((count($actividadesFinalizadas) / $costoReal) * $horasReales);
                 $variableEstimada = ((count($actividadesTotales) / $costoEstimado) * $horasEstimadas);
                 $eficienciaPorcentaje = ($variableReal / $variableEstimada) * 100;
+                $eficienciaPorcentaje = ($eficienciaPorcentaje > 100) ? 100 : $eficienciaPorcentaje;
             } catch(Exception $ex) {
                 $eficienciaPorcentaje = 0;
             }

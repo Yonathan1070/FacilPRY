@@ -85,6 +85,8 @@ class FinanzasController extends Controller
      */
     public function agregarCosto($id)
     {
+        can('finanzas');
+
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -128,6 +130,8 @@ class FinanzasController extends Controller
      */
     public function actualizarCosto(Request $request)
     {
+        can('finanzas');
+
         Actividades::actualizarCostoReal(
             $request->id,
             9,
@@ -147,6 +151,8 @@ class FinanzasController extends Controller
      */
     public function generarFactura($id)
     {
+        can('finanzas');
+
         $proyecto = Proyectos::obtenerProyecto($id);
         $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
@@ -183,6 +189,8 @@ class FinanzasController extends Controller
      */
     public function generarFacturaAdicional($id)
     {
+        can('finanzas');
+
         $proyecto = Proyectos::obtenerProyecto($id);
         $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturaAdicional::obtenerDetalleFacturaAdicional($id);
@@ -258,6 +266,8 @@ class FinanzasController extends Controller
      */
     public function obtenerProyectos($id)
     {
+        can('finanzas');
+
         $proyectos = Proyectos::obtenerProyectosCliente($id);
 
         return json_encode($proyectos);
@@ -272,6 +282,8 @@ class FinanzasController extends Controller
      */
     public function guardarCostosFactura(Request $request)
     {
+        can('finanzas');
+
         FacturaAdicional::crearFactura($request);
 
         Notificaciones::crearNotificacion(
@@ -354,6 +366,8 @@ class FinanzasController extends Controller
      */
     public function actualizarCostosFactura(Request $request, $id)
     {
+        can('finanzas');
+        
         if($request->FACT_AD_Descripcion != null) {
             try {
                 FacturaAdicional::findOrFail($id)

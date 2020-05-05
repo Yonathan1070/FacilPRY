@@ -74,6 +74,8 @@ class ValidadorController extends Controller
      */
     public function aprobacionActividad($id)
     {
+        can('validador');
+        
         $idUsuario = session()->get('Usuario_Id');
         
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -137,6 +139,8 @@ class ValidadorController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
+        can('validador');
+
         Respuesta::actualizarRespuesta($request, 6, session()->get('Usuario_Id'));
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
         $actividad = $this->actividad($request->id);
@@ -183,6 +187,8 @@ class ValidadorController extends Controller
      */
     public function respuestaAprobado(Request $request)
     {
+        can('validador');
+        
         Respuesta::actualizarRespuesta($request, 5, session()->get('Usuario_Id'));
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);
         Respuesta::crearRespuesta($request->id, 12);

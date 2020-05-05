@@ -52,7 +52,7 @@
                                             <td>
                                                 {{$actividad->HorasE}} Horas (En espera de aprobación de horas de trabajo)
                                                 @if ($actividad->ACT_Encargado_Id == session()->get('Usuario_Id') && $actividad->ACT_Estado_Id == 1)
-                                                    <a href="{{route('aprobar_horas_actividad', ['idA'=>$actividad->Id_Actividad])}}"
+                                                    <a href="{{route('aprobar_horas_actividad', ['idH'=>$actividad->Id_Actividad])}}"
                                                         class="btn-accion-tabla tooltipsC" title="Aprobar horas de trabajo">
                                                         <i class="material-icons text-success" style="font-size: 17px;">alarm_on</i>
                                                     </a>

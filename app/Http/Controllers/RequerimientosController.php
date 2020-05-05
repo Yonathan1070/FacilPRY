@@ -124,6 +124,8 @@ class RequerimientosController extends Controller
      */
     public function guardar(ValidacionRequerimiento $request)
     {
+        can('crear-requerimientos');
+
         $datosU = Usuarios::obtenerClienteProyecto($request->REQ_Proyecto_Id);
         $requerimientos = Requerimientos::obtenerRequerimientos($request['REQ_Proyecto_Id']);
         
@@ -207,6 +209,8 @@ class RequerimientosController extends Controller
      */
     public function actualizar(ValidacionRequerimiento $request, $idR)
     {
+        can('editar-requerimientos');
+
         $requerimientos = Requerimientos::obtenerRequerimientosNoActual($request, $idR);
         
         foreach ($requerimientos as $requerimiento) {
@@ -273,6 +277,8 @@ class RequerimientosController extends Controller
      */
     public function obtenerPorcentaje($id)
     {
+        can('listar-requerimientos');
+
         $actividadesTotales = Actividades::obtenerActividadesTotalesRequerimiento($id);
         $actividadesFinalizadas = Actividades::obtenerActividadesFinalizadasRequerimiento($id);
         

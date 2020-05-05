@@ -69,6 +69,7 @@ class PerfilUsuarioController extends Controller
      */
     public function actualizarFoto(Request $request)
     {
+        can('editar-perfil');
         $validator = Validator::make($request->all(), [
             'USR_Foto_Perfil_Usuario' =>
                 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -112,6 +113,8 @@ class PerfilUsuarioController extends Controller
      */
     public function actualizarDatos(Request $request)
     {
+        can('editar-perfil');
+
         $usuarios = Usuarios::where('USR_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->where('id', '<>', session()->get('Usuario_Id'))
             ->get();
@@ -147,6 +150,8 @@ class PerfilUsuarioController extends Controller
      */
     public function actualizarClave(Request $request)
     {
+        can('editar-perfil');
+        
         if($request->USR_Clave_Nueva != $request->USR_Clave_Confirmar){
             return redirect()->back()->withErrors('Las contraseñas no coinciden.');
         }

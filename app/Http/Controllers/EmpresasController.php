@@ -116,6 +116,8 @@ class EmpresasController extends Controller
      */
     public function guardar(ValidacionEmpresa $request)
     {
+        can('crear-empresas');
+
         Empresas::crearEmpresa($request);
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
@@ -190,6 +192,8 @@ class EmpresasController extends Controller
      */
     public function actualizar(ValidacionEmpresa $request, $id)
     {
+        can('editar-empresas');
+        
         Empresas::editarEmpresa($request, $id);
 
         return redirect()
@@ -206,12 +210,17 @@ class EmpresasController extends Controller
      */
     public function inactivar(Request $request, $id)
     {
-        if($request->ajax()){
-            Empresas::cambiarEstado($id);
-            Proyectos::cambiarEstado($id);
-
-            return response()->json(['mensaje' => 'okI']);
+        if (can('editar-empresas')) {
+            if($request->ajax()){
+                Empresas::cambiarEstado($id);
+                Proyectos::cambiarEstado($id);
+    
+                return response()->json(['mensaje' => 'okI']);
+            }
+        } else {
+            return abort(404);
         }
+        
     }
 
     /**
@@ -222,6 +231,8 @@ class EmpresasController extends Controller
      */
     public function activar($id)
     {
+        can('editar-empresas');
+
         Empresas::cambiarEstadoActivado($id);
         Proyectos::cambiarEstadoActivado($id);
         

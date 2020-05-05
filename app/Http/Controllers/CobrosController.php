@@ -77,6 +77,8 @@ class CobrosController extends Controller
      */
     public function agregarFactura($idA, $idC)
     {
+        can('listar-cobros');
+
         $cliente = Usuarios::findOrFail($idC);
         $rta = Respuesta::obtenerUltimaRespuesta($idA);
         $actividad = Actividades::findOrFail($idA);
@@ -112,6 +114,8 @@ class CobrosController extends Controller
      */
     public function generarFactura($id)
     {
+        can('listar-cobros');
+        
         $proyecto = Proyectos::obtenerProyecto($id);
         $empresaProyecto = Empresas::findOrFail($proyecto->PRY_Empresa_Id);
         $informacion = FacturasCobro::obtenerDetalleFactura($id);
