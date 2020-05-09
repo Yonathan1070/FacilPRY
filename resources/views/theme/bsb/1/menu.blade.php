@@ -20,6 +20,7 @@
                     <li><a href="{{route('perfil')}}"><i class="material-icons">person</i>Perfil</a></li>
                     <li><a href="{{route('empresa_administrador')}}"><i class="material-icons">business</i>Empresa</a></li>
                     <li><a href="{{route("menu")}}"><i class="material-icons">list</i>Menu</a></li>
+                    <li><a href="{{route("logs_administrador")}}"><i class="material-icons">track_changes</i>Logs</a></li>
                     <li role="separator" class="divider"></li>
                     @if (session()->get('roles') && count(session()->get('roles')) > 1)
                         <li><a href="#" class="cambiar-rol"><i class="material-icons">autorenew</i>Cambiar de Rol</a></li>

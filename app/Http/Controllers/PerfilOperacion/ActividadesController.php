@@ -369,10 +369,7 @@ class ActividadesController extends Controller
      */
     public function guardarFinalizar(Request $request)
     {
-        if (
-            !$request->hasFile('ACT_Documento_Evidencia_Actividad') &&
-                !$request['ACT_FIN_Link']
-        ) {
+        if (!$request->hasFile('ACT_Documento_Evidencia_Actividad') && !$request['ACT_FIN_Link']) {
             return redirect()
                 ->route('actividades_finalizar_perfil_operacion', [$request['Actividad_Id']])
                 ->withErrors(

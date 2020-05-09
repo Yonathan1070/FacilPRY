@@ -29,4 +29,31 @@ class LogCambios extends Model
             'LOG_Usuario' => $usuario
         ]);
     }
+
+    #Función para obtener el listado de logs
+    public static function obtenerLogsOchoDias()
+    {
+        $logs = LogCambios::join(
+            'TBL_Usuarios as u',
+            'u.id',
+            '=',
+            'TBL_Log_Cambios.LOG_Usuario'
+        )->where('LOG_Fecha', '>',Carbon::now()->subDays(8))
+        ->get();
+
+        return $logs;
+    }
+
+    #Función para obtener el listado de logs
+    public static function obtenerLogs()
+    {
+        $logs = LogCambios::join(
+            'TBL_Usuarios as u',
+            'u.id',
+            '=',
+            'TBL_Log_Cambios.LOG_Usuario'
+        )->get();
+
+        return $logs;
+    }
 }

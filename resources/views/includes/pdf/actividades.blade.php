@@ -13,7 +13,11 @@ PDF Actividades
                 </h2>
                 <ul class="header-dropdown" style="top:10px;">
                     <li class="dropdown">
-                        <img src="{{public_path("assets\bsb\images\Logos/".$empresa->EMP_Logo_Empresa)}}" height="150px">
+                        @if ($empresa->EMP_Logo_Empresa == null)
+                            <img src="{{public_path("assets\bsb\images\Logos/InkLogo.png")}}" height="150px">
+                        @else
+                            <img src="{{public_path("assets\bsb\images\Logos/".$empresa->EMP_Logo_Empresa)}}" height="150px">
+                        @endif
                     </li>
                 </ul>
 

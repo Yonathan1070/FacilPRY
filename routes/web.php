@@ -22,6 +22,8 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
     Route::get('{id}/cambio-estado-todo', 'InicioController@cambiarEstadoTodasNotificaciones')->name('cambiar_estado_todo_administrador');
     Route::get('{id}/limpiar-notificaciones', 'InicioController@limpiarNotificacion')->name('limpiar_administrador');
     Route::get('notificaciones', 'InicioController@verTodas')->name('notificaciones_administrador');
+    Route::get('logs', 'LogsController@index')->name('logs_administrador');
+    Route::get('logs-historico', 'LogsController@historico')->name('logs_historico_administrador');
     //Enroutamiento para CRUD Director de Proyectos
     Route::group(['prefix' => 'director-proyectos'], function () {
         Route::get('', 'DirectorProyectosController@index')->name('directores_administrador');
