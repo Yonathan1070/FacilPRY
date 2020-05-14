@@ -58,7 +58,7 @@ class Proyectos extends Model
                 'u.id',
                 '=',
                 'p.PRY_Cliente_Id'
-            )->join(
+            )/*->join(
                 'TBL_Usuarios as ut',
                 'ut.id',
                 '=',
@@ -73,7 +73,7 @@ class Proyectos extends Model
                 'ro.id',
                 '=',
                 'ur.USR_RLS_Rol_Id'
-            )->select(
+            )*/->select(
                 'u.*',
                 'p.*',
                 'p.id as Proyecto_Id',
@@ -83,9 +83,9 @@ class Proyectos extends Model
                 'p.PRY_Empresa_Id', '=', $id
             )->where(
                 'p.PRY_Finalizado_Proyecto', '=', 0
-            )->where(
+            )/*->where(
                 'ro.id', '>', 3
-            )->groupBy(
+            )*/->groupBy(
                 'p.id'
             )->get();
         
