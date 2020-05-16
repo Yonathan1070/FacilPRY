@@ -121,7 +121,7 @@
                         <div class="content">
                             <div id="pie" class="row clearfix">
                                 <!-- Pie Chart -->
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <div class="card">
                                         <div class="header">
                                             <h2>Indicador de Eficacia General</h2>
@@ -133,7 +133,7 @@
                                 </div>
                                 <!-- #END# Pie Chart -->
                                 <!-- Pie Chart -->
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <div class="card">
                                         <div class="header">
                                             <h2>Indicador de Eficiencia General</h2>
@@ -145,7 +145,8 @@
                                 </div>
                                 <!-- #END# Pie Chart -->
                                 <!-- Pie Chart -->
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                     <div class="card">
                                         <div class="header">
                                             <h2>Indicador de Efectividad General</h2>

@@ -114,6 +114,7 @@ class MetricasController extends Controller
 
             $eficiencia[++$key] = [$proyecto->PRY_Nombre_Proyecto,(int)$eficienciaPorcentaje];
         }
+        
         $pryEficienciaLlave = [];
         $pryEficienciaValor = [];
         $pryEficienciaColor = [];
@@ -326,7 +327,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEficaciaColor,
             'data' => $pryEficaciaValor,
             'label' => 'Eficacia Trabajadores',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEficaciaLlave
         ];
 
@@ -394,7 +395,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEficienciaColor,
             'data' => $pryEficienciaValor,
             'label' => 'Eficiencia Trabajadores',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEficienciaLlave
         ];
 
@@ -475,7 +476,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEfectividadColor,
             'data' => $pryEfectividadValor,
             'label' => 'Efectividad Trabajadores',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEfectividadLlave
         ];
         

@@ -62,7 +62,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEficaciaColor,
             'data' => $pryEficaciaValor,
             'label' => 'Eficacia General',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEficaciaLlave
         ];
         
@@ -140,7 +140,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEficienciaColor,
             'data' => $pryEficienciaValor,
             'label' => 'Eficiencia General',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEficienciaLlave
         ];
 
@@ -225,7 +225,7 @@ class MetricasController extends Controller
             'backgroundColor' => $pryEfectividadColor,
             'data' => $pryEfectividadValor,
             'label' => 'Efectividad General',
-            'type' => 'bar',
+            'type' => 'polarArea',
             'labels' => $pryEfectividadLlave
         ];
 

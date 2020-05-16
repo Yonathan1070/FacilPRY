@@ -266,6 +266,10 @@ class ActividadesController extends Controller
      */
     public function respuestaRechazado(Request $request)
     {
+        if($request->RTA_Titulo == null && $request->RTA_Respuesta == null) {
+            return redirect()->back()->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
+        }
+
         $idUsuario = session()->get('Usuario_Id');
         
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
@@ -330,6 +334,10 @@ class ActividadesController extends Controller
      */
     public function respuestaAprobado(Request $request)
     {
+        if($request->RTA_Titulo == null && $request->RTA_Respuesta == null) {
+            return redirect()->back()->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
+        }
+        
         $idUsuario = session()->get('Usuario_Id');
 
         $rtaTest = Respuesta::obtenerRespuestaValidador($request->id);
