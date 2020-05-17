@@ -97,7 +97,7 @@ Cobros
             <div class="profile-body">
                 <div class="content-area">
                     <h6>Horas empleadas: {{$horas->HorasR}}</h6>
-                    <p>Costo de la Hora Trabajador: {{$actividades->CostoTrabajador}}</p>
+                    <p>Costo de la Hora Trabajador: {{($actividades->CostoTrabajador == 0) ? 10000 : $actividades->CostoTrabajador}}</p>
                 </div>
             </div>
             <div class="profile-footer">

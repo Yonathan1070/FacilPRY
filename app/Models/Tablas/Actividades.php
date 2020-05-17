@@ -1575,7 +1575,7 @@ class Actividades extends Model
         $newCosto = Actividades::findOrFail($idA);
         
         $newCosto->update([
-            'ACT_Costo_Estimado_Actividad' =>($horas * $costoHora)
+            'ACT_Costo_Estimado_Actividad' =>(($horas * $costoHora) == 0) ? 10000 : ($horas * $costoHora),
         ]);
 
         LogCambios::guardar(
