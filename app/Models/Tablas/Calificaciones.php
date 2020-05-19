@@ -78,6 +78,32 @@ class Calificaciones extends Model
         return $calificaciones;
     }
 
+    #Función para obtener las calificaciones por rango de fechas
+    public static function obtenerCalificacionesId($id)
+    {
+        $calificaciones = DB::table('TBL_Calificaciones as c')
+            ->join(
+                'TBL_Decisiones as d',
+                'd.id',
+                '=',
+                'c.CALIF_Decision_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'c.CALIF_Trabajador_Id'
+            )->select(
+                'c.*',
+                'd.*',
+                'u.*',
+                'c.id as Id_Calificacion'
+            )->where(
+                'c.id', '=', $id
+            )->get();
+        
+        return $calificaciones;
+    }
+
     #Función para obtener las calificaciones por id
     public static function obtenerCalificacionId($id)
     {
@@ -106,7 +132,7 @@ class Calificaciones extends Model
     #Función para guardar la calificación obtenida
     public static function guardarCalificacion($calificacion, $trabajador, $decision)
     {
-        Calificaciones::create([
+        $calificacion = Calificaciones::create([
             'CALIF_calificacion' => $calificacion,
             'CALIF_Trabajador_Id' => $trabajador,
             'CALIF_Decision_Id' => $decision,
@@ -123,5 +149,7 @@ class Calificaciones extends Model
                 ', CALIF_Fecha_Calificacion -> '.Carbon::now(),
             session()->get('Usuario_Id')
         );
+
+        return $calificacion;
     }
 }

@@ -140,8 +140,18 @@ class DecisionesController extends Controller
                 )->withInput();
         }
 
+        $decisiones = Decisiones::get();
+
         $diferencia = Decisiones::obtenerDiferenciaDecisiones(2);
+        
         $total = 0;
+        foreach ($decisiones as $decision) {
+            if ($decision->DCS_Rango_Inicio_Decision == 0) {
+                $total = -1;
+                break;
+            }
+
+        }
 
         foreach ($diferencia as $dif) {
             $total = $total + $dif->diferencia;
@@ -174,8 +184,8 @@ class DecisionesController extends Controller
             }
 
             if (
-                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
-                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
+                $decision->DCS_Rango_Inicio_Decision <= $request->DCS_Rango_Fin_Decision &&
+                $request->DCS_Rango_Fin_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()
                     ->back()
@@ -262,9 +272,16 @@ class DecisionesController extends Controller
 
         $diferencia = Decisiones::obtenerDiferenciaDecisionDistintasId($id, 2);
         $total = 0;
+        foreach ($diferencia as $decision) {
+            if ($decision->DCS_Rango_Inicio_Decision == 0) {
+                $total = -1;
+                break;
+            }
+
+        }
 
         foreach ($diferencia as $dif) {
-            $total = $total + $dif->diferencia;
+            $total = $total + $dif->diferencia + 1;
         }
         
         if (
@@ -293,8 +310,8 @@ class DecisionesController extends Controller
                     )->withInput();
             }
             if (
-                $decision->DCS_Rango_Inicio_Decision < $request->DCS_Rango_Fin_Decision &&
-                $request->DCS_Rango_Fin_Decision < $decision->DCS_Rango_Fin_Decision
+                $decision->DCS_Rango_Inicio_Decision <= $request->DCS_Rango_Fin_Decision &&
+                $request->DCS_Rango_Fin_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()
                     ->back()

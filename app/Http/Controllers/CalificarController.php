@@ -45,6 +45,21 @@ class CalificarController extends Controller
 
         $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
+        $decisiones = Decisiones::get();
+        
+        $diferencia = Decisiones::obtenerDiferenciaDecisiones(2);
+        $total = 0;
+        foreach ($decisiones as $decision) {
+            if ($decision->DCS_Rango_Inicio_Decision == 0) {
+                $total = -1;
+                break;
+            }
+
+        }
+
+        foreach ($diferencia as $dif) {
+            $total = $total + $dif->diferencia + 1;
+        }
         return view(
             'calificaciones.listar',
             compact(
@@ -54,7 +69,9 @@ class CalificarController extends Controller
                 'permisos',
                 'calificaciones',
                 'asignadas',
-                'perfilesOperacion'
+                'perfilesOperacion',
+                'decisiones',
+                'total'
             )
         );
     }
@@ -95,18 +112,19 @@ class CalificarController extends Controller
                     'Las fechas seleccionadas no pueden ser iguales o superiores a la fecha actual.'
                 );
         }
+
         $perfilOperacion = Usuarios::findOrFail($request->Id_Perfil);
         
         $actividadesFinalizadas = ActividadesFinalizadas::obtenerActividadesRango(
-            $request->Fecha_Inicio_Rango,
-            $request->Fecha_Fin_Rango,
-            $request->ACT_Usuario_Id
+            $request->Fecha_Inicio_Rango.' 00:00:00',
+            $request->Fecha_Fin_Rango.' 23:59:59',
+            $request->Id_Perfil
         );
 
         $actividadesTotales = Actividades::obtenerActividadesRango(
-            $request->Fecha_Inicio_Rango,
-            $request->Fecha_Fin_Rango,
-            $request->ACT_Usuario_Id
+            $request->Fecha_Inicio_Rango.' 00:00:00',
+            $request->Fecha_Fin_Rango.' 23:59:59',
+            $request->Id_Perfil
         );
 
         try {
@@ -119,14 +137,22 @@ class CalificarController extends Controller
 
         $decision = Decisiones::obtenerDecisionPorRango((int)$eficaciaPorcentaje);
         
-        Calificaciones::guardarCalificacion(
+        if ($decision == null) {
+            return redirect()
+                ->back()
+                ->withErrors(
+                    'No hay una decisión que se pueda asociar a la calificación obtenida.'
+                );
+        }
+
+        $calif = Calificaciones::guardarCalificacion(
             $eficaciaPorcentaje,
             $request->Id_Perfil,
             $decision->id
         );
 
-        $calificaciones = Calificaciones::obtenerCalificacionesFecha(
-            Carbon::now()->format('yy-m-d')
+        $calificaciones = Calificaciones::obtenerCalificacionesId(
+            $calif->id
         );
         
         return view(

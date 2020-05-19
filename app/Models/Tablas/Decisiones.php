@@ -87,6 +87,7 @@ class Decisiones extends Model
     {
         $decisiones = DB::table('TBL_Decisiones')
             ->select(
+                'TBL_Decisiones.*',
                 DB::raw("DCS_Rango_Fin_Decision - DCS_Rango_Inicio_Decision as diferencia")
             )->where(
                 'DSC_Indicador_Id', '=', $idIndicador

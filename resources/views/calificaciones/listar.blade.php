@@ -25,7 +25,7 @@ Listar Calificaciones
                                 <a class="btn btn-danger waves-effect" href="{{route('decisiones')}}"><i
                                     class="material-icons" style="color:white;">arrow_back</i> Volver a Decisiones</a>
                             @endif
-                            @if ($permisos['calificar']==true)
+                            @if ($permisos['calificar']==true && count($decisiones) > 0 && $total == 100)
                                 <a
                                     class="btn bg-light-green btn-circle-lg waves-effect waves-circle waves-float tooltipsC"
                                     title="Calificar Trabajadores"
@@ -161,7 +161,7 @@ Listar Calificaciones
                                             required>
                                             <option value="">-- Seleccione un Trabajador --</option>
                                             @foreach ($perfilesOperacion as $perfilOperacion)
-                                                <option value="{{$perfilOperacion->id}}">
+                                                <option value="{{$perfilOperacion->Id_Perfil}}">
                                                     {{$perfilOperacion->USR_Nombres_Usuario.' '.$perfilOperacion->USR_Apellidos_Usuario}}
                                                 </option>
                                             @endforeach
