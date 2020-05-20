@@ -25,7 +25,7 @@ Gantt Proyectos
                         </li>
                     </ul>
                 </div>
-                <div class="body table-responsive">
+                <div class="body table-responsive" style="height: 400px">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
