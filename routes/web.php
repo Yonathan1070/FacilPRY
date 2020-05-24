@@ -204,6 +204,7 @@ Route::get('perfil-operacion/{id}/carga-pdf', 'PerfilOperacionController@pdfCarg
 Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');
 Route::get('proyectos/crear/{id}', 'ProyectosController@crear')->name('crear_proyecto');
 Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
+Route::delete('proyectos/{idP}/eliminar', 'ProyectosController@eliminar')->name('eliminar_proyectos');
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');
 Route::get('proyectos/{id}', 'ProyectosController@obtenerPorcentaje')->name('obtener_porcentaje');
 Route::get('proyectos/{id}/gantt', 'ProyectosController@gantt')->name('gantt');

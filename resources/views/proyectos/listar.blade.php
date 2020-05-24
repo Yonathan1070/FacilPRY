@@ -76,31 +76,41 @@
                                                     <td>{{$proyecto->USR_Nombres_Usuario.' '.$proyecto->USR_Apellidos_Usuario}}</td>
                                                     <td>{{$proyecto->Actividades_Finalizadas}} / {{$proyecto->Actividades_Totales}}</td>
                                                     <td class="grid-width-100">
-                                                        @if ($proyecto->Actividades_Totales != 0)
-                                                            @if ($permisos['listarA']==true)
-                                                                <a href="{{route('actividades_todas', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar todas las tareas">
-                                                                    <i class="material-icons text-info" style="font-size: 17px;">line_weight</i>
+                                                        <form class="form-eliminar" action="{{route('eliminar_proyectos', ['idP'=>$proyecto->Proyecto_Id])}}"
+                                                            class="d-inline" method="POST">
+                                                            @if ($permisos['eliminar'] == true && $proyecto->Actividades_Totales == 0)
+                                                                @csrf @method("delete")
+                                                                <button type="submit" class="btn-accion-tabla eliminar tooltipsC" data-type="confirm"
+                                                                    title="Eliminar Proyecto">
+                                                                    <i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i>
+                                                                </button>
+                                                            @endif
+                                                            @if ($proyecto->Actividades_Totales != 0)
+                                                                @if ($permisos['listarA']==true)
+                                                                    <a href="{{route('actividades_todas', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar todas las tareas">
+                                                                        <i class="material-icons text-info" style="font-size: 17px;">line_weight</i>
+                                                                    </a>
+                                                                @endif
+                                                            @endif
+                                                            @if ($permisos['listarR']==true)
+                                                                <a href="{{route('requerimientos', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
+                                                                    <i class="material-icons text-info" style="font-size: 17px;">description</i>
                                                                 </a>
                                                             @endif
-                                                        @endif
-                                                        @if ($permisos['listarR']==true)
-                                                            <a href="{{route('requerimientos', ['idP'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Listar Actividades">
-                                                                <i class="material-icons text-info" style="font-size: 17px;">description</i>
-                                                            </a>
-                                                        @endif
-                                                        @if ($proyecto->Actividades_Totales != 0)
-                                                            <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
-                                                                <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
-                                                            </a>
-                                                            <a href="{{route('gantt', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Ver Cronograma de Tareas">
-                                                                <i class="material-icons text-info" style="font-size: 20px;">view_quilt</i>
-                                                            </a>
-                                                        @endif
-                                                        @if ($proyecto->Actividades_Totales != 0 && ($proyecto->Actividades_Finalizadas == $proyecto->Actividades_Totales))
-                                                            <a href="{{route('finalizar_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Fianlizar Proyecto">
-                                                                <i class="material-icons text-success" style="font-size: 20px;">navigate_next</i>
-                                                            </a>
-                                                        @endif
+                                                            @if ($proyecto->Actividades_Totales != 0)
+                                                                <a href="{{route('generar_pdf_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Reporte de Tareas">
+                                                                    <i class="material-icons text-info" style="font-size: 17px;">file_download</i>
+                                                                </a>
+                                                                <a href="{{route('gantt', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Ver Cronograma de Tareas">
+                                                                    <i class="material-icons text-info" style="font-size: 20px;">view_quilt</i>
+                                                                </a>
+                                                            @endif
+                                                            @if ($proyecto->Actividades_Totales != 0 && ($proyecto->Actividades_Finalizadas == $proyecto->Actividades_Totales))
+                                                                <a href="{{route('finalizar_proyecto', ['id'=>$proyecto->Proyecto_Id])}}" class="btn-accion-tabla tooltipsC" title="Fianlizar Proyecto">
+                                                                    <i class="material-icons text-success" style="font-size: 20px;">navigate_next</i>
+                                                                </a>
+                                                            @endif
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             @endforeach

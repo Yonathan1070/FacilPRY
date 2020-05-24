@@ -161,5 +161,9 @@ class TablaPermisoSeeder extends Seeder
             'PRM_Nombre_Permiso' => 'Calificar Trabajadores',
             'PRM_Slug_Permiso' => 'calificar-trabajadores'
         ]);
+        DB::table('TBL_Permiso')->insert([
+            'PRM_Nombre_Permiso' => 'Eliminar Proyectos',
+            'PRM_Slug_Permiso' => 'eliminar-proyectos'
+        ]);
     }
 }

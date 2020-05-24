@@ -10,6 +10,8 @@ use App\Models\Tablas\Actividades;
 use App\Models\Tablas\Empresas;
 use App\Models\Tablas\HorasActividad;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use PDF;
 use stdClass;
 
@@ -41,7 +43,8 @@ class ProyectosController extends Controller
             'crear'=> can2('crear-proyectos'),
             'listarR'=>can2('listar-requerimientos'),
             'listarA'=>can2('listar-actividades'),
-            'listarE'=>can2('listar-empresas')
+            'listarE'=>can2('listar-empresas'),
+            'eliminar'=>can2('eliminar-proyectos')
         ];
 
         $idUsuario = session()->get('Usuario_Id');
@@ -338,5 +341,39 @@ class ProyectosController extends Controller
         return redirect()
             ->back()
             ->with('mensaje', 'Proyecto activado');
+    }
+
+    /**
+     * Eliminar el proyecto seleccionado
+     *
+     * @param  $idP  Identificador del Proyecto
+     * @return redirect()->back()->with()
+     */
+    public function eliminar(Request $request, $idP)
+    {
+        if (!can('eliminar-proyectos')) {
+            return response()->json(['mensaje' => 'np']);
+        } else {
+            if ($request->ajax()) {
+                try {
+                    $actividades = Actividades::obtenerActividadesProyecto($idP);
+                    if (count($actividades) == 0) {
+                        Proyectos::destroy($idP);
+                        return response()->json(['mensaje' => 'ok']);
+                    } else {
+                        return response()->json(['mensaje' => 'ng']);
+                    }
+                } catch (QueryException $e) {
+                    return response()->json(['mensaje' => 'ng']);
+                }
+            }
+        }
+        can('editar-proyectos');
+
+        Proyectos::finalizarProyecto($id);
+        
+        return redirect()
+            ->back()
+            ->with('mensaje', 'Proyecto finalizado');
     }
 }
