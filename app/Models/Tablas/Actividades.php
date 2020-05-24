@@ -227,6 +227,7 @@ class Actividades extends Model
                 'a.*',
                 'u.*',
                 'e.*',
+                'e.id as estado_id',
                 'r.*',
                 'af.*'
             )->orderBy(

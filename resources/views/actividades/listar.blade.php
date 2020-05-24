@@ -70,55 +70,57 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($actividades as $actividad)
-                                                        <tr>
-                                                            <td>
-                                                                <a id="{{$actividad->ID_Actividad}}" onclick="detalle(this)" class="btn-accion-tabla tooltipsC"
-                                                                    title="Ver Detalles" data-toggle="modal" data-target="#defaultModal">
-                                                                    {{$actividad->ACT_Nombre_Actividad}}
-                                                                </a>
-                                                            </td>
-                                                            <td>
-                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
-                                                                    <select name="ACT_Requerimiento" id="ACT_Requerimiento" class="form-control show-tick" data-live-search="true"
-                                                                        required onchange="cambioActividad(this, {{$actividad->ID_Actividad}})">
-                                                                        <option value="">-- Seleccione una Actividad --</option>
-                                                                        @foreach ($requerimientos as $requerimiento)
-                                                                            <option value="{{$requerimiento->id}}" {{old("ACT_Requerimiento", $actividad->ID_Requerimiento) == $requerimiento->id ? 'selected' : '' }}>
-                                                                                {{$requerimiento->REQ_Nombre_Requerimiento}}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                @else
-                                                                    {{$actividad->REQ_Nombre_Requerimiento}}
-                                                                @endif
-                                                            </td>
-                                                            <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
-                                                            <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y h:i A.')}}</td>
-                                                            <td>{{$actividad->EST_Nombre_Estado}}</td>
-                                                            <td>
-                                                                @if ($actividad->EST_Nombre_Estado == 'En Proceso')
-                                                                    <form class="form-eliminar" action="{{route('eliminar_actividad', ['idA'=>$actividad->ID_Actividad])}}"
-                                                                        class="d-inline" method="POST">
-                                                                        <a href="{{route('editar_actividad_trabajador', ['idA'=>$actividad->ID_Actividad])}}"
-                                                                            class="btn-accion-tabla tooltipsC" title="Editar esta tarea">
-                                                                            <i class="material-icons text-info" style="font-size: 17px;">edit</i>
-                                                                        </a>
-                                                                        @csrf @method("delete")
-                                                                        <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
-                                                                            data-type="confirm" title="Eliminar esta tarea">
-                                                                            <i class="material-icons text-danger"
-                                                                                style="font-size: 17px;">delete_forever</i>
-                                                                        </button>
-                                                                        @if ($actividad->HorasE != 0)
-                                                                            <a href="{{route('aprobar_horas_actividad', ['idH'=>$actividad->ID_Actividad])}}"
-                                                                                class="btn-accion-tabla tooltipsC" title="Aprobar horas de trabajo">
-                                                                                <i class="material-icons text-success" style="font-size: 17px;">alarm_on</i>
+                                                        @if ($actividad->estado_id == 1 || $actividad->estado_id == 2)
+                                                            <tr>
+                                                                <td>
+                                                                    <a id="{{$actividad->ID_Actividad}}" onclick="detalle(this)" class="btn-accion-tabla tooltipsC"
+                                                                        title="Ver Detalles" data-toggle="modal" data-target="#defaultModal">
+                                                                        {{$actividad->ACT_Nombre_Actividad}}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                        <select name="ACT_Requerimiento" id="ACT_Requerimiento" class="form-control show-tick" data-live-search="true"
+                                                                            required onchange="cambioActividad(this, {{$actividad->ID_Actividad}})">
+                                                                            <option value="">-- Seleccione una Actividad --</option>
+                                                                            @foreach ($requerimientos as $requerimiento)
+                                                                                <option value="{{$requerimiento->id}}" {{old("ACT_Requerimiento", $actividad->ID_Requerimiento) == $requerimiento->id ? 'selected' : '' }}>
+                                                                                    {{$requerimiento->REQ_Nombre_Requerimiento}}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    @else
+                                                                        {{$actividad->REQ_Nombre_Requerimiento}}
+                                                                    @endif
+                                                                </td>
+                                                                <td>{{$actividad->USR_Nombres_Usuario.' '.$actividad->USR_Apellidos_Usuario}}</td>
+                                                                <td>{{\Carbon\Carbon::createFromFormat('Y-m-d H:s:i', $actividad->ACT_Fecha_Fin_Actividad)->format('d/m/Y h:i A.')}}</td>
+                                                                <td>{{$actividad->EST_Nombre_Estado}}</td>
+                                                                <td>
+                                                                    @if ($actividad->EST_Nombre_Estado == 'En Proceso')
+                                                                        <form class="form-eliminar" action="{{route('eliminar_actividad', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                            class="d-inline" method="POST">
+                                                                            <a href="{{route('editar_actividad_trabajador', ['idA'=>$actividad->ID_Actividad])}}"
+                                                                                class="btn-accion-tabla tooltipsC" title="Editar esta tarea">
+                                                                                <i class="material-icons text-info" style="font-size: 17px;">edit</i>
                                                                             </a>
-                                                                        @endif
-                                                                    </form>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
+                                                                            @csrf @method("delete")
+                                                                            <button type="submit" class="btn-accion-tabla eliminar tooltipsC"
+                                                                                data-type="confirm" title="Eliminar esta tarea">
+                                                                                <i class="material-icons text-danger"
+                                                                                    style="font-size: 17px;">delete_forever</i>
+                                                                            </button>
+                                                                            @if ($actividad->HorasE != 0)
+                                                                                <a href="{{route('aprobar_horas_actividad', ['idH'=>$actividad->ID_Actividad])}}"
+                                                                                    class="btn-accion-tabla tooltipsC" title="Aprobar horas de trabajo">
+                                                                                    <i class="material-icons text-success" style="font-size: 17px;">alarm_on</i>
+                                                                                </a>
+                                                                            @endif
+                                                                        </form>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endif
                                                     @endforeach
                                                 </tbody>
                                             </table>
