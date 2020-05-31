@@ -14,7 +14,7 @@ Asignar Permisos
             <div class="card">
                 <div class="header">
                     <h2>
-                        Filtro de Asignación
+                        Asignar permisos a {{$usuario->USR_Nombres_Usuario.' '.$usuario->USR_Apellidos_Usuario}}
                     </h2>
                 </div>
                 <div class="body">
@@ -33,205 +33,135 @@ Asignar Permisos
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="menu" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>
-                        Lista de Menús
-                    </h2>
-                </div>
-                <div class="body table-responsive">
-                    <div class="col-lg-6">
-                        @if (count($menuAsignado)<=0) 
-                            <div class="alert alert-warning">
-                                No se han asignado items del menú
-                            </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Menu</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($menuAsignado as $menu)
-                                    <tr>
-                                        <td>{{$menu->MN_Nombre_Menu}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("quitar", {{$id}}, {{$menu->id}})' class="btn-accion-tabla tooltipsC" title="Quitar">
-                                                <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
-                    </div>
-                    <div class="col-lg-6">
-                        @if (count($menuNoAsignado)<=0) 
-                            <div class="alert alert-warning">
-                                Ya se asignaron todos los items del menú
-                            </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Menu</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($menuNoAsignado as $menu)
-                                    <tr>
-                                        <td>{{$menu->MN_Nombre_Menu}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("agregar", {{$id}}, {{$menu->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
-                                                <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                <div id="menus" class="body">
+                    <div class="demo-switch">
+                        @csrf
+                        <input type="hidden" id="IdUsuario" value="{{$usuario->id}}">
+                        <div class="row clearfix">
+                            @foreach ($menuAsignado as $menu)
+                                <div class="col-sm-3">
+                                    <div class="demo-switch-title">{{$menu->MN_Nombre_Menu}}</div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox"
+                                                id="chMenu{{$menu->id}}"
+                                                name="chMenu{{$menu->id}}"
+                                                data-menuid="{{$menu->id}}"
+                                                value="{{$menu->id}}"
+                                                checked
+                                                class="menu-usuario"
+                                            >
+                                            <span class="lever switch-col-green"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="row clearfix">
+                            @foreach ($menuNoAsignado as $menu)
+                                <div class="col-sm-3">
+                                    <div class="demo-switch-title">{{$menu->MN_Nombre_Menu}}</div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox"
+                                                id="chMenu{{$menu->id}}"
+                                                name="chMenu{{$menu->id}}"
+                                                data-menuid="{{$menu->id}}"
+                                                value="{{$menu->id}}"
+                                                class="menu-usuario"
+                                            >
+                                            <span class="lever switch-col-cyan"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="permiso" style="display: none;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>
-                        Lista de Permisos
-                    </h2>
-                </div>
-                <div class="body table-responsive">
-                    <div class="col-lg-6">
-                        @if (count($permisoAsignado)<=0) 
-                            <div class="alert alert-info">
-                                No se han asignado permisos
-                            </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Permiso</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($permisoAsignado as $permiso)
-                                    <tr>
-                                        <td>{{$permiso->PRM_Nombre_Permiso}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("quitarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Quitar">
-                                                <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
-                    </div>
-                    <div class="col-lg-6">
-                        @if (count($permisoNoAsignado)<=0) 
-                            <div class="alert alert-info">
-                                Todos los permisos han sido asignados
-                            </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Permiso</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($permisoNoAsignado as $permiso)
-                                    <tr>
-                                        <td>{{$permiso->PRM_Nombre_Permiso}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("agregarPermiso", {{$id}}, {{$permiso->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
-                                                <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                <div id="permisos" class="body" style="display: none;">
+                    <div class="demo-switch">
+                        <div class="row clearfix">
+                            @foreach ($permisoAsignado as $permiso)
+                                <div class="col-sm-3">
+                                    <div class="demo-switch-title">{{$permiso->PRM_Nombre_Permiso}}</div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox"
+                                                id="chPermiso{{$permiso->id}}"
+                                                name="chPermiso{{$permiso->id}}"
+                                                data-permisoid="{{$permiso->id}}"
+                                                value="{{$permiso->id}}"
+                                                checked
+                                                class="permiso-usuario"
+                                            >
+                                            <span class="lever switch-col-green"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="row clearfix">
+                            @foreach ($permisoNoAsignado as $permiso)
+                                <div class="col-sm-3">
+                                    <div class="demo-switch-title">{{$permiso->PRM_Nombre_Permiso}}</div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox"
+                                                id="chPermiso{{$permiso->id}}"
+                                                name="chPermiso{{$permiso->id}}"
+                                                data-permisoid="{{$permiso->id}}"
+                                                value="{{$permiso->id}}"
+                                                class="permiso-usuario"
+                                            >
+                                            <span class="lever switch-col-cyan"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="rol" style="display: none;" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>
-                        Lista de Roles
-                    </h2>
-                </div>
-                <div class="body table-responsive">
-                    <div class="col-lg-6">
-                        @if (count($rolesAsignados)<=0) 
-                            <div class="alert alert-warning">
-                                No hay datos que mostrar
-                            </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Rol</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($rolesAsignados as $rol)
-                                    <tr>
-                                        <td>{{$rol->RLS_Nombre_Rol}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("quitarRol", {{$id}}, {{$rol->id}})' class="btn-accion-tabla tooltipsC" title="Quitar">
-                                                <i class="material-icons text-danger" style="font-size: 17px;">remove_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                <div id="roles" class="body" style="display: none;">
+                    <div class="demo-switch">
+                        <div class="row clearfix">
+                            @foreach ($rolesAsignados as $rol)
+                                <div class="col-sm-3">
+                                    <div class="demo-switch-title">{{$rol->RLS_Nombre_Rol}}</div>
+                                    <div class="switch">
+                                        <label>
+                                            <input type="checkbox"
+                                                id="chRol{{$rol->id}}"
+                                                name="chRol{{$rol->id}}"
+                                                data-rolid="{{$rol->id}}"
+                                                value="{{$rol->id}}"
+                                                checked
+                                                class="rol-usuario"
+                                            >
+                                            <span class="lever switch-col-green"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                    <div class="col-lg-6">
-                        @if (count($rolesNoAsignados)<=0) 
-                            <div class="alert alert-warning">
-                                No hay datos que mostrar
+                    <div class="row clearfix">
+                        @foreach ($rolesNoAsignados as $rol)
+                            <div class="col-sm-3">
+                                <div class="demo-switch-title">{{$rol->RLS_Nombre_Rol}}</div>
+                                <div class="switch">
+                                    <label>
+                                        <input type="checkbox"
+                                            id="chRol{{$rol->id}}"
+                                            name="chRol{{$rol->id}}"
+                                            data-rolid="{{$rol->id}}"
+                                            value="{{$rol->id}}"
+                                            class="rol-usuario"
+                                        >
+                                        <span class="lever switch-col-cyan"></span>
+                                    </label>
+                                </div>
                             </div>
-                        @else
-                            <table class="table table-striped table-bordered table-hover js-basic-example" id="tabla-data">
-                                <thead>
-                                    <tr>
-                                        <th>Rol</th>
-                                        <th class="width70"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($rolesNoAsignados as $rol)
-                                    <tr>
-                                        <td>{{$rol->RLS_Nombre_Rol}}</td>
-                                        <td>
-                                            <button type="button" onclick='ajax("agregarRol", {{$id}}, {{$rol->id}})' class="btn-accion-tabla tooltipsC" title="Asignar">
-                                                <i class="material-icons text-success" style="font-size: 17px;">add_circle</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endif
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -242,25 +172,11 @@ Asignar Permisos
 @section('scripts')
     <script src="{{asset("assets/pages/scripts/Administrador/Permisos/index.js")}}"></script>
     <script type="text/javascript">
-         var opcion = $("#opcionFiltro").val()
-        if(opcion == 1){
-            menu.style.display = 'block';
-            permiso.style.display = 'none';
-            rol.style.display = 'none';
-        }else if(opcion == 2){
-            menu.style.display = 'none';
-            permiso.style.display = 'block';
-            rol.style.display = 'none';
-        }else if(opcion == 3){
-            menu.style.display = 'none';
-            permiso.style.display = 'none';
-            rol.style.display = 'block';
-        }
         $("#opcionFiltro").change(function(){
             var opcion = $(this).val();
-            var menu = document.getElementById('menu');
-            var permiso = document.getElementById('permiso');
-            var rol = document.getElementById('rol');
+            var menu = document.getElementById('menus');
+            var permiso = document.getElementById('permisos');
+            var rol = document.getElementById('roles');
             if(opcion == 1){
                 menu.style.display = 'block';
                 permiso.style.display = 'none';

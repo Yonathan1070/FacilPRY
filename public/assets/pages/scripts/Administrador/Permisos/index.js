@@ -1,6 +1,37 @@
-function ajax(slug, id, menuId) {
+$('.menu-usuario').on('change', function () {
+    var id = document.getElementById('IdUsuario').value;
+    var menuId = $(this).data('menuid');
+    if($(this).is(':checked')) {
+        var slug = 'agregar';
+    } else {
+        var slug = 'quitar';
+    }
     ajaxRequest(slug, id, menuId);
-}
+});
+
+$('.permiso-usuario').on('change', function () {
+    var id = document.getElementById('IdUsuario').value;
+    var menuId = $(this).data('permisoid');
+    if($(this).is(':checked')) {
+        var slug = 'agregarPermiso';
+    } else {
+        var slug = 'quitarPermiso';
+    }
+    ajaxRequest(slug, id, menuId);
+});
+
+$('.rol-usuario').on('change', function () {
+    var id = document.getElementById('IdUsuario').value;
+    var menuId = $(this).data('rolid');
+
+    if($(this).is(':checked')) {
+        var slug = 'agregarRol';
+    } else {
+        var slug = 'quitarRol';
+    }
+    ajaxRequest(slug, id, menuId);
+});
+
 function ajaxRequest(slug, id, menuId) {
     $.ajax({
         url: '/administrador/asignar-permiso/'+id+'-'+menuId+'/'+slug,
@@ -31,7 +62,6 @@ function ajaxRequest(slug, id, menuId) {
             } else if (respuesta.mensaje == "ngRD") {
                 InkBrutalPRY.notificaciones('El Rol no se encuentra asignado', 'InkBrutalPRY', 'error');
             }
-            location.reload();
         },
         error: function () {
 

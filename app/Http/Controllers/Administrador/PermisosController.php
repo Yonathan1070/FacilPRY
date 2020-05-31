@@ -133,6 +133,8 @@ class PermisosController extends Controller
             session()->get('Usuario_Id')
         );
 
+        $usuario = Usuarios::findOrFail($id);
+
         $menuAsignado = Menu::obtenerItemsAsignados($id);
         $menuNoAsignado = $this->menuNoAsignado($menuAsignado);
         
@@ -145,15 +147,14 @@ class PermisosController extends Controller
         return view(
             'administrador.permisos.asignar',
             compact(
-                'id',
                 'menuAsignado',
                 'menuNoAsignado',
                 'permisoAsignado',
                 'permisoNoAsignado',
                 'rolesAsignados',
                 'rolesNoAsignados',
+                'usuario',
                 'datos',
-                'id',
                 'notificaciones',
                 'cantidad'
             )
