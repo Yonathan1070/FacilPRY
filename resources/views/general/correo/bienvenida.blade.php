@@ -97,8 +97,8 @@
                                 <tr align="center">
                                     <td bgcolor="#fff" style="padding: 0 100px 20px 100px; color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 24px; border-bottom: 1px solid #fff;">
                                         Ingresa a nuestra plataforma con la siguiente información:<br/>
-                                        Nombre de usuario: *** <br/>
-                                        Contraseña: ***
+                                        Nombre de usuario: {{$username}} <br/>
+                                        Contraseña: {{$username}}
                                     </td>
                                 </tr>
                                 <tr align="center">
