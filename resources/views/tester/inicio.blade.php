@@ -23,8 +23,8 @@ Inicio
                                 <thead>
                                     <tr>
                                         <th>Proyecto</th>
+                                        <th>Tarea</th>
                                         <th>Actividad</th>
-                                        <th>Requerimiento</th>
                                         <th>Estado</th>
                                         <th class="width70"></th>
                                     </tr>

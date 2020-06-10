@@ -75,45 +75,54 @@
         </tr>
         <tr>
             <td style="padding: 0 0px 0px 0px;">
-                <img src="http://95.216.117.32/nuevaink/wp-content/uploads/2019/06/54433173_716339612114627_3319461974038806528_n.jpg" alt="Icon #2" width="100%" height="400" style="display: block;" />
+                <img src="{{asset('imagenes/logo/hulk.jpg')}}" alt="Icon #2" width="100%" height="400" style="display: block;" />
             </td>
         </tr>
         <tr>
+            <td align="center" bgcolor="#D8D8D4" style="padding: 30px 20px 30px 20px; font-family: Arial, sans-serif;">
+                <table bgcolor="#ffffff" border="0" cellspacing="0" cellpadding="0" class="buttonwrapper">
+                    <tr>
+                        <td align="center" style=" padding: 0px 25px 0px 25px; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">
+                            <table>
+                                <tr align="center">
+                                    <td bgcolor="#fff" style="padding: 20px 20px 10px 20px; color: #555555; font-family: Arial, sans-serif; font-size: 20px; line-height: 30px;">
+                                        <b>Primeros Pasos</b>
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td bgcolor="#fff" style="padding: 20px 20px 10px 20px; color: #555555; font-family: Arial, sans-serif; font-size: 20px; line-height: 30px;">
+                                        Acceso a la plataforma
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td bgcolor="#fff" style="padding: 0 100px 20px 100px; color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 24px; border-bottom: 1px solid #fff;">
+                                        Ingresa a nuestra plataforma con la siguiente información:<br/>
+                                        Nombre de usuario: *** <br/>
+                                        Contraseña: ***
+                                    </td>
+                                </tr>
+                                <tr align="center">
+                                    <td bgcolor="#fff">
+                                        <table bgcolor="#E63E26" border="0" cellspacing="0" cellpadding="0" class="buttonwrapper">
+                                            <tr align="center">
+                                                <td height="50"
+                                                    style=" padding: 0 25px 0 25px; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;"
+                                                    class="button">
+                                                    <a href="#" style="color: #ffffff; text-align: center; text-decoration: none;">
+                                                        Ingresa Aquí
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
             <table align="center" border="0" cellpadding="0" cellspacing="0"
                 style="border-collapse: collapse; width: 100%; max-width: 600px;" class="content">
-                <tr align="center">
-                    <td bgcolor="#D8D8D4"
-                        style="padding: 20px 20px 10px 20px; color: #555555; font-family: Arial, sans-serif; font-size: 20px; line-height: 30px;">
-                        <b>Primeros Pasos</b>
-                    </td>
-                </tr>
-                <tr align="center">
-                    <td bgcolor="#D8D8D4"
-                        style="padding: 20px 20px 10px 20px; color: #555555; font-family: Arial, sans-serif; font-size: 20px; line-height: 30px;">
-                        <b>Acceso a la plataforma</b>
-                    </td>
-                </tr>
-                <tr align="center">
-                    <td bgcolor="#D8D8D4"
-                        style="padding: 0 100px 20px 100px; color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 24px; border-bottom: 1px solid #D8D8D4;">
-                        Ingresa a nuestra plataforma con el usuario {{$username}} y contraseña igual, por seguridad cámbia tu clave en tu primer Inicio de Sesión.
-                    </td>
-                </tr>
-                <tr align="center">
-                    <td bgcolor="#D8D8D4">
-                        <table bgcolor="#E63E26" border="0" cellspacing="0" cellpadding="0" class="buttonwrapper">
-                            <tr align="center">
-                                <td height="50"
-                                    style=" padding: 0 25px 0 25px; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;"
-                                    class="button">
-                                    <a href="{{route('login')}}" style="color: #ffffff; text-align: center; text-decoration: none;">
-                                        Ingresa Aquí
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
                 <tr align="center">
                     <td bgcolor="#D8D8D4"
                         style="padding: 20px 20px 10px 20px; color: #555555; font-family: Arial, sans-serif; font-size: 20px; line-height: 30px;">
