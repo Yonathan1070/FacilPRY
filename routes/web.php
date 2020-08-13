@@ -158,7 +158,6 @@ Route::get('calificaciones/{id}', 'CalificarController@obtener')->name('obtener_
 
 //Rutas Roles
 Route::get('roles', 'RolesController@index')->name('roles');
-Route::get('roles/crear-rol', 'RolesController@crear')->name('crear_rol');
 Route::post('roles/crear-rol', 'RolesController@guardar')->name('guardar_rol');
 Route::get('roles/{id}/editar', 'RolesController@editar')->name('editar_rol');
 Route::put('roles/{id}', 'RolesController@actualizar')->name('actualizar_rol');

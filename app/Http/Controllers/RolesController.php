@@ -70,43 +70,7 @@ class RolesController extends Controller
     }
 
     /**
-     * Muestra el formulario para crear roles
-     *
-     * @return \Illuminate\View\View Vista del formulario de crear roles
-     */
-    public function crear()
-    {
-        can('crear-roles');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        
-        return view(
-            'roles.crear',
-            compact(
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
-     * Guarda los 
+     * Guarda los roles
      *
      * @param  App\Http\Requests\ValidacionRol  $request
      * @return return redirect()->back()->with()
@@ -115,27 +79,27 @@ class RolesController extends Controller
     {
         can('crear-roles');
 
+        $permisos = [
+            'editar'=>can2('editar-roles'),
+            'eliminar'=>can2('eliminar-roles')
+        ];
+
         $roles = Roles::where('RLS_Nombre_Rol', '=', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->first();
         
         if ($roles) {
-            return redirect()
-                ->back()
-                ->withErrors('Ya se encuentra registrado el rol en el sistema')
-                ->withInput();
+            return response()->json(['mensaje' => 'dr']);
         }
         
-        Roles::create([
+        $rol = Roles::create([
             'RLS_Rol_Id' => 4,
             'RLS_Nombre_Rol' => $request->RLS_Nombre_Rol,
             'RLS_Descripcion_Rol' => $request->RLS_Descripcion_Rol,
             'RLS_Empresa_Id' => session()->get('Empresa_Id')
         ]);
         
-        return redirect()
-            ->route('roles')
-            ->with('mensaje', 'Rol creado con éxito');
+        return response()->json(['rol' => $rol, 'permisos' => $permisos, 'mensaje' => 'ok']);
     }
 
     /**
@@ -148,39 +112,18 @@ class RolesController extends Controller
     {
         can('editar-roles');
         
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
         $rol = Roles::findOrFail($id);
+
+        $permisos = [
+            'editar'=>can2('editar-roles'),
+            'eliminar'=>can2('eliminar-roles')
+        ];
         
         if ($rol->RLS_Rol_Id != 4) {
-            return redirect()
-                ->back()
-                ->withErrors(['El rol es por defecto del sistema, no es posible modificarlo.']);
+            return response()->json(['mensaje' => 'rd']);
         }
 
-        return view(
-            'roles.editar',
-            compact(
-                'rol',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
+        return response()->json(['rol' => $rol, 'permisos' => $permisos]);
     }
 
     /**
@@ -193,23 +136,24 @@ class RolesController extends Controller
     public function actualizar(ValidacionRol $request, $id)
     {
         can('editar-roles');
+
+        $permisos = [
+            'editar'=>can2('editar-roles'),
+            'eliminar'=>can2('eliminar-roles')
+        ];
         
         $roles = Roles::where('RLS_Nombre_Rol', '<>', $request->RLS_Nombre_Rol)
             ->where('RLS_Empresa_Id', '=', session()->get('Empresa_Id'))
             ->get();
         foreach ($roles as $rol) {
             if ($rol->RLS_Nombre_Rol==$request->RLS_Nombre_Rol) {
-                return redirect()
-                    ->back()
-                    ->withErrors('Ya se encuentra registrado el rol en el sistema')
-                    ->withInput();
+                return response()->json(['mensaje' => 'dr']);
             }
         }
-        Roles::findOrFail($id)->update($request->all());
+        $rol = Roles::findOrFail($id);
+        $rol->update($request->all());
         
-        return redirect()
-            ->route('roles')
-            ->with('mensaje', 'Rol actualizado con éxito');
+        return response()->json(['rol' => $rol, 'permisos' => $permisos, 'mensaje' => 'ok']);
     }
 
     /**
