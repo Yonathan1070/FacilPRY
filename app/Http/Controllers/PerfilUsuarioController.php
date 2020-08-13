@@ -123,13 +123,13 @@ class PerfilUsuarioController extends Controller
             
             if($usuario->USR_Documento_Usuario == $request->USR_Documento_Usuario){
                 return redirect()
-                    ->back()
+                    ->route('perfil')
                     ->withErrors('El Documento ya se encuentra en uso.');
             }
             
             if($usuario->USR_Correo_Usuario == $request->USR_Correo_Usuario){
                 return redirect()
-                    ->back()
+                    ->route('perfil')
                     ->withErrors('El correo electrónico ya se encuentra en uso.');
             }
         }
@@ -138,7 +138,7 @@ class PerfilUsuarioController extends Controller
             ->update($request->all());
         
         return redirect()
-            ->back()
+            ->route('perfil')
             ->with('mensaje', 'Datos actualizados con éxito');
     }
 
@@ -153,7 +153,7 @@ class PerfilUsuarioController extends Controller
         can('editar-perfil');
         
         if($request->USR_Clave_Nueva != $request->USR_Clave_Confirmar){
-            return redirect()->back()->withErrors('Las contraseñas no coinciden.');
+            return redirect()->route('perfil')->withErrors('Las contraseñas no coinciden.');
         }
 
         $clave = Usuarios::select('password')
@@ -164,7 +164,7 @@ class PerfilUsuarioController extends Controller
         
         if (!$correcta) {
             return redirect()
-                ->back()
+                ->route('perfil')
                 ->withErrors('La contraseña antigua es incorrecta.');
         }
 
@@ -173,7 +173,7 @@ class PerfilUsuarioController extends Controller
         ]);
         
         return redirect()
-            ->back()
+            ->route('perfil')
             ->with('mensaje', 'Contraseña actualizada.');
     }
 }

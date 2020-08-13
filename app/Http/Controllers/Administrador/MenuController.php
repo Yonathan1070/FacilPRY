@@ -94,7 +94,7 @@ class MenuController extends Controller
         Menu::crear($request);
         
         return redirect()
-            ->back()
+            ->route('crear_menu')
             ->with('mensaje', 'Menú creado con éxito');
     }
 

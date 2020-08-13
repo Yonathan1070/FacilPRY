@@ -109,7 +109,7 @@ class PermisosController extends Controller
         Permiso::crear($request);
         
         return redirect()
-            ->back()
+            ->route('crear_permiso_administrador')
             ->with('mensaje', 'Permiso creado con éxito');
     }
 

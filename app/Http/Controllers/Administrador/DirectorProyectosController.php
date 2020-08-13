@@ -126,7 +126,7 @@ class DirectorProyectosController extends Controller
         );
 
         return redirect()
-            ->back()
+            ->route('crear_director_administrador')
             ->with(
                 'mensaje',
                 'Director de proyectos agregado con éxito, por favor que '.

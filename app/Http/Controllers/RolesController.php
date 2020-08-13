@@ -134,7 +134,7 @@ class RolesController extends Controller
         ]);
         
         return redirect()
-            ->back()
+            ->route('roles')
             ->with('mensaje', 'Rol creado con éxito');
     }
 

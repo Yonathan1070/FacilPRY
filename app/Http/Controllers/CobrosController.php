@@ -96,7 +96,7 @@ class CobrosController extends Controller
         HistorialEstados::crearHistorialEstado($idA, 8);
         
         return redirect()
-            ->back()
+            ->route('cobros')
             ->with(
                 'mensaje',
                 'Actividad agregada a la cuenta de cobro del cliente '.

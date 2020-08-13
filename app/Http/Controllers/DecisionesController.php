@@ -134,7 +134,7 @@ class DecisionesController extends Controller
             $request->DCS_Rango_Inicio_Decision > $request->DCS_Rango_Fin_Decision
         ) {
             return redirect()
-                ->back()
+                ->route('crear_decision')
                 ->withErrors(
                     'El Rango de inicio no puede ser mayor al de fin'
                 )->withInput();
@@ -163,7 +163,7 @@ class DecisionesController extends Controller
             ) + $total > 100
         ) {
             return redirect()
-                ->back()
+                ->route('crear_decision')
                 ->withErrors(
                     'No se puede exceder del 100% del rango de la decisión'
                 )->withInput();
@@ -177,7 +177,7 @@ class DecisionesController extends Controller
                 $request->DCS_Rango_Inicio_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()
-                    ->back()
+                    ->route('crear_decision')
                     ->withErrors(
                         'El Rango de inicio ya está siendo usado por otra decisión'
                     )->withInput();
@@ -188,7 +188,7 @@ class DecisionesController extends Controller
                 $request->DCS_Rango_Fin_Decision <= $decision->DCS_Rango_Fin_Decision
             ) {
                 return redirect()
-                    ->back()
+                    ->route('crear_decision')
                     ->withErrors(
                         'El Rango de fin ya está siendo usado por otra decisión'
                     )->withInput();
@@ -196,7 +196,7 @@ class DecisionesController extends Controller
 
             if ($decision->DCS_Nombre_Decision == $request->DCS_Nombre_Decision) {
                 return redirect()
-                    ->back()
+                    ->route('crear_decision')
                     ->withErrors(
                         'La decisión ya está registrada en el sistema'
                     )->withInput();
@@ -206,7 +206,7 @@ class DecisionesController extends Controller
         Decisiones::crearDecision($request, 2);
 
         return redirect()
-            ->back()
+            ->route('crear_decision')
             ->with('mensaje', 'Decisión creada con éxito');
     }
 

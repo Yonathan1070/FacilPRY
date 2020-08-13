@@ -142,8 +142,8 @@ class ClientesController extends Controller
         );
 
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        if ($datos->USR_Supervisor_Id == 0)
-            $datos->USR_Supervisor_Id = 1;
+        
+        ($datos->USR_Supervisor_Id == 0) ? $datos->USR_Supervisor_Id = 1 : $datos->USR_Supervisor_Id = $datos->USR_Supervisor_Id;
         
         Notificaciones::crearNotificacion(
             $datos->USR_Nombres_Usuario.
@@ -174,8 +174,9 @@ class ClientesController extends Controller
         );
         
         return redirect()
-            ->back()
-            ->with('mensaje', 'Cliente agregado con éxito');
+            ->route(
+                'clientes', ['id'=>$request->id]
+            )->with('mensaje', 'Cliente agregado con éxito');
     }
 
     /**
@@ -230,8 +231,6 @@ class ClientesController extends Controller
      */
     public function actualizar(ValidacionCliente $request, $idC, $idE)
     {
-        can('editar-clientes');
-        
         $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         Usuarios::editarUsuario($request, $idC);
         

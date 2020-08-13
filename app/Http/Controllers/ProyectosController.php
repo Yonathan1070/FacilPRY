@@ -170,7 +170,7 @@ class ProyectosController extends Controller
         );
 
         return redirect()
-            ->back()
+            ->route('crear_proyecto')
             ->with('mensaje', 'Proyecto agregado con éxito');
     }
 
@@ -189,7 +189,7 @@ class ProyectosController extends Controller
 
         if (count($actividades)<=0) {
             return redirect()
-                ->back()
+                ->route('proyectos')
                 ->withErrors(
                     'No es posible generar el reporte de actividades debido '.
                         'a que no hay actividades registradas para el proyecto seleccionado!'
@@ -322,7 +322,7 @@ class ProyectosController extends Controller
         Proyectos::finalizarProyecto($id);
         
         return redirect()
-            ->back()
+            ->route('proyectos')
             ->with('mensaje', 'Proyecto finalizado');
     }
 
@@ -339,7 +339,7 @@ class ProyectosController extends Controller
         Proyectos::activarProyecto($id);
         
         return redirect()
-            ->back()
+            ->route('proyectos')
             ->with('mensaje', 'Proyecto activado');
     }
 
@@ -373,7 +373,7 @@ class ProyectosController extends Controller
         Proyectos::finalizarProyecto($id);
         
         return redirect()
-            ->back()
+            ->route('proyectos')
             ->with('mensaje', 'Proyecto finalizado');
     }
 }

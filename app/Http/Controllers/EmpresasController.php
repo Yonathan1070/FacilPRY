@@ -140,7 +140,7 @@ class EmpresasController extends Controller
         );
         
         return redirect()
-            ->back()
+            ->route('crear_empresa')
             ->with('mensaje', 'Empresa agregada con éxito');
     }
 

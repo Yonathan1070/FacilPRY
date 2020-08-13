@@ -292,3 +292,33 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
 });
 
 
+//Rutas Modulo Parrilla
+Route::get('parrilla', 'ParrillaController@index')->name('parrilla');
+Route::get('parrilla/crear-parrilla', 'ParrillaController@create')->name('crear_parrilla');
+Route::post('parrilla/crear-parrilla', 'ParrillaController@store')->name('guardar_parrilla');
+Route::get('parrilla/{id}/editar', 'ParrillaController@edit')->name('editar_parrilla');
+Route::put('parrilla/{id}', 'ParrillaController@update')->name('actualizar_parrilla');
+Route::delete('parrilla/{id}', 'ParrillaController@delete')->name('eliminar_parrilla');
+Route::get('parrilla/{id}/ver', 'ParrillaController@show')->name('ver_parrilla');
+
+//Rutas Modulo Parrilla/publicaciones
+Route::get('parrilla/publicacion/{id}', 'PublicacionesController@show')->name('publicacion');
+Route::get('parrilla/publicacion/{id}/crear-publicacion', 'PublicacionesController@create')->name('crear_publicacion');
+Route::post('parrilla/publicacion/crear-publicacion', 'PublicacionesController@store')->name('guardar_publicacion');
+Route::get('parrilla/publicacion/{id}/ver-publicacion', 'PublicacionesController@ver')->name('ver_publicacion');
+Route::get('parrilla/publicacion/{id}/editar', 'PublicacionesController@edit')->name('editar_publicacion');
+Route::put('parrilla/publicacion/{id}', 'PublicacionesController@update')->name('actualizar_publicacion');
+Route::delete('parrilla/publicacion/{id}', 'PublicacionesController@delete')->name('eliminar_publicacion');
+
+//Rutas Modulo Parrilla/Piezas
+Route::get('parrilla/pieza/{id}', 'PiezasController@show')->name('pieza');
+Route::get('parrilla/pieza/{id}/crear-pieza', 'PiezasController@create')->name('crear_pieza');
+Route::post('parrilla/pieza/crear-pieza', 'PiezasController@store')->name('guardar_pieza');
+Route::get('parrilla/{id}/editar', 'PiezasController@edit')->name('editar_pieza');
+Route::put('parrilla/{id}', 'PiezasController@update')->name('actualizar_pieza');
+Route::delete('parrilla/{id}', 'PiezasController@delete')->name('eliminar_pieza');
+
+//Rutas Modulo Comentarios
+Route::post('parrilla/comentar', 'ComentariosController@store')->name('guardar_comentario');
+
+

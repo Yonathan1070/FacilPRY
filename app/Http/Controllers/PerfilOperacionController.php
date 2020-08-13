@@ -162,7 +162,7 @@ class PerfilOperacionController extends Controller
         );
 
         return redirect()
-            ->back()
+            ->route('crear_perfil_operacion')
             ->with('mensaje', 'Perfil de Operación agregado con éxito');
     }
 

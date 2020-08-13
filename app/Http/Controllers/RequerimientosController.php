@@ -134,7 +134,7 @@ class RequerimientosController extends Controller
                 strtolower($requerimiento->REQ_Nombre_Requerimiento) == strtolower($request['REQ_Nombre_Requerimiento'])
             ) {
                 return redirect()
-                    ->back()
+                    ->route('crear_requerimiento', [$request['REQ_Proyecto_Id']])
                     ->withErrors('El proyecto ya cuenta con una actividad del mismo nombre.')
                     ->withInput();
             }
@@ -218,7 +218,7 @@ class RequerimientosController extends Controller
                 $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
             ) {
                 return redirect()
-                    ->back()
+                    ->route('editar_requerimiento', $idR)
                     ->withErrors(
                         'El proyecto ya cuenta con una actividad del mismo nombre.'
                     )->withInput();

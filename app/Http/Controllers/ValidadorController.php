@@ -142,7 +142,7 @@ class ValidadorController extends Controller
         can('validador');
 
         if($request->RTA_Titulo == null && $request->RTA_Respuesta == null) {
-            return redirect()->back()->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
+            return redirect()->route('inicio_validador')->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
         }
         
         Respuesta::actualizarRespuesta($request, 6, session()->get('Usuario_Id'));
@@ -193,7 +193,7 @@ class ValidadorController extends Controller
     {
         can('validador');
         if($request->RTA_Titulo == null && $request->RTA_Respuesta == null) {
-            return redirect()->back()->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
+            return redirect()->route('inicio_validador')->withErrors('Los campos titulo y observaciones no deben estar vacíos.');
         }
         Respuesta::actualizarRespuesta($request, 5, session()->get('Usuario_Id'));
         ActividadesFinalizadas::actualizarRevisadoActividad($request->id);

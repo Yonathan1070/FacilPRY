@@ -101,7 +101,7 @@ class EmpresaController extends Controller
         Empresas::actualizar($request);
         
         return redirect()
-            ->back()
+            ->route('empresa_administrador')
             ->with('mensaje', 'Datos actualizados con éxito');
     }
 }
