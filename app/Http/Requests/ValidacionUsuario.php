@@ -22,17 +22,16 @@ class ValidacionUsuario extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules($id)
     {
         return [
-            'USR_Documento_Usuario' => 'required|max:50|regex:/^[0-9]+$/u|unique:TBL_Usuarios,USR_Documento_Usuario,' . $this->route('id'),
+            'USR_Documento_Usuario' => 'required|max:50|regex:/^[0-9]+$/u|unique:TBL_Usuarios,USR_Documento_Usuario,' . $id,
             'USR_Nombres_Usuario' => 'required|max:50|regex:/^[a-zA-Z ]+$/u',
             'USR_Apellidos_Usuario' => 'required|max:50|regex:/^[a-zA-Z ]+$/u',
-            'USR_Fecha_Nacimiento_Usuario' => 'required|date|before:'.Carbon::now()->subYear(18).'|after_or_equal:'.Carbon::now()->subYear(100),
-            'USR_Direccion_Residencia_Usuario' => 'required|max:100',
+            'USR_Direccion_Residencia_Usuario' => 'max:100',
             'USR_Telefono_Usuario' => 'required|max:20|regex:/^[0-9]+$/u',
-            'USR_Correo_Usuario' => 'required|max:100|email|unique:TBL_Usuarios,USR_Correo_Usuario,' . $this->route('id'),
-            'USR_Nombre_Usuario' => 'required|max:15|unique:TBL_Usuarios,USR_Nombre_Usuario,' . $this->route('id'),
+            'USR_Correo_Usuario' => 'required|max:100|email|unique:TBL_Usuarios,USR_Correo_Usuario,' . $id,
+            'USR_Nombre_Usuario' => 'required|max:15|unique:TBL_Usuarios,USR_Nombre_Usuario,' . $id,
         ];
     }
 
@@ -49,11 +48,6 @@ class ValidacionUsuario extends FormRequest
             'USR_Apellidos_Usuario.required' => 'El apellido del usuario es requerido.',
             'USR_Apellidos_Usuario.max' => 'El apellido del usuario no puede exceder el limite de :max caracteres.',
             'USR_Apellidos_Usuario.regex' => 'El apellido del usuario no debe contener números ni caracteres especiales.',
-            'USR_Fecha_Nacimiento_Usuario.required' => 'La fecha de nacimiento es requerida.',
-            'USR_Fecha_Nacimiento_Usuario.date' => 'Seleccione una fecha válida.',
-            'USR_Fecha_Nacimiento_Usuario.before' => 'El usuario debe ser mayor de edad',
-            'USR_Fecha_Nacimiento_Usuario.after_or_equal' => 'El usuario no debe exceder los 100 años',
-            'USR_Direccion_Residencia_Usuario.required'  => 'La dirección de residencia es requerida.',
             'USR_Direccion_Residencia_Usuario.max'  => 'La dirección no puede exceder el limite de :max carácteres.',
             'USR_Telefono_Usuario.required'  => 'El número de teléfono es requerido.',
             'USR_Telefono_Usuario.max'  => 'El número de teléfono no puede exceder el limite de :max carácteres.',

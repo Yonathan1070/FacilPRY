@@ -37,13 +37,13 @@ var InkBrutalPRY = function (){
                 }
             });
         },
-        notificaciones: function(mensaje, titulo, tipo){
+        notificaciones: function(mensaje, titulo, tipo, tiempo){
             toastr.options = {
                 closeButton: true,
                 newestOnTop: true,
                 positionClass: 'toast-top-right',
                 preventDuplicates: true,
-                timeOut: '5000'
+                timeOut: (tiempo == null) ? '5000' : tiempo
             };
 
             if (tipo == 'error') {

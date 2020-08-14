@@ -12,6 +12,7 @@ use App\Models\Tablas\PermisoUsuario;
 use App\Models\Tablas\Roles;
 use App\Models\Tablas\UsuariosRoles;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Director Controller, donde se visualizaran y realizaran cambios
@@ -47,39 +48,13 @@ class DirectorProyectosController extends Controller
         $directoresActivos = Usuarios::obtenerDirectoresActivos();
         $directoresInactivos = Usuarios::obtenerDirectoresInactivos();
 
+        $roles = Roles::obtenerRolesNoCliente();
+
         return view(
             'administrador.director.listar',
             compact(
                 'directoresActivos',
                 'directoresInactivos',
-                'datos',
-                'notificaciones',
-                'cantidad'
-            )
-        );
-    }
-
-    /**
-     * Muestra el formulario para crear un nuevo director de proyectos
-     *
-     * @return \Illuminate\View\View Vista crear director
-     */
-    public function crear()
-    {
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            session()->get('Usuario_Id')
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            session()->get('Usuario_Id')
-        );
-        
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $roles = Roles::obtenerRolesNoCliente();
-
-        return view(
-            'administrador.director.crear',
-            compact(
                 'datos',
                 'notificaciones',
                 'cantidad',
@@ -94,47 +69,50 @@ class DirectorProyectosController extends Controller
      * @param  App\Http\Requests\ValidacionUsuario $request
      * @return redirect()->back()->with()
      */
-    public function guardar(ValidacionUsuario $request)
+    public function guardar(Request $request)
     {
-        Usuarios::crearUsuario($request);
-        $director = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
-        UsuariosRoles::asignarRol(2, $director->id);
-        MenuUsuario::asignarMenuDirector($director->id);
-        PermisoUsuario::asignarPermisosDirector($director->id);
-        
-        Usuarios::enviarcorreo(
-            $request,
-            'Bienvenido(a) '.
-                $request['USR_Nombres_Usuario'].
-                ' '.
-                $request['USR_Apellidos_Usuario'],
-            'general.correo.bienvenida'
-        );
+        $data = $request->all();
+        $validacionUsuario = new ValidacionUsuario();
+        $validator = Validator::make($data, $validacionUsuario->rules(null), $validacionUsuario->messages());
 
-        Notificaciones::crearNotificacion(
-            'Hola! '.
-                $request->USR_Nombres_Usuario.
-                ' '.
-                $request->USR_Apellidos_Usuario.
-                ', Bienvenido(a) a InkBrutalPRY, verifique sus datos.',
-            session()->get('Usuario_Id'),
-            $director->id,
-            'perfil',
-            null,
-            null,
-            'account_circle'
-        );
+        if($validator->passes()){
+            $request['USR_Fecha_Nacimiento_Usuario'] = ($request['USR_Fecha_Nacimiento_Usuario'] == null) ? "" : $request['USR_Fecha_Nacimiento_Usuario'];
+            $request['USR_Direccion_Residencia_Usuario'] = ($request['USR_Direccion_Residencia_Usuario'] == null) ? "" : $request['USR_Direccion_Residencia_Usuario'];
+            $request['USR_Ciudad_Residencia_Usuario'] = ($request['USR_Ciudad_Residencia_Usuario'] == null) ? "" : $request['USR_Ciudad_Residencia_Usuario'];
 
-        return redirect()
-            ->route('crear_director_administrador')
-            ->with(
-                'mensaje',
-                'Director de proyectos agregado con éxito, por favor que '.
+            Usuarios::crearUsuario($request);
+            $director = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
+            UsuariosRoles::asignarRol(2, $director->id);
+            MenuUsuario::asignarMenuDirector($director->id);
+            PermisoUsuario::asignarPermisosDirector($director->id);
+            
+            Usuarios::enviarcorreo(
+                $request,
+                'Bienvenido(a) '.
                     $request['USR_Nombres_Usuario'].
                     ' '.
-                    $request['USR_Apellidos_Usuario'].
-                    ' revise su correo electrónico'
+                    $request['USR_Apellidos_Usuario'],
+                'general.correo.bienvenida'
             );
+
+            Notificaciones::crearNotificacion(
+                'Hola! '.
+                    $request->USR_Nombres_Usuario.
+                    ' '.
+                    $request->USR_Apellidos_Usuario.
+                    ', Bienvenido(a) a InkBrutalPRY, verifique sus datos.',
+                session()->get('Usuario_Id'),
+                $director->id,
+                'perfil',
+                null,
+                null,
+                'account_circle'
+            );
+
+            return response()->json(['usuario' => $director, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -145,26 +123,10 @@ class DirectorProyectosController extends Controller
      */
     public function editar($id)
     {
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            session()->get('Usuario_Id')
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            session()->get('Usuario_Id')
-        );
         
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         $director = Usuarios::findOrFail($id);
 
-        return view(
-            'administrador.director.editar',
-            compact(
-                'director',
-                'datos',
-                'notificaciones',
-                'cantidad'
-            )
-        );
+        return response()->json(['director' => $director]);
     }
 
     /**
@@ -174,25 +136,37 @@ class DirectorProyectosController extends Controller
      * @param  $id Identifcador del director de proyectos
      * @return redirect()->route()
      */
-    public function actualizar(ValidacionUsuario $request, $id)
+    public function actualizar(Request $request, $id)
     {
-        Usuarios::editarUsuario($request, $id);
-        Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.
-                ' '.
-                $request->USR_Apellidos_Usuario.
-                ', sus datos fueron actualizados',
-            session()->get('Usuario_Id'),
-            $id,
-            'perfil',
-            null,
-            null,
-            'update'
-        );
+        $data = $request->all();
+        $validacionUsuario = new ValidacionUsuario();
+        $validator = Validator::make($data, $validacionUsuario->rules($id), $validacionUsuario->messages());
 
-        return redirect()
-            ->route('directores_administrador')
-            ->with('mensaje', 'Director de proyectos actualizado con éxito');
+        if($validator->passes()){
+            $request['USR_Fecha_Nacimiento_Usuario'] = ($request['USR_Fecha_Nacimiento_Usuario'] == null) ? "" : $request['USR_Fecha_Nacimiento_Usuario'];
+            $request['USR_Direccion_Residencia_Usuario'] = ($request['USR_Direccion_Residencia_Usuario'] == null) ? "" : $request['USR_Direccion_Residencia_Usuario'];
+            
+            Usuarios::editarUsuario($request, $id);
+            
+            $usuario = Usuarios::findOrFail($id);
+            
+            Notificaciones::crearNotificacion(
+                $request->USR_Nombres_Usuario.
+                    ' '.
+                    $request->USR_Apellidos_Usuario.
+                    ', sus datos fueron actualizados',
+                session()->get('Usuario_Id'),
+                $id,
+                'perfil',
+                null,
+                null,
+                'update'
+            );
+
+            return response()->json(['usuario' => $usuario, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -292,6 +266,35 @@ class DirectorProyectosController extends Controller
                 return response()->json(['mensaje' => 'ok']);
             } catch (QueryException $e) {
                 return response()->json(['mensaje' => 'ng']);
+            }
+        }
+    }
+
+    /**
+     * Reinicia la contraseña del usuario
+     *
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
+     */
+    public function recuperar_contraseña(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            try {
+                $usuario = Usuarios::findOrFail($id);
+                $usuario->update(['password' => bcrypt($usuario->USR_Nombre_Usuario)]);
+
+                Usuarios::enviarcorreo(
+                    $usuario,
+                    'Contraseña restaurada por el administrador!, '.
+                        $usuario['USR_Nombres_Usuario'].
+                        ' '.
+                        $usuario['USR_Apellidos_Usuario'],
+                    'general.correo.reset'
+                );
+
+                return response()->json(['mensaje' => 'ok']);
+            } catch (QueryException $e) {
+                return response()->json(['mensaje' => 'error']);
             }
         }
     }

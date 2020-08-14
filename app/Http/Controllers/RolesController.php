@@ -113,17 +113,12 @@ class RolesController extends Controller
         can('editar-roles');
         
         $rol = Roles::findOrFail($id);
-
-        $permisos = [
-            'editar'=>can2('editar-roles'),
-            'eliminar'=>can2('eliminar-roles')
-        ];
         
         if ($rol->RLS_Rol_Id != 4) {
             return response()->json(['mensaje' => 'rd']);
         }
 
-        return response()->json(['rol' => $rol, 'permisos' => $permisos]);
+        return response()->json(['rol' => $rol]);
     }
 
     /**

@@ -27,13 +27,13 @@ Route::group(['prefix' => 'administrador', 'namespace' => 'Administrador', 'midd
     //Enroutamiento para CRUD Director de Proyectos
     Route::group(['prefix' => 'director-proyectos'], function () {
         Route::get('', 'DirectorProyectosController@index')->name('directores_administrador');
-        Route::get('crear-director', 'DirectorProyectosController@crear')->name('crear_director_administrador');
         Route::post('crear-director', 'DirectorProyectosController@guardar')->name('guardar_director_administrador');
         Route::get('{id}/editar', 'DirectorProyectosController@editar')->name('editar_director_administrador');
         Route::put('{id}', 'DirectorProyectosController@actualizar')->name('actualizar_director_administrador');
         Route::delete('{id}', 'DirectorProyectosController@eliminar')->name('eliminar_director_administrador');
         Route::get('{id}/inactivar', 'DirectorProyectosController@inactivar')->name('inactivar_director_administrador');
         Route::get('{id}/activar', 'DirectorProyectosController@activar')->name('activar_director_administrador');
+        Route::put('{id}/restaurar_clave', 'DirectorProyectosController@recuperar_contraseña')->name('reset_pass_director_administrador');
     });
     //Enroutamiento para Sistema de Permisos 
     Route::group(['prefix' => 'asignar-permiso'], function () {

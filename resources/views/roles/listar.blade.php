@@ -138,6 +138,7 @@ Roles
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
+                $("#form_validation").valid();
                 e.preventDefault();
                 var formData = {
                     "_token": "{{ csrf_token() }}",
