@@ -88,60 +88,62 @@ Director de Proyectos
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
-                $("#form_validation").valid();
-                e.preventDefault();
-                var formData = {
-                    "_token": "{{ csrf_token() }}",
-                    USR_Tipo_Documento_Usuario: jQuery('#USR_Tipo_Documento_Usuario').val(),
-                    USR_Documento_Usuario: jQuery('#USR_Documento_Usuario').val(),
-                    USR_Nombres_Usuario: jQuery('#USR_Nombres_Usuario').val(),
-                    USR_Apellidos_Usuario: jQuery('#USR_Apellidos_Usuario').val(),
-                    USR_Fecha_Nacimiento_Usuario: jQuery('#USR_Fecha_Nacimiento_Usuario').val(),
-                    USR_Direccion_Residencia_Usuario: jQuery('#USR_Direccion_Residencia_Usuario').val(),
-                    USR_Telefono_Usuario: jQuery('#USR_Telefono_Usuario').val(),
-                    USR_Correo_Usuario: jQuery('#USR_Correo_Usuario').val(),
-                    USR_Nombre_Usuario: jQuery('#USR_Nombre_Usuario').val(),
-                };
-                var state = jQuery('#btn_guardar').val();
-                var type = "POST";
-                var director_id = jQuery('#director_id').val();
-                var ajaxurl = 'director-proyectos/crear-director';
-                if (state == "update") {
-                    type = "PUT";
-                    ajaxurl = 'director-proyectos/' + director_id;
-                }
-                $.ajax({
-                    type: type,
-                    url: ajaxurl,
-                    data: formData,
-                    dataType: 'json',
-                    success: function (data) {
-                        if(data.mensaje == "ok"){
-                            var director = '<tr id="director'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
-                                director += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                                director += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Director"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
-                                director += '</td></tr>';
-                            if (state == "add") {
-                                jQuery('#lista-directores').append(director);
-                            } else {
-                                $("#director" + data.usuario.id).replaceWith(director);
-                            }
-                            jQuery('#form_validation').trigger("reset");
-                            jQuery('#modalFormDirector').modal('hide');
-
-                            InkBrutalPRY.notificaciones('Director de proyectos '+(state == "add" ? 'registrado' : 'editado')+' con éxito', 'InkBrutalPRY', 'success');
-                        } else if(data.errors != null){
-                            data.errors.forEach(function(error){
-                                InkBrutalPRY.notificaciones(error, 'InkBrutalPRY', 'error', '10000');
-                            });
-                        } else {
-                            InkBrutalPRY.notificaciones('Error al '+(state == "add" ? 'registrar' : 'editar')+' el director de proyectos.', 'InkBrutalPRY', 'warning');
-                        }
-                    },
-                    error: function (data) {
-                        alert(data.errors);
+                if($("#form_validation").valid()){
+                    e.preventDefault();
+                    var formData = {
+                        "_token": "{{ csrf_token() }}",
+                        USR_Tipo_Documento_Usuario: jQuery('#USR_Tipo_Documento_Usuario').val(),
+                        USR_Documento_Usuario: jQuery('#USR_Documento_Usuario').val(),
+                        USR_Nombres_Usuario: jQuery('#USR_Nombres_Usuario').val(),
+                        USR_Apellidos_Usuario: jQuery('#USR_Apellidos_Usuario').val(),
+                        USR_Fecha_Nacimiento_Usuario: jQuery('#USR_Fecha_Nacimiento_Usuario').val(),
+                        USR_Direccion_Residencia_Usuario: jQuery('#USR_Direccion_Residencia_Usuario').val(),
+                        USR_Ciudad_Residencia_Usuario: jQuery('#USR_Ciudad_Residencia_Usuario').val(),
+                        USR_Telefono_Usuario: jQuery('#USR_Telefono_Usuario').val(),
+                        USR_Correo_Usuario: jQuery('#USR_Correo_Usuario').val(),
+                        USR_Nombre_Usuario: jQuery('#USR_Nombre_Usuario').val(),
+                    };
+                    var state = jQuery('#btn_guardar').val();
+                    var type = "POST";
+                    var director_id = jQuery('#director_id').val();
+                    var ajaxurl = 'director-proyectos/crear-director';
+                    if (state == "update") {
+                        type = "PUT";
+                        ajaxurl = 'director-proyectos/' + director_id;
                     }
-                });
+                    $.ajax({
+                        type: type,
+                        url: ajaxurl,
+                        data: formData,
+                        dataType: 'json',
+                        success: function (data) {
+                            if(data.mensaje == "ok"){
+                                var director = '<tr id="director'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
+                                    director += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                    director += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Director"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
+                                    director += '</td></tr>';
+                                if (state == "add") {
+                                    jQuery('#lista-directores').append(director);
+                                } else {
+                                    $("#director" + data.usuario.id).replaceWith(director);
+                                }
+                                jQuery('#form_validation').trigger("reset");
+                                jQuery('#modalFormDirector').modal('hide');
+
+                                InkBrutalPRY.notificaciones('Director de proyectos '+(state == "add" ? 'registrado' : 'editado')+' con éxito', 'InkBrutalPRY', 'success');
+                            } else if(data.errors != null){
+                                data.errors.forEach(function(error){
+                                    InkBrutalPRY.notificaciones(error, 'InkBrutalPRY', 'error', '10000');
+                                });
+                            } else {
+                                InkBrutalPRY.notificaciones('Error al '+(state == "add" ? 'registrar' : 'editar')+' el director de proyectos.', 'InkBrutalPRY', 'warning');
+                            }
+                        },
+                        error: function (data) {
+                            alert(data.errors);
+                        }
+                    });
+                }
             });
 
             ////----- Elimina el rol y lo quita de la vista -----////
@@ -215,9 +217,7 @@ Director de Proyectos
                             <div role="tabpanel" class="tab-pane fade in active" id="activos">
                                 @if (count($directoresActivos)<=0)
                                     <div class="alert alert-info">
-                                        El sistema no cuenta con Directores activos
-                                        <a href="{{route('crear_director_administrador')}}" class="alert-link">Clic aquí para
-                                            agregar!</a>.
+                                        El sistema no cuenta con Directores activos.
                                     </div>
                                 @else
                                     <table class="table table-striped table-bordered table-hover dataTable js-exportable">

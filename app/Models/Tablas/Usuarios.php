@@ -427,9 +427,13 @@ class Usuarios extends Authenticatable
     #Funcion que obtiene un usuario en específico
     public static function obtenerUsuario($documento)
     {
-        return Usuarios::where(
-            'USR_Documento_Usuario', '=', $documento
-        )->first();
+        return DB::table('TBL_Usuarios as u')
+            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->where(
+                'USR_Documento_Usuario', '=', $documento
+            )->select('r.*', 'u.*')
+            ->first();
     }
 
     #Funcion que obtiene un usuario en específico por id

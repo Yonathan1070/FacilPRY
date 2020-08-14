@@ -188,7 +188,6 @@ Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente');
 
 //Rutas CRUD Perfil de Operación
 Route::get('lperfil-operacion', 'PerfilOperacionController@index')->name('perfil_operacion');
-Route::get('perfil-operacion/crear', 'PerfilOperacionController@crear')->name('crear_perfil_operacion');
 Route::post('perfil-operacion/crear', 'PerfilOperacionController@guardar')->name('guardar_perfil_operacion');
 Route::get('perfil-operacion/{id}/editar', 'PerfilOperacionController@editar')->name('editar_perfil_operacion');
 Route::get('perfil-operacion/{id}/inactivar', 'PerfilOperacionController@inactivar')->name('inactivar_perfil_operacion');
@@ -198,6 +197,7 @@ Route::delete('perfil-operacion/{id}', 'PerfilOperacionController@eliminar')->na
 Route::get('perfil-operacion/{id}/agregar', 'PerfilOperacionController@agregar')->name('agregar_perfil_operacion');
 Route::get('perfil-operacion/{id}/carga', 'PerfilOperacionController@cargaTrabajo')->name('carga_perfil_operacion');
 Route::get('perfil-operacion/{id}/carga-pdf', 'PerfilOperacionController@pdfCargaTrabajo')->name('pdf_carga_perfil_operacion');
+Route::put('perfil-operacion/{id}/restaurar_clave', 'PerfilOperacionController@recuperar_contraseña')->name('reset_pass_perfil_operacion');
 
 //Rutas CRUD Proyectos
 Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');

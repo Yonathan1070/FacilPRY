@@ -138,55 +138,56 @@ Roles
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
-                $("#form_validation").valid();
-                e.preventDefault();
-                var formData = {
-                    "_token": "{{ csrf_token() }}",
-                    RLS_Nombre_Rol: jQuery('#RLS_Nombre_Rol').val(),
-                    RLS_Descripcion_Rol: jQuery('#RLS_Descripcion_Rol').val(),
-                };
-                var state = jQuery('#btn_guardar').val();
-                var type = "POST";
-                var rol_id = jQuery('#rol_id').val();
-                var ajaxurl = 'roles/crear-rol';
-                if (state == "update") {
-                    type = "PUT";
-                    ajaxurl = 'roles/' + rol_id;
-                }
-                $.ajax({
-                    type: type,
-                    url: ajaxurl,
-                    data: formData,
-                    dataType: 'json',
-                    success: function (data) {
-                        if(data.mensaje == "ok"){
-                            var rol = '<tr id="rol' + data.rol.id + '"><td>' + data.rol.RLS_Nombre_Rol + '</td><td>' + data.rol.RLS_Descripcion_Rol + '</td><td>';
-                            if(data.permisos.editar == true){
-                                rol += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="' + data.rol.id + '"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                            }
-                            if(data.permisos.eliminar == true){
-                                rol += '<button class="btn-accion-tabla tooltipsC delete-rol" value="' + data.rol.id + '" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>';
-                            }
-                            rol += '</td></tr>';
-                            if (state == "add") {
-                                jQuery('#lista-roles').append(rol);
-                            } else {
-                                $("#rol" + rol_id).replaceWith(rol);
-                            }
-                            jQuery('#form_validation').trigger("reset");
-                            jQuery('#modalFormRol').modal('hide');
-
-                            InkBrutalPRY.notificaciones('Rol '+(state == "add" ? 'registrado' : 'editado')+' con éxito', 'InkBrutalPRY', 'success');
-                        } else if(data.mensaje == "dr"){
-                            InkBrutalPRY.notificaciones('El rol ya se encuentra registrado en el sistema.', 'InkBrutalPRY', 'warning');
-                        } else {
-                            InkBrutalPRY.notificaciones('Error al '+(state == "add" ? 'registrar' : 'editar')+' el rol.', 'InkBrutalPRY', 'warning');
-                        }
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
+                if($("#form_validation").valid()){
+                    e.preventDefault();
+                    var formData = {
+                        "_token": "{{ csrf_token() }}",
+                        RLS_Nombre_Rol: jQuery('#RLS_Nombre_Rol').val(),
+                        RLS_Descripcion_Rol: jQuery('#RLS_Descripcion_Rol').val(),
+                    };
+                    var state = jQuery('#btn_guardar').val();
+                    var type = "POST";
+                    var rol_id = jQuery('#rol_id').val();
+                    var ajaxurl = 'roles/crear-rol';
+                    if (state == "update") {
+                        type = "PUT";
+                        ajaxurl = 'roles/' + rol_id;
                     }
-                });
+                    $.ajax({
+                        type: type,
+                        url: ajaxurl,
+                        data: formData,
+                        dataType: 'json',
+                        success: function (data) {
+                            if(data.mensaje == "ok"){
+                                var rol = '<tr id="rol' + data.rol.id + '"><td>' + data.rol.RLS_Nombre_Rol + '</td><td>' + data.rol.RLS_Descripcion_Rol + '</td><td>';
+                                if(data.permisos.editar == true){
+                                    rol += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="' + data.rol.id + '"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                }
+                                if(data.permisos.eliminar == true){
+                                    rol += '<button class="btn-accion-tabla tooltipsC delete-rol" value="' + data.rol.id + '" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>';
+                                }
+                                rol += '</td></tr>';
+                                if (state == "add") {
+                                    jQuery('#lista-roles').append(rol);
+                                } else {
+                                    $("#rol" + rol_id).replaceWith(rol);
+                                }
+                                jQuery('#form_validation').trigger("reset");
+                                jQuery('#modalFormRol').modal('hide');
+
+                                InkBrutalPRY.notificaciones('Rol '+(state == "add" ? 'registrado' : 'editado')+' con éxito', 'InkBrutalPRY', 'success');
+                            } else if(data.mensaje == "dr"){
+                                InkBrutalPRY.notificaciones('El rol ya se encuentra registrado en el sistema.', 'InkBrutalPRY', 'warning');
+                            } else {
+                                InkBrutalPRY.notificaciones('Error al '+(state == "add" ? 'registrar' : 'editar')+' el rol.', 'InkBrutalPRY', 'warning');
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                }
             });
         
             ////----- Elimina el rol y lo quita de la vista -----////
