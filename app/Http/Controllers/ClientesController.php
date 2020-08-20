@@ -13,6 +13,7 @@ use App\Models\Tablas\MenuUsuario;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\PermisoUsuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Clientes Controller, donde se visualizaran y realizaran cambios
@@ -78,105 +79,83 @@ class ClientesController extends Controller
     }
 
     /**
-     * Muestra el formulario para crear un cliente
-     *
-     * @param  $id  Identificador de la empresa
-     * @return \Illuminate\View\View Vista del formulario para crear clientes
-     */
-    public function crear($id)
-    {
-        can('crear-clientes');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $empresa = Empresas::findOrFail($id);
-        
-        return view(
-            'clientes.crear',
-            compact(
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'empresa',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
      * Guarda los datos del cliente en la base de datos
      *
      * @param  App\Http\Requests\ValidacionUsuario $request
      * @return redirect()->back()->with()
      */
-    public function guardar(ValidacionCliente $request)
+    public function guardar(Request $request)
     {
         can('crear-clientes');
-
-        Usuarios::crearUsuario($request);
-        $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
-        UsuariosRoles::asignarRol(3, $cliente->id);
-        MenuUsuario::asignarMenuCliente($cliente->id);
-        PermisoUsuario::asignarPermisoPerfil($cliente->id);
-        PermisoUsuario::asignarPermisosCliente($cliente->id);
-        Usuarios::enviarcorreo(
-            $request,
-            'Bienvenido '.
-                $request['USR_Nombres_Usuario'].
-                ' '.
-                $request['USR_Apellidos_Usuario'],
-            'general.correo.bienvenida'
-        );
-
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
         
-        ($datos->USR_Supervisor_Id == 0) ? $datos->USR_Supervisor_Id = 1 : $datos->USR_Supervisor_Id = $datos->USR_Supervisor_Id;
-        
-        Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.
-                ' '.
-                $datos->USR_Apellidos_Usuario.
-                ' ha creado el usuario '.
-                $request->USR_Nombres_Usuario,
-            session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
-            'clientes',
-            'id',
-            $request->id,
-            'person_add'
-        );
+        $permisos = [
+            'editar'=>can2('editar-roles'),
+            'eliminar'=>can2('eliminar-roles')
+        ];        
 
-        Notificaciones::crearNotificacion(
-            'Hola! '.
-                $request->USR_Nombres_Usuario.
-                ' '.
-                $request->USR_Apellidos_Usuario.
-                ', Bienvenido(a) a InkBrutalPRY, revise sus datos.',
-            session()->get('Usuario_Id'),
-            $cliente->id,
-            'perfil',
-            null,
-            null,
-            'account_circle'
-        );
-        
-        return redirect()
-            ->route(
-                'clientes', ['id'=>$request->id]
-            )->with('mensaje', 'Cliente agregado con éxito');
+        $data = $request->all();
+        $validacionUsuario = new ValidacionCliente();
+        $validator = Validator::make($data, $validacionUsuario->rules(null), $validacionUsuario->messages());
+
+        if($validator->passes()){
+            $request['USR_Fecha_Nacimiento_Usuario'] = ($request['USR_Fecha_Nacimiento_Usuario'] == null) ? "" : $request['USR_Fecha_Nacimiento_Usuario'];
+            $request['USR_Direccion_Residencia_Usuario'] = ($request['USR_Direccion_Residencia_Usuario'] == null) ? "" : $request['USR_Direccion_Residencia_Usuario'];
+            $request['USR_Ciudad_Residencia_Usuario'] = ($request['USR_Ciudad_Residencia_Usuario'] == null) ? "" : $request['USR_Ciudad_Residencia_Usuario'];
+
+            Usuarios::crearUsuario($request);
+            
+            $cliente = Usuarios::obtenerUsuario($request['USR_Documento_Usuario']);
+            
+            UsuariosRoles::asignarRol(3, $cliente->id);
+            MenuUsuario::asignarMenuCliente($cliente->id);
+            PermisoUsuario::asignarPermisoPerfil($cliente->id);
+            PermisoUsuario::asignarPermisosCliente($cliente->id);
+            
+            Usuarios::enviarcorreo(
+                $request,
+                'Bienvenido '.
+                    $request['USR_Nombres_Usuario'].
+                    ' '.
+                    $request['USR_Apellidos_Usuario'],
+                'general.correo.bienvenida'
+            );
+
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            
+            ($datos->USR_Supervisor_Id == 0) ? $datos->USR_Supervisor_Id = 1 : $datos->USR_Supervisor_Id = $datos->USR_Supervisor_Id;
+            
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha creado el usuario '.
+                    $request->USR_Nombres_Usuario,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                'clientes',
+                'id',
+                $request->id,
+                'person_add'
+            );
+
+            Notificaciones::crearNotificacion(
+                'Hola! '.
+                    $request->USR_Nombres_Usuario.
+                    ' '.
+                    $request->USR_Apellidos_Usuario.
+                    ', Bienvenido(a) a InkBrutalPRY, revise sus datos.',
+                session()->get('Usuario_Id'),
+                $cliente->id,
+                'perfil',
+                null,
+                null,
+                'account_circle'
+            );
+            
+            return response()->json(['usuario' => $cliente, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -189,36 +168,10 @@ class ClientesController extends Controller
     public function editar($idC, $idE)
     {
         can('editar-clientes');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
 
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
         $cliente = Usuarios::findOrFail($idC);
-        $empresa = Empresas::findOrFail($idE);
-        
-        return view(
-            'clientes.editar',
-            compact(
-                'cliente',
-                'empresa',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
+
+        return response()->json(['cliente' => $cliente]);
     }
 
     /**
@@ -229,42 +182,56 @@ class ClientesController extends Controller
      * @param  $idE Identifcador de la empresa
      * @return redirect()->route()->with()
      */
-    public function actualizar(ValidacionCliente $request, $idC, $idE)
+    public function actualizar(Request $request, $idC, $idE)
     {
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        Usuarios::editarUsuario($request, $idC);
-        
-        Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.
-                ' '.
-                $datos->USR_Apellidos_Usuario.
-                ' ha actualizado los datos de '.
-                $request->USR_Nombres_Usuario,
-            session()->get('Usuario_Id'),
-            ($datos->USR_Supervisor_Id == 0) ? 1 : $datos->USR_Supervisor_Id,
-            null,
-            null,
-            null,
-            'update'
-        );
+        can('editar-clientes');
 
-        Notificaciones::crearNotificacion(
-            $request->USR_Nombres_Usuario.
-                ' '.
-                $request->USR_Apellidos_Usuario.
-                ', susdatos fueron actualizados',
-            session()->get('Usuario_Id'),
-            $idC,
-            'perfil',
-            null,
-            null,
-            'update'
-        );
+        $permisos = [
+            'editar'=>can2('editar-roles'),
+            'eliminar'=>can2('eliminar-roles')
+        ];
 
-        return redirect()
-            ->route(
-                'clientes', ['id'=>$idE]
-            )->with('mensaje', 'Cliente actualizado con éxito');
+        $data = $request->all();
+        $validacionUsuario = new ValidacionCliente();
+        $validator = Validator::make($data, $validacionUsuario->rules($idC), $validacionUsuario->messages());
+
+        if($validator->passes()){
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            Usuarios::editarUsuario($request, $idC);
+
+            $cliente = Usuarios::findOrFail($idC);
+
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha actualizado los datos de '.
+                    $request->USR_Nombres_Usuario,
+                session()->get('Usuario_Id'),
+                ($datos->USR_Supervisor_Id == 0) ? 1 : $datos->USR_Supervisor_Id,
+                null,
+                null,
+                null,
+                'update'
+            );
+    
+            Notificaciones::crearNotificacion(
+                $request->USR_Nombres_Usuario.
+                    ' '.
+                    $request->USR_Apellidos_Usuario.
+                    ', susdatos fueron actualizados',
+                session()->get('Usuario_Id'),
+                $idC,
+                'perfil',
+                null,
+                null,
+                'update'
+            );
+
+            return response()->json(['usuario' => $cliente, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -302,6 +269,35 @@ class ClientesController extends Controller
                 } catch (QueryException $e) {
                     return response()->json(['mensaje' => 'ng']);
                 }
+            }
+        }
+    }
+
+    /**
+     * Reinicia la contraseña del usuario
+     *
+     * @param $id Identificador del director de proyectos a eliminar
+     * @return \Illuminate\Http\Response
+     */
+    public function recuperar_contraseña(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            try {
+                $usuario = Usuarios::findOrFail($id);
+                $usuario->update(['password' => bcrypt($usuario->USR_Nombre_Usuario)]);
+
+                /*Usuarios::enviarcorreo(
+                    $usuario,
+                    'Contraseña restaurada por el administrador!, '.
+                        $usuario['USR_Nombres_Usuario'].
+                        ' '.
+                        $usuario['USR_Apellidos_Usuario'],
+                    'general.correo.reset'
+                );*/
+
+                return response()->json(['mensaje' => 'ok']);
+            } catch (QueryException $e) {
+                return response()->json(['mensaje' => 'error']);
             }
         }
     }

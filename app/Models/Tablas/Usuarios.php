@@ -428,8 +428,8 @@ class Usuarios extends Authenticatable
     public static function obtenerUsuario($documento)
     {
         return DB::table('TBL_Usuarios as u')
-            ->join('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
-            ->join('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
+            ->leftJoin('TBL_Usuarios_Roles as ur', 'ur.USR_RLS_Usuario_Id', '=', 'u.id')
+            ->leftJoin('TBL_Roles as r', 'r.id', '=', 'ur.USR_RLS_Rol_Id')
             ->where(
                 'USR_Documento_Usuario', '=', $documento
             )->select('r.*', 'u.*')
@@ -461,8 +461,8 @@ class Usuarios extends Authenticatable
         if($request['USR_Costo_Hora'] == null) {
             $request['USR_Costo_Hora'] = 0;
         }
-        if($request->id == null) {
-            $request->id = session()->get('Empresa_Id');
+        if($request["id"] == null) {
+            $request["id"] = session()->get('Empresa_Id');
         }
         Usuarios::create([
             'USR_Tipo_Documento_Usuario' => $request['USR_Tipo_Documento_Usuario'],
@@ -479,7 +479,7 @@ class Usuarios extends Authenticatable
             'USR_Nombre_Usuario' => $request['USR_Nombre_Usuario'],
             'password' => bcrypt($request['USR_Nombre_Usuario']),
             'USR_Supervisor_Id' => session()->get('Usuario_Id'),
-            'USR_Empresa_Id' => $request->id,
+            'USR_Empresa_Id' => $request["id"],
             'USR_Costo_Hora' => $request['USR_Costo_Hora']
         ]);
 
@@ -500,7 +500,7 @@ class Usuarios extends Authenticatable
                 ', USR_Nombre_Usuario -> '.$request['USR_Nombre_Usuario'].
                 ', password -> '.bcrypt($request['USR_Nombre_Usuario']).
                 ', USR_Supervisor_Id -> '.session()->get('Usuario_Id').
-                ', USR_Empresa_Id -> '.$request->id.
+                ', USR_Empresa_Id -> '.$request["id"].
                 ', USR_Costo_Hora -> '.$request['USR_Costo_Hora'],
             session()->get('Usuario_Id')
         );

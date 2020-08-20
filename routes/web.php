@@ -185,6 +185,7 @@ Route::post('clientes/crear', 'ClientesController@guardar')->name('guardar_clien
 Route::get('clientes/{idC}-{idE}/editar', 'ClientesController@editar')->name('editar_cliente');
 Route::put('clientes/{idC}-{idE}', 'ClientesController@actualizar')->name('actualizar_cliente');
 Route::delete('{id}', 'ClientesController@eliminar')->name('eliminar_cliente');
+Route::put('clientes/{id}/restaurar_clave', 'ClientesController@recuperar_contraseña')->name('reset_pass_cliente');
 
 //Rutas CRUD Perfil de Operación
 Route::get('lperfil-operacion', 'PerfilOperacionController@index')->name('perfil_operacion');
