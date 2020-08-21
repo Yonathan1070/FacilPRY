@@ -11,6 +11,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use stdClass;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Requerimientos Controller, donde se visualizaran y realizaran cambios
@@ -78,84 +79,53 @@ class RequerimientosController extends Controller
     }
 
     /**
-     * Muestra el formulario para crear requerimientos
-     *
-     * @param  $idP Identificador del proyecto
-     * @return \Illuminate\View\View Vista para crear requerimientos
-     */
-    public function crear($idP)
-    {
-        can('crear-requerimientos');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $proyecto = Proyectos::findOrFail($idP);
-        
-        return view(
-            'requerimientos.crear',
-            compact(
-                'proyecto',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
      * Guarda los datos del requerimiento en la base de datos
      *
      * @param  App\Http\Requests\ValidacionRequerimiento  $request
      * @return redirect()->route()->with()
      */
-    public function guardar(ValidacionRequerimiento $request)
+    public function guardar(Request $request)
     {
         can('crear-requerimientos');
 
-        $datosU = Usuarios::obtenerClienteProyecto($request->REQ_Proyecto_Id);
-        $requerimientos = Requerimientos::obtenerRequerimientos($request['REQ_Proyecto_Id']);
-        
-        foreach ($requerimientos as $requerimiento) {
-            if (
-                strtolower($requerimiento->REQ_Nombre_Requerimiento) == strtolower($request['REQ_Nombre_Requerimiento'])
-            ) {
-                return redirect()
-                    ->route('crear_requerimiento', [$request['REQ_Proyecto_Id']])
-                    ->withErrors('El proyecto ya cuenta con una actividad del mismo nombre.')
-                    ->withInput();
-            }
-        }
-        
-        Requerimientos::create($request->all());
-        
-        Notificaciones::crearNotificacion(
-            'Se han agregado actividades al proyecto '.$datosU->PRY_Nombre_Proyecto,
-            session()->get('Usuario_Id'),
-            $datosU->id,
-            'requerimientos',
-            'idP',
-            $request->REQ_Proyecto_Id,
-            'library_add'
-        );
+        $permisos = [
+            'editar'=>can2('editar-requerimientos'),
+            'eliminar'=>can2('eliminar-requerimientos'),
+            'listarA'=>can2('listar-actividades')
+        ];
 
-        return redirect()
-            ->route(
-                'crear_requerimiento', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Actividad agregada con éxito');
+        $data = $request->all();
+        $validacionRequerimiento = new ValidacionRequerimiento();
+        $validator = Validator::make($data, $validacionRequerimiento->rules(null), $validacionRequerimiento->messages());
+
+        if($validator->passes()){
+            $datosU = Usuarios::obtenerClienteProyecto($request->REQ_Proyecto_Id);
+            $requerimientos = Requerimientos::obtenerRequerimientos($request['REQ_Proyecto_Id']);
+            
+            foreach ($requerimientos as $requerimiento) {
+                if (
+                    strtolower($requerimiento->REQ_Nombre_Requerimiento) == strtolower($request['REQ_Nombre_Requerimiento'])
+                ) {
+                    return response()->json(['mensaje' => 'dr']);
+                }
+            }
+            
+            $requerimiento = Requerimientos::create($request->all());
+            
+            Notificaciones::crearNotificacion(
+                'Se han agregado actividades al proyecto '.$datosU->PRY_Nombre_Proyecto,
+                session()->get('Usuario_Id'),
+                $datosU->id,
+                'requerimientos',
+                'idP',
+                $request->REQ_Proyecto_Id,
+                'library_add'
+            );
+
+            return response()->json(['requerimiento' => $requerimiento, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -165,39 +135,13 @@ class RequerimientosController extends Controller
      * @param  $idR  Identificador del requerimiento
      * @return \Illuminate\View\View Vista para editar requerimientos
      */
-    public function editar($idP, $idR)
+    public function editar($idR)
     {
         can('editar-requerimientos');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
 
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $proyecto = Proyectos::findOrFail($idP);
         $requerimiento = Requerimientos::findOrFail($idR);
-        
-        return view(
-            'requerimientos.editar',
-            compact(
-                'proyecto',
-                'requerimiento',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
+
+        return response()->json(['requerimiento' => $requerimiento]);
     }
 
     /**
@@ -211,26 +155,33 @@ class RequerimientosController extends Controller
     {
         can('editar-requerimientos');
 
-        $requerimientos = Requerimientos::obtenerRequerimientosNoActual($request, $idR);
-        
-        foreach ($requerimientos as $requerimiento) {
-            if (
-                $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
-            ) {
-                return redirect()
-                    ->route('editar_requerimiento', $idR)
-                    ->withErrors(
-                        'El proyecto ya cuenta con una actividad del mismo nombre.'
-                    )->withInput();
+        $permisos = [
+            'editar'=>can2('editar-requerimientos'),
+            'eliminar'=>can2('eliminar-requerimientos'),
+            'listarA'=>can2('listar-actividades')
+        ];
+
+        $data = $request->all();
+        $validacionRequerimiento = new ValidacionRequerimiento();
+        $validator = Validator::make($data, $validacionRequerimiento->rules(null), $validacionRequerimiento->messages());
+
+        if($validator->passes()){
+            $requerimientos = Requerimientos::obtenerRequerimientosNoActual($request, $idR);
+            
+            foreach ($requerimientos as $requerimiento) {
+                if (
+                    $requerimiento->REQ_Nombre_Requerimiento == $request['REQ_Nombre_Requerimiento']
+                ) {
+                    return response()->json(['mensaje' => 'dr']);
+                }
             }
+            
+            $requerimiento = Requerimientos::actualizar($request, $idR);
+            
+            return response()->json(['requerimiento' => $requerimiento, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
         }
-        
-        Requerimientos::actualizar($request, $idR);
-        
-        return redirect()
-            ->route(
-                'requerimientos', [$request['REQ_Proyecto_Id']]
-            )->with('mensaje', 'Actividad actualizado con éxito');
     }
 
     /**
@@ -241,13 +192,14 @@ class RequerimientosController extends Controller
      * @param  $idR Identificador del requerimiento
      * @return response()->json()
      */
-    public function eliminar(Request $request, $idP, $idR)
+    public function eliminar(Request $request, $idR)
     {
         if (!can('eliminar-requerimientos')) {
             return response()->json(['mensaje' => 'np']);
         } else {
             if ($request->ajax()) {
                 try {
+                    $idP = Requerimientos::findOrFail($idR)->REQ_Proyecto_Id;
                     $datosU = Usuarios::obtenerClienteProyecto($idP);
                     Requerimientos::destroy($idR);
                     

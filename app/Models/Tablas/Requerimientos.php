@@ -76,5 +76,7 @@ class Requerimientos extends Model
                 ', REQ_Descripcion_Requerimiento -> '.$oldRequerimiento->REQ_Descripcion_Requerimiento.' / '.$newRequerimiento->REQ_Descripcion_Requerimiento,
             session()->get('Usuario_Id')
         );
+
+        return $newRequerimiento;
     }
 }

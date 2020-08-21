@@ -211,11 +211,10 @@ Route::get('proyectos/{id}/activar', 'ProyectosController@activar')->name('activ
 
 //Rutas CRUD Requerimientos
 Route::get('requerimientos/{idP}', 'RequerimientosController@index')->name('requerimientos');
-Route::get('requerimientos/{idP}/crear', 'RequerimientosController@crear')->name('crear_requerimiento');
 Route::post('requerimientos/crear', 'RequerimientosController@guardar')->name('guardar_requerimiento');
-Route::get('requerimientos/{idP}-{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento');
-Route::put('requerimientos/{idR}/editar', 'RequerimientosController@actualizar')->name('actualizar_requerimiento');
-Route::delete('requerimientos/{idP}-{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento');
+Route::get('requerimientos/{idR}/editar', 'RequerimientosController@editar')->name('editar_requerimiento');
+Route::put('requerimientos/{idR}', 'RequerimientosController@actualizar')->name('actualizar_requerimiento');
+Route::delete('requerimientos/{idR}', 'RequerimientosController@eliminar')->name('eliminar_requerimiento');
 Route::get('prequerimientos/{id}', 'RequerimientosController@obtenerPorcentaje')->name('obtener_porcentaje_requerimiento');
 
 //Rutas CRUD Actividades

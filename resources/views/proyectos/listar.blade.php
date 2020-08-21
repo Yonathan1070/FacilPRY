@@ -128,32 +128,32 @@
                     }
                 });
             });
-
-            function ajaxRequest(proyecto_id){
-                $('.page-loader-wrapper').fadeIn();
-                $.ajax({
-                    type: "DELETE",
-                    url: '/proyectos/' + proyecto_id + '/eliminar',
-                    data: {"_token": "{{ csrf_token() }}"},
-                    success: function (data) {
-                        if (data.mensaje == "ok") {
-                            $("#proyecto" + proyecto_id).remove();
-                            InkBrutalPRY.notificaciones('El proyecto fue eliminado correctamente', 'InkBrutalPRY', 'success');
-                        } else if (data.mensaje == "ng") {
-                            InkBrutalPRY.notificaciones('No es posible eliminar el proyecto, tiene actividades registradas.', 'InkBrutalPRY', 'error');
-                        } else if (respuesta.mensaje == "np") {
-                            InkBrutalPRY.notificaciones('No tiene permisos para entrar en este modulo.', 'InkBrutalPRY', 'error');
-                        }  else {
-                            InkBrutalPRY.notificaciones('El proyecto no pudo ser eliminado o hay otro recurso usándolo', 'InkBrutalPRY', 'error');
-                        }
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-                $('.page-loader-wrapper').fadeOut();
-            }
         });
+
+        function ajaxRequest(proyecto_id){
+            $('.page-loader-wrapper').fadeIn();
+            $.ajax({
+                type: "DELETE",
+                url: '/proyectos/' + proyecto_id + '/eliminar',
+                data: {"_token": "{{ csrf_token() }}"},
+                success: function (data) {
+                    if (data.mensaje == "ok") {
+                        $("#proyecto" + proyecto_id).remove();
+                        InkBrutalPRY.notificaciones('El proyecto fue eliminado correctamente', 'InkBrutalPRY', 'success');
+                    } else if (data.mensaje == "ng") {
+                        InkBrutalPRY.notificaciones('No es posible eliminar el proyecto, tiene actividades registradas.', 'InkBrutalPRY', 'error');
+                    } else if (respuesta.mensaje == "np") {
+                        InkBrutalPRY.notificaciones('No tiene permisos para entrar en este modulo.', 'InkBrutalPRY', 'error');
+                    }  else {
+                        InkBrutalPRY.notificaciones('El proyecto no pudo ser eliminado o hay otro recurso usándolo', 'InkBrutalPRY', 'error');
+                    }
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+            $('.page-loader-wrapper').fadeOut();
+        }
     </script>
 @endsection
 @section('contenido')
