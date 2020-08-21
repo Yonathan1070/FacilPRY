@@ -21,14 +21,14 @@ class ValidacionEmpresa extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules($id)
     {
         return [
-            'EMP_NIT_Empresa' => 'required|regex:/^[0-9]+$/u|max:20|unique:TBL_Empresas,EMP_NIT_Empresa,' . $this->route('id'),
-            'EMP_Nombre_Empresa' => 'required|max:100|regex:/^[a-zA-Z ]+$/u|unique:TBL_Empresas,EMP_Nombre_Empresa,' . $this->route('id'),
+            'EMP_NIT_Empresa' => 'required|regex:/^[0-9]+$/u|max:20|unique:TBL_Empresas,EMP_NIT_Empresa,' . $id,
+            'EMP_Nombre_Empresa' => 'required|max:100|unique:TBL_Empresas,EMP_Nombre_Empresa,' . $id,
             'EMP_Direccion_Empresa' => 'required|max:100',
             'EMP_Telefono_Empresa' => 'required|max:20|regex:/^[0-9]+$/u',
-            'EMP_Correo_Empresa' => 'required|max:100|email|unique:TBL_Empresas,EMP_Correo_Empresa,' . $this->route('id'),
+            'EMP_Correo_Empresa' => 'required|max:100|email|unique:TBL_Empresas,EMP_Correo_Empresa,' . $id,
         ];
     }
 
@@ -41,7 +41,6 @@ class ValidacionEmpresa extends FormRequest
             'EMP_NIT_Empresa.numeric' => 'El NIT no debe contener letras ni caracteres especiales.',
             'EMP_Nombre_Empresa.required' => 'El nombre de la empresa es requerido.',
             'EMP_Nombre_Empresa.max' => 'El nombre de la empresa no puede exceder el limite de :max caracteres.',
-            'EMP_Nombre_Empresa.regex' => 'El nombre de la empresa no debe contener números',
             'EMP_Nombre_Empresa.unique' => 'El nombre de la empresa ya se encuentra registrado.',
             'EMP_Direccion_Empresa.required'  => 'La dirección de la empresa es requerida.',
             'EMP_Direccion_Empresa.max'  => 'La dirección de la empresa no puede exceder el limite de :max carácteres.',

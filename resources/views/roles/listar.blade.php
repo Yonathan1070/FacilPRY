@@ -31,9 +31,7 @@ Roles
                 <div class="body table-responsive">
                         @if (count($roles)<=0)
                             <div class="alert alert-warning">
-                                El sistema no cuenta con Roles agregados
-                                <a href="{{route('crear_rol')}}" class="alert-link">Clic aquí para
-                                    agregar!</a>.
+                                El sistema no cuenta con Roles agregados.
                             </div>
                         @else
                             <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">

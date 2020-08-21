@@ -171,16 +171,14 @@ Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actua
 
 //Rutas CRUD Empresas
 Route::get('empresas', 'EmpresasController@index')->name('empresas');
-Route::get('empresas/crear', 'EmpresasController@crear')->name('crear_empresa');
 Route::post('empresas/crear', 'EmpresasController@guardar')->name('guardar_empresa');
 Route::get('empresas/{id}/editar', 'EmpresasController@editar')->name('editar_empresa');
 Route::put('empresas/{id}', 'EmpresasController@actualizar')->name('actualizar_empresa');
-Route::put('empresa/{id}/inactivar', 'EmpresasController@inactivar')->name('inactivar_empresa');
+Route::get('empresa/{id}/inactivar', 'EmpresasController@inactivar')->name('inactivar_empresa');
 Route::get('empresa/{id}/activar', 'EmpresasController@activar')->name('activar_empresa');
 
 //Rutas CRUD Clientes
 Route::get('clientes/{id}', 'ClientesController@index')->name('clientes');
-Route::get('clientes/crear/{id}', 'ClientesController@crear')->name('crear_cliente');
 Route::post('clientes/crear', 'ClientesController@guardar')->name('guardar_cliente');
 Route::get('clientes/{idC}-{idE}/editar', 'ClientesController@editar')->name('editar_cliente');
 Route::put('clientes/{idC}-{idE}', 'ClientesController@actualizar')->name('actualizar_cliente');

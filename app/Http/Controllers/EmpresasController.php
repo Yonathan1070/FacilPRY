@@ -9,6 +9,7 @@ use App\Models\Tablas\Empresas;
 use App\Models\Tablas\Usuarios;
 use App\Models\Tablas\Proyectos;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Director Controller, donde se visualizaran y realizaran cambios
@@ -114,34 +115,47 @@ class EmpresasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return redirect()->back()->with()
      */
-    public function guardar(ValidacionEmpresa $request)
+    public function guardar(Request $request)
     {
         can('crear-empresas');
 
-        Empresas::crearEmpresa($request);
+        $permisos = [
+            'editar'=>can2('editar-empresas'),
+            'eliminar'=>can2('eliminar-empresas'),
+            'lUsuarios'=>can2('listar-clientes'),
+            'lProyectos'=>can2('listar-proyectos')
+        ];
 
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        
-        if($datos->USR_Supervisor_Id == 0)
-            $datos->USR_Supervisor_Id = 1;
-        
-        Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.
-                ' '.
-                $datos->USR_Apellidos_Usuario.
-                ' ha creado la empresa '.
-                $request->EMP_Nombre_Empresa,
-            session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
-            'empresas',
-            null,
-            null,
-            'person_add'
-        );
-        
-        return redirect()
-            ->route('crear_empresa')
-            ->with('mensaje', 'Empresa agregada con éxito');
+        $data = $request->all();
+        $validacionEmpresa = new ValidacionEmpresa();
+        $validator = Validator::make($data, $validacionEmpresa->rules(null), $validacionEmpresa->messages());
+
+        if($validator->passes()){
+            $empresa = Empresas::crearEmpresa($request);
+
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            
+            if($datos->USR_Supervisor_Id == 0)
+                $datos->USR_Supervisor_Id = 1;
+            
+            Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha creado la empresa '.
+                    $request->EMP_Nombre_Empresa,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                'empresas',
+                null,
+                null,
+                'person_add'
+            );
+            
+            return response()->json(['empresa' => $empresa, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -154,33 +168,9 @@ class EmpresasController extends Controller
     {
         can('editar-empresas');
         
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
         $empresa = Empresas::findOrFail($id);
-        
-        return view(
-            'empresas.editar',
-            compact(
-                'empresa',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
+
+        return response()->json(['empresa' => $empresa]);
     }
 
     /**
@@ -190,15 +180,29 @@ class EmpresasController extends Controller
      * @param  $id  Identificador de la empresa
      * @return redirect()->route()
      */
-    public function actualizar(ValidacionEmpresa $request, $id)
+    public function actualizar(Request $request, $id)
     {
         can('editar-empresas');
-        
-        Empresas::editarEmpresa($request, $id);
 
-        return redirect()
-            ->route('empresas')
-            ->with('mensaje', 'Empresa actualizada con éxito');
+        $permisos = [
+            'editar'=>can2('editar-empresas'),
+            'eliminar'=>can2('eliminar-empresas'),
+            'lUsuarios'=>can2('listar-clientes'),
+            'lProyectos'=>can2('listar-proyectos')
+        ];
+
+        $data = $request->all();
+        $validacionEmpresa = new ValidacionEmpresa();
+        $validator = Validator::make($data, $validacionEmpresa->rules($id), $validacionEmpresa->messages());
+
+        if($validator->passes()){
+            Empresas::editarEmpresa($request, $id);
+            $empresa = Empresas::findOrFail($id);
+
+            return response()->json(['empresa' => $empresa, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
@@ -229,15 +233,17 @@ class EmpresasController extends Controller
      * @param  $id  Identificador de la empresa
      * @return response()->json()
      */
-    public function activar($id)
+    public function activar(Request $request, $id)
     {
-        can('editar-empresas');
-
-        Empresas::cambiarEstadoActivado($id);
-        Proyectos::cambiarEstadoActivado($id);
-        
-        return redirect()
-            ->back()
-            ->with('mensaje', 'Empresa activada satisfactoriamente.');
+        if (can('editar-empresas')) {
+            if($request->ajax()){
+                Empresas::cambiarEstadoActivado($id);
+                Proyectos::cambiarEstadoActivado($id);
+    
+                return response()->json(['mensaje' => 'ok']);
+            }
+        } else {
+            return abort(404);
+        }
     }
 }

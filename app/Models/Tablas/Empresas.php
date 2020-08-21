@@ -117,7 +117,7 @@ class Empresas extends Model
     #Función que crea la empresa
     public static function crearEmpresa($request)
     {
-        Empresas::create([
+        $empresa = Empresas::create([
             'EMP_Nombre_Empresa' => $request['EMP_Nombre_Empresa'],
             'EMP_NIT_Empresa' => $request['EMP_NIT_Empresa'],
             'EMP_Telefono_Empresa' => $request['EMP_Telefono_Empresa'],
@@ -142,6 +142,8 @@ class Empresas extends Model
                 ', EMP_Estado_Empresa -> 1',
             session()->get('Usuario_Id')
         );
+
+        return $empresa;
     }
 
     #Función que actualiza los datos de la empresa
