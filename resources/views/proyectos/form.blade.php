@@ -2,7 +2,7 @@
 <div class="form-group form-float">
     <div class="form-line">
         <input type="text" class="form-control" name="PRY_Nombre_Proyecto" id="PRY_Nombre_Proyecto"
-            value="{{old('PRY_Nombre_Proyecto', $proyecto->PRY_Nombre_Proyecto ?? '')}}" maxlength="30" required>
+            maxlength="30" required>
         <label class="form-label">Nombre del Proyecto</label>
     </div>
 </div>
@@ -10,7 +10,7 @@
     <div class="form-line">
         <textarea name="PRY_Descripcion_Proyecto" id="PRY_Descripcion_Proyecto" cols="30" rows="5"
             class="form-control no-resize"
-            required>{{old('PRY_Descripcion_Proyecto', $proyecto->PRY_Descripcion_Proyecto ?? '')}}</textarea>
+            required></textarea>
         <label class="form-label">Descripción del Proyecto</label>
     </div>
 </div>

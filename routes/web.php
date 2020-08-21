@@ -200,7 +200,6 @@ Route::put('perfil-operacion/{id}/restaurar_clave', 'PerfilOperacionController@r
 
 //Rutas CRUD Proyectos
 Route::get('lproyectos/{id}', 'ProyectosController@index')->name('proyectos');
-Route::get('proyectos/crear/{id}', 'ProyectosController@crear')->name('crear_proyecto');
 Route::post('proyectos/crear', 'ProyectosController@guardar')->name('guardar_proyecto');
 Route::delete('proyectos/{idP}/eliminar', 'ProyectosController@eliminar')->name('eliminar_proyectos');
 Route::get('proyectos/{id}/generar-pdf', 'ProyectosController@generarPdf')->name('generar_pdf_proyecto');

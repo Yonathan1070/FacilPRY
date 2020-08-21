@@ -29,6 +29,51 @@ class Proyectos extends Model
     ];
     protected $guarded = ['id'];
 
+    public static function crearProyecto($request)
+    {
+        $proyecto = Proyectos::create($request->all());
+
+        $result = DB::table('TBL_Proyectos as p')
+            ->leftjoin(
+                'TBL_Requerimientos as r',
+                'r.REQ_Proyecto_Id',
+                '=',
+                'p.id'
+            )->leftjoin(
+                'TBL_Actividades as a',
+                'a.ACT_Requerimiento_Id',
+                '=',
+                'r.id'
+            )->leftJoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
+            )->join(
+                'TBL_Empresas as e',
+                'e.id',
+                '=',
+                'p.PRY_Empresa_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.id',
+                '=',
+                'p.PRY_Cliente_Id'
+            )->select(
+                'u.*',
+                'p.*',
+                'p.id as Proyecto_Id',
+                DB::raw('COUNT(a.id) as Actividades_Totales'),
+                DB::raw('COUNT(af.id) as Actividades_Finalizadas')
+            )->where(
+                'p.id', '=', $proyecto->id
+            )->groupBy(
+                'p.id'
+            )->first();
+        
+        return $result;
+    }
+
     #Función para obtener los proyectos no finalizados
     public static function obtenerNoFinalizados($id)
     {

@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use PDF;
 use stdClass;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Proyectos Controller, donde se visualizaran y realizaran cambios
@@ -66,6 +67,7 @@ class ProyectosController extends Controller
         $empresa = Empresas::findOrFail($id);
         $proyectosNoFinalizados = Proyectos::obtenerNoFinalizados($id);
         $proyectosFinalizados = Proyectos::obtenerFinalizados($id);
+        $clientes = Usuarios::obtenerClientes($id);
 
         return view(
             'proyectos.listar',
@@ -77,47 +79,8 @@ class ProyectosController extends Controller
                 'notificaciones',
                 'cantidad',
                 'permisos',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
-     * Muestra el formulario para crear proyectos
-     *
-     * @return \Illuminate\View\View Vista crear proyecto
-     */
-    public function crear($id)
-    {
-        can('crear-proyectos');
-        
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $empresa = Empresas::findOrFail($id);
-        $clientes = Usuarios::obtenerClientes($id);
-
-        return view(
-            'proyectos.crear',
-            compact(
-                'clientes',
-                'empresa',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
+                'asignadas',
+                'clientes'
             )
         );
     }
@@ -128,50 +91,64 @@ class ProyectosController extends Controller
      * @param  App\Http\Requests\ValidacionProyecto $request
      * @return redirect()->back()->with()
      */
-    public function guardar(ValidacionProyecto $request)
+    public function guardar(Request $request)
     {
         can('crear-proyectos');
 
-        Proyectos::create($request->all());
-        $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        $datosU = Usuarios::findOrFail($request->PRY_Cliente_Id);
-        
-        if ($datos->USR_Supervisor_Id == 0)
-            $datos->USR_Supervisor_Id = 1;
-        
+        $permisos = [
+            'crear'=> can2('crear-proyectos'),
+            'listarR'=>can2('listar-requerimientos'),
+            'listarA'=>can2('listar-actividades'),
+            'listarE'=>can2('listar-empresas'),
+            'eliminar'=>can2('eliminar-proyectos')
+        ];
+
+        $data = $request->all();
+        $validacionUsuario = new ValidacionProyecto();
+        $validator = Validator::make($data, $validacionUsuario->rules(null), $validacionUsuario->messages());
+
+        if($validator->passes()){
+            $proyecto = Proyectos::crearProyecto($request);
+            $datos = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            $datosU = Usuarios::findOrFail($request->PRY_Cliente_Id);
+            
+            if ($datos->USR_Supervisor_Id == 0)
+                $datos->USR_Supervisor_Id = 1;
+            
+                Notificaciones::crearNotificacion(
+                $datos->USR_Nombres_Usuario.
+                    ' '.
+                    $datos->USR_Apellidos_Usuario.
+                    ' ha creado el proyecto '.
+                    $request->PRY_Nombre_Proyecto,
+                session()->get('Usuario_Id'),
+                $datos->USR_Supervisor_Id,
+                'proyectos',
+                'id',
+                $request->PRY_Empresa_Id,
+                'library_add'
+            );
+
             Notificaciones::crearNotificacion(
-            $datos->USR_Nombres_Usuario.
-                ' '.
-                $datos->USR_Apellidos_Usuario.
-                ' ha creado el proyecto '.
-                $request->PRY_Nombre_Proyecto,
-            session()->get('Usuario_Id'),
-            $datos->USR_Supervisor_Id,
-            'proyectos',
-            'id',
-            $request->PRY_Empresa_Id,
-            'library_add'
-        );
+                'Hola! '.
+                    $datosU->USR_Nombres_Usuario.
+                    ' '.
+                    $datosU->USR_Apellidos_Usuario.
+                    ', su proyecto '.
+                    $request->PRY_Nombre_Proyecto.
+                    ' ha sido creado',
+                session()->get('Usuario_Id'),
+                $datosU->id,
+                'proyectos',
+                'id',
+                $request->PRY_Empresa_Id,
+                'library_add'
+            );
 
-        Notificaciones::crearNotificacion(
-            'Hola! '.
-                $datosU->USR_Nombres_Usuario.
-                ' '.
-                $datosU->USR_Apellidos_Usuario.
-                ', su proyecto '.
-                $request->PRY_Nombre_Proyecto.
-                ' ha sido creado',
-            session()->get('Usuario_Id'),
-            $datosU->id,
-            'proyectos',
-            'id',
-            $request->PRY_Empresa_Id,
-            'library_add'
-        );
-
-        return redirect()
-            ->route('crear_proyecto')
-            ->with('mensaje', 'Proyecto agregado con éxito');
+            return response()->json(['proyecto' => $proyecto, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
     }
 
     /**
