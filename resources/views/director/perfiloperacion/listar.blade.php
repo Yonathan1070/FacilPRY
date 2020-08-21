@@ -65,6 +65,7 @@
         
             ////----- Abre modal para editar rol -----////
             jQuery('body').on('click', '.open-modal', function () {
+                $('.page-loader-wrapper').fadeIn();
                 var perfil_id = $(this).val();
                 $.get('perfil-operacion/' + perfil_id + '/editar', function (data) {
                     jQuery('#perfil_id').val(data.perfil.id);
@@ -87,11 +88,13 @@
                     jQuery('#btn_guardar').val("update");
                     jQuery('#modalFormPerfil').modal('show');
                 });
+                $('.page-loader-wrapper').fadeOut();
                 
             });
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
+                $('.page-loader-wrapper').fadeIn();
                 if($("#form_validation").valid()){
                     e.preventDefault();
                     var formData = {
@@ -151,6 +154,7 @@
                         }
                     });
                 }
+                $('.page-loader-wrapper').fadeOut();
             });
 
             ////----- Elimina el rol y lo quita de la vista -----////
@@ -173,6 +177,7 @@
             });
 
             function ajaxRequest(perfil_id){
+                $('.page-loader-wrapper').fadeIn();
                 $.ajax({
                     type: "PUT",
                     url: 'perfil-operacion/' + perfil_id + '/restaurar_clave',
@@ -191,6 +196,7 @@
                         console.log('Error:', data);
                     }
                 });
+                $('.page-loader-wrapper').fadeOut();
             }
         });
     </script>

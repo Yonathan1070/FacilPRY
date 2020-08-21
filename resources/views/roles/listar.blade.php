@@ -120,6 +120,7 @@ Roles
         
             ////----- Abre modal para editar rol -----////
             jQuery('body').on('click', '.open-modal', function () {
+                $('.page-loader-wrapper').fadeIn();
                 var rol_id = $(this).val();
                 $.get('roles/' + rol_id + '/editar', function (data) {
                     if(data.mensaje == "rd"){
@@ -131,11 +132,13 @@ Roles
                         jQuery('#btn_guardar').val("update");
                         jQuery('#modalFormRol').modal('show');
                     }
-                })
+                });
+                $('.page-loader-wrapper').fadeOut();
             });
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
+                $('.page-loader-wrapper').fadeIn();
                 if($("#form_validation").valid()){
                     e.preventDefault();
                     var formData = {
@@ -186,6 +189,7 @@ Roles
                         }
                     });
                 }
+                $('.page-loader-wrapper').fadeOut();
             });
         
             ////----- Elimina el rol y lo quita de la vista -----////
@@ -208,6 +212,7 @@ Roles
             });
 
             function ajaxRequest(rol_id){
+                $('.page-loader-wrapper').fadeIn();
                 $.ajax({
                     type: "DELETE",
                     url: 'roles/' + rol_id,
@@ -228,6 +233,7 @@ Roles
                         console.log('Error:', data);
                     }
                 });
+                $('.page-loader-wrapper').fadeOut();
             }
         });
     </script>

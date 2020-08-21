@@ -59,6 +59,7 @@
         
             ////----- Abre modal para editar rol -----////
             jQuery('body').on('click', '.open-modal', function () {
+                $('.page-loader-wrapper').fadeIn();
                 var empresa_id = $(this).val();
                 $.get('empresas/' + empresa_id + '/editar', function (data) {
                     jQuery('#empresa_id').val(data.empresa.id);
@@ -69,11 +70,13 @@
                     jQuery('#EMP_Direccion_Empresa').val(data.empresa.EMP_Direccion_Empresa);
                     jQuery('#btn_guardar').val("update");
                     jQuery('#modalFormEmpresa').modal('show');
-                })
+                });
+                $('.page-loader-wrapper').fadeOut();
             });
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
+                $('.page-loader-wrapper').fadeIn();
                 if($("#form_validation").valid()){
                     e.preventDefault();
                     var formData = {
@@ -145,49 +148,8 @@
                         }
                     });
                 }
+                $('.page-loader-wrapper').fadeOut();
             });
-        
-            ////----- Elimina el rol y lo quita de la vista -----////
-            jQuery('.delete-rol').click(function () {
-                event.preventDefault();
-                const rol_id = $(this).val();
-                swal({
-                    title: '¿Está seguro que desea eliminar el rol?',
-                    text: 'Esta acción no se puede deshacer!',
-                    icon: 'warning',
-                    buttons: {
-                        cancel: "Cancelar",
-                        confirm: "Aceptar"
-                    },
-                }).then((value) => {
-                    if (value) {
-                        ajaxRequest(rol_id);
-                    }
-                });
-            });
-
-            function ajaxRequest(rol_id){
-                $.ajax({
-                    type: "DELETE",
-                    url: 'roles/' + rol_id,
-                    data: {"_token": "{{ csrf_token() }}"},
-                    success: function (data) {
-                        if (data.mensaje == "ok") {
-                            $("#rol" + rol_id).remove();
-                            InkBrutalPRY.notificaciones('El rol fue eliminado correctamente', 'InkBrutalPRY', 'success');
-                        } else if (data.mensaje == "rd") {
-                            InkBrutalPRY.notificaciones('El rol es por defecto del sistema, no es posible eliminarlo.', 'InkBrutalPRY', 'error');
-                        } else if (respuesta.mensaje == "np") {
-                            InkBrutalPRY.notificaciones('No tiene permisos para entrar en este modulo.', 'InkBrutalPRY', 'error');
-                        }  else {
-                            InkBrutalPRY.notificaciones('El rol no pudo ser eliminado o hay otro recurso usándolo', 'InkBrutalPRY', 'error');
-                        }
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            }
         });
     </script>
 @endsection

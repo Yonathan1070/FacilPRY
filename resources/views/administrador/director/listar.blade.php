@@ -66,6 +66,7 @@ Director de Proyectos
         
             ////----- Abre modal para editar rol -----////
             jQuery('body').on('click', '.open-modal', function () {
+                $('.page-loader-wrapper').fadeIn();
                 var director_id = $(this).val();
                 $.get('director-proyectos/' + director_id + '/editar', function (data) {
                     jQuery('#director_id').val(data.director.id);
@@ -84,10 +85,12 @@ Director de Proyectos
                 document.getElementById('documento_usuario').style.display = 'none';
                 document.getElementById('ciudad_residencia').style.display = 'none';
                 document.getElementById('roles_director').style.display = 'none';
+                $('.page-loader-wrapper').fadeOut();
             });
         
             // Clic para crear o guardar el rol
             $("#btn_guardar").click(function (e) {
+                $('.page-loader-wrapper').fadeIn();
                 if($("#form_validation").valid()){
                     e.preventDefault();
                     var formData = {
@@ -144,6 +147,7 @@ Director de Proyectos
                         }
                     });
                 }
+                $('.page-loader-wrapper').fadeOut();
             });
 
             ////----- Elimina el rol y lo quita de la vista -----////
@@ -166,6 +170,7 @@ Director de Proyectos
             });
 
             function ajaxRequest(director_id){
+                $('.page-loader-wrapper').fadeIn();
                 $.ajax({
                     type: "PUT",
                     url: 'director-proyectos/' + director_id + '/restaurar_clave',
@@ -184,6 +189,7 @@ Director de Proyectos
                         console.log('Error:', data);
                     }
                 });
+                $('.page-loader-wrapper').fadeOut();
             }
         });
     </script>
