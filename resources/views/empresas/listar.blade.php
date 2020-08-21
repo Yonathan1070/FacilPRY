@@ -103,33 +103,38 @@
                         dataType: 'json',
                         success: function (data) {
                             if(data.mensaje == "ok"){
-                                if(data.empresa.EMP_Estado_Empresa == 1) {
-                                    var empresa = '<tr id="empresa'+ data.empresa.id +'"><td>'+ data.empresa.EMP_NIT_Empresa +'</td><td>'+ data.empresa.EMP_Nombre_Empresa +'</td><td>'+ data.empresa.EMP_Direccion_Empresa +'</td><td>'+ data.empresa.EMP_Correo_Empresa +'</td><td class="width100">';
-                                    if(data.permisos.editar == true){
-                                        empresa += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.empresa.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                                    }
-                                    if(data.permisos.eliminar == true){
-                                        empresa += '<a onclick="inactivar('+ data.empresa.id +')" class="tooltipsC" title="Inactivar la empresa '+ data.empresa.EMP_Nombre_Empresa +'"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
-                                    }
-                                    if(data.permisos.lUsuarios == true){
-                                        empresa += '<a onclick="clientes('+ data.empresa.id +')" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios"><i class="material-icons text-info" style="font-size: 20px;">list</i></a>';
-                                    }
-                                    empresa += '</td></tr>';
-                                    if (state == "add") {
-                                        jQuery('#lista-empresas').append(empresa);
+                                var rows = $('.dt-empresas-activas>tbody>tr').length;
+                                if(rows == 0){
+                                    location.reload();
+                                } else {
+                                    if(data.empresa.EMP_Estado_Empresa == 1) {
+                                        var empresa = '<tr id="empresa'+ data.empresa.id +'"><td>'+ data.empresa.EMP_NIT_Empresa +'</td><td>'+ data.empresa.EMP_Nombre_Empresa +'</td><td>'+ data.empresa.EMP_Direccion_Empresa +'</td><td>'+ data.empresa.EMP_Correo_Empresa +'</td><td class="width100">';
+                                        if(data.permisos.editar == true){
+                                            empresa += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.empresa.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                        }
+                                        if(data.permisos.eliminar == true){
+                                            empresa += '<a onclick="inactivar('+ data.empresa.id +')" class="tooltipsC" title="Inactivar la empresa '+ data.empresa.EMP_Nombre_Empresa +'"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
+                                        }
+                                        if(data.permisos.lUsuarios == true){
+                                            empresa += '<a onclick="clientes('+ data.empresa.id +')" class="btn-accion-tabla tooltipsC" title="Lista de Usuarios"><i class="material-icons text-info" style="font-size: 20px;">list</i></a>';
+                                        }
+                                        empresa += '</td></tr>';
+                                        if (state == "add") {
+                                            jQuery('#lista-empresas').append(empresa);
+                                        } else {
+                                            $("#empresa" + empresa_id).replaceWith(empresa);
+                                        }
                                     } else {
+                                        var empresa = '<tr id="empresa'+ data.empresa.id +'"><td>'+ data.empresa.EMP_NIT_Empresa +'</td><td>'+ data.empresa.EMP_Nombre_Empresa +'</td><td>'+ data.empresa.EMP_Direccion_Empresa +'</td><td>'+ data.empresa.EMP_Correo_Empresa +'</td><td class="width100">';
+                                        if(data.permisos.editar == true){
+                                            empresa += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.empresa.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                        }
+                                        if(data.permisos.eliminar == true){
+                                            empresa += '<a onclick="activar('+ data.empresa.id +')" class="tooltipsC" title="Activar la empresa '+ data.empresa.EMP_Nombre_Empresa +'"><i class="material-icons text-success" style="font-size: 20px;">arrow_upward</i></a>';
+                                        }
+                                        empresa += '</td></tr>';
                                         $("#empresa" + empresa_id).replaceWith(empresa);
                                     }
-                                } else {
-                                    var empresa = '<tr id="empresa'+ data.empresa.id +'"><td>'+ data.empresa.EMP_NIT_Empresa +'</td><td>'+ data.empresa.EMP_Nombre_Empresa +'</td><td>'+ data.empresa.EMP_Direccion_Empresa +'</td><td>'+ data.empresa.EMP_Correo_Empresa +'</td><td class="width100">';
-                                    if(data.permisos.editar == true){
-                                        empresa += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.empresa.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                                    }
-                                    if(data.permisos.eliminar == true){
-                                        empresa += '<a onclick="activar('+ data.empresa.id +')" class="tooltipsC" title="Activar la empresa '+ data.empresa.EMP_Nombre_Empresa +'"><i class="material-icons text-success" style="font-size: 20px;">arrow_upward</i></a>';
-                                    }
-                                    empresa += '</td></tr>';
-                                    $("#empresa" + empresa_id).replaceWith(empresa);
                                 }
                                 jQuery('#form_validation').trigger("reset");
                                 jQuery('#modalFormEmpresa').modal('hide');
@@ -185,7 +190,7 @@
                                             No hay Datos que mostrar.
                                         </div>
                                     @else
-                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-empresas-activas" id="tabla-data">
                                             <thead>
                                                 <tr>
                                                     <th>NIT</th>
@@ -242,7 +247,7 @@
                                             No hay Datos que mostrar
                                         </div>
                                     @else
-                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-empresas-inactivas" id="tabla-data">
                                             <thead>
                                                 <tr>
                                                     <th>NIT</th>

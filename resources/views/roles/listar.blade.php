@@ -34,7 +34,7 @@ Roles
                                 El sistema no cuenta con Roles agregados.
                             </div>
                         @else
-                            <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                            <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-roles" id="tabla-data">
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
@@ -161,18 +161,23 @@ Roles
                         dataType: 'json',
                         success: function (data) {
                             if(data.mensaje == "ok"){
-                                var rol = '<tr id="rol' + data.rol.id + '"><td>' + data.rol.RLS_Nombre_Rol + '</td><td>' + data.rol.RLS_Descripcion_Rol + '</td><td>';
-                                if(data.permisos.editar == true){
-                                    rol += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="' + data.rol.id + '"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                                }
-                                if(data.permisos.eliminar == true){
-                                    rol += '<button class="btn-accion-tabla tooltipsC delete-rol" value="' + data.rol.id + '" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>';
-                                }
-                                rol += '</td></tr>';
-                                if (state == "add") {
-                                    jQuery('#lista-roles').append(rol);
+                                var rows = $('.dt-roles>tbody>tr').length;
+                                if(rows == 0){
+                                    location.reload();
                                 } else {
-                                    $("#rol" + rol_id).replaceWith(rol);
+                                    var rol = '<tr id="rol' + data.rol.id + '"><td>' + data.rol.RLS_Nombre_Rol + '</td><td>' + data.rol.RLS_Descripcion_Rol + '</td><td>';
+                                    if(data.permisos.editar == true){
+                                        rol += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="' + data.rol.id + '"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                    }
+                                    if(data.permisos.eliminar == true){
+                                        rol += '<button class="btn-accion-tabla tooltipsC delete-rol" value="' + data.rol.id + '" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>';
+                                    }
+                                    rol += '</td></tr>';
+                                    if (state == "add") {
+                                        jQuery('#lista-roles').append(rol);
+                                    } else {
+                                        $("#rol" + rol_id).replaceWith(rol);
+                                    }
                                 }
                                 jQuery('#form_validation').trigger("reset");
                                 jQuery('#modalFormRol').modal('hide');

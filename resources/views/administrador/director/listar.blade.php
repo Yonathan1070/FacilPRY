@@ -121,14 +121,19 @@ Director de Proyectos
                         dataType: 'json',
                         success: function (data) {
                             if(data.mensaje == "ok"){
-                                var director = '<tr id="director'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
-                                    director += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
-                                    director += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Director"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
-                                    director += '</td></tr>';
-                                if (state == "add") {
-                                    jQuery('#lista-directores').append(director);
+                                var rows = $('.dt-directores-activos>tbody>tr').length;
+                                if(rows == 0){
+                                    location.reload();
                                 } else {
-                                    $("#director" + data.usuario.id).replaceWith(director);
+                                    var director = '<tr id="director'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
+                                        director += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 17px;">edit</i></button>';
+                                        director += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Director"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
+                                        director += '</td></tr>';
+                                    if (state == "add") {
+                                        jQuery('#lista-directores').append(director);
+                                    } else {
+                                        $("#director" + data.usuario.id).replaceWith(director);
+                                    }
                                 }
                                 jQuery('#form_validation').trigger("reset");
                                 jQuery('#modalFormDirector').modal('hide');
@@ -226,7 +231,7 @@ Director de Proyectos
                                         El sistema no cuenta con Directores activos.
                                     </div>
                                 @else
-                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable">
+                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-directores-activos">
                                         <thead>
                                             <tr>
                                                 <th>Documento</th>
@@ -265,7 +270,7 @@ Director de Proyectos
                                         El sistema no cuenta con Directores inactivos.
                                     </div>
                                 @else
-                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                    <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-directores-inactivos" id="tabla-data">
                                         <thead>
                                             <tr>
                                                 <th>Documento</th>

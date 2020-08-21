@@ -92,21 +92,26 @@
                         dataType: 'json',
                         success: function (data) {
                             if(data.mensaje == "ok"){
-                                var cliente = '<tr id="cliente'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
-                                if(data.permisos.editar == true){
-                                    cliente += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 18px;">edit</i></button>';
-                                }
-                                if(data.permisos.eliminar == true){
-                                    cliente += '<!--<button class="btn-accion-tabla tooltipsC delete-cliente" value="'+ data.usuario.id +'" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>-->';
-                                }
-                                cliente += '</td></tr>';
-                                if (state == "add") {
-                                    jQuery('#lista-clientes').append(cliente);
+                                var rows = $('.dt-clientes>tbody>tr').length;
+                                if(rows == 0){
+                                    location.reload();
                                 } else {
-                                    $("#cliente" + cliente_id).replaceWith(cliente);
+                                    var cliente = '<tr id="cliente'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.USR_Nombre_Usuario +'</td><td>';
+                                    if(data.permisos.editar == true){
+                                        cliente += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 18px;">edit</i></button>';
+                                    }
+                                    if(data.permisos.eliminar == true){
+                                        cliente += '<!--<button class="btn-accion-tabla tooltipsC delete-cliente" value="'+ data.usuario.id +'" title="Eliminar este Registro"><i class="material-icons text-danger" style="font-size: 17px;">delete_forever</i></button>-->';
+                                    }
+                                    cliente += '</td></tr>';
+                                    if (state == "add") {
+                                        jQuery('#lista-clientes').append(cliente);
+                                    } else {
+                                        $("#cliente" + cliente_id).replaceWith(cliente);
+                                    }
+                                    jQuery('#form_validation').trigger("reset");
+                                    jQuery('#modalFormCliente').modal('hide');
                                 }
-                                jQuery('#form_validation').trigger("reset");
-                                jQuery('#modalFormCliente').modal('hide');
 
                                 InkBrutalPRY.notificaciones('Cliente '+(state == "add" ? 'registrado' : 'editado')+' con éxito', 'InkBrutalPRY', 'success');
                             } else if(data.errors != null){
@@ -197,7 +202,7 @@
                                 No hay Datos que mostrar.
                             </div>
                         @else
-                            <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                            <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-clientes" id="tabla-data">
                                 <thead>
                                     <tr>
                                         <th>Documento</th>

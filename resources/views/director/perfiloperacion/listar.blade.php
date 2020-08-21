@@ -127,15 +127,20 @@
                         dataType: 'json',
                         success: function (data) {
                             if(data.mensaje == "ok"){
-                                var perfil = '<tr id="perfil'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.RLS_Nombre_Rol +'</td><td>';
-                                    perfil += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 18px;">edit</i></button>';
-                                    perfil += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Perfil de Operación"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
-                                    perfil += '<a href="{{route("carga_perfil_operacion", ["id"=>'+ data.usuario.id +'])}}" class="btn-accion-tabla tooltipsC" title="Ver Carga de Trabajo"><i class="material-icons text-success" style="font-size: 18px;">remove_red_eye</i></a>';
-                                    perfil += '</td></tr>';
-                                if (state == "add") {
-                                    jQuery('#lista-perfiles').append(perfil);
+                                var rows = $('.dt-perfiles-activos>tbody>tr').length;
+                                if(rows == 0){
+                                    location.reload();
                                 } else {
-                                    $("#perfil" + data.usuario.id).replaceWith(perfil);
+                                    var perfil = '<tr id="perfil'+ data.usuario.id +'"><td>'+ data.usuario.USR_Documento_Usuario +'</td><td>'+ data.usuario.USR_Nombres_Usuario +' '+ data.usuario.USR_Apellidos_Usuario +'</td><td>'+ data.usuario.USR_Telefono_Usuario +'</td><td>'+ data.usuario.USR_Correo_Usuario +'</td><td>'+ data.usuario.RLS_Nombre_Rol +'</td><td>';
+                                        perfil += '<button class="btn-accion-tabla tooltipsC open-modal" title="Editar este Registro" value="'+ data.usuario.id +'"><i class="material-icons text-info" style="font-size: 18px;">edit</i></button>';
+                                        perfil += '<a onclick="inactivar('+ data.usuario.id +')" class="tooltipsC" title="Desactivar Perfil de Operación"><i class="material-icons text-danger" style="font-size: 18px;">arrow_downward</i></a>';
+                                        perfil += '<a href="{{route("carga_perfil_operacion", ["id"=>'+ data.usuario.id +'])}}" class="btn-accion-tabla tooltipsC" title="Ver Carga de Trabajo"><i class="material-icons text-success" style="font-size: 18px;">remove_red_eye</i></a>';
+                                        perfil += '</td></tr>';
+                                    if (state == "add") {
+                                        jQuery('#lista-perfiles').append(perfil);
+                                    } else {
+                                        $("#perfil" + data.usuario.id).replaceWith(perfil);
+                                    }
                                 }
                                 jQuery('#form_validation').trigger("reset");
                                 jQuery('#modalFormPerfil').modal('hide');
@@ -231,7 +236,7 @@
                                             El sistema no cuenta con Perfil de Operación activos.
                                         </div>
                                     @else
-                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable">
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-perfiles-activos">
                                             <thead>
                                                 <tr>
                                                     <th>Documento</th>
@@ -273,7 +278,7 @@
                                             El sistema no cuenta con Perfil de Operación inactivo.
                                         </div>
                                     @else
-                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable" id="tabla-data">
+                                        <table class="table table-striped table-bordered table-hover dataTable js-exportable dt-perfiles-inactivos" id="tabla-data">
                                             <thead>
                                                 <tr>
                                                     <th>Documento</th>
