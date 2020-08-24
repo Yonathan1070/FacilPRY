@@ -9,6 +9,8 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tablas\Notificaciones;
+use Illuminate\Support\Facades\Response;
+use Intervention\Image\Facades\Image;
 
 /**
  * Perfil Usuario Controller, donde se mostrarán los datos
@@ -76,26 +78,12 @@ class PerfilUsuarioController extends Controller
         ]);
 
         if ($validator->passes()) {
-            $usuario = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            $ruta = public_path("assets/bsb/images/".$usuario->USR_Foto_Perfil_Usuario);
-            
-            if ($usuario->USR_Foto_Perfil_Usuario != null) {
-                unlink($ruta);
-            }
-            
-            $input = $request->all();
-            
-            $nombreArchivo = $input['USR_Foto_Perfil_Usuario'] = time().
-                '.'.
-                $request->USR_Foto_Perfil_Usuario->getClientOriginalExtension();
-            
-            $request->USR_Foto_Perfil_Usuario->move(
-                public_path('assets/bsb/images'),
-                $input['USR_Foto_Perfil_Usuario']
-            );
+            $archivo_Imagen = $request->USR_Foto_Perfil_Usuario;
+            $imagen = Image::make($archivo_Imagen);
+            Response::make($imagen->encode('jpeg'));
 
             Usuarios::findOrFail(session()->get('Usuario_Id'))
-                ->update(['USR_Foto_Perfil_Usuario' => $nombreArchivo]);
+                ->update(['USR_Foto_Perfil_Usuario' => $imagen]);
             
             return response()
                 ->json(['success' => 'Foto Actualizada']);
@@ -103,6 +91,17 @@ class PerfilUsuarioController extends Controller
 
         return response()
             ->json(['error' => $validator->errors()->all()]);
+    }
+
+    public function obtener_foto()
+    {
+        $image = Usuarios::findOrFail(session()->get('Usuario_Id'))->USR_Foto_Perfil_Usuario;
+        $archivo_Imagen = Image::make($image);
+
+        $response = Response::make($archivo_Imagen->encode('jpeg'));
+        $response->header('Content-Type', 'image/jpeg');
+
+        return $response;
     }
 
     /**

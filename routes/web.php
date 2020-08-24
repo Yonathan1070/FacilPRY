@@ -165,6 +165,7 @@ Route::delete('roles/{id}', 'RolesController@eliminar')->name('eliminar_rol');
 
 //Rutas Perfil de Usuario
 Route::get('perfil', 'PerfilUsuarioController@index')->name('perfil');
+Route::get('perfil/obtener_foto', 'PerfilUsuarioController@obtener_foto')->name('foto_perfil');
 Route::put('perfileditar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil');
 Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_perfil');
 Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto');

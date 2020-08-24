@@ -6,7 +6,7 @@
                 @if ($datos->USR_Foto_Perfil_Usuario==null)
                     <img src="{{asset("assets/bsb/images/user-lg.ico")}}" width="48" height="48" alt="User" />
                 @else
-                    <img src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil_Usuario)}}" width="48" height="48" alt="User" />
+                    <img src="{{route('foto_perfil')}}" width="48" height="48" alt="User" />
                 @endif
         </div>
         <div class="info-container">

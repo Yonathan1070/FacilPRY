@@ -16,7 +16,7 @@ Editar Perfil
                                 @if ($datos->USR_Foto_Perfil_Usuario==null)
                                     <img id="fotoPerfil" src="{{asset("assets/bsb/images/user-lg.ico")}}" alt="AdminBSB - Profile Image" />
                                 @else
-                                    <img id="fotoPerfil" src="{{asset('/assets/bsb/images/'.$datos->USR_Foto_Perfil_Usuario)}}" width="128" height="128" alt="AdminBSB - Profile Image" />
+                                    <img id="fotoPerfil" src="{{route('foto_perfil')}}" width="128" height="128" alt="AdminBSB - Profile Image" />
                                 @endif
                                 <div class="text">Cambiar Foto</div>
                         </div>
@@ -99,7 +99,7 @@ Editar Perfil
                                     </form>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade in" id="cambio_clave">
-                                    <form class="form-horizontal" id="form_validation" action="{{route('actualizar_clave_perfil')}}" method="POST">
+                                    <form class="form-horizontal" id="form_validation_trabajador" action="{{route('actualizar_clave_perfil')}}" method="POST">
                                         @csrf @method('PUT')
                                         <div class="form-group">
                                             <label for="USR_Clave_Anterior" class="col-sm-4 control-label">Antigua Contraseña</label>
