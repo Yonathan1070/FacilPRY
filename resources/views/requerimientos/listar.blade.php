@@ -160,7 +160,7 @@
                 success: function (data) {
                     if (data.mensaje == "ok") {
                         $("#requerimiento" + requerimiento_id).remove();
-                        InkBrutalPRY.notificaciones('la actividad fue eliminads correctamente', 'InkBrutalPRY', 'success');
+                        InkBrutalPRY.notificaciones('la actividad fue eliminada correctamente', 'InkBrutalPRY', 'success');
                     } else if (data.mensaje == "ng") {
                         InkBrutalPRY.notificaciones('No es posible eliminar la actividad, tiene tareas registradas.', 'InkBrutalPRY', 'error');
                     } else if (respuesta.mensaje == "np") {

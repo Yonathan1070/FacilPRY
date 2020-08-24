@@ -239,6 +239,55 @@ class Actividades extends Model
         return $actividades;
     }
 
+    #Función que obtiene las actividades del usuario
+    public static function obtenerActividadNueva($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.Id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.Id',
+                '=',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->leftJoin(
+                'TBL_Actividades_Finalizadas as af',
+                'af.ACT_FIN_Actividad_Id',
+                '=',
+                'a.id'
+            )->where(
+                'a.id', '=', $id
+            )->select(
+                'a.id as ID_Actividad',
+                'r.id as ID_Requerimiento',
+                'a.*',
+                'u.*',
+                'e.*',
+                'e.id as estado_id',
+                'r.*',
+                'af.*'
+            )->orderBy(
+                'a.Id', 'ASC'
+            )->groupBy(
+                'a.Id'
+            )->first();
+        
+        return $actividades;
+    }
+
     #Funcion que obtiene las actividades excepto la que se esta editando
     public static function obtenerActividadesNoActual($idP, $idA)
     {
@@ -712,6 +761,45 @@ class Actividades extends Model
             )->orderBy(
                 'a.Id', 'ASC'
             )->get();
+        
+        return $actividades;
+    }
+
+    #Funcion para obtener las actividades del cliente
+    public static function obtenerActividadNuevaCliente($id)
+    {
+        $actividades = DB::table('TBL_Actividades as a')
+            ->join(
+                'TBL_Requerimientos as r',
+                'r.id',
+                '=',
+                'a.ACT_Requerimiento_Id'
+            )->join(
+                'TBL_Proyectos as p',
+                'p.Id',
+                '=',
+                'r.REQ_Proyecto_Id'
+            )->join(
+                'TBL_Usuarios as u',
+                'u.Id',
+                'a.ACT_Trabajador_Id'
+            )->join(
+                'TBL_Estados as e',
+                'e.id',
+                '=',
+                'a.ACT_Estado_Id'
+            )->where(
+                'a.id', '=', $id
+            )->select(
+                'a.id as ID_Actividad',
+                'r.id as ID_Requerimiento',
+                'a.*',
+                'u.*',
+                'e.*',
+                'r.*'
+            )->orderBy(
+                'a.Id', 'ASC'
+            )->first();
         
         return $actividades;
     }
@@ -1433,7 +1521,7 @@ class Actividades extends Model
 
     #Función para guardar la actividad en la Base de Datos
     public static function crearActividad($request, $idR, $idUsuario, $idEncargado){
-        Actividades::create([
+        $actividad = Actividades::create([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Estado_Id' => 1,
@@ -1461,6 +1549,8 @@ class Actividades extends Model
                 ', ACT_Encargado_Id -> '.$idEncargado,
             session()->get('Usuario_Id')
         );
+
+        return $actividad;
     }
 
     #Función para actualizar los datos de la Actividad
@@ -1468,7 +1558,7 @@ class Actividades extends Model
     {
         $oldActividad = Actividades::findOrFail($idA);
         $newActividad = Actividades::findOrFail($idA);
-        $actividad = $newActividad->update([
+        $newActividad->update([
             'ACT_Nombre_Actividad' => $request['ACT_Nombre_Actividad'],
             'ACT_Descripcion_Actividad' => $request['ACT_Descripcion_Actividad'],
             'ACT_Fecha_Inicio_Actividad' => $request['ACT_Fecha_Inicio_Actividad'],
@@ -1492,7 +1582,7 @@ class Actividades extends Model
             session()->get('Usuario_Id')
         );
 
-        return $actividad;
+        return $newActividad;
     }
 
     #Funcion para actualizar el requerimiento de la actividad

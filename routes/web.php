@@ -220,11 +220,8 @@ Route::get('prequerimientos/{id}', 'RequerimientosController@obtenerPorcentaje')
 //Rutas CRUD Actividades
 Route::get('actividades/{idR}', 'ActividadesController@index')->name('actividades');
 Route::get('actividades/{idP}/total', 'ActividadesController@todas')->name('actividades_todas');
-Route::get('actividades/{idR}/crearT', 'ActividadesController@crearTrabajador')->name('crear_actividad_trabajador');
-Route::get('actividades/{idR}/crearC', 'ActividadesController@crearCliente')->name('crear_actividad_cliente');
-Route::post('actividades/crear/{idR}', 'ActividadesController@guardar')->name('guardar_actividad');
-Route::get('actividades/{idA}/editarT', 'ActividadesController@editarTrabajador')->name('editar_actividad_trabajador');
-Route::get('actividades/{idA}/editarC', 'ActividadesController@editarCliente')->name('editar_actividad_cliente');
+Route::post('actividades/crear', 'ActividadesController@guardar')->name('guardar_actividad');
+Route::get('actividades/{idA}/editar', 'ActividadesController@editar')->name('editar_actividad');
 Route::put('actividades/{idA}', 'ActividadesController@actualizar')->name('actualizar_actividad');
 Route::delete('actividades/{idA}', 'ActividadesController@eliminar')->name('eliminar_actividad');
 Route::put('actividades/{idA}/cambiar-requerimiento', 'ActividadesController@cambiarRequerimiento')->name('cambio_requerimiento_actividad');

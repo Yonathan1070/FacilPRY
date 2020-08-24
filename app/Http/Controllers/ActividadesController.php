@@ -21,6 +21,7 @@ use App\Models\Tablas\SolicitudTiempo;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Actividades Controller, donde se visualizaran y realizaran cambios
@@ -49,7 +50,9 @@ class ActividadesController extends Controller
         $permisos = [
             'crear' => can2('crear-actividades'),
             'crearC' => can2('crear-actividades-cliente'),
-            'listarP' => can2('listar-proyectos')
+            'listarP' => can2('listar-proyectos'),
+            'editar' => can2('editar-actividades'),
+            'eliminar' => can2('eliminar-actividades')
         ];
 
         $notificaciones = Notificaciones::obtenerNotificaciones(
@@ -95,6 +98,8 @@ class ActividadesController extends Controller
 
         $actividadesCliente = Actividades::obtenerActividadesCliente($idR, $cliente);
         $proyecto = Proyectos::findOrFail($requerimiento['REQ_Proyecto_Id']);
+
+        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
         
         return view(
             'actividades.listar',
@@ -108,7 +113,9 @@ class ActividadesController extends Controller
                 'cantidad',
                 'permisos',
                 'requerimientos',
-                'asignadas'
+                'asignadas',
+                'requerimiento',
+                'perfilesOperacion'
             )
         );
     }
@@ -166,217 +173,136 @@ class ActividadesController extends Controller
     }
 
     /**
-     * Muestra el formulario para crear las actividades a un Perfil de Operación
-     *
-     * @param  $idR Identificador del requerimiento
-     * @return \Illuminate\View\View Vista para crear actividad al Perfil de Operación
-     */
-    public function crearTrabajador($idR)
-    {
-        can('crear-actividades');
-
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $requerimiento = Requerimientos::findOrFail($idR);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        
-        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
-
-        return view(
-            'actividades.crear',
-            compact(
-                'proyecto',
-                'requerimiento',
-                'perfilesOperacion',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
-     * Muestra el formulario para crear las actividades al cliente
-     *
-     * @param  $idR Identificador del requerimiento
-     * @return \Illuminate\View\View Vista para crear actividad al Cliente
-     */
-    public function crearCliente($idR)
-    {
-        can('crear-actividades-cliente');
-
-        $idUsuario = session()->get('Usuario_Id');
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-        
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $requerimiento = Requerimientos::findOrFail($idR);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
-        
-        return view(
-            'actividades.crear',
-            compact(
-                'proyecto',
-                'requerimiento',
-                'perfilesOperacion',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
      * Guarda las actividades en la Base de datos
      *
      * @param  App\Http\Requests\ValidacionActividad  $request
      * @param  $idR  Identificador del requerimiento
      * @return redirect()->route()
      */
-    public function guardar(ValidacionActividad $request, $idR)
+    public function guardar(Request $request)
     {
         if (can('crear-actividades') || can('crear-actividades-cliente')) {
-            $hoy = Carbon::now();
-            $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
-            
-            if (
-                $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
-            ) {
-                return redirect()
-                    ->route($request['ruta'], [$idR])
-                    ->withErrors(
-                        'Las fechas no pueden ser dias ya pasados.'
-                    )->withInput();
-            } else if (
-                $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
-            ) {
-                return redirect()
-                    ->route($request['ruta'], [$idR])
-                    ->withErrors(
-                        'La fecha de inicio no puede ser superior a la fecha de finalización'
-                    )->withInput();
-            } else if (
-                ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
-                ($diferencia < 60 || $diferencia > 600)
-            ) {
-                return redirect()
-                    ->route($request['ruta'], [$idR])
-                    ->withErrors(
-                        'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
-                    )->withInput();
-            }
+            $permisos = [
+                'crear' => can2('crear-actividades'),
+                'crearC' => can2('crear-actividades-cliente'),
+                'listarP' => can2('listar-proyectos'),
+                'editar' => can2('editar-actividades'),
+                'eliminar' => can2('eliminar-actividades')
+            ];
 
-            $actividades = Actividades::obtenerActividadesTotalesRequerimiento(
-                $idR
-            );
+            $data = $request->all();
+            $validacionRequerimiento = new ValidacionActividad();
+            $validator = Validator::make($data, $validacionRequerimiento->rules(null), $validacionRequerimiento->messages());
 
-            foreach ($actividades as $actividad) {
-                if (strtolower($actividad->ACT_Nombre_Actividad) == strtolower($request->ACT_Nombre_Actividad)) {
-                    return redirect()
-                        ->route($request['ruta'], [$idR])
-                        ->withErrors('La actividad ya cuenta con una tarea del mismo nombre.')
-                        ->withInput();
+            if($validator->passes()){
+                $hoy = Carbon::now();
+                $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
+                
+                if (
+                    $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
+                ) {
+                    return response()->json(['mensaje' => 'fp']);
+                } else if (
+                    $request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']
+                ) {
+                    return response()->json(['mensaje' => 'fs']);
+                } else if (
+                    ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+                    ($diferencia < 60 || $diferencia > 600)
+                ) {
+                    return response()->json(['mensaje' => 'hm']);
                 }
-            }
 
-            $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
-            
-            if ($request->ACT_Usuario_Id == null) {
-                $idUsuario = $proyecto->PRY_Cliente_Id;
-                $ruta = 'crear_actividad_cliente';
-                $rutaNotificacion = 'actividades_cliente';
-            } else {
-                $idUsuario = $request['ACT_Usuario_Id'];
-                $ruta = 'crear_actividad_trabajador';
-                $rutaNotificacion = 'actividades_perfil_operacion';
-            }
-            
-            Actividades::crearActividad(
-                $request,
-                $idR,
-                $idUsuario,
-                session()->get('Usuario_Id')
-            );
+                $actividades = Actividades::obtenerActividadesTotalesRequerimiento(
+                    $request['ACT_Requerimiento_Id']
+                );
 
-            $actividad = Actividades::orderByDesc('created_at')->take(1)->first();
-
-            if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
-                foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
-                    $archivo = null;
-                    if ($documento->isValid()) {
-                        $archivo = time() . '.' . $documento->getClientOriginalName();
-                        $documento->move(public_path('documentos_soporte'), $archivo);
-                        DocumentosSoporte::crearDocumentoSoporte($actividad->id, $archivo);
-                    } else {
-                        $actividad->destroy();
+                foreach ($actividades as $actividad) {
+                    if (strtolower($actividad->ACT_Nombre_Actividad) == strtolower($request->ACT_Nombre_Actividad)) {
+                        return response()->json(['mensaje' => 'dr']);
                     }
                 }
+
+                $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
+                $requerimientos = Requerimientos::obtenerRequerimientos($request->ACT_Proyecto_Id);
+                
+                if ($request->ACT_Usuario_Id == null) {
+                    $idUsuario = $proyecto->PRY_Cliente_Id;
+                    $rutaNotificacion = 'actividades_cliente';
+                } else {
+                    $idUsuario = $request['ACT_Usuario_Id'];
+                    $rutaNotificacion = 'actividades_perfil_operacion';
+                }
+                
+                $actividad = Actividades::crearActividad(
+                    $request,
+                    $request['ACT_Requerimiento_Id'],
+                    $idUsuario,
+                    session()->get('Usuario_Id')
+                );
+
+                if ($request->ACT_Usuario_Id == null) {
+                    $result = Actividades::obtenerActividadNuevaCliente($actividad->id);
+                } else {
+                    $result = Actividades::obtenerActividadNueva($actividad->id);
+                }
+
+
+
+                if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
+                    foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
+                        $archivo = null;
+                        if ($documento->isValid()) {
+                            $archivo = time() . '.' . $documento->getClientOriginalName();
+                            $documento->move(public_path('documentos_soporte'), $archivo);
+                            DocumentosSoporte::crearDocumentoSoporte($actividad->id, $archivo);
+                        } else {
+                            $actividad->destroy();
+                        }
+                    }
+                }
+
+                $rangos = $this->obtenerFechasRango(
+                    $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
+                );
+
+                foreach ($rangos as $fecha) {
+                    HorasActividad::crearHorasActividad($actividad->id, $fecha);
+                }
+
+                HistorialEstados::crearHistorialEstado($actividad->id, 1);
+                
+                Notificaciones::crearNotificacion(
+                    'Nueva tarea asignada',
+                    session()->get('Usuario_Id'),
+                    $idUsuario,
+                    $rutaNotificacion,
+                    null,
+                    null,
+                    'add_to_photos'
+                );
+
+                $para = Usuarios::findOrFail($idUsuario);
+                $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+                
+                Mail::send('general.correo.informacion', [
+                    'nombre' => $de['USR_Nombre_Usuario'],
+                    'contenido' => 'Ha creado la actividad '.
+                        $request['ACT_Nombre_Actividad'].
+                        ' y se la ha asignado.'
+                ], function($message) use ($para, $request){
+                    $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                    $message->to(
+                        $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+                    )
+                        ->subject($request['ACT_Nombre_Actividad']);
+                });
+                return response()->json(['actividad' => $result, 'requerimientos' => $requerimientos, 'permisos' => $permisos, 'mensaje' => 'ok']);
+            } else {
+                return response()->json(['errors' => $validator->errors()->all()]);
             }
-
-            $rangos = $this->obtenerFechasRango(
-                $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
-            );
-
-            foreach ($rangos as $fecha) {
-                HorasActividad::crearHorasActividad($actividad->id, $fecha);
-            }
-
-            HistorialEstados::crearHistorialEstado($actividad->id, 1);
-            
-            Notificaciones::crearNotificacion(
-                'Nueva tarea asignada',
-                session()->get('Usuario_Id'),
-                $idUsuario,
-                $rutaNotificacion,
-                null,
-                null,
-                'add_to_photos'
-            );
-
-            $para = Usuarios::findOrFail($idUsuario);
-            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
-            
-            Mail::send('general.correo.informacion', [
-                'nombre' => $de['USR_Nombre_Usuario'],
-                'contenido' => 'Ha creado la actividad '.
-                    $request['ACT_Nombre_Actividad'].
-                    ' y se la ha asignado.'
-            ], function($message) use ($para, $request){
-                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-                $message->to(
-                    $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
-                )
-                    ->subject($request['ACT_Nombre_Actividad']);
-            });
-
-            return redirect()
-                ->route($ruta, [$idR])
-                ->with('mensaje', 'Tarea agregada con éxito');
+        } else {
+            return response()->json(['mensaje' => 'np']);
         }
     }
 
@@ -462,84 +388,13 @@ class ActividadesController extends Controller
      * @param  $idA  Identificador de la actividad
      * @return \Illuminate\View\View Vista para editar actividad al Perfil de operación
      */
-    public function editarTrabajador($idA)
+    public function editar($idA)
     {
         can('editar-actividades');
         
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
         $actividad = Actividades::findOrFail($idA);
-        $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        $perfilesOperacion = Usuarios::obtenerPerfilOperacion();
 
-        return view(
-            'actividades.editar',
-            compact(
-                'actividad',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'perfilesOperacion',
-                'proyecto',
-                'asignadas'
-            )
-        );
-    }
-
-    /**
-     * Muestra el formulario para editar la actividad del cliente
-     *
-     * @param  $idA  Identificador de la actividad
-     * @return \Illuminate\View\View Vista para editar actividad al Cliente
-     */
-    public function editarCliente($idA)
-    {
-        can('editar-actividades');
-
-        $idUsuario = session()->get('Usuario_Id');
-        
-        $notificaciones = Notificaciones::obtenerNotificaciones(
-            $idUsuario
-        );
-
-        $cantidad = Notificaciones::obtenerCantidadNotificaciones(
-            $idUsuario
-        );
-
-        $asignadas = Actividades::obtenerActividadesProcesoPerfilHoy(
-            $idUsuario
-        );
-
-        $datos = Usuarios::findOrFail($idUsuario);
-        $actividad = Actividades::findOrFail($idA);
-        $requerimiento = Requerimientos::findOrFail($actividad->ACT_Requerimiento_Id);
-        $proyecto = Proyectos::findOrFail($requerimiento->REQ_Proyecto_Id);
-        
-        return view(
-            'actividades.editar',
-            compact(
-                'actividad',
-                'datos',
-                'notificaciones',
-                'cantidad',
-                'proyecto',
-                'asignadas'
-            )
-        );
+        return response()->json(['actividad' => $actividad]);
     }
 
     /**
@@ -553,123 +408,129 @@ class ActividadesController extends Controller
     {
         can('editar-actividades');
 
-        $hoy = Carbon::now();
-        $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
-        
-        if (
-            $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
-        ) {
-            return redirect()
-                ->route($request['ruta'], [$idA])
-                ->withErrors(
-                    'Las fechas no pueden ser dias ya pasados.'
-                )->withInput();
-        } else if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
-            return redirect()
-                ->route($request['ruta'], [$idA])
-                ->withErrors(
-                    'La fecha de inicio no puede ser superior a la fecha de finalización'
-                )->withInput();
-        } else if (
-            ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
-            ($diferencia < 60 || $diferencia > 600)
-        ) {
-            return redirect()
-                ->route($request['ruta'], [$idA])
-                ->withErrors(
-                    'La hora de entrega debe ser mínimo de 1 hora y máximo de 10 horas'
-                )->withInput();
-        }
+        $permisos = [
+            'crear' => can2('crear-actividades'),
+            'crearC' => can2('crear-actividades-cliente'),
+            'listarP' => can2('listar-proyectos'),
+            'editar' => can2('editar-actividades'),
+            'eliminar' => can2('eliminar-actividades')
+        ];
 
-        $actividades = Actividades::obtenerActividadesNoActual(
-            $request->ACT_Proyecto_Id, $idA
-        );
+        $data = $request->all();
+        $validacionRequerimiento = new ValidacionActividad();
+        $validator = Validator::make($data, $validacionRequerimiento->rules(null), $validacionRequerimiento->messages());
 
-        foreach ($actividades as $actividad) {
+        if($validator->passes()){
+
+            $hoy = Carbon::now();
+            $diferencia = $hoy->diffInMinutes($request['ACT_Hora_Entrega']);
+            
             if (
-                $actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad && 
-                    $actividad->Actividad_Id == $idA
+                $request['ACT_Fecha_Inicio_Actividad'] < $hoy->format('yy-m-d') || $request['ACT_Fecha_Fin_Actividad'] < $hoy->format('yy-m-d')
             ) {
-                return redirect()
-                ->route($request['ruta'], [$idA])
-                ->withErrors('Ya hay registrada una actividad con el mismo nombre.')
-                ->withInput();
+                return response()->json(['mensaje' => 'fp']);
+            } else if ($request['ACT_Fecha_Inicio_Actividad'] > $request['ACT_Fecha_Fin_Actividad']) {
+                return response()->json(['mensaje' => 'fs']);
+            } else if (
+                ($request['ACT_Fecha_Inicio_Actividad'] == $request['ACT_Fecha_Fin_Actividad']) &&
+                ($diferencia < 60 || $diferencia > 600)
+            ) {
+                return response()->json(['mensaje' => 'hm']);
             }
-        }
-        
-        $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
-        
-        if ($request->ACT_Usuario_Id == null) {
-            $idUsuario = $proyecto->PRY_Cliente_Id;
-            $rutaNotificacion = 'actividades_cliente';
-        } else {
-            $idUsuario = $request['ACT_Usuario_Id'];
-            $rutaNotificacion = 'actividades_perfil_operacion';
-        }
-        
-        $actividad = Actividades::actualizarActividad($request, $idA, $idUsuario);
 
-        if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
-            foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
-                $archivo = null;
-                if ($documento->isValid()) {
-                    $archivo = time() . '.' . $documento->getClientOriginalName();
-                    $documento->move(public_path('documentos_soporte'), $archivo);
-                    $documentoBD = DocumentosSoporte::where('DOC_Actividad_Id', '=', $idA)
-                        ->first();
-                    if ($documentoBD == null) {
-                        DocumentosSoporte::crearDocumentoSoporte($idA, $archivo);
-                    }else{
-                        DocumentosSoporte::actualizarDocumentoSoporte($documentoBD, $archivo);
-                    }
-                } else {
-                    $actividad->destroy();
+            $actividades = Actividades::obtenerActividadesNoActual(
+                $request->ACT_Proyecto_Id, $idA
+            );
+
+            foreach ($actividades as $actividad) {
+                if (
+                    $actividad->ACT_Nombre_Actividad == $request->ACT_Nombre_Actividad && 
+                        $actividad->Actividad_Id == $idA
+                ) {
+                    return response()->json(['mensaje' => 'dr']);
                 }
             }
+            
+            $proyecto = Proyectos::findOrFail($request->ACT_Proyecto_Id);
+            $requerimientos = Requerimientos::obtenerRequerimientos($request->ACT_Proyecto_Id);
+            
+            if ($request->ACT_Usuario_Id == null) {
+                $idUsuario = $proyecto->PRY_Cliente_Id;
+                $rutaNotificacion = 'actividades_cliente';
+            } else {
+                $idUsuario = $request['ACT_Usuario_Id'];
+                $rutaNotificacion = 'actividades_perfil_operacion';
+            }
+            
+            $actividad = Actividades::actualizarActividad($request, $idA, $idUsuario);
+            if ($request->ACT_Usuario_Id == null) {
+                $result = Actividades::obtenerActividadNuevaCliente($actividad->id);
+            } else {
+                $result = Actividades::obtenerActividadNueva($actividad->id);
+            }
+
+            if ($request->hasFile('ACT_Documento_Soporte_Actividad')) {
+                foreach ($request->file('ACT_Documento_Soporte_Actividad') as $documento) {
+                    $archivo = null;
+                    if ($documento->isValid()) {
+                        $archivo = time() . '.' . $documento->getClientOriginalName();
+                        $documento->move(public_path('documentos_soporte'), $archivo);
+                        $documentoBD = DocumentosSoporte::where('DOC_Actividad_Id', '=', $idA)
+                            ->first();
+                        if ($documentoBD == null) {
+                            DocumentosSoporte::crearDocumentoSoporte($idA, $archivo);
+                        }else{
+                            DocumentosSoporte::actualizarDocumentoSoporte($documentoBD, $archivo);
+                        }
+                    } else {
+                        $actividad->destroy();
+                    }
+                }
+            }
+
+            HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->delete();
+            
+            $rangos = $this->obtenerFechasRango(
+                $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
+            );
+
+            foreach ($rangos as $fecha) {
+                HorasActividad::crearHorasActividad($idA, $fecha);
+            }
+
+            HistorialEstados::crearHistorialEstado($idA, 1);
+            
+            Notificaciones::crearNotificacion(
+                'Actividad Editada',
+                session()->get('Usuario_Id'),
+                $idUsuario,
+                $rutaNotificacion,
+                null,
+                null,
+                'add_to_photos'
+            );
+            
+            $para = Usuarios::findOrFail($idUsuario);
+            $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
+            
+            Mail::send('general.correo.informacion', [
+                'nombre' => $de['USR_Nombre_Usuario'],
+                'contenido' => 'Ha modificado la información de la actividad '.
+                    $request['ACT_Nombre_Actividad'].
+                    ' y se la ha asignado.'
+            ], function($message) use ($para, $request){
+                $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
+                $message->to(
+                    $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
+                )->subject($request['ACT_Nombre_Actividad']);
+            });
+            
+            $actividad = Actividades::findOrFail($idA);
+            
+            return response()->json(['actividad' => $result, 'requerimientos' => $requerimientos, 'permisos' => $permisos, 'mensaje' => 'ok']);
+        } else {
+            return response()->json(['errors' => $validator->errors()->all()]);
         }
-
-        HorasActividad::where('HRS_ACT_Actividad_Id', '=', $idA)->delete();
-        
-        $rangos = $this->obtenerFechasRango(
-            $request['ACT_Fecha_Inicio_Actividad'], $request['ACT_Fecha_Fin_Actividad']
-        );
-
-        foreach ($rangos as $fecha) {
-            HorasActividad::crearHorasActividad($idA, $fecha);
-        }
-
-        HistorialEstados::crearHistorialEstado($idA, 1);
-        
-        Notificaciones::crearNotificacion(
-            'Actividad Editada',
-            session()->get('Usuario_Id'),
-            $idUsuario,
-            $rutaNotificacion,
-            null,
-            null,
-            'add_to_photos'
-        );
-        
-        $para = Usuarios::findOrFail($idUsuario);
-        $de = Usuarios::findOrFail(session()->get('Usuario_Id'));
-        
-        Mail::send('general.correo.informacion', [
-            'nombre' => $de['USR_Nombre_Usuario'],
-            'contenido' => 'Ha modificado la información de la actividad '.
-                $request['ACT_Nombre_Actividad'].
-                ' y se la ha asignado.'
-        ], function($message) use ($para, $request){
-            $message->from('yonathan.inkdigital@gmail.com', 'InkBrutalPry');
-            $message->to(
-                $para['USR_Correo_Usuario'], 'InkBrutalPRY, Software de Gestión de Proyectos'
-            )->subject($request['ACT_Nombre_Actividad']);
-        });
-        
-        $actividad = Actividades::findOrFail($idA);
-        
-        return redirect()
-            ->route('actividades', [$actividad->ACT_Requerimiento_Id])
-            ->with('mensaje', 'Actividad editada con éxito');
     }
 
     /**
