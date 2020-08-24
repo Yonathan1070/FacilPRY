@@ -80,7 +80,11 @@ class PerfilUsuarioController extends Controller
         if ($validator->passes()) {
             $archivo_Imagen = $request->USR_Foto_Perfil_Usuario;
             $imagen = Image::make($archivo_Imagen);
-            Response::make($imagen->encode('jpeg'));
+            $imagen->resize(128, 128, function($constraint){
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            Response::make($imagen->encode('jpeg', 50));
 
             Usuarios::findOrFail(session()->get('Usuario_Id'))
                 ->update(['USR_Foto_Perfil_Usuario' => $imagen]);
