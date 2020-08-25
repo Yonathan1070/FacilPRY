@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\General;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tablas\SesionUsuario;
+use App\Models\Tablas\Usuarios;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Login Controller, controlador para la autenticcación de usuarios
@@ -65,6 +68,9 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        SesionUsuario::where('SES_USR_Usuario_Id', session()->get('Usuario_Id'))
+            ->delete();
+        
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -78,27 +84,36 @@ class LoginController extends Controller
      */
     public function redirectTo()
     {
-        $rol = Auth::user()->roles()->get();
+        if(session()->get('Usuario_Id') != null) {
+            $estado = SesionUsuario::where('SES_USR_Usuario_Id', '=', session()->get('Usuario_Id'))
+                ->where('SES_USR_Estado_Sesion', '=', 1)
+                ->first()->SES_USR_Estado_Sesion;
+            if($estado) {
+                $rol = Auth::user()->roles()->get();
 
-        switch ($rol[0]['id']) {
-            case '1':
-                return '/administrador';
-                break;
-            
-            case '2':
-                return '/director';
-                break;
-
-            case '3':
-                return '/cliente';
-                break;
-
-            default:
-                switch ($rol[0]['RLS_Rol_Id']) {
-                    case '4':
-                        return '/perfil-operacion';
+                switch ($rol[0]['id']) {
+                    case '1':
+                        return '/administrador';
                         break;
+                    
+                    case '2':
+                        return '/director';
+                        break;
+
+                    case '3':
+                        return '/cliente';
+                        break;
+
+                    default:
+                        switch ($rol[0]['RLS_Rol_Id']) {
+                            case '4':
+                                return '/perfil-operacion';
+                                break;
+                        }
                 }
+            } else {
+                return '/activar-sesion';
+            }
         }
     }
 }

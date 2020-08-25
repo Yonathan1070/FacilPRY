@@ -2,6 +2,8 @@
 
 namespace App\Models\Tablas;
 
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -69,6 +71,19 @@ class Usuarios extends Authenticatable
             Session::put([
                 'Sub_Rol_Id' => $roles[0]['RLS_Rol_Id'],
                 'roles' => $roles
+            ]);
+        }
+        $sesion = SesionUsuario::where('SES_USR_Usuario_Id', $this->id)->first();
+        if ($sesion != null){
+            $sesion->update([
+                'SES_USR_Fecha_Sesion' => Carbon::now(),
+                'SES_USR_Estado_Sesion' => 1
+            ]);
+        } else {
+            SesionUsuario::create([
+                'SES_USR_Fecha_Sesion' => Carbon::now(),
+                'SES_USR_Estado_Sesion' => 1,
+                'SES_USR_Usuario_Id' => $this->id
             ]);
         }
     }

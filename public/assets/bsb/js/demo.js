@@ -12,7 +12,7 @@ $(function () {
 
 //Skin changer
 function skinChanger() {
-    $('.right-sidebar .demo-choose-skin li').on('click', function () {
+    /*$('.right-sidebar .demo-choose-skin li').on('click', function () {
         var $body = $('body');
         var $this = $(this);
 
@@ -22,7 +22,7 @@ function skinChanger() {
         $this.addClass('active');
 
         $body.addClass('theme-' + $this.data('theme'));
-    });
+    });*/
 }
 
 //Skin tab content set height and show scroll

@@ -151,6 +151,8 @@
 
     <script src="{{asset("assets/js/funciones.js")}}"></script>
     <script src="{{asset("assets/js/scripts.js")}}"></script>
+
+    <script src="{{asset("assets/pages/scripts/inactividad.js")}}"></script>
     
     <script>
         function notificacion(id){

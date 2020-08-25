@@ -8,6 +8,7 @@ use App\Charts\Eficiencia;
 use App\Http\Controllers\Controller;
 use App\Models\Tablas\Notificaciones;
 use App\Models\Tablas\Proyectos;
+use App\Models\Tablas\SesionUsuario;
 use App\Models\Tablas\Usuarios;
 use stdClass;
 

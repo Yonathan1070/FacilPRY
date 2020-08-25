@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Tablas\Menu;
+use App\Models\Tablas\SesionUsuario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -36,6 +37,11 @@ class AppServiceProvider extends ServiceProvider
                 ->get()
                 ->toArray();
             $view->with('menusComposer', $menus);
+        });
+
+        View::composer("*", function($view){
+            $sesiones = SesionUsuario::obtenerSesiones();
+            $view->with('sesiones', $sesiones);
         });
     }
 }

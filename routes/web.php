@@ -165,7 +165,7 @@ Route::delete('roles/{id}', 'RolesController@eliminar')->name('eliminar_rol');
 
 //Rutas Perfil de Usuario
 Route::get('perfil', 'PerfilUsuarioController@index')->name('perfil');
-Route::get('perfil/obtener_foto', 'PerfilUsuarioController@obtener_foto')->name('foto_perfil');
+Route::get('perfil/obtener_foto/{id}', 'PerfilUsuarioController@obtener_foto')->name('foto_perfil');
 Route::put('perfileditar', 'PerfilUsuarioController@actualizarDatos')->name('actualizar_perfil');
 Route::put('perfilclave', 'PerfilUsuarioController@actualizarClave')->name('actualizar_clave_perfil');
 Route::post('perfilfoto', 'PerfilUsuarioController@actualizarFoto')->name('actualizar_foto');
@@ -277,6 +277,10 @@ Route::group(['prefix' => '/', 'namespace' => 'General'], function () {
     Route::get('', 'LoginController@index')->name('inicio');
     Route::get('iniciar-sesion', 'LoginController@index')->name('login');
     Route::post('iniciar-sesion', 'LoginController@login')->name('login_post');
+    Route::get('inactivar-sesion', 'InicioController@inactivar')->name('inactivar_sesion');
+    Route::get('activar-sesion', 'InicioController@formActivar')->name('form_activar_sesion');
+    Route::post('activar-sesion', 'InicioController@activar')->name('activar_sesion');
+    Route::get('obtener-sesion', 'InicioController@estadoSesion')->name('obtener_sesion');
     Route::get('cerrar-sesion', 'LoginController@logout')->name('logout');
     Route::get('recuperar-clave', 'RecuperarClaveController@showLinkRequestForm')->name('recuperar_clave');
     Route::post('enviar-correo', 'RecuperarClaveController@sendResetLinkEmail')->name('enviar_correo');

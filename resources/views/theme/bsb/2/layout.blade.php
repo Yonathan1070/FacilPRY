@@ -169,6 +169,8 @@
     <!-- Demo Js -->
     <script src="{{asset("assets/bsb/js/demo.js")}}"></script>
 
+    <script src="{{asset("assets/pages/scripts/inactividad.js")}}"></script>
+
     <!-- Jquery DataTable Plugin Js -->
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/jquery.dataTables.js")}}"></script>
     <script src="{{asset("assets/bsb/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js")}}"></script>

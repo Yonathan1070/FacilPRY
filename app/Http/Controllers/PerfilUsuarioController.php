@@ -9,6 +9,7 @@ use App\Models\Tablas\Usuarios;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tablas\Notificaciones;
+use Exception;
 use Illuminate\Support\Facades\Response;
 use Intervention\Image\Facades\Image;
 
@@ -97,13 +98,17 @@ class PerfilUsuarioController extends Controller
             ->json(['error' => $validator->errors()->all()]);
     }
 
-    public function obtener_foto()
+    public function obtener_foto($id)
     {
-        $image = Usuarios::findOrFail(session()->get('Usuario_Id'))->USR_Foto_Perfil_Usuario;
-        $archivo_Imagen = Image::make($image);
+        try{
+            $image = Usuarios::findOrFail($id)->USR_Foto_Perfil_Usuario;
+            $archivo_Imagen = Image::make($image);
 
-        $response = Response::make($archivo_Imagen->encode('jpeg'));
-        $response->header('Content-Type', 'image/jpeg');
+            $response = Response::make($archivo_Imagen->encode('jpeg'));
+            $response->header('Content-Type', 'image/jpeg');
+        } catch(Exception $ex){
+            $response = null;
+        }
 
         return $response;
     }
